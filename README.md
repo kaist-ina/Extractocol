@@ -7,12 +7,13 @@ Extractocol has two main modules that are program slicing and signature building
 
 <b>** Program Slicing Module</b>
 
-<b>A.Main Method</b>: soot.jimple.infoflow.android.TestApps.Test
+<b>A.Main Method</b>
+<br>soot.jimple.infoflow.android.TestApps.Test
 
 <b>B.Arguments</b>
 <br>APK, AndroidSDK path, --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks [--backward]
 
-<b>C.Example</b> - (Extracting request (backward) program slice of wish.apk)
+<b>C.Example</b> : Extracting request (backward) program slice of wish.apk
 <br>wish.apk
 D:\extractocol\AndroidSDK
 --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks
@@ -20,12 +21,13 @@ D:\extractocol\AndroidSDK
 
 <b>** Signature Building Module</b>
 
-<b>A.Main Method</b>: Extractocol.Tester.BackendTester_Request
+<b>A.Main Method</b>
+<br>Extractocol.Tester.BackendTester_Request
 
 <b>B.Arguments</b>
 <br>--app (AppName) --backward
 
-<b>C.Example</b> -(Building request signatures for wish app)
+<b>C.Example</b> : Building request signatures for wish app
 <br>--app wish --backward
 
 
