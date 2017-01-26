@@ -8,6 +8,7 @@ Extractocol has two main modules that are program slicing and signature building
 ** Program Slicing Module
 
 A.Main Method: soot.jimple.infoflow.android.TestApps.Test
+
 B.Arguments
 APK, AndroidSDK path, --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks [--backward]
 
@@ -20,6 +21,7 @@ D:\extractocol\AndroidSDK
 ** Signature Building Module
 
 A.Main Method: Extractocol.Tester.BackendTester_Request
+
 B.Arguments
 --app (AppName) --backward
 
