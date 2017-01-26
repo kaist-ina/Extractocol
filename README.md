@@ -10,8 +10,7 @@ Extractocol has two main modules that are program slicing and signature building
 2. Arguments
 APK, AndroidSDK path, --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks [--backward]
 
-Example - (Extracting request (backward) program slice of wish.apk)
-
+3. Example - (Extracting request (backward) program slice of wish.apk)
 wish.apk
 D:\extractocol\AndroidSDK
 --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks
@@ -22,8 +21,7 @@ D:\extractocol\AndroidSDK
 2. Arguments
 --app (AppName) --backward
 
-Example: (Building request signatures for wish app)
-
+3. Example: (Building request signatures for wish app)
 --app wish --backward
 
 
