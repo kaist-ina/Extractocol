@@ -23,9 +23,11 @@ D:\extractocol\AndroidSDK
 <b>A.Main Method</b>: Extractocol.Tester.BackendTester_Request
 
 <b>B.Arguments</b>
+
 --app (AppName) --backward
 
-<b>C.Example</b>: (Building request signatures for wish app)
+<b>C.Example</b> -(Building request signatures for wish app)
+
 --app wish --backward
 
 
