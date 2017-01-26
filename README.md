@@ -11,9 +11,9 @@ Extractocol has two main modules that are program slicing and signature building
 <br>soot.jimple.infoflow.android.TestApps.Test
 
 <b>B.Arguments</b>
-<br>APK, AndroidSDK path, --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks [--backward]
+<br>APK, AndroidSDK path, --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks [--backward or --forward]
 
-<b>C.Example</b> : Extracting request (backward) program slice of wish.apk
+<b>C.Example</b> : Extracting request(backward) program slice of wish.apk.
 <br>wish.apk
 D:\extractocol\AndroidSDK
 --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks
@@ -27,7 +27,7 @@ D:\extractocol\AndroidSDK
 <b>B.Arguments</b>
 <br>--app (AppName) --backward
 
-<b>C.Example</b> : Building request signatures for wish app
+<b>C.Example</b> : Building request signatures for wish app. If you want to build response signatures, you should run Extractocol.Tester.BackendTester_Response class.
 <br>--app wish --backward
 
 
