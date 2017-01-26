@@ -12,3 +12,6 @@ Jeongmin Kim, Hyunwoo Choi, Hoon Namgung, Woohyun Choi, Byungkwon Choi, Hyunwook
 
 # Contact
 Jeongmin Kim (appff at kaist.ac.kr)
+
+# How To
+
