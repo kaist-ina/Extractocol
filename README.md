@@ -2,6 +2,9 @@
 Automatic Protocol Behavior Analysis Framework for Android Apps.
 This version is incomplete and we will finish this work by Feb, 2017.
 
+# How To
+Extractocol has two main modules that are program slicing and signature building modules. We extended flowdroid to extract network related instructions in APK. We implements signature building module using Soot framework.
+
 # License
 <code>CC BY-NC-SA</code> <a href="https://github.com/idleberg/Creative-Commons-Markdown/blob/spaces/4.0/by-nc-sa.markdown">Attribution-NonCommercial-ShareAlike</a>
 
@@ -12,6 +15,4 @@ Jeongmin Kim, Hyunwoo Choi, Hoon Namgung, Woohyun Choi, Byungkwon Choi, Hyunwook
 
 # Contact
 Jeongmin Kim (appff at kaist.ac.kr)
-
-# How To
 
