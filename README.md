@@ -1,6 +1,6 @@
 # Extractocol
-Automatic Protocol Behavior Analysis Framework for Android Apps
-This version is not complete, we will finish release by Feb, 2017.
+Automatic Protocol Behavior Analysis Framework for Android Apps.
+This version is incomplete and we will finish release by Feb, 2017.
 
 # License
 
