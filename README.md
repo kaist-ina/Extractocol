@@ -6,22 +6,22 @@ This version is incomplete and we will finish this work by Feb, 2017.
 Extractocol has two main modules that are program slicing and signature building modules. We extended flowdroid to slice network related instructions in APK. We implement signature building module using Soot framework. Currently, the two modules are divided so you should run the modules respectively (We plan to provide an all in one script). We implement Extractocol using Eclipse and this repository includes eclipse project setting file. Therefore, you can easily set up a development environment using import existing workspace menu in eclipse.
 
 ** Program Slicing Module 
-1. Main Method: soot.jimple.infoflow.android.TestApps.Test
-2. Arguments
+A.Main Method: soot.jimple.infoflow.android.TestApps.Test
+B.Arguments
 APK, AndroidSDK path, --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks [--backward]
 
-3. Example - (Extracting request (backward) program slice of wish.apk)
+C.Example - (Extracting request (backward) program slice of wish.apk)
 wish.apk
 D:\extractocol\AndroidSDK
 --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks
 --backward
 
 ** Signature Building Module
-1. Main Method: Extractocol.Tester.BackendTester_Request
-2. Arguments
+A.Main Method: Extractocol.Tester.BackendTester_Request
+B.Arguments
 --app (AppName) --backward
 
-3. Example: (Building request signatures for wish app)
+C.Example: (Building request signatures for wish app)
 --app wish --backward
 
 
