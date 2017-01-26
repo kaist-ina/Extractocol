@@ -3,7 +3,6 @@ Automatic Protocol Behavior Analysis Framework for Android Apps.
 This version is incomplete and we will finish this work by Feb, 2017.
 
 # License
-
 <code>CC BY-NC-SA</code> <a href="https://github.com/idleberg/Creative-Commons-Markdown/blob/spaces/4.0/by-nc-sa.markdown">Attribution-NonCommercial-ShareAlike</a>
 
 # Reference
