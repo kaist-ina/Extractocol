@@ -230,7 +230,7 @@ public class Test
 			System.gc();
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("실행 시간 : " + (end - start) / 1000.0);
+		System.out.println("Runtime: " + (end - start) / 1000.0);
 	}
 	private static boolean parseAdditionalOptions(String[] args)
 	{
