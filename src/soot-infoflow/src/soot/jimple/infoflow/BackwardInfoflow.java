@@ -208,7 +208,7 @@ public class BackwardInfoflow extends AbstractInfoflow
 			return false;
 
 		List<String> processDirs = new LinkedList<String>();
-		//processDirs.add(appPath);
+		processDirs.add(appPath);
 		String basicPath = appPath.substring(0, appPath.lastIndexOf("/"));
 
 		// Unzip the APK file to extract multiple dex files

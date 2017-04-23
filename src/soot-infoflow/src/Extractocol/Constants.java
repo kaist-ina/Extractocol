@@ -133,7 +133,7 @@ public class Constants
 	// For specific EP
 
 	//public static String SpecificEP = "<com.thirdrock.fivemiles.main.listing.ListItemViewModel: void parseFromItem(com.thirdrock.domain.Item)>";
-	public static String SpecificEP = "<com.logitech.harmonyhub.sdk.HubSetupManager$3: void run()>";
+	public static String SpecificEP = null;
 	//public static String SpecificEP = "<com.logitech.harmonyhub.sdk.imp.BluetoothManager: boolean sendRequest(java.lang.String)>";
 	//public static String SpecificEP = null;
 	//public static String SpecificEP = "<com.contextlogic.wish.ui.fragment.product.tabbeddetails.TabbedProductDetailsFragment: void loadProduct()>";
