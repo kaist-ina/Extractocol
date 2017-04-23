@@ -197,7 +197,13 @@ public class Constants
 											 * the path - hnamkoong 20150909
 											 */
 	}
-	
+	public static String getMultiDexName(String basePath, int i){
+		File directory = new File(basePath + "/[MultiClasses]");
+		if(!directory.exists())
+			directory.mkdir();
+
+		return "/[MultiClasses]/" + apkName + "_classes" + i + ".dex";
+	}
 	public static String ResponseInfoPath()
 	{
 		File serializationDir = new File(serializationDirName);

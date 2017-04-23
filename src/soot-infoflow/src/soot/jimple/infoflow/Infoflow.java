@@ -9,6 +9,8 @@
  ******************************************************************************/
 package soot.jimple.infoflow;
 
+import Extractocol.Debugger.ExtractocolLogger;
+import Extractocol.common.UnzipAPK;
 import heros.solver.CountingThreadPoolExecutor;
 
 import java.io.File;
@@ -208,6 +210,47 @@ public class Infoflow extends AbstractInfoflow
 		initializeSoot(appPath, libPath, classes, "");
 	}
 
+	/** Set multiple dex files for Soot initialization
+	 *
+	 * @author Byungkwon Choi
+	 * @param appPath Path of the app APK file
+	 * @return True if it loads and sets multiple dex files successfully
+	 */
+	private boolean LoadMultiDexFiles(String appPath){
+		if (appPath == null)
+			return false;
+
+		List<String> processDirs = new LinkedList<String>();
+		//processDirs.add(appPath);
+		String basicPath = appPath.substring(0, appPath.lastIndexOf("/"));
+
+		// Unzip the APK file to extract multiple dex files
+		try	{
+			UnzipAPK.UnzipAPK(appPath, basicPath);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+
+		// Set the extracted dex files for Soot initialization
+		for (int i = 2; i < 50; i++)
+		{
+			String dexPath = basicPath + Constants.getMultiDexName(basicPath, i);
+
+			if (new File(dexPath).exists()){
+				ExtractocolLogger.Info("Read additional dex file: " + dexPath);
+				processDirs.add(dexPath);
+			}else
+				break;
+		}
+
+		if(processDirs.size() > 0)
+			Options.v().set_process_dir(processDirs);
+
+		return true;
+	}
+
 	/**
 	 * Initializes Soot.
 	 * 
@@ -248,19 +291,18 @@ public class Infoflow extends AbstractInfoflow
 			}
 		} else
 		{
-			Options.v().set_soot_classpath(libPath);
-			if (appPath != null)
-			{
-				List<String> processDirs = new LinkedList<String>();
-				processDirs.add(appPath);
-				String path2 = appPath.substring(0, appPath.lastIndexOf("\\"));
-
-				for (int i = 2; i < 11; i++)
-				{
-					processDirs.add(path2+"/classes" + i + ".dex");
-				}
-				Options.v().set_process_dir(processDirs);
-			}
+//			Options.v().set_soot_classpath(libPath);
+//			if (appPath != null)
+//			{
+//				List<String> processDirs = new LinkedList<String>();
+//				processDirs.add(appPath);
+//				String path2 = appPath.substring(0, appPath.lastIndexOf("\\"));
+//
+//				LoadMultiDexFiles(appPath);
+//				Options.v().set_process_dir(processDirs);
+//			}
+			if(!LoadMultiDexFiles(appPath))
+				return;
 		}
 
 		// Configure the callgraph algorithm
@@ -644,7 +686,7 @@ public class Infoflow extends AbstractInfoflow
 		
 		long end = System.currentTimeMillis();
 		
-		System.out.println( "½ÇÇà ½Ã°£ : " + ( end - start )/1000.0 );
+		System.out.println( "ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ : " + ( end - start )/1000.0 );
 		
 		List<EPcontainer> Epcontainerlist = new ArrayList<EPcontainer>();
 

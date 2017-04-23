@@ -230,7 +230,7 @@ public class Test
 			System.gc();
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("½ÇÇà ½Ã°£ : " + (end - start) / 1000.0);
+		System.out.println("ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ : " + (end - start) / 1000.0);
 	}
 	private static boolean parseAdditionalOptions(String[] args)
 	{
