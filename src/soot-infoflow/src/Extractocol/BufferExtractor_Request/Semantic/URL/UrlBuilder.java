@@ -778,7 +778,7 @@ public class UrlBuilder extends SignatureBuilder_Request
 				SemanticDecorator.setBaseModel(new Extractocol.BufferExtractor_Request.Semantic.URL.Models.Static.othercases());
 			break;
 		}
-		System.out.println(">>>strMethod " + strMethod + ">>>chkMethod " + chkMethod);
+//		System.out.println(">>>strMethod " + strMethod + ">>>chkMethod " + chkMethod);
 		SemanticDecorator.applySemantic(spb);
 	}
 	public String VirtualFormatFunction(String target)

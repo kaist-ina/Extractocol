@@ -720,62 +720,15 @@ public class BackwardInfoflow extends AbstractInfoflow
 			List<SootMethod> listSM = new ArrayList<SootMethod>();
 			Set<SootMethod> setSM = new HashSet<SootMethod>();
 			// RemovingOverlapedEp(as.getEPs());
-			for (SootMethod sm : as.getEPs())
-			{
-				Epointlist.add(sm.toString());
-			}
+			Epointlist = ExtractMainStream(as.getEPs(), as.getDpMethod());
 			assCount++;
 			//
 			Hashtable<String, Set<SootMethod>> RefinedListcallflows = new Hashtable<String, Set<SootMethod>>();
 			// print
-			EntrypointFinder ep = new EntrypointFinder(dPoints, iCfg);
 			for (String epoint : Epointlist)
 			{
 				Set<SootMethod> callflowset = new HashSet<SootMethod>();
 				List<SootMethod> callflows = new ArrayList<SootMethod>();
-				// if (epoint.contains("<com.tinder.managers.bp: void run()>"))
-				// {
-				// try
-				// {
-				// callflows = ep.findCallFlow(as.getDpMethod().toString(),
-				// epoint);
-				// } catch (NodeNotFoundException e)
-				// {
-				// e.printStackTrace();
-				// }
-				//
-				// for (SootMethod callflow : callflows)
-				// callflowset.add(callflow);
-				//
-				// try
-				// {
-				// BufferedWriter file = new BufferedWriter(new
-				// FileWriter("callflow.txt", true));
-				// file.newLine();
-				// file.newLine();
-				// file.newLine();
-				// file.write(epoint +
-				// "-------------------------------------------------------------");
-				//
-				// for (SootMethod sootmethods :
-				// CallbackCandidateFinder.refineCallFlowForEachEp(Scene.v().getMethod(epoint),
-				// as.getDpMethod(),
-				// callflowset))
-				// {
-				// file.write(sootmethods.toString());
-				// file.newLine();
-				//
-				// }
-				//
-				// file.close();
-				//
-				// } catch (IOException e)
-				// {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-				//
-				// }
 				RefinedListcallflows.put(epoint, new HashSet<SootMethod>(CallbackCandidateFinder.refineCallFlowForEachEp(Scene.v().getMethod(epoint), as.getDpMethod(), callflowset)));
 			}
 			Set<String> removedEps = new HashSet<String>();
@@ -1015,7 +968,29 @@ public class BackwardInfoflow extends AbstractInfoflow
 		maxMemoryConsumption = Math.max(maxMemoryConsumption, getUsedMemory());
 		System.out.println("Maximum memory consumption: " + maxMemoryConsumption / 1E6 + " MB");
 	}
-	
+
+	private List<String> ExtractMainStream(List<SootMethod> ePs, SootMethod dpMethod) {
+        List<String> MainStream = new ArrayList<String> ();
+        ePs.add(dpMethod);
+		for (SootMethod ep : ePs)
+		{
+			boolean pass = false;
+			Collection<Unit> callers = iCfg.getCallersOf(ep);
+			for (Unit ut : callers) {
+				SootMethod includingUnit = iCfg.getMethodOf(ut);
+				if (ePs.contains(includingUnit)) {
+					pass = true;
+					break;
+				}
+			}
+			if (!pass)
+			{
+                MainStream.add(ep.getSignature());
+			}
+		}
+		return MainStream;
+	}
+
 	public void noRemoveWrongEp(List<Unit> dPoints, List<String> Epointlist, AbstractSlice as, EPcontainer epcontainer, Set<SootMethod> setSM, List<Set<SootMethod>> FinalCf)
 	{
 		Hashtable<String, Set<SootMethod>> RefinedListcallflows = new Hashtable<String, Set<SootMethod>>();

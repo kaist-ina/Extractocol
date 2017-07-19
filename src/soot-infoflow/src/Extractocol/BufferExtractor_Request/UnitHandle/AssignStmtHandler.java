@@ -379,7 +379,6 @@ public class AssignStmtHandler extends AbstractUnitHandler
 	private static void WhenRightOpIsTypeCasted(AssignStmt as, ParameterBucket pb, String var, ArrayList<BFNode> list)
 	{
 		String rightVar = as.getRightOp().toString().split("[(].*[)]")[1].substring(1);
-
 		// if $vL = (java.lang.xxx []) $vR && vR !=
 		// array
 		if (as.getRightOp().toString().contains("[") && !BFNode.isArray(pb.blockBFTtable.get(rightVar).get(0)) && pb.blockBFTtable.get(rightVar) != null)

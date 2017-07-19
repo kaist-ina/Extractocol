@@ -88,17 +88,17 @@ public class SignatureBuilder_Response {
 
 			BriefBlockGraph Bg = new BriefBlockGraph(b);
 			DebugHelper.depthCount++;
-			
+
 			if(Constants.isForwardDebug){
 				System.out.print("\t\t");
 				for(int i = 0; i < DebugHelper.depthCount; i++)
 					System.out.print("  ");
-				
+
 				System.out.println("+ Dep(" + String.format("%2d", DebugHelper.depthCount) + "), Method: " + pb.sm.toString());
 			}
-			
+
 			DebugHelper.printSM(pb);
-			
+
 			Block bl = Bg.getHeads().get(0);
 			Integer[] VisitEntry = new Integer[Bg.size()];
 			Integer[][] original_EdgeTable = new Integer[Bg.size()][Bg.size()];
@@ -150,13 +150,13 @@ public class SignatureBuilder_Response {
 			if(sm.toString().contains("<com.pinterest.activity.board.model.CollaboratorInviteFeed: void <init>(com.pinterest.network.json.PinterestJsonObject,java.lang.String,com.pinterest.api.model.Board,boolean)>")) {
 				int a =1;
 			}
-			
-			
+
+
 			Set<String> seedSet = new HashSet<String>(taintVariableAndSeedPair.values());
 			if (seedSet != null && seedSet.size() > 0) {
 				for (String seed : seedSet) {
 					boolean flag = true;
-					
+
 //					if (TaintHelper.GeneratedStringStack_ReturnedSeeds.getLast().containsKey(seed)) {
 //						flag = false;
 //						String result = TaintHelper.generateStringForSeed(seed, pb);
@@ -164,7 +164,7 @@ public class SignatureBuilder_Response {
 //							TaintHelper.GeneratedStringStack_ReturnedSeeds.getLast().put(seed, result);
 //						}
 //					}
-					
+
 					if(seed.equals("@this")) {
 						flag = false;
 						String result = TaintHelper.generateStringForSeed(seed, pb);
@@ -172,7 +172,7 @@ public class SignatureBuilder_Response {
 							TaintHelper.GeneratedStringStack_BaseTaint.getLast().put(seed, result);
 						}
 					}
-					
+
 					else if (taintParameters.contains(seed)) {
 						flag = false;
 						String result = TaintHelper.generateStringForSeed(seed, pb);
@@ -185,11 +185,11 @@ public class SignatureBuilder_Response {
 								TaintHelper.GeneratedStringStack_TaintedParameters.getLast().put(seed, new BFNode_Response(result, VAR_TYPE.VAR_TYPE_STRING));
 						}
 					}
-					
+
 					// Force printing Jackson variable
 					// By Byungkwon
 					for (String tp : taintParameters){
-						
+
 						if(pb.variable_type.get(tp) != null){
 							// Check whether the parent of the jackson variable is the current seed
 							if(pb.variable_type.get(tp).equals("Jackson_Key")){
@@ -201,7 +201,7 @@ public class SignatureBuilder_Response {
 							}
 						}
 					}
-					
+
 					if(flag || pb.sm.toString().equals(Constants.CurrentEntryPoint)) {
 						System.out.println("\tSeed : " + seed);
 						System.out.println("\tRootSet : " + BFTTableHelper.getRootVarSetFromSeed(seed, pb));
@@ -212,19 +212,19 @@ public class SignatureBuilder_Response {
 							System.out.println("\t\t[response] " + result);
 							System.out.println();
 							Constants.PairInfo.Add_uri(pb.be.responseEntry, result, false);
-							
+
 							// Save the result
 							keepSignatureInResponseInfoList(result, pb.sm.toString());
-							
+
 							//Constants.reqRespInfo.respie.EPorSPMethod();
 						}
 					}
 				}
 			}
-			
+
 			// BFTTable print - debug
 			DebugHelper.printBFTTable(pb);
-			
+
 			DebugHelper.depthCount--;
 
 		} catch (Exception e) {

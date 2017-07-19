@@ -13,8 +13,8 @@ import soot.toolkits.graph.Block;
 import soot.toolkits.graph.BriefBlockGraph;
 
 public class BlockTravelerHelper {
-	
-	
+
+
 	public static int getBlockNum(BriefBlockGraph Bg, Unit ut)
 	{
 		for (Block b : Bg.getBlocks())
@@ -80,7 +80,7 @@ public class BlockTravelerHelper {
 		}
 		return rtn;
 	}
-	
+
 	public static boolean isManiEdge(Integer[][] maniEdge, int blockNumber, int bgsize)
 	{
 		for (int i = 0; i < bgsize; i++)
@@ -91,7 +91,7 @@ public class BlockTravelerHelper {
 		return false;
 	}
 
-	
+
 	public static boolean isBackEdge(BriefBlockGraph Bg, String sig, int from, int to)
 	{
 		Body b = Bg.getBody();
@@ -127,7 +127,7 @@ public class BlockTravelerHelper {
 		}
 		return true;
 	}
-	
+
 	public static boolean isBlockContainsStmt(BriefBlockGraph Bg, int index, Stmt stmt)
 	{
 		for (Iterator<Unit> iter = Bg.getBlocks().get(index).iterator(); iter.hasNext();)

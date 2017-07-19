@@ -42,24 +42,18 @@ public class EntrypointFinder
 	{
 		this.dPoints = dps;
 		this.iCfg = icfg;
-
 		run();
 	}
 
 	private void run()
 	{
-
 		for (Unit dp : dPoints)
 		{
-
 			SootMethod dpMethod = iCfg.getMethodOf(dp);
-
 			HashSet<SootMethod> callers = new HashSet<SootMethod>();
 			findCaller(callers, dpMethod);
 			callers.add(dpMethod);
-
 			List<Unit> dpoints = new ArrayList<Unit>();
-
 			for (SootMethod sm : callers)
 			{
 				PatchingChain<Unit> units = sm.getActiveBody().getUnits();
@@ -80,7 +74,6 @@ public class EntrypointFinder
 					}
 				}
 			}
-
 			eps.put(dp, dpoints);
 		}
 	}
