@@ -14,6 +14,10 @@ Run Extractocol by passing your application name as an argument
 * Extractocol might take from tens of minutes to several hours. Extractocol took 2 hours to run for an application named 'Wish', which is basically located in the directory 'SerializationFiles', when running on a machine with i5-7500@3.4GHz (4 cores).
 * Extractocol would take a very long time to finish and sometimes it seems to run forever. Then, what you need to do is to reduce the value of the following parameters: `maxMS` and `maxDepth`. How extensive and in-depth Extractocol explores the source code is proportional to the value of the parameters. If you set those values high, Extractocol takes a long time to run but extracts richer information. If you set those values relatively low, then Extractocol finishes quickly but the result would be incorrect. The default value of the two parameters is 7 and 3, respectively. You can set those values by using the arg options: `maxms` and `maxdepth`. (Example: wish --maxms 5 --maxdepth 2)
 
+## Misc.
+We had updated Extractocol until late 2018. Extractocol would be unable to handle the features of Android and third party frameworks such as Retrofit, RxJava, OkHTTP, etc. released after then. 
+That means Extractocol would fail to extract the message formats and dependency relationships from the applications that use the features.
+
 
 ## License
 <code>CC BY-NC-SA</code> <a href="https://github.com/idleberg/Creative-Commons-Markdown/blob/spaces/4.0/by-nc-sa.markdown">Attribution-NonCommercial-ShareAlike</a>
