@@ -1,0 +1,1231 @@
+public class ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager extends java.lang.Object implements ch.boye.httpclientandroidlib.conn.ClientConnectionManager, ch.boye.httpclientandroidlib.pool.ConnPoolControl
+{
+    private final ch.boye.httpclientandroidlib.conn.DnsResolver dnsResolver;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+    private final ch.boye.httpclientandroidlib.conn.ClientConnectionOperator operator;
+    private final ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool;
+    private final ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry schemeRegistry;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 = staticinvoke <ch.boye.httpclientandroidlib.impl.conn.SchemeRegistryFactory: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry createDefault()>();
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)>($r1);
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+        java.util.concurrent.TimeUnit $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
+
+        $r2 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit MILLISECONDS>;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry,long,java.util.concurrent.TimeUnit)>($r1, -1L, $r2);
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry, long, java.util.concurrent.TimeUnit)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+        long $l0;
+        java.util.concurrent.TimeUnit $r2;
+        ch.boye.httpclientandroidlib.impl.conn.SystemDefaultDnsResolver $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
+
+        $l0 := @parameter1: long;
+
+        $r2 := @parameter2: java.util.concurrent.TimeUnit;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.conn.SystemDefaultDnsResolver;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.conn.SystemDefaultDnsResolver: void <init>()>();
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry,long,java.util.concurrent.TimeUnit,ch.boye.httpclientandroidlib.conn.DnsResolver)>($r1, $l0, $r2, $r3);
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry, long, java.util.concurrent.TimeUnit, ch.boye.httpclientandroidlib.conn.DnsResolver)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+        long $l0;
+        java.util.concurrent.TimeUnit $r2;
+        ch.boye.httpclientandroidlib.conn.DnsResolver $r3;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r4;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r5, $r5_1;
+        java.lang.Class $r6;
+        java.lang.IllegalArgumentException $r7, $r7_1;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionOperator $r8;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
+
+        $l0 := @parameter1: long;
+
+        $r2 := @parameter2: java.util.concurrent.TimeUnit;
+
+        $r3 := @parameter3: ch.boye.httpclientandroidlib.conn.DnsResolver;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r5 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r6 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r6);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r5;
+
+        if $r1 != null goto label1;
+
+        $r7 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r7.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Scheme registry may not be null");
+
+        throw $r7;
+
+     label1:
+        if $r3 != null goto label2;
+
+        $r7_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r7_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("DNS resolver may not be null");
+
+        throw $r7_1;
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry schemeRegistry> = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.conn.DnsResolver dnsResolver> = $r3;
+
+        $r8 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator createConnectionOperator(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator operator> = $r8;
+
+        $r4 = new ch.boye.httpclientandroidlib.impl.conn.HttpConnPool;
+
+        $r5_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: void <init>(ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog,int,int,long,java.util.concurrent.TimeUnit)>($r5_1, 2, 20, $l0, $r2);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool> = $r4;
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry, ch.boye.httpclientandroidlib.conn.DnsResolver)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+        ch.boye.httpclientandroidlib.conn.DnsResolver $r2;
+        java.util.concurrent.TimeUnit $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.conn.DnsResolver;
+
+        $r3 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit MILLISECONDS>;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry,long,java.util.concurrent.TimeUnit,ch.boye.httpclientandroidlib.conn.DnsResolver)>($r1, -1L, $r3, $r2);
+
+        return;
+    }
+
+    private java.lang.String format(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        java.lang.Object $r2;
+        java.lang.StringBuilder $r3, $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.lang.String $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[route: ");
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+(0)     if $r2 == null goto label1;
+
+        $r4_2 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[state: ");
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+(1)     virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+     label1:
+        $r4_4 = Phi($r4_1 #0, $r4_3 #1);
+
+        $r5 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r5;
+    }
+
+    private java.lang.String format(ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry $r1;
+        java.lang.StringBuilder $r2, $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6;
+        java.lang.String $r4, $r4_1;
+        java.lang.Object $r5, $r5_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[id: ");
+
+        $r4 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry: java.lang.String getId()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r3_2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[route: ");
+
+        $r5 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry: java.lang.Object getRoute()>();
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5);
+
+        virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r5_1 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry: java.lang.Object getState()>();
+
+(0)     if $r5_1 == null goto label1;
+
+        $r3_4 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[state: ");
+
+        $r3_5 = virtualinvoke $r3_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5_1);
+
+(1)     virtualinvoke $r3_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+     label1:
+        $r3_6 = Phi($r3_3 #0, $r3_5 #1);
+
+        $r4_1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r4_1;
+    }
+
+    private java.lang.String formatStats(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        java.lang.StringBuilder $r2, $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r3, $r3_1;
+        ch.boye.httpclientandroidlib.pool.PoolStats $r4, $r5;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4, $i1_1, $i0_5, $i0_6;
+        java.lang.String $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        $r4 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: ch.boye.httpclientandroidlib.pool.PoolStats getTotalStats()>();
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        $r5 = virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: ch.boye.httpclientandroidlib.pool.PoolStats getStats(java.lang.Object)>($r1);
+
+        $r6 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[total kept alive: ");
+
+        $i0 = virtualinvoke $r4.<ch.boye.httpclientandroidlib.pool.PoolStats: int getAvailable()>();
+
+        $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("; ");
+
+        $r6_2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("route allocated: ");
+
+        $i0_1 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.pool.PoolStats: int getLeased()>();
+
+        $i1 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.pool.PoolStats: int getAvailable()>();
+
+        $i0_2 = $i0_1 + $i1;
+
+        virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_2);
+
+        $r6_3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" of ");
+
+        $i0_3 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.pool.PoolStats: int getMax()>();
+
+        $r6_4 = virtualinvoke $r6_3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_3);
+
+        virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("; ");
+
+        $r6_5 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("total allocated: ");
+
+        $i0_4 = virtualinvoke $r4.<ch.boye.httpclientandroidlib.pool.PoolStats: int getLeased()>();
+
+        $i1_1 = virtualinvoke $r4.<ch.boye.httpclientandroidlib.pool.PoolStats: int getAvailable()>();
+
+        $i0_5 = $i0_4 + $i1_1;
+
+        virtualinvoke $r6_5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_5);
+
+        $r6_6 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" of ");
+
+        $i0_6 = virtualinvoke $r4.<ch.boye.httpclientandroidlib.pool.PoolStats: int getMax()>();
+
+        $r6_7 = virtualinvoke $r6_6.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_6);
+
+        virtualinvoke $r6_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r7 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r7;
+    }
+
+    public void closeExpiredConnections()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r1;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Closing expired connections");
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: void closeExpired()>();
+
+        return;
+    }
+
+    public void closeIdleConnections(long, java.util.concurrent.TimeUnit)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        long $l0;
+        java.util.concurrent.TimeUnit $r1;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3, $r3_1, $r3_2;
+        boolean $z0;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        java.lang.String $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.util.concurrent.TimeUnit;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Closing connections idle longer than ");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r5);
+
+     label1:
+        $r4_5 = Phi($r4 #0, $r4_4 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: void closeIdle(long,java.util.concurrent.TimeUnit)>($l0, $r1);
+
+        return;
+    }
+
+    protected ch.boye.httpclientandroidlib.conn.ClientConnectionOperator createConnectionOperator(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnectionOperator $r2;
+        ch.boye.httpclientandroidlib.conn.DnsResolver $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnectionOperator;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.conn.DnsResolver dnsResolver>;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnectionOperator: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry,ch.boye.httpclientandroidlib.conn.DnsResolver)>($r1, $r3);
+
+        return $r2;
+    }
+
+    protected void finalize() throws java.lang.Throwable
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        java.lang.Throwable $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+     label1:
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: void shutdown()>();
+
+     label2:
+        specialinvoke $r0.<java.lang.Object: void finalize()>();
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        specialinvoke $r0.<java.lang.Object: void finalize()>();
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public int getDefaultMaxPerRoute()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        $i0 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: int getDefaultMaxPerRoute()>();
+
+        return $i0;
+    }
+
+    public int getMaxPerRoute(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r2;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        $i0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: int getMaxPerRoute(java.lang.Object)>($r1);
+
+        return $i0;
+    }
+
+    public volatile int getMaxPerRoute(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        java.lang.Object $r1;
+        int $i0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = (ch.boye.httpclientandroidlib.conn.routing.HttpRoute) $r1;
+
+        $i0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: int getMaxPerRoute(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r2);
+
+        return $i0;
+    }
+
+    public int getMaxTotal()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        $i0 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: int getMaxTotal()>();
+
+        return $i0;
+    }
+
+    public ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry getSchemeRegistry()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry schemeRegistry>;
+
+        return r1;
+    }
+
+    public ch.boye.httpclientandroidlib.pool.PoolStats getStats(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r2;
+        ch.boye.httpclientandroidlib.pool.PoolStats $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        $r3 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: ch.boye.httpclientandroidlib.pool.PoolStats getStats(java.lang.Object)>($r1);
+
+        return $r3;
+    }
+
+    public volatile ch.boye.httpclientandroidlib.pool.PoolStats getStats(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        java.lang.Object $r1;
+        ch.boye.httpclientandroidlib.pool.PoolStats $r2;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r3 = (ch.boye.httpclientandroidlib.conn.routing.HttpRoute) $r1;
+
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.pool.PoolStats getStats(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r3);
+
+        return $r2;
+    }
+
+    public ch.boye.httpclientandroidlib.pool.PoolStats getTotalStats()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r1;
+        ch.boye.httpclientandroidlib.pool.PoolStats $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        $r2 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: ch.boye.httpclientandroidlib.pool.PoolStats getTotalStats()>();
+
+        return $r2;
+    }
+
+    ch.boye.httpclientandroidlib.conn.ManagedClientConnection leaseConnection(java.util.concurrent.Future, long, java.util.concurrent.TimeUnit) throws java.lang.InterruptedException, ch.boye.httpclientandroidlib.conn.ConnectionPoolTimeoutException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        java.util.concurrent.Future $r1;
+        long $l0;
+        java.util.concurrent.TimeUnit $r2;
+        java.util.concurrent.ExecutionException $r3;
+        java.lang.IllegalStateException $r4;
+        java.util.concurrent.TimeoutException $r5;
+        ch.boye.httpclientandroidlib.conn.ConnectionPoolTimeoutException $r6;
+        ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl $r7;
+        java.lang.Object $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry $r9;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.lang.InterruptedException $r10, $r10_1, $r10_2, $r10_3;
+        java.lang.Throwable $r11, $r12, $r12_1, $r12_2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5;
+        java.lang.StringBuilder $r14, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5, $r14_6;
+        java.lang.String $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r16;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionOperator $r17;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: java.util.concurrent.Future;
+
+        $l0 := @parameter1: long;
+
+(0)     $r2 := @parameter2: java.util.concurrent.TimeUnit;
+
+     label01:
+        $r8 = interfaceinvoke $r1.<java.util.concurrent.Future: java.lang.Object get(long,java.util.concurrent.TimeUnit)>($l0, $r2);
+
+     label02:
+        $r9 = (ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry) $r8;
+
+(1)     if $r9 == null goto label05;
+
+     label03:
+        $z0 = interfaceinvoke $r1.<java.util.concurrent.Future: boolean isCancelled()>();
+
+     label04:
+(2)     if $z0 == 0 goto label10;
+
+     label05:
+        $z0_2 = Phi($z0 #1, $z0 #2);
+
+(3)     $r10 = new java.lang.InterruptedException;
+
+     label06:
+        specialinvoke $r10.<java.lang.InterruptedException: void <init>()>();
+
+     label07:
+        throw $r10;
+
+     label08:
+        $r3 := @caughtexception;
+
+        $r10_1 = Phi($r10 #0);
+
+        $r15_4 = Phi($r15 #0, $r15_1 #13, $r15_2 #15, $r15_3 #17);
+
+        $r14_5 = Phi($r14 #0, $r14_1 #10, $r14_2 #11, $r14_3 #14, $r14_4 #17);
+
+        $z0_3 = Phi($z0 #0, $z0_2 #3, $z0_1 #7);
+
+        $r13_3 = Phi($r13 #0, $r13_1 #9, $r13_2 #17);
+
+        $r8_4 = Phi($r8 #0, $r8_1 #6, $r8_2 #12, $r8_3 #17);
+
+        $r11 = virtualinvoke $r3.<java.util.concurrent.ExecutionException: java.lang.Throwable getCause()>();
+
+        $r12 = $r11;
+
+(4)     if $r11 != null goto label09;
+
+(5)     $r12_1 = $r3;
+
+     label09:
+        $r12_2 = Phi($r12 #4, $r12_1 #5);
+
+        $r13_4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r13_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void error(java.lang.Object,java.lang.Throwable)>("Unexpected exception leasing connection from pool", $r12_2);
+
+        $r10_2 = new java.lang.InterruptedException;
+
+        specialinvoke $r10_2.<java.lang.InterruptedException: void <init>()>();
+
+        throw $r10_2;
+
+     label10:
+(6)     $r8_1 = virtualinvoke $r9.<ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry: java.lang.Object getConnection()>();
+
+     label11:
+        if $r8_1 != null goto label15;
+
+        $r4 = new java.lang.IllegalStateException;
+
+     label12:
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Pool entry with no connection");
+
+     label13:
+        throw $r4;
+
+     label14:
+        $r5 := @caughtexception;
+
+        $r10_3 = Phi($r10 #0);
+
+        $r15_5 = Phi($r15 #0, $r15_1 #13, $r15_2 #15, $r15_3 #17);
+
+        $r14_6 = Phi($r14 #0, $r14_1 #10, $r14_2 #11, $r14_3 #14, $r14_4 #17);
+
+        $z0_4 = Phi($z0 #0, $z0_2 #3, $z0_1 #7);
+
+        $r13_5 = Phi($r13 #0, $r13_1 #9, $r13_2 #17);
+
+        $r8_5 = Phi($r8 #0, $r8_1 #6, $r8_2 #12, $r8_3 #17);
+
+        $r6 = new ch.boye.httpclientandroidlib.conn.ConnectionPoolTimeoutException;
+
+        specialinvoke $r6.<ch.boye.httpclientandroidlib.conn.ConnectionPoolTimeoutException: void <init>(java.lang.String)>("Timeout waiting for connection");
+
+        throw $r6;
+
+     label15:
+        $r13 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label16:
+(7)     $z0_1 = virtualinvoke $r13.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+     label17:
+(8)     if $z0_1 == 0 goto label21;
+
+        $r13_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(9)     $r14 = new java.lang.StringBuilder;
+
+     label18:
+        specialinvoke $r14.<java.lang.StringBuilder: void <init>()>();
+
+(10)    $r14_1 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Connection leased: ");
+
+        $r15 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: java.lang.String format(ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry)>($r9);
+
+(11)    $r14_2 = virtualinvoke $r14_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r15);
+
+(12)    $r8_2 = virtualinvoke $r9.<ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry: java.lang.Object getRoute()>();
+
+     label19:
+        $r16 = (ch.boye.httpclientandroidlib.conn.routing.HttpRoute) $r8_2;
+
+     label20:
+(13)    $r15_1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: java.lang.String formatStats(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r16);
+
+(14)    $r14_3 = virtualinvoke $r14_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r15_1);
+
+(15)    $r15_2 = virtualinvoke $r14_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(16)    virtualinvoke $r13_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r15_2);
+
+     label21:
+        $r15_3 = Phi($r15 #8, $r15_2 #16);
+
+        $r14_4 = Phi($r14 #8, $r14_3 #16);
+
+        $r13_2 = Phi($r13 #8, $r13_1 #16);
+
+        $r8_3 = Phi($r8_1 #8, $r8_2 #16);
+
+        $r7 = new ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl;
+
+(17)    $r17 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator operator>;
+
+     label22:
+        specialinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl: void <init>(ch.boye.httpclientandroidlib.conn.ClientConnectionManager,ch.boye.httpclientandroidlib.conn.ClientConnectionOperator,ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry)>($r0, $r17, $r9);
+
+     label23:
+        return $r7;
+
+        catch java.util.concurrent.ExecutionException from label01 to label02 with label08;
+        catch java.util.concurrent.TimeoutException from label01 to label02 with label14;
+        catch java.util.concurrent.ExecutionException from label03 to label04 with label08;
+        catch java.util.concurrent.TimeoutException from label03 to label04 with label14;
+        catch java.util.concurrent.ExecutionException from label06 to label07 with label08;
+        catch java.util.concurrent.TimeoutException from label06 to label07 with label14;
+        catch java.util.concurrent.ExecutionException from label10 to label11 with label08;
+        catch java.util.concurrent.TimeoutException from label10 to label11 with label14;
+        catch java.util.concurrent.ExecutionException from label12 to label13 with label08;
+        catch java.util.concurrent.TimeoutException from label12 to label13 with label14;
+        catch java.util.concurrent.ExecutionException from label16 to label17 with label08;
+        catch java.util.concurrent.TimeoutException from label16 to label17 with label14;
+        catch java.util.concurrent.ExecutionException from label18 to label19 with label08;
+        catch java.util.concurrent.TimeoutException from label18 to label19 with label14;
+        catch java.util.concurrent.ExecutionException from label20 to label21 with label08;
+        catch java.util.concurrent.TimeoutException from label20 to label21 with label14;
+        catch java.util.concurrent.ExecutionException from label22 to label23 with label08;
+        catch java.util.concurrent.TimeoutException from label22 to label23 with label14;
+    }
+
+    public void releaseConnection(ch.boye.httpclientandroidlib.conn.ManagedClientConnection, long, java.util.concurrent.TimeUnit)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r1;
+        long $l0;
+        java.util.concurrent.TimeUnit $r2, $r11, $r11_1, $r11_2, $r11_3, $r11_4;
+        java.lang.IllegalArgumentException $r3;
+        java.lang.IllegalStateException $r4;
+        byte $b1;
+        java.lang.Throwable $r5, $r7;
+        java.io.IOException $r6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10;
+        ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl $r8;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r9;
+        ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry $r10;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8, $r12_9, $r12_10;
+        java.lang.StringBuilder $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7, $r13_8, $r13_9, $r13_10, $r13_11, $r13_12, $r13_13, $r13_14, $r13_15, $r13_16, $r13_17, $r13_18;
+        java.lang.String $r14, $r15, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5, $r14_6, $r14_7, $r14_8, $r14_9, $r14_10;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r16, $r16_1, $r16_2;
+        java.lang.Object $r17;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r18;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.ManagedClientConnection;
+
+        $l0 := @parameter1: long;
+
+        $r2 := @parameter2: java.util.concurrent.TimeUnit;
+
+        $z0 = $r1 instanceof ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl;
+
+        if $z0 != 0 goto label01;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Connection class mismatch, connection not obtained from this manager.");
+
+        throw $r3;
+
+     label01:
+        $r8 = (ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl) $r1;
+
+        $r9 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl: ch.boye.httpclientandroidlib.conn.ClientConnectionManager getManager()>();
+
+        if $r9 == $r0 goto label02;
+
+        $r4 = new java.lang.IllegalStateException;
+
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Connection not obtained from this manager.");
+
+        throw $r4;
+
+     label02:
+(0)     entermonitor $r8;
+
+     label03:
+        $r10 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl: ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry detach()>();
+
+(1)     if $r10 != null goto label05;
+
+        exitmonitor $r8;
+
+     label04:
+        return;
+
+     label05:
+(2)     $z0_1 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl: boolean isOpen()>();
+
+(3)     if $z0_1 == 0 goto label08;
+
+(4)     $z0_2 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl: boolean isMarkedReusable()>();
+
+     label06:
+(5)     if $z0_2 != 0 goto label08;
+
+     label07:
+(6)     virtualinvoke $r8.<ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl: void shutdown()>();
+
+     label08:
+        $r12_2 = Phi($r12 #3, $r12 #5, $r12 #6, $r12 #43, $r12_1 #45);
+
+        $z0_4 = Phi($z0_1 #3, $z0_2 #5, $z0_2 #6, $z0_3 #43, $z0_3 #45);
+
+(7)     if $r2 == null goto label21;
+
+(8)     $r11 = $r2;
+
+     label09:
+        $r11_1 = Phi($r11 #8, $r11_2 #50);
+
+(9)     virtualinvoke $r10.<ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry: void updateExpiry(long,java.util.concurrent.TimeUnit)>($l0, $r11_1);
+
+(10)    $r12_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(11)    $z0_5 = virtualinvoke $r12_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(12)    if $z0_5 == 0 goto label11;
+
+        $b1 = $l0 cmp 0L;
+
+        if $b1 <= 0 goto label22;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>()>();
+
+(13)    $r13_1 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("for ");
+
+(14)    $r13_2 = virtualinvoke $r13_1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+(15)    $r13_3 = virtualinvoke $r13_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+(16)    $r13_4 = virtualinvoke $r13_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+(17)    $r14 = virtualinvoke $r13_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label10:
+        $r13_5 = Phi($r13_4 #17, $r13 #52);
+
+        $r14_1 = Phi($r14 #17, $r14_3 #52);
+
+(18)    $r12_4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(19)    $r13_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r13_6.<java.lang.StringBuilder: void <init>()>();
+
+(20)    $r13_7 = virtualinvoke $r13_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Connection ");
+
+        $r15 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: java.lang.String format(ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry)>($r10);
+
+(21)    $r13_8 = virtualinvoke $r13_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r15);
+
+(22)    $r13_9 = virtualinvoke $r13_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" can be kept alive ");
+
+(23)    $r13_10 = virtualinvoke $r13_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14_1);
+
+(24)    $r14_2 = virtualinvoke $r13_10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(25)    virtualinvoke $r12_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r14_2);
+
+     label11:
+        $r13_11 = Phi($r13 #12, $r13_10 #25);
+
+        $r14_4 = Phi($r14 #12, $r14_2 #25);
+
+        $r12_5 = Phi($r12_3 #12, $r12_4 #25);
+
+(26)    $r16 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+(27)    $z0_6 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl: boolean isMarkedReusable()>();
+
+        virtualinvoke $r16.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: void release(ch.boye.httpclientandroidlib.pool.PoolEntry,boolean)>($r10, $z0_6);
+
+(28)    $r12_6 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(29)    $z0_7 = virtualinvoke $r12_6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(30)    if $z0_7 == 0 goto label12;
+
+(31)    $r12_7 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(32)    $r13_12 = new java.lang.StringBuilder;
+
+        specialinvoke $r13_12.<java.lang.StringBuilder: void <init>()>();
+
+(33)    $r13_13 = virtualinvoke $r13_12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Connection released: ");
+
+(34)    $r14_5 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: java.lang.String format(ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry)>($r10);
+
+(35)    $r13_14 = virtualinvoke $r13_13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14_5);
+
+        $r17 = virtualinvoke $r10.<ch.boye.httpclientandroidlib.impl.conn.HttpPoolEntry: java.lang.Object getRoute()>();
+
+        $r18 = (ch.boye.httpclientandroidlib.conn.routing.HttpRoute) $r17;
+
+(36)    $r14_6 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: java.lang.String formatStats(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r18);
+
+(37)    $r13_15 = virtualinvoke $r13_14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14_6);
+
+(38)    $r14_7 = virtualinvoke $r13_15.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(39)    virtualinvoke $r12_7.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r14_7);
+
+     label12:
+        $r13_16 = Phi($r13_11 #30, $r13_15 #39);
+
+        $r14_8 = Phi($r14_4 #30, $r14_7 #39);
+
+        $r12_8 = Phi($r12_6 #30, $r12_7 #39);
+
+(40)    exitmonitor $r8;
+
+     label13:
+        return;
+
+     label14:
+        $r5 := @caughtexception;
+
+        $r13_18 = Phi($r13 #0, $r13_10 #25, $r13_11 #26, $r13_12 #32, $r13_13 #33, $r13_14 #35, $r13_15 #37, $r13_16 #40, $r13_18 #41, $r13_17 #46);
+
+        $r14_10 = Phi($r14 #0, $r14_2 #25, $r14_4 #26, $r14_5 #34, $r14_6 #36, $r14_7 #38, $r14_8 #40, $r14_10 #41, $r14_9 #46);
+
+        $r12_10 = Phi($r12 #0, $r12_3 #12, $r12_4 #25, $r12_5 #26, $r12_6 #28, $r12_7 #31, $r12_8 #40, $r12_10 #41, $r12_9 #46);
+
+        $r16_2 = Phi($r16 #0, $r16_2 #41, $r16_1 #47);
+
+        $z0_10 = Phi($z0 #0, $z0_5 #12, $z0_6 #27, $z0_7 #29, $z0_10 #41, $z0_8 #46, $z0_9 #48);
+
+(41)    $r11_4 = Phi($r11 #0, $r11_1 #12, $r11_4 #41, $r11_3 #46);
+
+        exitmonitor $r8;
+
+     label15:
+        throw $r5;
+
+     label16:
+        $r6 := @caughtexception;
+
+     label17:
+        $r12 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(42)    $z0_3 = virtualinvoke $r12.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(43)    if $z0_3 == 0 goto label08;
+
+(44)    $r12_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r12_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>("I/O exception shutting down released connection", $r6);
+
+     label18:
+(45)    goto label08;
+
+     label19:
+        $r7 := @caughtexception;
+
+        $r13_17 = Phi($r13 #1, $r13_1 #13, $r13_2 #14, $r13_3 #15, $r13_4 #16, $r13_5 #18, $r13_6 #19, $r13_7 #20, $r13_8 #21, $r13_9 #22, $r13_10 #23);
+
+        $r14_9 = Phi($r14 #1, $r14_1 #18, $r14_2 #24, $r14_3 #51);
+
+        $r12_9 = Phi($r12 #1, $r12_3 #10, $r12_4 #18, $r12_1 #44, $r12_2 #7);
+
+        $z0_8 = Phi($z0 #1, $z0_1 #2, $z0_2 #4, $z0_5 #11, $z0_3 #42, $z0_4 #7);
+
+(46)    $r11_3 = Phi($r11 #1, $r11_1 #9, $r11_2 #49);
+
+     label20:
+(47)    $r16_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+(48)    $z0_9 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.impl.conn.ManagedClientConnectionImpl: boolean isMarkedReusable()>();
+
+        virtualinvoke $r16_1.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: void release(ch.boye.httpclientandroidlib.pool.PoolEntry,boolean)>($r10, $z0_9);
+
+        throw $r7;
+
+     label21:
+(49)    $r11_2 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit MILLISECONDS>;
+
+(50)    goto label09;
+
+     label22:
+(51)    $r14_3 = "indefinitely";
+
+     label23:
+(52)    goto label10;
+
+        catch java.lang.Throwable from label03 to label04 with label14;
+        catch java.lang.Throwable from label05 to label06 with label19;
+        catch java.io.IOException from label07 to label08 with label16;
+        catch java.lang.Throwable from label07 to label08 with label19;
+        catch java.lang.Throwable from label09 to label11 with label19;
+        catch java.lang.Throwable from label11 to label13 with label14;
+        catch java.lang.Throwable from label14 to label15 with label14;
+        catch java.lang.Throwable from label17 to label18 with label19;
+        catch java.lang.Throwable from label20 to label21 with label14;
+        catch java.lang.Throwable from label21 to label23 with label19;
+    }
+
+    public ch.boye.httpclientandroidlib.conn.ClientConnectionRequest requestConnection(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        java.lang.Object $r2;
+        java.lang.IllegalArgumentException $r3;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r4;
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager$1 $r5;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r6, $r6_1, $r6_2;
+        boolean $z0;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+        java.lang.String $r8, $r8_1, $r8_2, $r8_3;
+        java.util.concurrent.Future $r9;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP route may not be null");
+
+        throw $r3;
+
+     label1:
+        $r6 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(0)     if $z0 == 0 goto label2;
+
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Connection request: ");
+
+        $r8 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: java.lang.String format(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,java.lang.Object)>($r1, $r2);
+
+        $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r8_1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: java.lang.String formatStats(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r1);
+
+        $r7_3 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_1);
+
+        $r8_2 = virtualinvoke $r7_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     virtualinvoke $r6_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r8_2);
+
+     label2:
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        $r7_4 = Phi($r7 #0, $r7_3 #1);
+
+        $r8_3 = Phi($r8 #0, $r8_2 #1);
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        $r9 = virtualinvoke $r4.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: java.util.concurrent.Future lease(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+        $r5 = new ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager$1;
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager$1: void <init>(ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager,java.util.concurrent.Future)>($r0, $r9);
+
+        return $r5;
+    }
+
+    public void setDefaultMaxPerRoute(int)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        int $i0;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: void setDefaultMaxPerRoute(int)>($i0);
+
+        return;
+    }
+
+    public void setMaxPerRoute(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, int)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        int $i0;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $i0 := @parameter1: int;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: void setMaxPerRoute(java.lang.Object,int)>($r1, $i0);
+
+        return;
+    }
+
+    public volatile void setMaxPerRoute(java.lang.Object, int)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        java.lang.Object $r1;
+        int $i0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $i0 := @parameter1: int;
+
+        $r2 = (ch.boye.httpclientandroidlib.conn.routing.HttpRoute) $r1;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: void setMaxPerRoute(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,int)>($r2, $i0);
+
+        return;
+    }
+
+    public void setMaxTotal(int)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        int $i0;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: void setMaxTotal(int)>($i0);
+
+        return;
+    }
+
+    public void shutdown()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager $r0;
+        ch.boye.httpclientandroidlib.impl.conn.HttpConnPool $r1;
+        java.io.IOException $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Connection manager is shutting down");
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.impl.conn.HttpConnPool pool>;
+
+     label1:
+(0)     virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.HttpConnPool: void shutdown()>();
+
+     label2:
+        $r3_1 = Phi($r3 #0, $r3_3 #1);
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r3_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Connection manager shut down");
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.PoolingClientConnectionManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r3_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>("I/O exception shutting down connection manager", $r2);
+
+(1)     goto label2;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+}

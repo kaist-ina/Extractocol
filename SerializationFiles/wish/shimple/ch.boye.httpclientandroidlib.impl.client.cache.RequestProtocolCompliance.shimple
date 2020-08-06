@@ -1,0 +1,1174 @@
+class ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance extends java.lang.Object
+{
+    private static final java.util.List disallowedWithNoCache;
+
+    static void <clinit>()
+    {
+        java.lang.String[] $r0;
+        java.util.List $r1;
+
+        $r0 = newarray (java.lang.String)[3];
+
+        $r0[0] = "min-fresh";
+
+        $r0[1] = "max-stale";
+
+        $r0[2] = "max-age";
+
+        $r1 = staticinvoke <java.util.Arrays: java.util.List asList(java.lang.Object[])>($r0);
+
+        <ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: java.util.List disallowedWithNoCache> = $r1;
+
+        return;
+    }
+
+    void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private void add100ContinueHeaderIfMissing(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        int $i0, $i1, $i2, $i3, $i2_1, $i3_1, $i3_2, $i3_3, $i2_2;
+        ch.boye.httpclientandroidlib.Header $r2;
+        ch.boye.httpclientandroidlib.HeaderElement $r3;
+        java.lang.String $r4, $r7;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4;
+        ch.boye.httpclientandroidlib.Header[] $r5;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r6;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $z0 = 0;
+
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Expect");
+
+        $i0 = lengthof $r5;
+
+(0)     $i2 = 0;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0_2 #5);
+
+        $i3 = Phi($i3 #0, $i3_2 #5);
+
+        $i2_1 = Phi($i2 #0, $i2_2 #5);
+
+        if $i2_1 >= $i0 goto label5;
+
+        $r2 = $r5[$i2_1];
+
+        $r6 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i1 = lengthof $r6;
+
+(1)     $i3_1 = 0;
+
+     label2:
+        $z0_2 = Phi($z0_1 #1, $z0_4 #4);
+
+        $i3_2 = Phi($i3_1 #1, $i3_3 #4);
+
+        if $i3_2 >= $i1 goto label4;
+
+        $r3 = $r6[$i3_2];
+
+        $r4 = "100-continue";
+
+        $r7 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z1 = virtualinvoke $r4.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r7);
+
+(2)     if $z1 == 0 goto label3;
+
+(3)     $z0_3 = 1;
+
+     label3:
+        $z0_4 = Phi($z0_2 #2, $z0_3 #3);
+
+        $i3_3 = $i3_2 + 1;
+
+(4)     goto label2;
+
+     label4:
+        $i2_2 = $i2_1 + 1;
+
+(5)     goto label1;
+
+     label5:
+        if $z0_1 != 0 goto label6;
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void addHeader(java.lang.String,java.lang.String)>("Expect", "100-continue");
+
+     label6:
+        return;
+    }
+
+    private void addContentTypeHeaderIfMissing(ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest $r1;
+        ch.boye.httpclientandroidlib.entity.ContentType $r2;
+        ch.boye.httpclientandroidlib.HttpEntity $r3, $r3_1, $r3_2;
+        ch.boye.httpclientandroidlib.Header $r4;
+        ch.boye.httpclientandroidlib.entity.AbstractHttpEntity $r5;
+        java.lang.String $r6;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest;
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+        $r4 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HttpEntity: ch.boye.httpclientandroidlib.Header getContentType()>();
+
+(0)     if $r4 != null goto label1;
+
+        $r3_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+        $r5 = (ch.boye.httpclientandroidlib.entity.AbstractHttpEntity) $r3_1;
+
+        $r2 = <ch.boye.httpclientandroidlib.entity.ContentType: ch.boye.httpclientandroidlib.entity.ContentType APPLICATION_OCTET_STREAM>;
+
+        $r6 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.entity.ContentType: java.lang.String getMimeType()>();
+
+(1)     virtualinvoke $r5.<ch.boye.httpclientandroidlib.entity.AbstractHttpEntity: void setContentType(java.lang.String)>($r6);
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    private java.lang.String buildHeaderFromElements(java.util.List)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        java.util.List $r1;
+        java.lang.StringBuilder $r2;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3;
+        java.util.Iterator $r3;
+        java.lang.Object $r4;
+        ch.boye.httpclientandroidlib.HeaderElement $r5;
+        java.lang.String $r6, $r6_1, $r6_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: java.util.List;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("");
+
+        $z0 = 1;
+
+(0)     $r3 = interfaceinvoke $r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0_2 #2);
+
+        $r6 = Phi($r6 #0, $r6_1 #2);
+
+        $z1 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label4;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (ch.boye.httpclientandroidlib.HeaderElement) $r4;
+
+        if $z0_1 != 0 goto label3;
+
+(1)     virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+     label2:
+        $z0_2 = Phi($z0_1 #1, $z0_3 #3);
+
+        $r6_1 = virtualinvoke $r5.<java.lang.Object: java.lang.String toString()>();
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6_1);
+
+(2)     goto label1;
+
+     label3:
+        $z0_3 = 0;
+
+(3)     goto label2;
+
+     label4:
+        $r6_2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r6_2;
+    }
+
+    private void decrementOPTIONSMaxForwardsIfGreaterThen0(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        java.lang.String $r2, $r4, $r2_1, $r2_2, $r2_3;
+        ch.boye.httpclientandroidlib.RequestLine $r3;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.Header $r5;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 = "OPTIONS";
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r4 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getMethod()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r4);
+
+        if $z0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Max-Forwards");
+
+(0)     if $r5 == null goto label2;
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void removeHeaders(java.lang.String)>("Max-Forwards");
+
+        $r2_1 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r2_1);
+
+        $i0_1 = $i0 + -1;
+
+        $r2_2 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0_1);
+
+(1)     interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void setHeader(java.lang.String,java.lang.String)>("Max-Forwards", $r2_2);
+
+     label2:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $r2_3 = Phi($r2 #0, $r2_2 #1);
+
+        return;
+    }
+
+    private ch.boye.httpclientandroidlib.HttpRequest downgradeRequestTo(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.ProtocolVersion) throws ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r2;
+        ch.boye.httpclientandroidlib.impl.client.RequestWrapper $r3;
+        ch.boye.httpclientandroidlib.ProtocolException $r4;
+        ch.boye.httpclientandroidlib.client.ClientProtocolException $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.ProtocolVersion;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.client.RequestWrapper;
+
+     label1:
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: void <init>(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+     label2:
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: void setProtocolVersion(ch.boye.httpclientandroidlib.ProtocolVersion)>($r2);
+
+        return $r3;
+
+     label3:
+        $r4 := @caughtexception;
+
+        $r5 = new ch.boye.httpclientandroidlib.client.ClientProtocolException;
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.client.ClientProtocolException: void <init>(java.lang.Throwable)>($r4);
+
+        throw $r5;
+
+        catch ch.boye.httpclientandroidlib.ProtocolException from label1 to label2 with label3;
+    }
+
+    private void remove100ContinueHeaderIfExists(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        int $i0, $i1, $i2, $i3, $i2_1, $i3_1, $i3_2, $i3_3, $i2_2, $i3_4;
+        ch.boye.httpclientandroidlib.Header $r2;
+        ch.boye.httpclientandroidlib.message.BasicHeader $r3;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+        ch.boye.httpclientandroidlib.Header[] $r4;
+        java.util.ArrayList $r5, $r5_1, $r5_2;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r6;
+        ch.boye.httpclientandroidlib.HeaderElement $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        java.lang.String $r8, $r9, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        java.util.Iterator $r10;
+        java.lang.Object $r11;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $z0 = 0;
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Expect");
+
+        $r5 = new java.util.ArrayList;
+
+        specialinvoke $r5.<java.util.ArrayList: void <init>()>();
+
+        $i0 = lengthof $r4;
+
+(0)     $i2 = 0;
+
+     label1:
+        $r7 = Phi($r7 #0, $r7_1 #9);
+
+        $z0_1 = Phi($z0 #0, $z0_2 #9);
+
+        $r8 = Phi($r8 #0, $r8_1 #9);
+
+        $i3 = Phi($i3 #0, $i3_2 #9);
+
+        $r5_1 = Phi($r5 #0, $r5_2 #9);
+
+        $i2_1 = Phi($i2 #0, $i2_2 #9);
+
+(1)     if $i2_1 >= $i0 goto label8;
+
+        $r2 = $r4[$i2_1];
+
+        $r6 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i1 = lengthof $r6;
+
+(2)     $i3_1 = 0;
+
+     label2:
+        $r7_1 = Phi($r7 #2, $r7_2 #4);
+
+        $z0_2 = Phi($z0_1 #2, $z0_3 #4);
+
+        $r8_1 = Phi($r8 #2, $r8_2 #4);
+
+        $i3_2 = Phi($i3_1 #2, $i3_3 #4);
+
+        if $i3_2 >= $i1 goto label5;
+
+        $r7_2 = $r6[$i3_2];
+
+        $r8_2 = "100-continue";
+
+        $r9 = interfaceinvoke $r7_2.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z1 = virtualinvoke $r8_2.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r9);
+
+        if $z1 != 0 goto label4;
+
+(3)     interfaceinvoke $r5_1.<java.util.List: boolean add(java.lang.Object)>($r7_2);
+
+     label3:
+        $z0_3 = Phi($z0_2 #3, $z0_4 #5);
+
+        $i3_3 = $i3_2 + 1;
+
+(4)     goto label2;
+
+     label4:
+        $z0_4 = 1;
+
+(5)     goto label3;
+
+     label5:
+        if $z0_2 == 0 goto label7;
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void removeHeader(ch.boye.httpclientandroidlib.Header)>($r2);
+
+(6)     $r10 = interfaceinvoke $r5_1.<java.util.List: java.util.Iterator iterator()>();
+
+     label6:
+        $r7_3 = Phi($r7_1 #6, $r7_4 #8);
+
+        $z0_5 = Phi($z0_2 #6, $z0_6 #8);
+
+        $r8_3 = Phi($r8_1 #6, $r8_4 #8);
+
+        $z0_6 = interfaceinvoke $r10.<java.util.Iterator: boolean hasNext()>();
+
+(7)     if $z0_6 == 0 goto label8;
+
+        $r11 = interfaceinvoke $r10.<java.util.Iterator: java.lang.Object next()>();
+
+        $r7_4 = (ch.boye.httpclientandroidlib.HeaderElement) $r11;
+
+        $r3 = new ch.boye.httpclientandroidlib.message.BasicHeader;
+
+        $r8_4 = interfaceinvoke $r7_4.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.message.BasicHeader: void <init>(java.lang.String,java.lang.String)>("Expect", $r8_4);
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void addHeader(ch.boye.httpclientandroidlib.Header)>($r3);
+
+(8)     goto label6;
+
+     label7:
+        $r5_2 = new java.util.ArrayList;
+
+        specialinvoke $r5_2.<java.util.ArrayList: void <init>()>();
+
+        $i2_2 = $i2_1 + 1;
+
+(9)     goto label1;
+
+     label8:
+        $r7_5 = Phi($r7 #1, $r7_3 #7);
+
+        $z0_7 = Phi($z0_1 #1, $z0_6 #7);
+
+        $r8_5 = Phi($r8 #1, $r8_3 #7);
+
+        $i3_4 = Phi($i3 #1, $i3_2 #7);
+
+        return;
+    }
+
+    private ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError requestContainsNoCacheDirectiveWithFieldName(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        int $i0, $i1, $i2, $i3, $i2_1, $i3_1, $i3_2, $i3_3, $i2_2;
+        ch.boye.httpclientandroidlib.Header $r2;
+        ch.boye.httpclientandroidlib.HeaderElement $r3;
+        ch.boye.httpclientandroidlib.Header[] $r4;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r5;
+        java.lang.String $r6, $r7, $r6_1, $r6_2, $r6_3, $r6_4;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError r8;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Cache-Control");
+
+        $i0 = lengthof $r4;
+
+(0)     $i2 = 0;
+
+     label1:
+        $i3 = Phi($i3 #0, $i3_2 #5);
+
+        $i2_1 = Phi($i2 #0, $i2_2 #5);
+
+        $r6 = Phi($r6 #0, $r6_1 #5);
+
+        if $i2_1 >= $i0 goto label5;
+
+        $r2 = $r4[$i2_1];
+
+        $r5 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i1 = lengthof $r5;
+
+(1)     $i3_1 = 0;
+
+     label2:
+        $i3_2 = Phi($i3_1 #1, $i3_3 #4);
+
+        $r6_1 = Phi($r6 #1, $r6_4 #4);
+
+        if $i3_2 >= $i1 goto label4;
+
+        $r3 = $r5[$i3_2];
+
+        $r6_2 = "no-cache";
+
+        $r7 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z0 = virtualinvoke $r6_2.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r7);
+
+(2)     if $z0 == 0 goto label3;
+
+        $r6_3 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getValue()>();
+
+(3)     if $r6_3 == null goto label3;
+
+        r8 = <ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError NO_CACHE_DIRECTIVE_WITH_FIELD_NAME>;
+
+        return r8;
+
+     label3:
+        $r6_4 = Phi($r6_2 #2, $r6_3 #3);
+
+        $i3_3 = $i3_2 + 1;
+
+(4)     goto label2;
+
+     label4:
+        $i2_2 = $i2_1 + 1;
+
+(5)     goto label1;
+
+     label5:
+        return null;
+    }
+
+    private ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError requestHasWeakETagAndRange(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        java.lang.String $r2, $r4, $r2_1, $r2_2;
+        ch.boye.httpclientandroidlib.RequestLine $r3;
+        boolean $z0, $z0_1, $z0_2;
+        ch.boye.httpclientandroidlib.Header $r5, $r5_1, $r5_2;
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError r6;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r4 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getMethod()>();
+
+        $r2 = "GET";
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r4);
+
+        if $z0 != 0 goto label1;
+
+        return null;
+
+     label1:
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Range");
+
+(0)     if $r5 == null goto label2;
+
+        $r5_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("If-Range");
+
+(1)     if $r5_1 == null goto label2;
+
+        $r2_1 = interfaceinvoke $r5_1.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $z0_1 = virtualinvoke $r2_1.<java.lang.String: boolean startsWith(java.lang.String)>("W/");
+
+(2)     if $z0_1 == 0 goto label2;
+
+        r6 = <ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError WEAK_ETAG_AND_RANGE_ERROR>;
+
+        return r6;
+
+     label2:
+        $r5_2 = Phi($r5 #0, $r5_1 #1, $r5_1 #2);
+
+        $z0_2 = Phi($z0 #0, $z0 #1, $z0_1 #2);
+
+        $r2_2 = Phi($r2 #0, $r2 #1, $r2_1 #2);
+
+        return null;
+    }
+
+    private ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError requestHasWeekETagForPUTOrDELETEIfMatch(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.RequestLine $r2;
+        java.lang.String $r3, $r4, $r4_1, $r4_2, $r3_1, $r3_2, $r3_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        ch.boye.httpclientandroidlib.Header $r5, $r5_1, $r5_2;
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError r6, r6_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r3 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getMethod()>();
+
+        $r4 = "PUT";
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+(0)     if $z0 != 0 goto label1;
+
+        $r4_1 = "DELETE";
+
+        $z0_1 = virtualinvoke $r4_1.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+(1)     if $z0_1 != 0 goto label1;
+
+        return null;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("If-Match");
+
+        if $r5 == null goto label2;
+
+        $r3_1 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $z0_3 = virtualinvoke $r3_1.<java.lang.String: boolean startsWith(java.lang.String)>("W/");
+
+(2)     if $z0_3 == 0 goto label3;
+
+        r6 = <ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError WEAK_ETAG_ON_PUTDELETE_METHOD_ERROR>;
+
+        return r6;
+
+     label2:
+        $r5_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("If-None-Match");
+
+(3)     if $r5_1 == null goto label3;
+
+        $r3_2 = interfaceinvoke $r5_1.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $z0_4 = virtualinvoke $r3_2.<java.lang.String: boolean startsWith(java.lang.String)>("W/");
+
+(4)     if $z0_4 == 0 goto label3;
+
+        r6_1 = <ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError WEAK_ETAG_ON_PUTDELETE_METHOD_ERROR>;
+
+        return r6_1;
+
+     label3:
+        $z0_5 = Phi($z0_3 #2, $z0_2 #3, $z0_4 #4);
+
+        $r5_2 = Phi($r5 #2, $r5_1 #3, $r5_1 #4);
+
+        $r3_3 = Phi($r3_1 #2, $r3 #3, $r3_2 #4);
+
+        return null;
+    }
+
+    private boolean requestMustNotHaveEntity(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        java.lang.String $r2, $r4;
+        ch.boye.httpclientandroidlib.RequestLine $r3;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 = "TRACE";
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r4 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getMethod()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r4);
+
+(0)     if $z0 == 0 goto label1;
+
+        $z0_1 = $r1 instanceof ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest;
+
+(1)     if $z0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 0;
+    }
+
+    private void stripOtherFreshnessDirectivesWithNoCache(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        java.util.ArrayList $r2;
+        int $i0, $i1, $i2, $i3, $i2_1, $i3_1, $i3_2, $i3_3, $i2_2;
+        ch.boye.httpclientandroidlib.Header $r3;
+        ch.boye.httpclientandroidlib.HeaderElement $r4;
+        java.util.List $r5;
+        boolean $z0, $z1, $z0_1, $z0_2, $z1_1, $z1_2, $z1_3, $z0_3, $z0_4;
+        ch.boye.httpclientandroidlib.Header[] $r6;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r7;
+        java.lang.String $r8, $r9, $r8_1, $r8_2, $r8_3, $r8_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        $z0 = 0;
+
+        $r6 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Cache-Control");
+
+        $i0 = lengthof $r6;
+
+(0)     $i2 = 0;
+
+     label1:
+        $i3 = Phi($i3 #0, $i3_2 #5);
+
+        $i2_1 = Phi($i2 #0, $i2_2 #5);
+
+        $r8 = Phi($r8 #0, $r8_1 #5);
+
+        $z0_1 = Phi($z0 #0, $z0_2 #5);
+
+        $z1 = Phi($z1 #0, $z1_1 #5);
+
+        if $i2_1 >= $i0 goto label6;
+
+        $r3 = $r6[$i2_1];
+
+        $r7 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i1 = lengthof $r7;
+
+(1)     $i3_1 = 0;
+
+     label2:
+        $i3_2 = Phi($i3_1 #1, $i3_3 #4);
+
+        $r8_1 = Phi($r8 #1, $r8_3 #4);
+
+        $z0_2 = Phi($z0_1 #1, $z0_4 #4);
+
+        $z1_1 = Phi($z1 #1, $z1_3 #4);
+
+        if $i3_2 >= $i1 goto label5;
+
+        $r4 = $r7[$i3_2];
+
+        $r5 = <ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: java.util.List disallowedWithNoCache>;
+
+        $r8_2 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z1_2 = interfaceinvoke $r5.<java.util.List: boolean contains(java.lang.Object)>($r8_2);
+
+        if $z1_2 != 0 goto label3;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r4);
+
+     label3:
+        $r8_3 = "no-cache";
+
+        $r9 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z1_3 = virtualinvoke $r8_3.<java.lang.String: boolean equals(java.lang.Object)>($r9);
+
+(2)     if $z1_3 == 0 goto label4;
+
+(3)     $z0_3 = 1;
+
+     label4:
+        $z0_4 = Phi($z0_2 #2, $z0_3 #3);
+
+        $i3_3 = $i3_2 + 1;
+
+(4)     goto label2;
+
+     label5:
+        $i2_2 = $i2_1 + 1;
+
+(5)     goto label1;
+
+     label6:
+        if $z0_1 != 0 goto label7;
+
+        return;
+
+     label7:
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void removeHeaders(java.lang.String)>("Cache-Control");
+
+        $r8_4 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: java.lang.String buildHeaderFromElements(java.util.List)>($r2);
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void setHeader(java.lang.String,java.lang.String)>("Cache-Control", $r8_4);
+
+        return;
+    }
+
+    private ch.boye.httpclientandroidlib.HttpRequest upgradeRequestTo(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.ProtocolVersion) throws ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r2;
+        ch.boye.httpclientandroidlib.impl.client.RequestWrapper $r3;
+        ch.boye.httpclientandroidlib.ProtocolException $r4;
+        ch.boye.httpclientandroidlib.client.ClientProtocolException $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.ProtocolVersion;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.client.RequestWrapper;
+
+     label1:
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: void <init>(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+     label2:
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: void setProtocolVersion(ch.boye.httpclientandroidlib.ProtocolVersion)>($r2);
+
+        return $r3;
+
+     label3:
+        $r4 := @caughtexception;
+
+        $r5 = new ch.boye.httpclientandroidlib.client.ClientProtocolException;
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.client.ClientProtocolException: void <init>(java.lang.Throwable)>($r4);
+
+        throw $r5;
+
+        catch ch.boye.httpclientandroidlib.ProtocolException from label1 to label2 with label3;
+    }
+
+    private void verifyOPTIONSRequestWithBodyHasContentType(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        java.lang.String $r2, $r4;
+        ch.boye.httpclientandroidlib.RequestLine $r3;
+        boolean $z0, $z0_1;
+        ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 = "OPTIONS";
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r4 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getMethod()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r4);
+
+        if $z0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $z0_1 = $r1 instanceof ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest;
+
+        if $z0_1 == 0 goto label2;
+
+        $r5 = (ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest) $r1;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: void addContentTypeHeaderIfMissing(ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest)>($r5);
+
+     label2:
+        return;
+    }
+
+    private void verifyRequestWithExpectContinueFlagHas100continueHeader(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        boolean $z0, $z0_1;
+        ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest $r2, $r2_1, $r2_2;
+        ch.boye.httpclientandroidlib.HttpEntity $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $z0 = $r1 instanceof ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest;
+
+        if $z0 == 0 goto label2;
+
+        $r2 = (ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest) $r1;
+
+        $z0_1 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest: boolean expectContinue()>();
+
+(0)     if $z0_1 == 0 goto label1;
+
+        $r2_1 = (ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest) $r1;
+
+        $r3 = interfaceinvoke $r2_1.<ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+(1)     if $r3 == null goto label1;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: void add100ContinueHeaderIfMissing(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        return;
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: void remove100ContinueHeaderIfExists(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        return;
+
+     label2:
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: void remove100ContinueHeaderIfExists(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        return;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpResponse getErrorForRequest(ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError $r1;
+        int[] $r2;
+        java.lang.IllegalStateException $r3;
+        int $i0, $i0_1;
+        ch.boye.httpclientandroidlib.message.BasicHttpResponse $r4, $r4_1, $r4_2, $r4_3;
+        ch.boye.httpclientandroidlib.message.BasicStatusLine $r5, $r5_1, $r5_2, $r5_3;
+        ch.boye.httpclientandroidlib.HttpVersion $r6, $r6_1, $r6_2, $r6_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError;
+
+        $r2 = <ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance$1: int[] $SwitchMap$ch$boye$httpclientandroidlib$impl$client$cache$RequestProtocolError>;
+
+        $i0 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError: int ordinal()>();
+
+        $i0_1 = $r2[$i0];
+
+        lookupswitch($i0_1)
+        {
+            case 1: goto label3;
+            case 2: goto label4;
+            case 3: goto label5;
+            case 4: goto label6;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("The request was compliant, therefore no error can be generated for it.");
+
+        throw $r3;
+
+     label3:
+        $r4 = new ch.boye.httpclientandroidlib.message.BasicHttpResponse;
+
+        $r5 = new ch.boye.httpclientandroidlib.message.BasicStatusLine;
+
+        $r6 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_1>;
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.message.BasicStatusLine: void <init>(ch.boye.httpclientandroidlib.ProtocolVersion,int,java.lang.String)>($r6, 411, "");
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.message.BasicHttpResponse: void <init>(ch.boye.httpclientandroidlib.StatusLine)>($r5);
+
+        return $r4;
+
+     label4:
+        $r4_1 = new ch.boye.httpclientandroidlib.message.BasicHttpResponse;
+
+        $r5_1 = new ch.boye.httpclientandroidlib.message.BasicStatusLine;
+
+        $r6_1 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_1>;
+
+        specialinvoke $r5_1.<ch.boye.httpclientandroidlib.message.BasicStatusLine: void <init>(ch.boye.httpclientandroidlib.ProtocolVersion,int,java.lang.String)>($r6_1, 400, "Weak eTag not compatible with byte range");
+
+        specialinvoke $r4_1.<ch.boye.httpclientandroidlib.message.BasicHttpResponse: void <init>(ch.boye.httpclientandroidlib.StatusLine)>($r5_1);
+
+        return $r4_1;
+
+     label5:
+        $r4_2 = new ch.boye.httpclientandroidlib.message.BasicHttpResponse;
+
+        $r5_2 = new ch.boye.httpclientandroidlib.message.BasicStatusLine;
+
+        $r6_2 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_1>;
+
+        specialinvoke $r5_2.<ch.boye.httpclientandroidlib.message.BasicStatusLine: void <init>(ch.boye.httpclientandroidlib.ProtocolVersion,int,java.lang.String)>($r6_2, 400, "Weak eTag not compatible with PUT or DELETE requests");
+
+        specialinvoke $r4_2.<ch.boye.httpclientandroidlib.message.BasicHttpResponse: void <init>(ch.boye.httpclientandroidlib.StatusLine)>($r5_2);
+
+        return $r4_2;
+
+     label6:
+        $r4_3 = new ch.boye.httpclientandroidlib.message.BasicHttpResponse;
+
+        $r5_3 = new ch.boye.httpclientandroidlib.message.BasicStatusLine;
+
+        $r6_3 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_1>;
+
+        specialinvoke $r5_3.<ch.boye.httpclientandroidlib.message.BasicStatusLine: void <init>(ch.boye.httpclientandroidlib.ProtocolVersion,int,java.lang.String)>($r6_3, 400, "No-Cache directive MUST NOT include a field name");
+
+        specialinvoke $r4_3.<ch.boye.httpclientandroidlib.message.BasicHttpResponse: void <init>(ch.boye.httpclientandroidlib.StatusLine)>($r5_3);
+
+        return $r4_3;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpRequest makeRequestCompliant(ch.boye.httpclientandroidlib.HttpRequest) throws ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1, $r1_1, $r1_2, $r1_3;
+        boolean $z0, $z0_1, $z0_2;
+        ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest $r2;
+        ch.boye.httpclientandroidlib.HttpVersion $r3, $r3_1, $r3_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $z0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: boolean requestMustNotHaveEntity(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        $r2 = (ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest) $r1;
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest: void setEntity(ch.boye.httpclientandroidlib.HttpEntity)>(null);
+
+     label1:
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: void verifyRequestWithExpectContinueFlagHas100continueHeader(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: void verifyOPTIONSRequestWithBodyHasContentType(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: void decrementOPTIONSMaxForwardsIfGreaterThen0(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: void stripOtherFreshnessDirectivesWithNoCache(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        $z0_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: boolean requestVersionIsTooLow(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        if $z0_1 == 0 goto label2;
+
+        $r3 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_1>;
+
+        $r1_1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: ch.boye.httpclientandroidlib.HttpRequest upgradeRequestTo(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.ProtocolVersion)>($r1, $r3);
+
+        return $r1_1;
+
+     label2:
+        $z0_2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: boolean requestMinorVersionIsTooHighMajorVersionsMatch(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+(0)     if $z0_2 == 0 goto label3;
+
+        $r3_1 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_1>;
+
+(1)     $r1_2 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: ch.boye.httpclientandroidlib.HttpRequest downgradeRequestTo(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.ProtocolVersion)>($r1, $r3_1);
+
+     label3:
+        $r1_3 = Phi($r1 #0, $r1_2 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return $r1_3;
+    }
+
+    public java.util.List requestIsFatallyNonCompliant(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        java.util.ArrayList $r2;
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError $r3, $r3_1, $r3_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        $r3 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError requestHasWeakETagAndRange(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        if $r3 == null goto label1;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r3);
+
+     label1:
+        $r3_1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError requestHasWeekETagForPUTOrDELETEIfMatch(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        if $r3_1 == null goto label2;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r3_1);
+
+     label2:
+        $r3_2 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolError requestContainsNoCacheDirectiveWithFieldName(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        if $r3_2 == null goto label3;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r3_2);
+
+     label3:
+        return $r2;
+    }
+
+    protected boolean requestMinorVersionIsTooHighMajorVersionsMatch(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r2;
+        int $i0, $i1, $i0_1, $i1_1;
+        ch.boye.httpclientandroidlib.HttpVersion $r3, $r3_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.ProtocolVersion getProtocolVersion()>();
+
+        $i0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.ProtocolVersion: int getMajor()>();
+
+        $r3 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_1>;
+
+        $i1 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.HttpVersion: int getMajor()>();
+
+        if $i0 == $i1 goto label1;
+
+        return 0;
+
+     label1:
+        $i0_1 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.ProtocolVersion: int getMinor()>();
+
+        $r3_1 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_1>;
+
+        $i1_1 = virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.HttpVersion: int getMinor()>();
+
+        if $i0_1 <= $i1_1 goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    protected boolean requestVersionIsTooLow(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.HttpVersion $r2;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r3;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.RequestProtocolCompliance;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.ProtocolVersion getProtocolVersion()>();
+
+        $r2 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_1>;
+
+        $i0 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.ProtocolVersion: int compareToVersion(ch.boye.httpclientandroidlib.ProtocolVersion)>($r2);
+
+        if $i0 >= 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+}

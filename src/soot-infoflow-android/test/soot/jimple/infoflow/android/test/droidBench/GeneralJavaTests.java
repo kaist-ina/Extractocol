@@ -34,6 +34,13 @@ public class GeneralJavaTests extends JUnitTests {
 	}
 
 	@Test(timeout=300000)
+	@Ignore // requires StubDroid
+	public void runTestSerialization1() throws IOException, XmlPullParserException {
+		InfoflowResults res = analyzeAPKFile("GeneralJava/Serialization1.apk");
+		Assert.assertEquals(1, res.size());
+	}
+
+	@Test(timeout=300000)
 	public void runTestLoop2() throws IOException, XmlPullParserException {
 		InfoflowResults res = analyzeAPKFile("GeneralJava/Loop2.apk");
 		Assert.assertEquals(1, res.size());
@@ -69,6 +76,25 @@ public class GeneralJavaTests extends JUnitTests {
 	public void runTestExceptions4() throws IOException, XmlPullParserException {
 		InfoflowResults res = analyzeAPKFile("GeneralJava/Exceptions4.apk");
 		Assert.assertEquals(1, res.size());
+	}
+
+	@Test(timeout=300000)
+	public void runTestExceptions5() throws IOException, XmlPullParserException {
+		InfoflowResults res = analyzeAPKFile("GeneralJava/Exceptions5.apk");
+		Assert.assertEquals(1, res.size());
+	}
+	
+	@Test(timeout=300000)
+	public void runTestExceptions6() throws IOException, XmlPullParserException {
+		InfoflowResults res = analyzeAPKFile("GeneralJava/Exceptions6.apk");
+		Assert.assertEquals(1, res.size());
+	}
+
+	@Test(timeout=300000)
+	public void runTestExceptions7() throws IOException, XmlPullParserException {
+		InfoflowResults res = analyzeAPKFile("GeneralJava/Exceptions7.apk");
+		if (res != null)
+			Assert.assertEquals(0, res.size());
 	}
 
 	@Test(timeout=300000)

@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 
 /**
  * Tests that require the taint tracking engine to correctly evaluate the
@@ -27,7 +27,7 @@ public class OperationSemanticTests extends JUnitTests{
 
 	@Test(timeout=300000)
     public void baseTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.OperationSemanticTestCode: void baseTestCode()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);

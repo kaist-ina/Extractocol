@@ -1,0 +1,580 @@
+class com.facebook.widget.GraphObjectPagingLoader extends android.support.v4.content.Loader
+{
+    private boolean appendResults;
+    private com.facebook.Request currentRequest;
+    private com.facebook.widget.SimpleGraphObjectCursor cursor;
+    private final java.lang.Class graphObjectClass;
+    private boolean loading;
+    private com.facebook.Request nextRequest;
+    private com.facebook.widget.GraphObjectPagingLoader$OnErrorListener onErrorListener;
+    private com.facebook.Request originalRequest;
+    private boolean skipRoundtripIfCached;
+
+    public void <init>(android.content.Context, java.lang.Class)
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        android.content.Context $r1;
+        java.lang.Class $r2;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.Class;
+
+        specialinvoke $r0.<android.support.v4.content.Loader: void <init>(android.content.Context)>($r1);
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean appendResults> = 0;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean loading> = 0;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: java.lang.Class graphObjectClass> = $r2;
+
+        return;
+    }
+
+    static void access$000(com.facebook.widget.GraphObjectPagingLoader, com.facebook.Response)
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.Response $r1;
+
+        $r0 := @parameter0: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r1 := @parameter1: com.facebook.Response;
+
+        specialinvoke $r0.<com.facebook.widget.GraphObjectPagingLoader: void requestCompleted(com.facebook.Response)>($r1);
+
+        return;
+    }
+
+    private void addResults(com.facebook.Response)
+    {
+        com.facebook.Response $r0;
+        java.lang.Class $r1;
+        com.facebook.Response$PagingDirection $r2;
+        com.facebook.widget.SimpleGraphObjectCursor $r3, $r5, $r3_1, $r5_1, $r3_2, $r5_2;
+        com.facebook.widget.GraphObjectPagingLoader $r4;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z1_1, $z1_2;
+        com.facebook.model.GraphObject $r6;
+        com.facebook.widget.GraphObjectPagingLoader$PagedResults $r7;
+        com.facebook.model.GraphObjectList $r8, $r8_1;
+        int $i0;
+        com.facebook.Request $r9, $r9_1, $r9_2;
+
+        $r4 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r0 := @parameter0: com.facebook.Response;
+
+        $r3 = $r4.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.SimpleGraphObjectCursor cursor>;
+
+(0)     if $r3 == null goto label1;
+
+        $z0 = $r4.<com.facebook.widget.GraphObjectPagingLoader: boolean appendResults>;
+
+(1)     if $z0 != 0 goto label7;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0 #1);
+
+        $r5_1 = new com.facebook.widget.SimpleGraphObjectCursor;
+
+(2)     specialinvoke $r5_1.<com.facebook.widget.SimpleGraphObjectCursor: void <init>()>();
+
+     label2:
+        $r3_2 = Phi($r3 #2, $r3_1 #6);
+
+        $z0_2 = Phi($z0_1 #2, $z0 #6);
+
+        $r5_2 = Phi($r5_1 #2, $r5 #6);
+
+        $r6 = virtualinvoke $r0.<com.facebook.Response: com.facebook.model.GraphObject getGraphObjectAs(java.lang.Class)>(class "com/facebook/widget/GraphObjectPagingLoader$PagedResults");
+
+        $r7 = (com.facebook.widget.GraphObjectPagingLoader$PagedResults) $r6;
+
+        $z0_3 = virtualinvoke $r0.<com.facebook.Response: boolean getIsFromCache()>();
+
+        $r8 = interfaceinvoke $r7.<com.facebook.widget.GraphObjectPagingLoader$PagedResults: com.facebook.model.GraphObjectList getData()>();
+
+        $r1 = $r4.<com.facebook.widget.GraphObjectPagingLoader: java.lang.Class graphObjectClass>;
+
+        $r8_1 = interfaceinvoke $r8.<com.facebook.model.GraphObjectList: com.facebook.model.GraphObjectList castToListOf(java.lang.Class)>($r1);
+
+        $i0 = interfaceinvoke $r8_1.<com.facebook.model.GraphObjectList: int size()>();
+
+        if $i0 <= 0 goto label8;
+
+(3)     $z1 = 1;
+
+     label3:
+        $z1_1 = Phi($z1 #3, $z1_2 #7);
+
+(4)     if $z1_1 == 0 goto label4;
+
+        $r2 = <com.facebook.Response$PagingDirection: com.facebook.Response$PagingDirection NEXT>;
+
+        $r9 = virtualinvoke $r0.<com.facebook.Response: com.facebook.Request getRequestForPagedResults(com.facebook.Response$PagingDirection)>($r2);
+
+        $r4.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request nextRequest> = $r9;
+
+        virtualinvoke $r5_2.<com.facebook.widget.SimpleGraphObjectCursor: void addGraphObjects(java.util.Collection,boolean)>($r8_1, $z0_3);
+
+        $r9_1 = $r4.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request nextRequest>;
+
+        if $r9_1 == null goto label9;
+
+(5)     virtualinvoke $r5_2.<com.facebook.widget.SimpleGraphObjectCursor: void setMoreObjectsAvailable(boolean)>(1);
+
+     label4:
+        $r9_2 = Phi($r9 #4, $r9_1 #5, $r9_1 #8);
+
+        if $z1_1 != 0 goto label5;
+
+        virtualinvoke $r5_2.<com.facebook.widget.SimpleGraphObjectCursor: void setMoreObjectsAvailable(boolean)>(0);
+
+        virtualinvoke $r5_2.<com.facebook.widget.SimpleGraphObjectCursor: void setFromCache(boolean)>($z0_3);
+
+        $r4.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request nextRequest> = null;
+
+     label5:
+        if $z0_3 != 0 goto label6;
+
+        $r4.<com.facebook.widget.GraphObjectPagingLoader: boolean skipRoundtripIfCached> = 0;
+
+     label6:
+        virtualinvoke $r4.<com.facebook.widget.GraphObjectPagingLoader: void deliverResult(com.facebook.widget.SimpleGraphObjectCursor)>($r5_2);
+
+        return;
+
+     label7:
+        $r5 = new com.facebook.widget.SimpleGraphObjectCursor;
+
+        $r3_1 = $r4.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.SimpleGraphObjectCursor cursor>;
+
+        specialinvoke $r5.<com.facebook.widget.SimpleGraphObjectCursor: void <init>(com.facebook.widget.SimpleGraphObjectCursor)>($r3_1);
+
+(6)     goto label2;
+
+     label8:
+        $z1_2 = 0;
+
+(7)     goto label3;
+
+     label9:
+        virtualinvoke $r5_2.<com.facebook.widget.SimpleGraphObjectCursor: void setMoreObjectsAvailable(boolean)>(0);
+
+(8)     goto label4;
+    }
+
+    private com.facebook.internal.CacheableRequestBatch putRequestIntoBatch(com.facebook.Request, boolean)
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.Request $r1;
+        boolean $z0, $z1, $z1_1, $z1_2;
+        com.facebook.internal.CacheableRequestBatch $r2;
+        com.facebook.Request[] $r3;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r1 := @parameter0: com.facebook.Request;
+
+        $z0 := @parameter1: boolean;
+
+        $z1 = 1;
+
+        $r2 = new com.facebook.internal.CacheableRequestBatch;
+
+        $r3 = newarray (com.facebook.Request)[1];
+
+        $r3[0] = $r1;
+
+        specialinvoke $r2.<com.facebook.internal.CacheableRequestBatch: void <init>(com.facebook.Request[])>($r3);
+
+(0)     if $z0 != 0 goto label2;
+
+     label1:
+        $z1_1 = Phi($z1 #0, $z1_2 #1);
+
+        virtualinvoke $r2.<com.facebook.internal.CacheableRequestBatch: void setForceRoundTrip(boolean)>($z1_1);
+
+        return $r2;
+
+     label2:
+        $z1_2 = 0;
+
+(1)     goto label1;
+    }
+
+    private void requestCompleted(com.facebook.Response)
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.Response $r1;
+        com.facebook.Request $r2, $r3;
+        com.facebook.FacebookRequestError $r4;
+        com.facebook.FacebookException $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        com.facebook.model.GraphObject $r6;
+        com.facebook.widget.GraphObjectPagingLoader$OnErrorListener $r7, $r7_1, $r7_2;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r1 := @parameter0: com.facebook.Response;
+
+        $r3 = virtualinvoke $r1.<com.facebook.Response: com.facebook.Request getRequest()>();
+
+        $r2 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request currentRequest>;
+
+        if $r3 == $r2 goto label1;
+
+        return;
+
+     label1:
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean loading> = 0;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request currentRequest> = null;
+
+        $r4 = virtualinvoke $r1.<com.facebook.Response: com.facebook.FacebookRequestError getError()>();
+
+        if $r4 != null goto label4;
+
+(0)     $r5 = null;
+
+     label2:
+        $r5_1 = Phi($r5 #0, $r5_4 #5);
+
+        $r6 = virtualinvoke $r1.<com.facebook.Response: com.facebook.model.GraphObject getGraphObject()>();
+
+(1)     if $r6 != null goto label3;
+
+(2)     if $r5_1 != null goto label3;
+
+        $r5_2 = new com.facebook.FacebookException;
+
+(3)     specialinvoke $r5_2.<com.facebook.FacebookException: void <init>(java.lang.String)>("GraphObjectPagingLoader received neither a result nor an error.");
+
+     label3:
+        $r5_3 = Phi($r5_1 #1, $r5_1 #2, $r5_2 #3);
+
+        if $r5_3 == null goto label5;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request nextRequest> = null;
+
+        $r7 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.GraphObjectPagingLoader$OnErrorListener onErrorListener>;
+
+(4)     if $r7 == null goto label6;
+
+        $r7_1 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.GraphObjectPagingLoader$OnErrorListener onErrorListener>;
+
+        interfaceinvoke $r7_1.<com.facebook.widget.GraphObjectPagingLoader$OnErrorListener: void onError(com.facebook.FacebookException,com.facebook.widget.GraphObjectPagingLoader)>($r5_3, $r0);
+
+        return;
+
+     label4:
+        $r5_4 = virtualinvoke $r4.<com.facebook.FacebookRequestError: com.facebook.FacebookException getException()>();
+
+(5)     goto label2;
+
+     label5:
+(6)     specialinvoke $r0.<com.facebook.widget.GraphObjectPagingLoader: void addResults(com.facebook.Response)>($r1);
+
+     label6:
+        $r7_2 = Phi($r7 #4, $r7 #6);
+
+        return;
+    }
+
+    private void startLoading(com.facebook.Request, boolean, long)
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.Request $r1, $r2;
+        boolean $z0;
+        long $l0;
+        com.facebook.widget.GraphObjectPagingLoader$2 $r3;
+        com.facebook.widget.GraphObjectPagingLoader$3 $r4;
+        byte $b1;
+        android.os.Handler $r5;
+        com.facebook.internal.CacheableRequestBatch $r6;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r1 := @parameter0: com.facebook.Request;
+
+        $z0 := @parameter1: boolean;
+
+        $l0 := @parameter2: long;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean skipRoundtripIfCached> = $z0;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean appendResults> = 0;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request nextRequest> = null;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request currentRequest> = $r1;
+
+        $r2 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request currentRequest>;
+
+        $r3 = new com.facebook.widget.GraphObjectPagingLoader$2;
+
+        specialinvoke $r3.<com.facebook.widget.GraphObjectPagingLoader$2: void <init>(com.facebook.widget.GraphObjectPagingLoader)>($r0);
+
+        virtualinvoke $r2.<com.facebook.Request: void setCallback(com.facebook.Request$Callback)>($r3);
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean loading> = 1;
+
+        $r6 = specialinvoke $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.internal.CacheableRequestBatch putRequestIntoBatch(com.facebook.Request,boolean)>($r1, $z0);
+
+        $r4 = new com.facebook.widget.GraphObjectPagingLoader$3;
+
+        specialinvoke $r4.<com.facebook.widget.GraphObjectPagingLoader$3: void <init>(com.facebook.widget.GraphObjectPagingLoader,com.facebook.RequestBatch)>($r0, $r6);
+
+        $b1 = $l0 cmp 0L;
+
+        if $b1 != 0 goto label1;
+
+        interfaceinvoke $r4.<java.lang.Runnable: void run()>();
+
+        return;
+
+     label1:
+        $r5 = new android.os.Handler;
+
+        specialinvoke $r5.<android.os.Handler: void <init>()>();
+
+        virtualinvoke $r5.<android.os.Handler: boolean postDelayed(java.lang.Runnable,long)>($r4, $l0);
+
+        return;
+    }
+
+    public void clearResults()
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request nextRequest> = null;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request originalRequest> = null;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request currentRequest> = null;
+
+        virtualinvoke $r0.<com.facebook.widget.GraphObjectPagingLoader: void deliverResult(com.facebook.widget.SimpleGraphObjectCursor)>(null);
+
+        return;
+    }
+
+    public void deliverResult(com.facebook.widget.SimpleGraphObjectCursor)
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.widget.SimpleGraphObjectCursor $r1, $r2;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r1 := @parameter0: com.facebook.widget.SimpleGraphObjectCursor;
+
+        $r2 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.SimpleGraphObjectCursor cursor>;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.SimpleGraphObjectCursor cursor> = $r1;
+
+        $z0 = virtualinvoke $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean isStarted()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        specialinvoke $r0.<android.support.v4.content.Loader: void deliverResult(java.lang.Object)>($r1);
+
+(1)     if $r2 == null goto label1;
+
+(2)     if $r2 == $r1 goto label1;
+
+        $z0_1 = virtualinvoke $r2.<com.facebook.widget.SimpleGraphObjectCursor: boolean isClosed()>();
+
+(3)     if $z0_1 != 0 goto label1;
+
+(4)     virtualinvoke $r2.<com.facebook.widget.SimpleGraphObjectCursor: void close()>();
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0 #1, $z0 #2, $z0_1 #3, $z0_1 #4);
+
+        return;
+    }
+
+    public volatile void deliverResult(java.lang.Object)
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        java.lang.Object $r1;
+        com.facebook.widget.SimpleGraphObjectCursor $r2;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = (com.facebook.widget.SimpleGraphObjectCursor) $r1;
+
+        virtualinvoke $r0.<com.facebook.widget.GraphObjectPagingLoader: void deliverResult(com.facebook.widget.SimpleGraphObjectCursor)>($r2);
+
+        return;
+    }
+
+    public void followNextLink()
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.widget.GraphObjectPagingLoader$1 $r1;
+        boolean $z0;
+        com.facebook.internal.CacheableRequestBatch $r2;
+        com.facebook.Request $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r3 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request nextRequest>;
+
+(0)     if $r3 == null goto label1;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean appendResults> = 1;
+
+        $r3_1 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request nextRequest>;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request currentRequest> = $r3_1;
+
+        $r3_2 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request currentRequest>;
+
+        $r1 = new com.facebook.widget.GraphObjectPagingLoader$1;
+
+        specialinvoke $r1.<com.facebook.widget.GraphObjectPagingLoader$1: void <init>(com.facebook.widget.GraphObjectPagingLoader)>($r0);
+
+        virtualinvoke $r3_2.<com.facebook.Request: void setCallback(com.facebook.Request$Callback)>($r1);
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean loading> = 1;
+
+        $r3_3 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request currentRequest>;
+
+        $z0 = $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean skipRoundtripIfCached>;
+
+        $r2 = specialinvoke $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.internal.CacheableRequestBatch putRequestIntoBatch(com.facebook.Request,boolean)>($r3_3, $z0);
+
+(1)     staticinvoke <com.facebook.Request: com.facebook.RequestAsyncTask executeBatchAsync(com.facebook.RequestBatch)>($r2);
+
+     label1:
+        $r3_4 = Phi($r3 #0, $r3_3 #1);
+
+        return;
+    }
+
+    public com.facebook.widget.SimpleGraphObjectCursor getCursor()
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.widget.SimpleGraphObjectCursor r1;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        r1 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.SimpleGraphObjectCursor cursor>;
+
+        return r1;
+    }
+
+    public com.facebook.widget.GraphObjectPagingLoader$OnErrorListener getOnErrorListener()
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.widget.GraphObjectPagingLoader$OnErrorListener r1;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        r1 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.GraphObjectPagingLoader$OnErrorListener onErrorListener>;
+
+        return r1;
+    }
+
+    public boolean isLoading()
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        boolean z0;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        z0 = $r0.<com.facebook.widget.GraphObjectPagingLoader: boolean loading>;
+
+        return z0;
+    }
+
+    protected void onStartLoading()
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.widget.SimpleGraphObjectCursor $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        specialinvoke $r0.<android.support.v4.content.Loader: void onStartLoading()>();
+
+        $r1 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.SimpleGraphObjectCursor cursor>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.SimpleGraphObjectCursor cursor>;
+
+(1)     virtualinvoke $r0.<com.facebook.widget.GraphObjectPagingLoader: void deliverResult(com.facebook.widget.SimpleGraphObjectCursor)>($r1_1);
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void refreshOriginalRequest(long)
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        long $l0;
+        com.facebook.FacebookException $r1;
+        com.facebook.Request $r2, $r2_1;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $l0 := @parameter0: long;
+
+        $r2 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request originalRequest>;
+
+        if $r2 != null goto label1;
+
+        $r1 = new com.facebook.FacebookException;
+
+        specialinvoke $r1.<com.facebook.FacebookException: void <init>(java.lang.String)>("refreshOriginalRequest may not be called until after startLoading has been called.");
+
+        throw $r1;
+
+     label1:
+        $r2_1 = $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request originalRequest>;
+
+        specialinvoke $r0.<com.facebook.widget.GraphObjectPagingLoader: void startLoading(com.facebook.Request,boolean,long)>($r2_1, 0, $l0);
+
+        return;
+    }
+
+    public void setOnErrorListener(com.facebook.widget.GraphObjectPagingLoader$OnErrorListener)
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.widget.GraphObjectPagingLoader$OnErrorListener $r1;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r1 := @parameter0: com.facebook.widget.GraphObjectPagingLoader$OnErrorListener;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.widget.GraphObjectPagingLoader$OnErrorListener onErrorListener> = $r1;
+
+        return;
+    }
+
+    public void startLoading(com.facebook.Request, boolean)
+    {
+        com.facebook.widget.GraphObjectPagingLoader $r0;
+        com.facebook.Request $r1;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.widget.GraphObjectPagingLoader;
+
+        $r1 := @parameter0: com.facebook.Request;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.facebook.widget.GraphObjectPagingLoader: com.facebook.Request originalRequest> = $r1;
+
+        specialinvoke $r0.<com.facebook.widget.GraphObjectPagingLoader: void startLoading(com.facebook.Request,boolean,long)>($r1, $z0, 0L);
+
+        return;
+    }
+}

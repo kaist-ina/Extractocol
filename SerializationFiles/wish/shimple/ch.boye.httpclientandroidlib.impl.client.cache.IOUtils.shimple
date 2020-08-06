@@ -1,0 +1,160 @@
+class ch.boye.httpclientandroidlib.impl.client.cache.IOUtils extends java.lang.Object
+{
+
+    void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.IOUtils $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.IOUtils;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static void closeSilently(java.io.Closeable)
+    {
+        java.io.Closeable $r0;
+        java.io.IOException $r1;
+
+        $r0 := @parameter0: java.io.Closeable;
+
+     label1:
+        interfaceinvoke $r0.<java.io.Closeable: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    static void copy(java.io.InputStream, java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.InputStream $r0;
+        java.io.OutputStream $r1;
+        byte[] $r2;
+        int $i0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 := @parameter1: java.io.OutputStream;
+
+        $r2 = newarray (byte)[2048];
+
+     label1:
+        $i0 = virtualinvoke $r0.<java.io.InputStream: int read(byte[])>($r2);
+
+        if $i0 == -1 goto label2;
+
+        virtualinvoke $r1.<java.io.OutputStream: void write(byte[],int,int)>($r2, 0, $i0);
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    static void copyAndClose(java.io.InputStream, java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.InputStream $r0;
+        java.io.OutputStream $r1;
+        java.io.IOException $r2;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 := @parameter1: java.io.OutputStream;
+
+     label1:
+        staticinvoke <ch.boye.httpclientandroidlib.impl.client.cache.IOUtils: void copy(java.io.InputStream,java.io.OutputStream)>($r0, $r1);
+
+        virtualinvoke $r0.<java.io.InputStream: void close()>();
+
+        virtualinvoke $r1.<java.io.OutputStream: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        staticinvoke <ch.boye.httpclientandroidlib.impl.client.cache.IOUtils: void closeSilently(java.io.Closeable)>($r0);
+
+        staticinvoke <ch.boye.httpclientandroidlib.impl.client.cache.IOUtils: void closeSilently(java.io.Closeable)>($r1);
+
+        throw $r2;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    static void copyFile(java.io.File, java.io.File) throws java.io.IOException
+    {
+        java.io.File $r0, $r1;
+        java.io.RandomAccessFile $r2, $r3;
+        java.io.IOException $r4, $r5;
+        java.nio.channels.FileChannel $r6, $r7;
+        long $l0;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r1 := @parameter1: java.io.File;
+
+        $r2 = new java.io.RandomAccessFile;
+
+        specialinvoke $r2.<java.io.RandomAccessFile: void <init>(java.io.File,java.lang.String)>($r0, "r");
+
+        $r3 = new java.io.RandomAccessFile;
+
+        specialinvoke $r3.<java.io.RandomAccessFile: void <init>(java.io.File,java.lang.String)>($r1, "rw");
+
+     label1:
+        $r6 = virtualinvoke $r2.<java.io.RandomAccessFile: java.nio.channels.FileChannel getChannel()>();
+
+        $r7 = virtualinvoke $r3.<java.io.RandomAccessFile: java.nio.channels.FileChannel getChannel()>();
+
+     label2:
+        $l0 = virtualinvoke $r2.<java.io.RandomAccessFile: long length()>();
+
+        virtualinvoke $r6.<java.nio.channels.FileChannel: long transferTo(long,long,java.nio.channels.WritableByteChannel)>(0L, $l0, $r7);
+
+        virtualinvoke $r6.<java.nio.channels.FileChannel: void close()>();
+
+        virtualinvoke $r7.<java.nio.channels.FileChannel: void close()>();
+
+     label3:
+        virtualinvoke $r2.<java.io.RandomAccessFile: void close()>();
+
+        virtualinvoke $r3.<java.io.RandomAccessFile: void close()>();
+
+     label4:
+        return;
+
+     label5:
+        $r4 := @caughtexception;
+
+     label6:
+        staticinvoke <ch.boye.httpclientandroidlib.impl.client.cache.IOUtils: void closeSilently(java.io.Closeable)>($r6);
+
+        staticinvoke <ch.boye.httpclientandroidlib.impl.client.cache.IOUtils: void closeSilently(java.io.Closeable)>($r7);
+
+        throw $r4;
+
+     label7:
+        $r5 := @caughtexception;
+
+        staticinvoke <ch.boye.httpclientandroidlib.impl.client.cache.IOUtils: void closeSilently(java.io.Closeable)>($r2);
+
+        staticinvoke <ch.boye.httpclientandroidlib.impl.client.cache.IOUtils: void closeSilently(java.io.Closeable)>($r3);
+
+        throw $r5;
+
+        catch java.io.IOException from label1 to label2 with label7;
+        catch java.io.IOException from label2 to label3 with label5;
+        catch java.io.IOException from label3 to label4 with label7;
+        catch java.io.IOException from label6 to label7 with label7;
+    }
+}

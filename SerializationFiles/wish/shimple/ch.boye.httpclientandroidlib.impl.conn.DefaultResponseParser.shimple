@@ -1,0 +1,222 @@
+public class ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser extends ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser
+{
+    private final ch.boye.httpclientandroidlib.util.CharArrayBuffer lineBuf;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+    private final int maxGarbageLines;
+    private final ch.boye.httpclientandroidlib.HttpResponseFactory responseFactory;
+
+    public void <init>(ch.boye.httpclientandroidlib.io.SessionInputBuffer, ch.boye.httpclientandroidlib.message.LineParser, ch.boye.httpclientandroidlib.HttpResponseFactory, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        ch.boye.httpclientandroidlib.message.LineParser $r2;
+        ch.boye.httpclientandroidlib.HttpResponseFactory $r3;
+        ch.boye.httpclientandroidlib.params.HttpParams $r4;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r5;
+        java.lang.IllegalArgumentException $r6;
+        ch.boye.httpclientandroidlib.util.CharArrayBuffer $r7;
+        java.lang.Class $r8;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.message.LineParser;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.HttpResponseFactory;
+
+        $r4 := @parameter3: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: void <init>(ch.boye.httpclientandroidlib.io.SessionInputBuffer,ch.boye.httpclientandroidlib.message.LineParser,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $r2, $r4);
+
+        $r5 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r8 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r8);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r5;
+
+        if $r3 != null goto label1;
+
+        $r6 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Response factory may not be null");
+
+        throw $r6;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.HttpResponseFactory responseFactory> = $r3;
+
+        $r7 = new ch.boye.httpclientandroidlib.util.CharArrayBuffer;
+
+        specialinvoke $r7.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void <init>(int)>(128);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.util.CharArrayBuffer lineBuf> = $r7;
+
+        $i0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: int getMaxGarbageLines(ch.boye.httpclientandroidlib.params.HttpParams)>($r4);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: int maxGarbageLines> = $i0;
+
+        return;
+    }
+
+    protected int getMaxGarbageLines(ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser $r0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $i0 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.params.HttpParams: int getIntParameter(java.lang.String,int)>("http.connection.max-status-line-garbage", 2147483647);
+
+        return $i0;
+    }
+
+    protected ch.boye.httpclientandroidlib.HttpMessage parseHead(ch.boye.httpclientandroidlib.io.SessionInputBuffer) throws java.io.IOException, ch.boye.httpclientandroidlib.HttpException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        ch.boye.httpclientandroidlib.NoHttpResponseException $r2;
+        ch.boye.httpclientandroidlib.message.ParserCursor $r3;
+        ch.boye.httpclientandroidlib.HttpResponseFactory $r4;
+        ch.boye.httpclientandroidlib.ProtocolException $r5;
+        int $i0, $i1, $i2, $i0_1, $i1_1, $i1_2, $i0_2, $i1_3;
+        ch.boye.httpclientandroidlib.util.CharArrayBuffer $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7;
+        ch.boye.httpclientandroidlib.message.LineParser $r7, $r7_1, $r7_2;
+        boolean $z0, $z0_1, $z0_2;
+        ch.boye.httpclientandroidlib.StatusLine $r8;
+        ch.boye.httpclientandroidlib.HttpResponse $r9;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r10, $r10_1, $r10_2, $r10_3;
+        java.lang.StringBuilder $r11, $r11_1, $r11_2, $r11_3, $r11_4;
+        java.lang.String $r12, $r12_1, $r12_2, $r12_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+(0)     $i0 = 0;
+
+     label1:
+        $r6 = Phi($r6 #0, $r6_7 #5);
+
+        $r7 = Phi($r7 #0, $r7_1 #5);
+
+        $i0_1 = Phi($i0 #0, $i0_2 #5);
+
+        $r12 = Phi($r12 #0, $r12_3 #5);
+
+        $r11 = Phi($r11 #0, $r11_4 #5);
+
+        $i1 = Phi($i1 #0, $i1_2 #5);
+
+        $r10 = Phi($r10 #0, $r10_3 #5);
+
+        $z0 = Phi($z0 #0, $z0_2 #5);
+
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.util.CharArrayBuffer lineBuf>;
+
+        virtualinvoke $r6_1.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void clear()>();
+
+        $r6_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.util.CharArrayBuffer lineBuf>;
+
+        $i1_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.io.SessionInputBuffer: int readLine(ch.boye.httpclientandroidlib.util.CharArrayBuffer)>($r6_2);
+
+        if $i1_1 != -1 goto label2;
+
+        if $i0_1 != 0 goto label2;
+
+        $r2 = new ch.boye.httpclientandroidlib.NoHttpResponseException;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.NoHttpResponseException: void <init>(java.lang.String)>("The target server failed to respond");
+
+        throw $r2;
+
+     label2:
+        $r3 = new ch.boye.httpclientandroidlib.message.ParserCursor;
+
+        $r6_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.util.CharArrayBuffer lineBuf>;
+
+        $i2 = virtualinvoke $r6_3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: int length()>();
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.message.ParserCursor: void <init>(int,int)>(0, $i2);
+
+        $r7_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.message.LineParser lineParser>;
+
+        $r6_4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.util.CharArrayBuffer lineBuf>;
+
+        $z0_1 = interfaceinvoke $r7_1.<ch.boye.httpclientandroidlib.message.LineParser: boolean hasProtocolVersion(ch.boye.httpclientandroidlib.util.CharArrayBuffer,ch.boye.httpclientandroidlib.message.ParserCursor)>($r6_4, $r3);
+
+        if $z0_1 == 0 goto label3;
+
+        $r7_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.message.LineParser lineParser>;
+
+        $r6_5 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.util.CharArrayBuffer lineBuf>;
+
+        $r8 = interfaceinvoke $r7_2.<ch.boye.httpclientandroidlib.message.LineParser: ch.boye.httpclientandroidlib.StatusLine parseStatusLine(ch.boye.httpclientandroidlib.util.CharArrayBuffer,ch.boye.httpclientandroidlib.message.ParserCursor)>($r6_5, $r3);
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.HttpResponseFactory responseFactory>;
+
+        $r9 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.HttpResponseFactory: ch.boye.httpclientandroidlib.HttpResponse newHttpResponse(ch.boye.httpclientandroidlib.StatusLine,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r8, null);
+
+        return $r9;
+
+     label3:
+(1)     if $i1_1 == -1 goto label4;
+
+        $i1_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: int maxGarbageLines>;
+
+(2)     if $i0_1 < $i1_2 goto label5;
+
+     label4:
+        $i1_3 = Phi($i1_1 #1, $i1_2 #2);
+
+        $r5 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>("The server failed to respond with a valid HTTP response");
+
+        throw $r5;
+
+     label5:
+        $r10_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0_2 = virtualinvoke $r10_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(3)     if $z0_2 == 0 goto label6;
+
+        $r10_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r11_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r11_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_2 = virtualinvoke $r11_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Garbage in response: ");
+
+        $r6_6 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultResponseParser: ch.boye.httpclientandroidlib.util.CharArrayBuffer lineBuf>;
+
+        $r12_1 = virtualinvoke $r6_6.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: java.lang.String toString()>();
+
+        $r11_3 = virtualinvoke $r11_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12_1);
+
+        $r12_2 = virtualinvoke $r11_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(4)     virtualinvoke $r10_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r12_2);
+
+     label6:
+        $r6_7 = Phi($r6_4 #3, $r6_6 #4);
+
+        $r12_3 = Phi($r12 #3, $r12_2 #4);
+
+        $r11_4 = Phi($r11 #3, $r11_3 #4);
+
+        $r10_3 = Phi($r10_1 #3, $r10_2 #4);
+
+        $i0_2 = $i0_1 + 1;
+
+(5)     goto label1;
+    }
+}

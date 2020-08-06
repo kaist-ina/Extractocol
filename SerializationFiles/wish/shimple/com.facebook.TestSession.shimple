@@ -1,0 +1,1393 @@
+public class com.facebook.TestSession extends com.facebook.Session
+{
+    static final boolean $assertionsDisabled;
+    private static final java.lang.String LOG_TAG;
+    private static java.util.Map appTestAccounts;
+    private static final long serialVersionUID;
+    private static java.lang.String testApplicationId;
+    private static java.lang.String testApplicationSecret;
+    private final com.facebook.TestSession$Mode mode;
+    private final java.util.List requestedPermissions;
+    private final java.lang.String sessionUniqueUserTag;
+    private java.lang.String testAccountId;
+    private java.lang.String testAccountUserName;
+    private boolean wasAskedToExtendAccessToken;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+
+        $r0 = class "com/facebook/TestSession";
+
+        $z0 = virtualinvoke $r0.<java.lang.Class: boolean desiredAssertionStatus()>();
+
+        if $z0 != 0 goto label2;
+
+(0)     $z0_1 = 1;
+
+     label1:
+        $z0_2 = Phi($z0_1 #0, $z0_3 #1);
+
+        <com.facebook.TestSession: boolean $assertionsDisabled> = $z0_2;
+
+        return;
+
+     label2:
+        $z0_3 = 0;
+
+(1)     goto label1;
+    }
+
+    void <init>(android.app.Activity, java.util.List, com.facebook.TokenCachingStrategy, java.lang.String, com.facebook.TestSession$Mode)
+    {
+        com.facebook.TestSession $r0;
+        android.app.Activity $r1;
+        java.util.List $r2;
+        com.facebook.TokenCachingStrategy $r3;
+        java.lang.String $r4, $r6, $r6_1, $r6_2;
+        com.facebook.TestSession$Mode $r5;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: java.util.List;
+
+        $r3 := @parameter2: com.facebook.TokenCachingStrategy;
+
+        $r4 := @parameter3: java.lang.String;
+
+        $r5 := @parameter4: com.facebook.TestSession$Mode;
+
+        $r6 = <com.facebook.TestSession: java.lang.String testApplicationId>;
+
+        specialinvoke $r0.<com.facebook.Session: void <init>(android.content.Context,java.lang.String,com.facebook.TokenCachingStrategy)>($r1, $r6, $r3);
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r2, "permissions");
+
+        $r6_1 = <com.facebook.TestSession: java.lang.String testApplicationId>;
+
+        staticinvoke <com.facebook.internal.Validate: void notNullOrEmpty(java.lang.String,java.lang.String)>($r6_1, "testApplicationId");
+
+        $r6_2 = <com.facebook.TestSession: java.lang.String testApplicationSecret>;
+
+        staticinvoke <com.facebook.internal.Validate: void notNullOrEmpty(java.lang.String,java.lang.String)>($r6_2, "testApplicationSecret");
+
+        $r0.<com.facebook.TestSession: java.lang.String sessionUniqueUserTag> = $r4;
+
+        $r0.<com.facebook.TestSession: com.facebook.TestSession$Mode mode> = $r5;
+
+        $r0.<com.facebook.TestSession: java.util.List requestedPermissions> = $r2;
+
+        return;
+    }
+
+    public static com.facebook.TestSession createSessionWithPrivateUser(android.app.Activity, java.util.List)
+    {
+        android.app.Activity $r0;
+        java.util.List $r1;
+        com.facebook.TestSession$Mode $r2;
+        com.facebook.TestSession $r3;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $r1 := @parameter1: java.util.List;
+
+        $r2 = <com.facebook.TestSession$Mode: com.facebook.TestSession$Mode PRIVATE>;
+
+        $r3 = staticinvoke <com.facebook.TestSession: com.facebook.TestSession createTestSession(android.app.Activity,java.util.List,com.facebook.TestSession$Mode,java.lang.String)>($r0, $r1, $r2, null);
+
+        return $r3;
+    }
+
+    public static com.facebook.TestSession createSessionWithSharedUser(android.app.Activity, java.util.List)
+    {
+        android.app.Activity $r0;
+        java.util.List $r1;
+        com.facebook.TestSession $r2;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $r1 := @parameter1: java.util.List;
+
+        $r2 = staticinvoke <com.facebook.TestSession: com.facebook.TestSession createSessionWithSharedUser(android.app.Activity,java.util.List,java.lang.String)>($r0, $r1, null);
+
+        return $r2;
+    }
+
+    public static com.facebook.TestSession createSessionWithSharedUser(android.app.Activity, java.util.List, java.lang.String)
+    {
+        android.app.Activity $r0;
+        java.util.List $r1;
+        java.lang.String $r2;
+        com.facebook.TestSession$Mode $r3;
+        com.facebook.TestSession $r4;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $r1 := @parameter1: java.util.List;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 = <com.facebook.TestSession$Mode: com.facebook.TestSession$Mode SHARED>;
+
+        $r4 = staticinvoke <com.facebook.TestSession: com.facebook.TestSession createTestSession(android.app.Activity,java.util.List,com.facebook.TestSession$Mode,java.lang.String)>($r0, $r1, $r3, $r2);
+
+        return $r4;
+    }
+
+    private com.facebook.TestSession$TestAccount createTestAccountAndFinishAuth()
+    {
+        com.facebook.TestSession $r0;
+        android.os.Bundle $r1;
+        com.facebook.Request $r2;
+        com.facebook.HttpMethod $r3;
+        boolean $z0;
+        java.lang.AssertionError $r4;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8;
+        com.facebook.TestSession$Mode $r6, $r7, $r6_1, $r7_1;
+        java.lang.Object[] $r8, $r8_1, $r8_2;
+        com.facebook.Response $r9;
+        com.facebook.FacebookRequestError $r10;
+        com.facebook.model.GraphObject $r11;
+        com.facebook.TestSession$TestAccount $r12;
+        com.facebook.FacebookException $r13;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r1 = new android.os.Bundle;
+
+        specialinvoke $r1.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("installed", "true");
+
+        $r5 = specialinvoke $r0.<com.facebook.TestSession: java.lang.String getPermissionsString()>();
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("permissions", $r5);
+
+        $r5_1 = staticinvoke <com.facebook.TestSession: java.lang.String getAppAccessToken()>();
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("access_token", $r5_1);
+
+        $r6 = $r0.<com.facebook.TestSession: com.facebook.TestSession$Mode mode>;
+
+        $r7 = <com.facebook.TestSession$Mode: com.facebook.TestSession$Mode SHARED>;
+
+(0)     if $r6 != $r7 goto label1;
+
+        $r8 = newarray (java.lang.Object)[1];
+
+        $r5_2 = specialinvoke $r0.<com.facebook.TestSession: java.lang.String getSharedTestAccountIdentifier()>();
+
+        $r8[0] = $r5_2;
+
+        $r5_3 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("Shared %s Testuser", $r8);
+
+(1)     virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("name", $r5_3);
+
+     label1:
+        $r8_1 = Phi($r8 #0, $r8 #1);
+
+        $r5_4 = Phi($r5_1 #0, $r5_3 #1);
+
+        $r8_2 = newarray (java.lang.Object)[1];
+
+        $r5_5 = <com.facebook.TestSession: java.lang.String testApplicationId>;
+
+        $r8_2[0] = $r5_5;
+
+        $r5_6 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s/accounts/test-users", $r8_2);
+
+        $r2 = new com.facebook.Request;
+
+        $r3 = <com.facebook.HttpMethod: com.facebook.HttpMethod POST>;
+
+        specialinvoke $r2.<com.facebook.Request: void <init>(com.facebook.Session,java.lang.String,android.os.Bundle,com.facebook.HttpMethod)>(null, $r5_6, $r1, $r3);
+
+        $r9 = virtualinvoke $r2.<com.facebook.Request: com.facebook.Response executeAndWait()>();
+
+        $r10 = virtualinvoke $r9.<com.facebook.Response: com.facebook.FacebookRequestError getError()>();
+
+        $r11 = virtualinvoke $r9.<com.facebook.Response: com.facebook.model.GraphObject getGraphObjectAs(java.lang.Class)>(class "com/facebook/TestSession$TestAccount");
+
+        $r12 = (com.facebook.TestSession$TestAccount) $r11;
+
+        if $r10 == null goto label2;
+
+        $r13 = virtualinvoke $r10.<com.facebook.FacebookRequestError: com.facebook.FacebookException getException()>();
+
+        virtualinvoke $r0.<com.facebook.TestSession: void finishAuthOrReauth(com.facebook.AccessToken,java.lang.Exception)>(null, $r13);
+
+        return null;
+
+     label2:
+        $z0 = <com.facebook.TestSession: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label3;
+
+        if $r12 != null goto label3;
+
+        $r4 = new java.lang.AssertionError;
+
+        specialinvoke $r4.<java.lang.AssertionError: void <init>()>();
+
+        throw $r4;
+
+     label3:
+        $r6_1 = $r0.<com.facebook.TestSession: com.facebook.TestSession$Mode mode>;
+
+        $r7_1 = <com.facebook.TestSession$Mode: com.facebook.TestSession$Mode SHARED>;
+
+(2)     if $r6_1 != $r7_1 goto label4;
+
+        $r5_7 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("name");
+
+        interfaceinvoke $r12.<com.facebook.TestSession$TestAccount: void setName(java.lang.String)>($r5_7);
+
+(3)     staticinvoke <com.facebook.TestSession: void storeTestAccount(com.facebook.TestSession$TestAccount)>($r12);
+
+     label4:
+        $r5_8 = Phi($r5_6 #2, $r5_7 #3);
+
+        specialinvoke $r0.<com.facebook.TestSession: void finishAuthWithTestAccount(com.facebook.TestSession$TestAccount)>($r12);
+
+        return $r12;
+    }
+
+    private static com.facebook.TestSession createTestSession(android.app.Activity, java.util.List, com.facebook.TestSession$Mode, java.lang.String)
+    {
+        android.app.Activity $r0;
+        com.facebook.TestSession$Mode $r1;
+        java.lang.String $r2, $r9, $r9_1, $r9_2, $r9_3;
+        com.facebook.FacebookException $r3;
+        java.lang.Throwable $r4;
+        java.lang.String[] $r5;
+        com.facebook.TestSession $r6;
+        com.facebook.TestSession$TestTokenCachingStrategy $r7;
+        java.util.List $r8, $r8_1, $r8_2, $r8_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $r8 := @parameter1: java.util.List;
+
+        $r1 := @parameter2: com.facebook.TestSession$Mode;
+
+        $r2 := @parameter3: java.lang.String;
+
+(0)     entermonitor class "com/facebook/TestSession";
+
+     label01:
+        $r9 = <com.facebook.TestSession: java.lang.String testApplicationId>;
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r9);
+
+     label02:
+(1)     if $z0 != 0 goto label05;
+
+     label03:
+(2)     $r9_1 = <com.facebook.TestSession: java.lang.String testApplicationSecret>;
+
+(3)     $z0_1 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r9_1);
+
+     label04:
+(4)     if $z0_1 == 0 goto label07;
+
+     label05:
+        $z0_3 = Phi($z0 #1, $z0_1 #4);
+
+        $r9_2 = Phi($r9 #1, $r9_1 #4);
+
+(5)     $r3 = new com.facebook.FacebookException;
+
+        specialinvoke $r3.<com.facebook.FacebookException: void <init>(java.lang.String)>("Must provide app ID and secret");
+
+        throw $r3;
+
+     label06:
+        $r4 := @caughtexception;
+
+        $z0_4 = Phi($z0 #0, $z0_1 #3, $z0_3 #5, $z0_2 #6);
+
+        $r9_3 = Phi($r9 #0, $r9_1 #2, $r9_2 #5);
+
+        $r8_3 = Phi($r8 #0, $r8_1 #8, $r8_2 #9);
+
+        exitmonitor class "com/facebook/TestSession";
+
+        throw $r4;
+
+     label07:
+(6)     $z0_2 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.util.Collection)>($r8);
+
+     label08:
+(7)     if $z0_2 == 0 goto label10;
+
+     label09:
+        $r5 = newarray (java.lang.String)[2];
+
+        $r5[0] = "email";
+
+        $r5[1] = "publish_actions";
+
+(8)     $r8_1 = staticinvoke <java.util.Arrays: java.util.List asList(java.lang.Object[])>($r5);
+
+     label10:
+        $r8_2 = Phi($r8 #7, $r8_1 #8);
+
+(9)     $r6 = new com.facebook.TestSession;
+
+        $r7 = new com.facebook.TestSession$TestTokenCachingStrategy;
+
+        specialinvoke $r7.<com.facebook.TestSession$TestTokenCachingStrategy: void <init>(com.facebook.TestSession$1)>(null);
+
+        specialinvoke $r6.<com.facebook.TestSession: void <init>(android.app.Activity,java.util.List,com.facebook.TokenCachingStrategy,java.lang.String,com.facebook.TestSession$Mode)>($r0, $r8_2, $r7, $r2, $r1);
+
+     label11:
+        exitmonitor class "com/facebook/TestSession";
+
+        return $r6;
+
+        catch java.lang.Throwable from label01 to label02 with label06;
+        catch java.lang.Throwable from label03 to label04 with label06;
+        catch java.lang.Throwable from label05 to label06 with label06;
+        catch java.lang.Throwable from label07 to label08 with label06;
+        catch java.lang.Throwable from label09 to label11 with label06;
+    }
+
+    private void deleteTestAccount(java.lang.String, java.lang.String)
+    {
+        com.facebook.TestSession $r0;
+        java.lang.String $r1, $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        android.os.Bundle $r2;
+        com.facebook.Request $r3;
+        com.facebook.HttpMethod $r4;
+        com.facebook.Response $r6;
+        com.facebook.FacebookRequestError $r7;
+        com.facebook.model.GraphObject $r8;
+        java.lang.Object[] $r9, $r9_1, $r9_2;
+        com.facebook.FacebookException $r10;
+        java.lang.Object $r11, $r11_1, $r11_2, $r11_3;
+        java.lang.Boolean $r12, $r12_1, $r12_2, $r12_3;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r5 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = new android.os.Bundle;
+
+        specialinvoke $r2.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke $r2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("access_token", $r1);
+
+        $r3 = new com.facebook.Request;
+
+        $r4 = <com.facebook.HttpMethod: com.facebook.HttpMethod DELETE>;
+
+        specialinvoke $r3.<com.facebook.Request: void <init>(com.facebook.Session,java.lang.String,android.os.Bundle,com.facebook.HttpMethod)>(null, $r5, $r2, $r4);
+
+        $r6 = virtualinvoke $r3.<com.facebook.Request: com.facebook.Response executeAndWait()>();
+
+        $r7 = virtualinvoke $r6.<com.facebook.Response: com.facebook.FacebookRequestError getError()>();
+
+        $r8 = virtualinvoke $r6.<com.facebook.Response: com.facebook.model.GraphObject getGraphObject()>();
+
+        if $r7 == null goto label1;
+
+        $r9 = newarray (java.lang.Object)[2];
+
+        $r9[0] = $r5;
+
+        $r10 = virtualinvoke $r7.<com.facebook.FacebookRequestError: com.facebook.FacebookException getException()>();
+
+        $r5_1 = virtualinvoke $r10.<com.facebook.FacebookException: java.lang.String toString()>();
+
+        $r9[1] = $r5_1;
+
+        $r5_2 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("Could not delete test account %s: %s", $r9);
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("FacebookSDK.TestSession", $r5_2);
+
+        return;
+
+     label1:
+        $r11 = interfaceinvoke $r8.<com.facebook.model.GraphObject: java.lang.Object getProperty(java.lang.String)>("FACEBOOK_NON_JSON_RESULT");
+
+        $r12 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+(0)     if $r11 == $r12 goto label2;
+
+        $r11_1 = interfaceinvoke $r8.<com.facebook.model.GraphObject: java.lang.Object getProperty(java.lang.String)>("success");
+
+        $r12_1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+(1)     if $r11_1 != $r12_1 goto label3;
+
+     label2:
+        $r11_2 = Phi($r11 #0, $r11_1 #1);
+
+        $r12_2 = Phi($r12 #0, $r12_1 #1);
+
+        $r9_1 = newarray (java.lang.Object)[1];
+
+        $r9_1[0] = $r5;
+
+        $r5_3 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("Could not delete test account %s: unknown reason", $r9_1);
+
+(2)     staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("FacebookSDK.TestSession", $r5_3);
+
+     label3:
+        $r11_3 = Phi($r11_1 #1, $r11_2 #2);
+
+        $r9_2 = Phi($r9 #1, $r9_1 #2);
+
+        $r12_3 = Phi($r12_1 #1, $r12_2 #2);
+
+        $r5_4 = Phi($r5 #1, $r5_3 #2);
+
+        return;
+    }
+
+    private void findOrCreateSharedTestAccount()
+    {
+        com.facebook.TestSession $r0;
+        java.lang.String $r1;
+        com.facebook.TestSession$TestAccount $r2;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r1 = specialinvoke $r0.<com.facebook.TestSession: java.lang.String getSharedTestAccountIdentifier()>();
+
+        $r2 = staticinvoke <com.facebook.TestSession: com.facebook.TestSession$TestAccount findTestAccountMatchingIdentifier(java.lang.String)>($r1);
+
+        if $r2 == null goto label1;
+
+        specialinvoke $r0.<com.facebook.TestSession: void finishAuthWithTestAccount(com.facebook.TestSession$TestAccount)>($r2);
+
+        return;
+
+     label1:
+        specialinvoke $r0.<com.facebook.TestSession: com.facebook.TestSession$TestAccount createTestAccountAndFinishAuth()>();
+
+        return;
+    }
+
+    private static com.facebook.TestSession$TestAccount findTestAccountMatchingIdentifier(java.lang.String)
+    {
+        java.lang.String $r0, $r8;
+        java.util.Map $r1;
+        java.lang.Throwable $r2;
+        java.util.Collection $r3;
+        java.util.Iterator $r4;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.lang.Object $r5;
+        com.facebook.TestSession$TestAccount $r6, $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+
+        $r0 := @parameter0: java.lang.String;
+
+(0)     entermonitor class "com/facebook/TestSession";
+
+     label1:
+        staticinvoke <com.facebook.TestSession: void retrieveTestAccountsForAppIfNeeded()>();
+
+        $r1 = <com.facebook.TestSession: java.util.Map appTestAccounts>;
+
+        $r3 = interfaceinvoke $r1.<java.util.Map: java.util.Collection values()>();
+
+(1)     $r4 = interfaceinvoke $r3.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label2:
+        $z0 = Phi($z0 #1, $z0_2 #5);
+
+        $r7 = Phi($r7 #1, $r7_1 #5);
+
+(2)     $z0_1 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+     label3:
+        if $z0_1 == 0 goto label7;
+
+     label4:
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (com.facebook.TestSession$TestAccount) $r5;
+
+(3)     $r7_1 = $r6;
+
+        $r8 = interfaceinvoke $r6.<com.facebook.TestSession$TestAccount: java.lang.String getName()>();
+
+(4)     $z0_2 = virtualinvoke $r8.<java.lang.String: boolean contains(java.lang.CharSequence)>($r0);
+
+     label5:
+(5)     if $z0_2 == 0 goto label2;
+
+     label6:
+        $z0_3 = Phi($z0_2 #5, $z0_1 #6);
+
+        $r7_2 = Phi($r7_1 #5, $r7_3 #6);
+
+        exitmonitor class "com/facebook/TestSession";
+
+        return $r7_2;
+
+     label7:
+        $r7_3 = null;
+
+(6)     goto label6;
+
+     label8:
+        $r2 := @caughtexception;
+
+        $z0_4 = Phi($z0 #0, $z0_1 #2, $z0_2 #4);
+
+        $r7_4 = Phi($r7 #0, $r7_1 #3);
+
+        exitmonitor class "com/facebook/TestSession";
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label3 with label8;
+        catch java.lang.Throwable from label4 to label5 with label8;
+    }
+
+    private void finishAuthWithTestAccount(com.facebook.TestSession$TestAccount)
+    {
+        com.facebook.TestSession $r0;
+        com.facebook.TestSession$TestAccount $r1;
+        java.util.List $r2;
+        com.facebook.AccessTokenSource $r3;
+        java.lang.String $r4, $r4_1, $r4_2;
+        com.facebook.AccessToken $r5;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r1 := @parameter0: com.facebook.TestSession$TestAccount;
+
+        $r4 = interfaceinvoke $r1.<com.facebook.TestSession$TestAccount: java.lang.String getId()>();
+
+        $r0.<com.facebook.TestSession: java.lang.String testAccountId> = $r4;
+
+        $r4_1 = interfaceinvoke $r1.<com.facebook.TestSession$TestAccount: java.lang.String getName()>();
+
+        $r0.<com.facebook.TestSession: java.lang.String testAccountUserName> = $r4_1;
+
+        $r4_2 = interfaceinvoke $r1.<com.facebook.TestSession$TestAccount: java.lang.String getAccessToken()>();
+
+        $r2 = $r0.<com.facebook.TestSession: java.util.List requestedPermissions>;
+
+        $r3 = <com.facebook.AccessTokenSource: com.facebook.AccessTokenSource TEST_USER>;
+
+        $r5 = staticinvoke <com.facebook.AccessToken: com.facebook.AccessToken createFromString(java.lang.String,java.util.List,com.facebook.AccessTokenSource)>($r4_2, $r2, $r3);
+
+        virtualinvoke $r0.<com.facebook.TestSession: void finishAuthOrReauth(com.facebook.AccessToken,java.lang.Exception)>($r5, null);
+
+        return;
+    }
+
+    static final java.lang.String getAppAccessToken()
+    {
+        java.lang.StringBuilder $r0, $r0_1, $r0_2, $r0_3;
+        java.lang.String $r1, $r1_1, $r1_2;
+
+        $r0 = new java.lang.StringBuilder;
+
+        specialinvoke $r0.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = <com.facebook.TestSession: java.lang.String testApplicationId>;
+
+        $r0_1 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r0_2 = virtualinvoke $r0_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("|");
+
+        $r1_1 = <com.facebook.TestSession: java.lang.String testApplicationSecret>;
+
+        $r0_3 = virtualinvoke $r0_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1_1);
+
+        $r1_2 = virtualinvoke $r0_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1_2;
+    }
+
+    private java.lang.String getPermissionsString()
+    {
+        com.facebook.TestSession $r0;
+        java.util.List $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r1 = $r0.<com.facebook.TestSession: java.util.List requestedPermissions>;
+
+        $r2 = staticinvoke <android.text.TextUtils: java.lang.String join(java.lang.CharSequence,java.lang.Iterable)>(",", $r1);
+
+        return $r2;
+    }
+
+    private java.lang.String getSharedTestAccountIdentifier()
+    {
+        com.facebook.TestSession $r0;
+        java.lang.String $r1, $r1_1, $r1_2, $r1_3, $r1_4;
+        int $i0, $i0_1, $i0_2;
+        long $l1, $l2, $l1_1, $l2_1, $l2_2, $l1_2, $l2_3;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r1 = specialinvoke $r0.<com.facebook.TestSession: java.lang.String getPermissionsString()>();
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int hashCode()>();
+
+        $l1 = (long) $i0;
+
+        $l1_1 = $l1 & 4294967295L;
+
+        $r1_1 = $r0.<com.facebook.TestSession: java.lang.String sessionUniqueUserTag>;
+
+        if $r1_1 == null goto label2;
+
+        $r1_2 = $r0.<com.facebook.TestSession: java.lang.String sessionUniqueUserTag>;
+
+        $i0_1 = virtualinvoke $r1_2.<java.lang.String: int hashCode()>();
+
+        $l2 = (long) $i0_1;
+
+(0)     $l2_1 = $l2 & 4294967295L;
+
+     label1:
+        $r1_3 = Phi($r1_2 #0, $r1_1 #1);
+
+        $l2_2 = Phi($l2_1 #0, $l2_3 #1);
+
+        $i0_2 = Phi($i0_1 #0, $i0 #1);
+
+        $l1_2 = $l1_1 ^ $l2_2;
+
+        $r1_4 = specialinvoke $r0.<com.facebook.TestSession: java.lang.String validNameStringFromInteger(long)>($l1_2);
+
+        return $r1_4;
+
+     label2:
+        $l2_3 = 0L;
+
+(1)     goto label1;
+    }
+
+    public static java.lang.String getTestApplicationId()
+    {
+        java.lang.Throwable $r0;
+        java.lang.String r1;
+
+        entermonitor class "com/facebook/TestSession";
+
+     label1:
+        r1 = <com.facebook.TestSession: java.lang.String testApplicationId>;
+
+     label2:
+        exitmonitor class "com/facebook/TestSession";
+
+        return r1;
+
+     label3:
+        $r0 := @caughtexception;
+
+        exitmonitor class "com/facebook/TestSession";
+
+        throw $r0;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public static java.lang.String getTestApplicationSecret()
+    {
+        java.lang.Throwable $r0;
+        java.lang.String r1;
+
+        entermonitor class "com/facebook/TestSession";
+
+     label1:
+        r1 = <com.facebook.TestSession: java.lang.String testApplicationSecret>;
+
+     label2:
+        exitmonitor class "com/facebook/TestSession";
+
+        return r1;
+
+     label3:
+        $r0 := @caughtexception;
+
+        exitmonitor class "com/facebook/TestSession";
+
+        throw $r0;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private static void populateTestAccounts(java.util.Collection, com.facebook.model.GraphObject)
+    {
+        java.util.Collection $r0;
+        com.facebook.model.GraphObject $r1, $r7;
+        java.lang.Throwable $r2;
+        java.util.Iterator $r3;
+        boolean $z0;
+        java.lang.Object $r4;
+        com.facebook.TestSession$TestAccount $r5;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3;
+        com.facebook.model.GraphUser $r8;
+
+        $r0 := @parameter0: java.util.Collection;
+
+        $r1 := @parameter1: com.facebook.model.GraphObject;
+
+(0)     entermonitor class "com/facebook/TestSession";
+
+     label1:
+(1)     $r3 = interfaceinvoke $r0.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label2:
+        $r6 = Phi($r6 #1, $r6_2 #4);
+
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+     label3:
+        if $z0 == 0 goto label7;
+
+     label4:
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (com.facebook.TestSession$TestAccount) $r4;
+
+(2)     $r6_1 = interfaceinvoke $r5.<com.facebook.TestSession$TestAccount: java.lang.String getId()>();
+
+        $r7 = interfaceinvoke $r1.<com.facebook.model.GraphObject: com.facebook.model.GraphObject getPropertyAs(java.lang.String,java.lang.Class)>($r6_1, class "com/facebook/model/GraphUser");
+
+        $r8 = (com.facebook.model.GraphUser) $r7;
+
+(3)     $r6_2 = interfaceinvoke $r8.<com.facebook.model.GraphUser: java.lang.String getName()>();
+
+        interfaceinvoke $r5.<com.facebook.TestSession$TestAccount: void setName(java.lang.String)>($r6_2);
+
+        staticinvoke <com.facebook.TestSession: void storeTestAccount(com.facebook.TestSession$TestAccount)>($r5);
+
+     label5:
+(4)     goto label2;
+
+     label6:
+        $r2 := @caughtexception;
+
+        $r6_3 = Phi($r6 #0, $r6_1 #2, $r6_2 #3);
+
+        exitmonitor class "com/facebook/TestSession";
+
+        throw $r2;
+
+     label7:
+        exitmonitor class "com/facebook/TestSession";
+
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    private static void retrieveTestAccountsForAppIfNeeded()
+    {
+        java.util.Map $r0;
+        java.util.HashMap $r1;
+        com.facebook.Request $r2, $r3;
+        com.facebook.Request[] $r4;
+        com.facebook.FacebookException $r5;
+        java.lang.Throwable $r6;
+        java.lang.String $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+        android.os.Bundle $r8, $r8_1, $r8_2, $r8_3;
+        java.util.List $r9;
+        int $i0;
+        java.lang.Object $r10, $r10_1, $r10_2, $r10_3;
+        com.facebook.Response $r11, $r11_1, $r11_2, $r11_3;
+        com.facebook.model.GraphObject $r12, $r12_1, $r12_2, $r12_3;
+        com.facebook.TestSession$TestAccountsResponse $r13;
+        com.facebook.model.GraphObjectList $r14;
+
+(0)     entermonitor class "com/facebook/TestSession";
+
+     label01:
+        $r0 = <com.facebook.TestSession: java.util.Map appTestAccounts>;
+
+     label02:
+(1)     if $r0 == null goto label04;
+
+     label03:
+        $r11 = Phi($r11 #1, $r11_2 #13);
+
+        $r12 = Phi($r12 #1, $r12_2 #13);
+
+        $r10 = Phi($r10 #1, $r10_2 #13);
+
+        $r7 = Phi($r7 #1, $r7_3 #13);
+
+        $r8 = Phi($r8 #1, $r8_2 #13);
+
+        exitmonitor class "com/facebook/TestSession";
+
+        return;
+
+     label04:
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+        <com.facebook.TestSession: java.util.Map appTestAccounts> = $r1;
+
+(2)     $r7_1 = <com.facebook.TestSession: java.lang.String testApplicationId>;
+
+        staticinvoke <com.facebook.Request: void setDefaultBatchApplicationId(java.lang.String)>($r7_1);
+
+(3)     $r8_1 = new android.os.Bundle;
+
+        specialinvoke $r8_1.<android.os.Bundle: void <init>()>();
+
+(4)     $r7_2 = staticinvoke <com.facebook.TestSession: java.lang.String getAppAccessToken()>();
+
+        virtualinvoke $r8_1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("access_token", $r7_2);
+
+        $r2 = new com.facebook.Request;
+
+        specialinvoke $r2.<com.facebook.Request: void <init>(com.facebook.Session,java.lang.String,android.os.Bundle,com.facebook.HttpMethod)>(null, "app/accounts/test-users", $r8_1, null);
+
+        virtualinvoke $r2.<com.facebook.Request: void setBatchEntryName(java.lang.String)>("testUsers");
+
+        virtualinvoke $r2.<com.facebook.Request: void setBatchEntryOmitResultOnSuccess(boolean)>(0);
+
+(5)     $r8_2 = new android.os.Bundle;
+
+        specialinvoke $r8_2.<android.os.Bundle: void <init>()>();
+
+(6)     $r7_3 = staticinvoke <com.facebook.TestSession: java.lang.String getAppAccessToken()>();
+
+        virtualinvoke $r8_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("access_token", $r7_3);
+
+        virtualinvoke $r8_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("ids", "{result=testUsers:$.data.*.id}");
+
+        virtualinvoke $r8_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("fields", "name");
+
+        $r3 = new com.facebook.Request;
+
+        specialinvoke $r3.<com.facebook.Request: void <init>(com.facebook.Session,java.lang.String,android.os.Bundle,com.facebook.HttpMethod)>(null, "", $r8_2, null);
+
+        virtualinvoke $r3.<com.facebook.Request: void setBatchEntryDependsOn(java.lang.String)>("testUsers");
+
+        $r4 = newarray (com.facebook.Request)[2];
+
+        $r4[0] = $r2;
+
+        $r4[1] = $r3;
+
+        $r9 = staticinvoke <com.facebook.Request: java.util.List executeBatchAndWait(com.facebook.Request[])>($r4);
+
+     label05:
+        if $r9 == null goto label08;
+
+     label06:
+        $i0 = interfaceinvoke $r9.<java.util.List: int size()>();
+
+     label07:
+        if $i0 == 2 goto label10;
+
+     label08:
+        $r5 = new com.facebook.FacebookException;
+
+        specialinvoke $r5.<com.facebook.FacebookException: void <init>(java.lang.String)>("Unexpected number of results from TestUsers batch query");
+
+        throw $r5;
+
+     label09:
+        $r6 := @caughtexception;
+
+        $r11_3 = Phi($r11 #0, $r11_1 #8, $r11_2 #11);
+
+        $r12_3 = Phi($r12 #0, $r12_1 #9, $r12_2 #12);
+
+        $r10_3 = Phi($r10 #0, $r10_1 #7, $r10_2 #10);
+
+        $r7_4 = Phi($r7 #0, $r7_1 #2, $r7_2 #4, $r7_3 #6);
+
+        $r8_3 = Phi($r8 #0, $r8_1 #3, $r8_2 #5);
+
+        exitmonitor class "com/facebook/TestSession";
+
+        throw $r6;
+
+     label10:
+(7)     $r10_1 = interfaceinvoke $r9.<java.util.List: java.lang.Object get(int)>(0);
+
+(8)     $r11_1 = (com.facebook.Response) $r10_1;
+
+(9)     $r12_1 = virtualinvoke $r11_1.<com.facebook.Response: com.facebook.model.GraphObject getGraphObjectAs(java.lang.Class)>(class "com/facebook/TestSession$TestAccountsResponse");
+
+        $r13 = (com.facebook.TestSession$TestAccountsResponse) $r12_1;
+
+        $r14 = interfaceinvoke $r13.<com.facebook.TestSession$TestAccountsResponse: com.facebook.model.GraphObjectList getData()>();
+
+(10)    $r10_2 = interfaceinvoke $r9.<java.util.List: java.lang.Object get(int)>(1);
+
+(11)    $r11_2 = (com.facebook.Response) $r10_2;
+
+(12)    $r12_2 = virtualinvoke $r11_2.<com.facebook.Response: com.facebook.model.GraphObject getGraphObject()>();
+
+        staticinvoke <com.facebook.TestSession: void populateTestAccounts(java.util.Collection,com.facebook.model.GraphObject)>($r14, $r12_2);
+
+     label11:
+(13)    goto label03;
+
+        catch java.lang.Throwable from label01 to label02 with label09;
+        catch java.lang.Throwable from label04 to label05 with label09;
+        catch java.lang.Throwable from label06 to label07 with label09;
+        catch java.lang.Throwable from label08 to label09 with label09;
+        catch java.lang.Throwable from label10 to label11 with label09;
+    }
+
+    public static void setTestApplicationId(java.lang.String)
+    {
+        java.lang.String $r0, $r3, $r3_1, $r3_2, $r3_3;
+        com.facebook.FacebookException $r1;
+        java.lang.Throwable $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+(0)     entermonitor class "com/facebook/TestSession";
+
+     label1:
+        $r3 = <com.facebook.TestSession: java.lang.String testApplicationId>;
+
+     label2:
+(1)     if $r3 == null goto label7;
+
+     label3:
+(2)     $r3_1 = <com.facebook.TestSession: java.lang.String testApplicationId>;
+
+        $z0 = virtualinvoke $r3_1.<java.lang.String: boolean equals(java.lang.Object)>($r0);
+
+     label4:
+(3)     if $z0 != 0 goto label7;
+
+     label5:
+        $r1 = new com.facebook.FacebookException;
+
+        specialinvoke $r1.<com.facebook.FacebookException: void <init>(java.lang.String)>("Can\'t have more than one test application ID");
+
+        throw $r1;
+
+     label6:
+        $r2 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #4);
+
+        exitmonitor class "com/facebook/TestSession";
+
+        throw $r2;
+
+     label7:
+        $r3_2 = Phi($r3 #1, $r3_1 #3);
+
+(4)     <com.facebook.TestSession: java.lang.String testApplicationId> = $r0;
+
+     label8:
+        exitmonitor class "com/facebook/TestSession";
+
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label3 to label4 with label6;
+        catch java.lang.Throwable from label5 to label6 with label6;
+        catch java.lang.Throwable from label7 to label8 with label6;
+    }
+
+    public static void setTestApplicationSecret(java.lang.String)
+    {
+        java.lang.String $r0, $r3, $r3_1, $r3_2, $r3_3;
+        com.facebook.FacebookException $r1;
+        java.lang.Throwable $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+(0)     entermonitor class "com/facebook/TestSession";
+
+     label1:
+        $r3 = <com.facebook.TestSession: java.lang.String testApplicationSecret>;
+
+     label2:
+(1)     if $r3 == null goto label7;
+
+     label3:
+(2)     $r3_1 = <com.facebook.TestSession: java.lang.String testApplicationSecret>;
+
+        $z0 = virtualinvoke $r3_1.<java.lang.String: boolean equals(java.lang.Object)>($r0);
+
+     label4:
+(3)     if $z0 != 0 goto label7;
+
+     label5:
+        $r1 = new com.facebook.FacebookException;
+
+        specialinvoke $r1.<com.facebook.FacebookException: void <init>(java.lang.String)>("Can\'t have more than one test application secret");
+
+        throw $r1;
+
+     label6:
+        $r2 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #4);
+
+        exitmonitor class "com/facebook/TestSession";
+
+        throw $r2;
+
+     label7:
+        $r3_2 = Phi($r3 #1, $r3_1 #3);
+
+(4)     <com.facebook.TestSession: java.lang.String testApplicationSecret> = $r0;
+
+     label8:
+        exitmonitor class "com/facebook/TestSession";
+
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label3 to label4 with label6;
+        catch java.lang.Throwable from label5 to label6 with label6;
+        catch java.lang.Throwable from label7 to label8 with label6;
+    }
+
+    private static void storeTestAccount(com.facebook.TestSession$TestAccount)
+    {
+        com.facebook.TestSession$TestAccount $r0;
+        java.util.Map $r1;
+        java.lang.Throwable $r2;
+        java.lang.String $r3;
+
+        $r0 := @parameter0: com.facebook.TestSession$TestAccount;
+
+        entermonitor class "com/facebook/TestSession";
+
+     label1:
+        $r1 = <com.facebook.TestSession: java.util.Map appTestAccounts>;
+
+        $r3 = interfaceinvoke $r0.<com.facebook.TestSession$TestAccount: java.lang.String getId()>();
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r3, $r0);
+
+     label2:
+        exitmonitor class "com/facebook/TestSession";
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor class "com/facebook/TestSession";
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private java.lang.String validNameStringFromInteger(long)
+    {
+        com.facebook.TestSession $r0;
+        long $l0;
+        java.lang.StringBuilder $r1;
+        int $i1, $i3, $i5, $i3_1, $i5_1, $i5_2, $i5_3, $i5_4, $i3_2;
+        java.lang.String $r2, $r2_1;
+        char $c2, $c4, $c2_1, $c4_1, $c4_2, $c4_3, $c2_2, $c2_3;
+        char[] $r3;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $l0 := @parameter0: long;
+
+        $r2 = staticinvoke <java.lang.Long: java.lang.String toString(long)>($l0);
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("Perm");
+
+        $c2 = 0;
+
+        $r3 = virtualinvoke $r2.<java.lang.String: char[] toCharArray()>();
+
+        $i1 = lengthof $r3;
+
+(0)     $i3 = 0;
+
+     label1:
+        $i5 = Phi($i5 #0, $i5_4 #3);
+
+        $i3_1 = Phi($i3 #0, $i3_2 #3);
+
+        $c4 = Phi($c4 #0, $c4_3 #3);
+
+        $c2_1 = Phi($c2 #0, $c2_3 #3);
+
+        if $i3_1 >= $i1 goto label3;
+
+        $c4_1 = $r3[$i3_1];
+
+(1)     if $c4_1 != $c2_1 goto label2;
+
+        $i5_1 = $c4_1 + 10;
+
+(2)     $c4_2 = (char) $i5_1;
+
+     label2:
+        $i5_2 = Phi($i5 #1, $i5_1 #2);
+
+        $c4_3 = Phi($c4_1 #1, $c4_2 #2);
+
+        $i5_3 = $c4_3 + 97;
+
+        $i5_4 = $i5_3 + -48;
+
+        $c2_2 = (char) $i5_4;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>($c2_2);
+
+        $c2_3 = $c4_3;
+
+        $i3_2 = $i3_1 + 1;
+
+(3)     goto label1;
+
+     label3:
+        $r2_1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r2_1;
+    }
+
+    void authorize(com.facebook.Session$AuthorizationRequest)
+    {
+        com.facebook.TestSession $r0;
+        com.facebook.Session$AuthorizationRequest $r1;
+        com.facebook.TestSession$Mode $r2, $r3;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r1 := @parameter0: com.facebook.Session$AuthorizationRequest;
+
+        $r2 = $r0.<com.facebook.TestSession: com.facebook.TestSession$Mode mode>;
+
+        $r3 = <com.facebook.TestSession$Mode: com.facebook.TestSession$Mode PRIVATE>;
+
+        if $r2 != $r3 goto label1;
+
+        specialinvoke $r0.<com.facebook.TestSession: com.facebook.TestSession$TestAccount createTestAccountAndFinishAuth()>();
+
+        return;
+
+     label1:
+        specialinvoke $r0.<com.facebook.TestSession: void findOrCreateSharedTestAccount()>();
+
+        return;
+    }
+
+    void extendAccessToken()
+    {
+        com.facebook.TestSession $r0;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r0.<com.facebook.TestSession: boolean wasAskedToExtendAccessToken> = 1;
+
+        specialinvoke $r0.<com.facebook.Session: void extendAccessToken()>();
+
+        return;
+    }
+
+    void fakeTokenRefreshAttempt()
+    {
+        com.facebook.TestSession $r0;
+        com.facebook.Session$TokenRefreshRequest $r1;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r1 = new com.facebook.Session$TokenRefreshRequest;
+
+        specialinvoke $r1.<com.facebook.Session$TokenRefreshRequest: void <init>(com.facebook.Session)>($r0);
+
+        virtualinvoke $r0.<com.facebook.TestSession: void setCurrentTokenRefreshRequest(com.facebook.Session$TokenRefreshRequest)>($r1);
+
+        return;
+    }
+
+    void forceExtendAccessToken(boolean)
+    {
+        com.facebook.TestSession $r0;
+        boolean $z0;
+        com.facebook.AccessToken $r1, $r4;
+        com.facebook.AccessTokenSource $r2;
+        java.util.Date $r3, $r6, $r3_1;
+        java.lang.String $r5;
+        java.util.List $r7, $r8;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $z0 := @parameter0: boolean;
+
+        $r4 = virtualinvoke $r0.<com.facebook.TestSession: com.facebook.AccessToken getTokenInfo()>();
+
+        $r1 = new com.facebook.AccessToken;
+
+        $r5 = virtualinvoke $r4.<com.facebook.AccessToken: java.lang.String getToken()>();
+
+        $r6 = new java.util.Date;
+
+        specialinvoke $r6.<java.util.Date: void <init>()>();
+
+        $r7 = virtualinvoke $r4.<com.facebook.AccessToken: java.util.List getPermissions()>();
+
+        $r8 = virtualinvoke $r4.<com.facebook.AccessToken: java.util.List getDeclinedPermissions()>();
+
+        $r2 = <com.facebook.AccessTokenSource: com.facebook.AccessTokenSource TEST_USER>;
+
+        $r3 = new java.util.Date;
+
+        specialinvoke $r3.<java.util.Date: void <init>(long)>(0L);
+
+        specialinvoke $r1.<com.facebook.AccessToken: void <init>(java.lang.String,java.util.Date,java.util.List,java.util.List,com.facebook.AccessTokenSource,java.util.Date)>($r5, $r6, $r7, $r8, $r2, $r3);
+
+        virtualinvoke $r0.<com.facebook.TestSession: void setTokenInfo(com.facebook.AccessToken)>($r1);
+
+        $r3_1 = new java.util.Date;
+
+        specialinvoke $r3_1.<java.util.Date: void <init>(long)>(0L);
+
+        virtualinvoke $r0.<com.facebook.TestSession: void setLastAttemptedTokenExtendDate(java.util.Date)>($r3_1);
+
+        return;
+    }
+
+    public final java.lang.String getTestUserId()
+    {
+        com.facebook.TestSession $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        r1 = $r0.<com.facebook.TestSession: java.lang.String testAccountId>;
+
+        return r1;
+    }
+
+    public final java.lang.String getTestUserName()
+    {
+        com.facebook.TestSession $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        r1 = $r0.<com.facebook.TestSession: java.lang.String testAccountUserName>;
+
+        return r1;
+    }
+
+    boolean getWasAskedToExtendAccessToken()
+    {
+        com.facebook.TestSession $r0;
+        boolean z0;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        z0 = $r0.<com.facebook.TestSession: boolean wasAskedToExtendAccessToken>;
+
+        return z0;
+    }
+
+    void postStateChange(com.facebook.SessionState, com.facebook.SessionState, java.lang.Exception)
+    {
+        com.facebook.TestSession $r0;
+        com.facebook.SessionState $r1, $r2;
+        java.lang.Exception $r3;
+        java.lang.String $r4, $r7;
+        com.facebook.TestSession$Mode $r5, $r6;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r1 := @parameter0: com.facebook.SessionState;
+
+        $r2 := @parameter1: com.facebook.SessionState;
+
+        $r3 := @parameter2: java.lang.Exception;
+
+        $r4 = $r0.<com.facebook.TestSession: java.lang.String testAccountId>;
+
+        specialinvoke $r0.<com.facebook.Session: void postStateChange(com.facebook.SessionState,com.facebook.SessionState,java.lang.Exception)>($r1, $r2, $r3);
+
+        $z0 = virtualinvoke $r2.<com.facebook.SessionState: boolean isClosed()>();
+
+        if $z0 == 0 goto label1;
+
+        if $r4 == null goto label1;
+
+        $r5 = $r0.<com.facebook.TestSession: com.facebook.TestSession$Mode mode>;
+
+        $r6 = <com.facebook.TestSession$Mode: com.facebook.TestSession$Mode PRIVATE>;
+
+        if $r5 != $r6 goto label1;
+
+        $r7 = staticinvoke <com.facebook.TestSession: java.lang.String getAppAccessToken()>();
+
+        specialinvoke $r0.<com.facebook.TestSession: void deleteTestAccount(java.lang.String,java.lang.String)>($r4, $r7);
+
+     label1:
+        return;
+    }
+
+    boolean shouldExtendAccessToken()
+    {
+        com.facebook.TestSession $r0;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $z0 = specialinvoke $r0.<com.facebook.Session: boolean shouldExtendAccessToken()>();
+
+        $r0.<com.facebook.TestSession: boolean wasAskedToExtendAccessToken> = 0;
+
+        return $z0;
+    }
+
+    public final java.lang.String toString()
+    {
+        com.facebook.TestSession $r0;
+        java.lang.String $r1, $r2, $r1_1;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6;
+
+        $r0 := @this: com.facebook.TestSession;
+
+        $r2 = specialinvoke $r0.<com.facebook.Session: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("{TestSession");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" testUserId:");
+
+        $r1 = $r0.<com.facebook.TestSession: java.lang.String testAccountId>;
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r3_4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r3_5 = virtualinvoke $r3_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r3_6 = virtualinvoke $r3_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}");
+
+        $r1_1 = virtualinvoke $r3_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1_1;
+    }
+}

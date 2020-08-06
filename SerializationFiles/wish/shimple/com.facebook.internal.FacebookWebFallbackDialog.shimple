@@ -1,0 +1,300 @@
+public class com.facebook.internal.FacebookWebFallbackDialog extends com.facebook.widget.WebDialog
+{
+    private static final int OS_BACK_BUTTON_RESPONSE_TIMEOUT_MILLISECONDS;
+    private static final java.lang.String TAG;
+    private boolean waitingForDialogToClose;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        java.lang.String $r1;
+
+        $r0 = class "com/facebook/internal/FacebookWebFallbackDialog";
+
+        $r1 = virtualinvoke $r0.<java.lang.Class: java.lang.String getName()>();
+
+        <com.facebook.internal.FacebookWebFallbackDialog: java.lang.String TAG> = $r1;
+
+        return;
+    }
+
+    private void <init>(android.content.Context, java.lang.String, java.lang.String)
+    {
+        com.facebook.internal.FacebookWebFallbackDialog $r0;
+        android.content.Context $r1;
+        java.lang.String $r2, $r3;
+
+        $r0 := @this: com.facebook.internal.FacebookWebFallbackDialog;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        specialinvoke $r0.<com.facebook.widget.WebDialog: void <init>(android.content.Context,java.lang.String)>($r1, $r2);
+
+        virtualinvoke $r0.<com.facebook.internal.FacebookWebFallbackDialog: void setExpectedRedirectUrl(java.lang.String)>($r3);
+
+        return;
+    }
+
+    static boolean access$000(com.facebook.internal.FacebookWebFallbackDialog)
+    {
+        com.facebook.internal.FacebookWebFallbackDialog $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.facebook.internal.FacebookWebFallbackDialog;
+
+        $z0 = virtualinvoke $r0.<com.facebook.internal.FacebookWebFallbackDialog: boolean isListenerCalled()>();
+
+        return $z0;
+    }
+
+    static void access$100(com.facebook.internal.FacebookWebFallbackDialog)
+    {
+        com.facebook.internal.FacebookWebFallbackDialog $r0;
+
+        $r0 := @parameter0: com.facebook.internal.FacebookWebFallbackDialog;
+
+        virtualinvoke $r0.<com.facebook.internal.FacebookWebFallbackDialog: void sendCancelToListener()>();
+
+        return;
+    }
+
+    public static boolean presentWebFallback(android.content.Context, java.lang.String, java.lang.String, com.facebook.widget.FacebookDialog$PendingCall, com.facebook.widget.FacebookDialog$Callback)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1, $r7, $r7_1;
+        com.facebook.widget.FacebookDialog$PendingCall $r2;
+        com.facebook.widget.FacebookDialog$Callback $r3;
+        java.lang.Object[] $r4;
+        com.facebook.internal.FacebookWebFallbackDialog $r5;
+        com.facebook.internal.FacebookWebFallbackDialog$1 $r6;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r7 := @parameter2: java.lang.String;
+
+        $r2 := @parameter3: com.facebook.widget.FacebookDialog$PendingCall;
+
+        $r3 := @parameter4: com.facebook.widget.FacebookDialog$Callback;
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r4 = newarray (java.lang.Object)[1];
+
+        $r4[0] = $r7;
+
+        $r7_1 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("fb%s://bridge/", $r4);
+
+        $r5 = new com.facebook.internal.FacebookWebFallbackDialog;
+
+        specialinvoke $r5.<com.facebook.internal.FacebookWebFallbackDialog: void <init>(android.content.Context,java.lang.String,java.lang.String)>($r0, $r1, $r7_1);
+
+        $r6 = new com.facebook.internal.FacebookWebFallbackDialog$1;
+
+        specialinvoke $r6.<com.facebook.internal.FacebookWebFallbackDialog$1: void <init>(android.content.Context,com.facebook.widget.FacebookDialog$PendingCall,com.facebook.widget.FacebookDialog$Callback)>($r0, $r2, $r3);
+
+        virtualinvoke $r5.<com.facebook.internal.FacebookWebFallbackDialog: void setOnCompleteListener(com.facebook.widget.WebDialog$OnCompleteListener)>($r6);
+
+        virtualinvoke $r5.<com.facebook.internal.FacebookWebFallbackDialog: void show()>();
+
+        return 1;
+    }
+
+    public void dismiss()
+    {
+        com.facebook.internal.FacebookWebFallbackDialog $r0;
+        android.os.Handler $r1;
+        com.facebook.internal.FacebookWebFallbackDialog$2 $r2;
+        android.webkit.WebView $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3;
+        java.lang.String $r5;
+        android.os.Looper $r6;
+
+        $r0 := @this: com.facebook.internal.FacebookWebFallbackDialog;
+
+        $r3 = virtualinvoke $r0.<com.facebook.internal.FacebookWebFallbackDialog: android.webkit.WebView getWebView()>();
+
+        $z0 = virtualinvoke $r0.<com.facebook.internal.FacebookWebFallbackDialog: boolean isListenerCalled()>();
+
+(0)     if $z0 != 0 goto label1;
+
+(1)     if $r3 == null goto label1;
+
+        $z0_1 = virtualinvoke $r3.<android.webkit.WebView: boolean isShown()>();
+
+(2)     if $z0_1 != 0 goto label2;
+
+     label1:
+        $z0_3 = Phi($z0 #0, $z0 #1, $z0_1 #2);
+
+        specialinvoke $r0.<com.facebook.widget.WebDialog: void dismiss()>();
+
+        return;
+
+     label2:
+        $z0_2 = $r0.<com.facebook.internal.FacebookWebFallbackDialog: boolean waitingForDialogToClose>;
+
+(3)     if $z0_2 != 0 goto label3;
+
+        $r0.<com.facebook.internal.FacebookWebFallbackDialog: boolean waitingForDialogToClose> = 1;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("javascript:");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("(function() {  var event = document.createEvent(\'Event\');  event.initEvent(\'fbPlatformDialogMustClose\',true,true);  document.dispatchEvent(event);})();");
+
+        $r5 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<android.webkit.WebView: void loadUrl(java.lang.String)>($r5);
+
+        $r1 = new android.os.Handler;
+
+        $r6 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r1.<android.os.Handler: void <init>(android.os.Looper)>($r6);
+
+        $r2 = new com.facebook.internal.FacebookWebFallbackDialog$2;
+
+        specialinvoke $r2.<com.facebook.internal.FacebookWebFallbackDialog$2: void <init>(com.facebook.internal.FacebookWebFallbackDialog)>($r0);
+
+(4)     virtualinvoke $r1.<android.os.Handler: boolean postDelayed(java.lang.Runnable,long)>($r2, 1500L);
+
+     label3:
+        $r4_3 = Phi($r4 #3, $r4_2 #4);
+
+        return;
+    }
+
+    protected android.os.Bundle parseResponseUri(java.lang.String)
+    {
+        com.facebook.internal.FacebookWebFallbackDialog $r0;
+        org.json.JSONException $r1, $r2;
+        java.lang.String $r3, $r8, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r8_1, $r8_2, $r3_6, $r8_3, $r3_7;
+        android.net.Uri $r4;
+        android.os.Bundle $r5, $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        org.json.JSONObject $r6, $r6_1, $r6_2, $r6_3;
+        int $i0;
+
+        $r0 := @this: com.facebook.internal.FacebookWebFallbackDialog;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r4 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r3);
+
+        $r3_1 = virtualinvoke $r4.<android.net.Uri: java.lang.String getQuery()>();
+
+        $r5 = staticinvoke <com.facebook.internal.Utility: android.os.Bundle parseUrlQueryString(java.lang.String)>($r3_1);
+
+        $r3_2 = virtualinvoke $r5.<android.os.Bundle: java.lang.String getString(java.lang.String)>("bridge_args");
+
+        virtualinvoke $r5.<android.os.Bundle: void remove(java.lang.String)>("bridge_args");
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r3_2);
+
+(0)     if $z0 != 0 goto label2;
+
+(1)     $r6 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r6.<org.json.JSONObject: void <init>(java.lang.String)>($r3_2);
+
+        $r7 = staticinvoke <com.facebook.internal.BundleJSONConverter: android.os.Bundle convertToBundle(org.json.JSONObject)>($r6);
+
+(2)     virtualinvoke $r5.<android.os.Bundle: void putBundle(java.lang.String,android.os.Bundle)>("com.facebook.platform.protocol.BRIDGE_ARGS", $r7);
+
+     label2:
+        $r7_2 = Phi($r7 #0, $r7 #2, $r7_1 #9);
+
+        $r6_1 = Phi($r6 #0, $r6 #2, $r6 #9);
+
+        $r3_4 = Phi($r3_2 #0, $r3_2 #2, $r3_3 #9);
+
+        $r3_5 = virtualinvoke $r5.<android.os.Bundle: java.lang.String getString(java.lang.String)>("method_results");
+
+        $r8 = $r3_5;
+
+        virtualinvoke $r5.<android.os.Bundle: void remove(java.lang.String)>("method_results");
+
+        $z0_1 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r3_5);
+
+(3)     if $z0_1 != 0 goto label5;
+
+        $z0_2 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r3_5);
+
+(4)     if $z0_2 == 0 goto label3;
+
+(5)     $r8_1 = "{}";
+
+     label3:
+        $r8_2 = Phi($r8 #4, $r8_1 #5);
+
+(6)     $r6_2 = new org.json.JSONObject;
+
+     label4:
+        specialinvoke $r6_2.<org.json.JSONObject: void <init>(java.lang.String)>($r8_2);
+
+(7)     $r7_3 = staticinvoke <com.facebook.internal.BundleJSONConverter: android.os.Bundle convertToBundle(org.json.JSONObject)>($r6_2);
+
+(8)     virtualinvoke $r5.<android.os.Bundle: void putBundle(java.lang.String,android.os.Bundle)>("com.facebook.platform.protocol.RESULT_ARGS", $r7_3);
+
+     label5:
+        $r7_5 = Phi($r7_2 #3, $r7_3 #8, $r7_4 #10);
+
+        $r8_3 = Phi($r8 #3, $r8_2 #8, $r8_2 #10);
+
+        $r6_3 = Phi($r6_1 #3, $r6_2 #8, $r6_2 #10);
+
+        $z0_3 = Phi($z0_1 #3, $z0_2 #8, $z0_2 #10);
+
+        $r3_7 = Phi($r3_5 #3, $r3_5 #8, $r3_6 #10);
+
+        virtualinvoke $r5.<android.os.Bundle: void remove(java.lang.String)>("version");
+
+        $i0 = staticinvoke <com.facebook.internal.NativeProtocol: int getLatestKnownVersion()>();
+
+        virtualinvoke $r5.<android.os.Bundle: void putInt(java.lang.String,int)>("com.facebook.platform.protocol.PROTOCOL_VERSION", $i0);
+
+        return $r5;
+
+     label6:
+        $r1 := @caughtexception;
+
+        $r7_1 = Phi($r7 #1);
+
+        $r3_3 = <com.facebook.internal.FacebookWebFallbackDialog: java.lang.String TAG>;
+
+        staticinvoke <com.facebook.internal.Utility: void logd(java.lang.String,java.lang.String,java.lang.Throwable)>($r3_3, "Unable to parse bridge_args JSON", $r1);
+
+(9)     goto label2;
+
+     label7:
+        $r2 := @caughtexception;
+
+        $r7_4 = Phi($r7_2 #6, $r7_3 #7);
+
+        $r3_6 = <com.facebook.internal.FacebookWebFallbackDialog: java.lang.String TAG>;
+
+        staticinvoke <com.facebook.internal.Utility: void logd(java.lang.String,java.lang.String,java.lang.Throwable)>($r3_6, "Unable to parse bridge_args JSON", $r2);
+
+(10)    goto label5;
+
+        catch org.json.JSONException from label1 to label2 with label6;
+        catch org.json.JSONException from label4 to label5 with label7;
+    }
+}

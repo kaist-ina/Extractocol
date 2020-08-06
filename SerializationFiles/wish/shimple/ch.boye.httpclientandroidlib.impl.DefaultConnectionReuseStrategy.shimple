@@ -1,0 +1,249 @@
+public class ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy extends java.lang.Object implements ch.boye.httpclientandroidlib.ConnectionReuseStrategy
+{
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    protected ch.boye.httpclientandroidlib.TokenIterator createTokenIterator(ch.boye.httpclientandroidlib.HeaderIterator)
+    {
+        ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy $r0;
+        ch.boye.httpclientandroidlib.HeaderIterator $r1;
+        ch.boye.httpclientandroidlib.message.BasicTokenIterator $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HeaderIterator;
+
+        $r2 = new ch.boye.httpclientandroidlib.message.BasicTokenIterator;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.message.BasicTokenIterator: void <init>(ch.boye.httpclientandroidlib.HeaderIterator)>($r1);
+
+        return $r2;
+    }
+
+    public boolean keepAlive(ch.boye.httpclientandroidlib.HttpResponse, ch.boye.httpclientandroidlib.protocol.HttpContext)
+    {
+        ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        java.lang.NumberFormatException $r3;
+        ch.boye.httpclientandroidlib.ParseException $r4;
+        ch.boye.httpclientandroidlib.HttpVersion $r5;
+        java.lang.IllegalArgumentException $r6, $r6_1;
+        ch.boye.httpclientandroidlib.StatusLine $r7;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r8;
+        ch.boye.httpclientandroidlib.Header $r9, $r9_1, $r9_2;
+        java.lang.String $r10, $r11, $r10_1, $r10_2, $r10_3, $r11_1, $r10_4, $r11_2, $r10_5, $r11_3, $r11_4, $r10_6, $r11_5, $r10_7, $r11_6;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z1_1, $z1_2, $z1_3, $z0_6, $z0_7, $z1_4, $z0_8, $z1_5, $z0_9;
+        ch.boye.httpclientandroidlib.Header[] $r12;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4;
+        ch.boye.httpclientandroidlib.HeaderIterator $r13, $r14, $r14_1, $r14_2;
+        ch.boye.httpclientandroidlib.TokenIterator $r15;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label01;
+
+        $r6 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP response may not be null.");
+
+        throw $r6;
+
+     label01:
+        if $r2 != null goto label02;
+
+        $r6_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP context may not be null.");
+
+        throw $r6_1;
+
+     label02:
+        $r7 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $r8 = interfaceinvoke $r7.<ch.boye.httpclientandroidlib.StatusLine: ch.boye.httpclientandroidlib.ProtocolVersion getProtocolVersion()>();
+
+        $r9 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Transfer-Encoding");
+
+        if $r9 == null goto label03;
+
+        $r10 = "chunked";
+
+        $r11 = interfaceinvoke $r9.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $z0 = virtualinvoke $r10.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r11);
+
+(0)     if $z0 != 0 goto label09;
+
+        return 0;
+
+     label03:
+        $r12 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Content-Length");
+
+(1)     if $r12 == null goto label04;
+
+        $i0 = lengthof $r12;
+
+(2)     if $i0 == 1 goto label05;
+
+     label04:
+        $i0_3 = Phi($i0 #1, $i0 #2);
+
+        return 0;
+
+     label05:
+(3)     $r9_1 = $r12[0];
+
+     label06:
+(4)     $r10_1 = interfaceinvoke $r9_1.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+(5)     $i0_1 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r10_1);
+
+     label07:
+(6)     if $i0_1 >= 0 goto label09;
+
+        return 0;
+
+     label08:
+        $r3 := @caughtexception;
+
+        $r10_2 = Phi($r10 #3, $r10_1 #4);
+
+        $i0_2 = Phi($i0 #3, $i0_1 #5);
+
+        return 0;
+
+     label09:
+        $r10_3 = Phi($r10 #0, $r10_1 #6);
+
+        $r9_2 = Phi($r9 #0, $r9_1 #6);
+
+        $z0_1 = Phi($z0 #0, $z0 #6);
+
+        $i0_4 = Phi($i0 #0, $i0_1 #6);
+
+        $r11_1 = Phi($r11 #0, $r11 #6);
+
+        $r13 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HeaderIterator headerIterator(java.lang.String)>("Connection");
+
+        $r14 = $r13;
+
+        $z0_2 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HeaderIterator: boolean hasNext()>();
+
+(7)     if $z0_2 != 0 goto label10;
+
+(8)     $r14_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HeaderIterator headerIterator(java.lang.String)>("Proxy-Connection");
+
+     label10:
+        $r14_2 = Phi($r14 #7, $r14_1 #8);
+
+        $z0_3 = interfaceinvoke $r14_2.<ch.boye.httpclientandroidlib.HeaderIterator: boolean hasNext()>();
+
+(9)     if $z0_3 == 0 goto label24;
+
+     label11:
+        $r15 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy: ch.boye.httpclientandroidlib.TokenIterator createTokenIterator(ch.boye.httpclientandroidlib.HeaderIterator)>($r14_2);
+
+     label12:
+(10)    $z0_4 = 0;
+
+     label13:
+        $r10_4 = Phi($r10_3 #10, $r10_5 #17, $r10_5 #18);
+
+        $z0_5 = Phi($z0_4 #10, $z0_5 #17, $z0_6 #18);
+
+        $r11_2 = Phi($r11_1 #10, $r11_4 #17, $r11_4 #18);
+
+        $z1 = Phi($z1 #10, $z1_3 #17, $z1_3 #18);
+
+(11)    $z1_1 = interfaceinvoke $r15.<ch.boye.httpclientandroidlib.TokenIterator: boolean hasNext()>();
+
+     label14:
+        if $z1_1 == 0 goto label22;
+
+     label15:
+(12)    $r10_5 = interfaceinvoke $r15.<ch.boye.httpclientandroidlib.TokenIterator: java.lang.String nextToken()>();
+
+     label16:
+(13)    $r11_3 = "Close";
+
+     label17:
+(14)    $z1_2 = virtualinvoke $r11_3.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r10_5);
+
+     label18:
+        if $z1_2 == 0 goto label19;
+
+        return 0;
+
+     label19:
+(15)    $r11_4 = "Keep-Alive";
+
+     label20:
+(16)    $z1_3 = virtualinvoke $r11_4.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r10_5);
+
+     label21:
+(17)    if $z1_3 == 0 goto label13;
+
+        $z0_6 = 1;
+
+(18)    goto label13;
+
+     label22:
+(19)    if $z0_5 == 0 goto label24;
+
+        return 1;
+
+     label23:
+        $r4 := @caughtexception;
+
+        $r10_6 = Phi($r10_3 #9, $r10_4 #11, $r10_5 #12);
+
+        $z0_7 = Phi($z0_3 #9, $z0_4 #10, $z0_6 #18, $z0_5 #11);
+
+        $r11_5 = Phi($r11_1 #9, $r11_2 #11, $r11_3 #13, $r11_4 #15);
+
+        $z1_4 = Phi($z1 #9, $z1_1 #11, $z1_2 #14, $z1_3 #16);
+
+        return 0;
+
+     label24:
+        $r10_7 = Phi($r10_3 #9, $r10_4 #19);
+
+        $z0_8 = Phi($z0_3 #9, $z0_5 #19);
+
+        $r11_6 = Phi($r11_1 #9, $r11_2 #19);
+
+        $z1_5 = Phi($z1 #9, $z1_1 #19);
+
+        $r5 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_0>;
+
+        $z0_9 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.ProtocolVersion: boolean lessEquals(ch.boye.httpclientandroidlib.ProtocolVersion)>($r5);
+
+        if $z0_9 != 0 goto label25;
+
+        return 1;
+
+     label25:
+        return 0;
+
+        catch java.lang.NumberFormatException from label06 to label07 with label08;
+        catch ch.boye.httpclientandroidlib.ParseException from label11 to label12 with label23;
+        catch ch.boye.httpclientandroidlib.ParseException from label13 to label14 with label23;
+        catch ch.boye.httpclientandroidlib.ParseException from label15 to label16 with label23;
+        catch ch.boye.httpclientandroidlib.ParseException from label17 to label18 with label23;
+        catch ch.boye.httpclientandroidlib.ParseException from label20 to label21 with label23;
+    }
+}

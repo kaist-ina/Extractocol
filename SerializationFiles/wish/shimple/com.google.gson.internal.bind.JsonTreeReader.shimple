@@ -1,0 +1,876 @@
+public final class com.google.gson.internal.bind.JsonTreeReader extends com.google.gson.stream.JsonReader
+{
+    private static final java.lang.Object SENTINEL_CLOSED;
+    private static final java.io.Reader UNREADABLE_READER;
+    private final java.util.List stack;
+
+    static void <clinit>()
+    {
+        com.google.gson.internal.bind.JsonTreeReader$1 $r0;
+        java.lang.Object $r1;
+
+        $r0 = new com.google.gson.internal.bind.JsonTreeReader$1;
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader$1: void <init>()>();
+
+        <com.google.gson.internal.bind.JsonTreeReader: java.io.Reader UNREADABLE_READER> = $r0;
+
+        $r1 = new java.lang.Object;
+
+        specialinvoke $r1.<java.lang.Object: void <init>()>();
+
+        <com.google.gson.internal.bind.JsonTreeReader: java.lang.Object SENTINEL_CLOSED> = $r1;
+
+        return;
+    }
+
+    public void <init>(com.google.gson.JsonElement)
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.JsonElement $r1;
+        java.io.Reader $r2;
+        java.util.ArrayList $r3;
+        java.util.List $r4;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 := @parameter0: com.google.gson.JsonElement;
+
+        $r2 = <com.google.gson.internal.bind.JsonTreeReader: java.io.Reader UNREADABLE_READER>;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonReader: void <init>(java.io.Reader)>($r2);
+
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack> = $r3;
+
+        $r4 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        interfaceinvoke $r4.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    private void expect(com.google.gson.stream.JsonToken) throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        java.lang.IllegalStateException $r1;
+        com.google.gson.stream.JsonToken $r2, $r3, $r2_1;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.lang.String $r5;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r2 := @parameter0: com.google.gson.stream.JsonToken;
+
+        $r3 = virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: com.google.gson.stream.JsonToken peek()>();
+
+        if $r3 == $r2 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected ");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" but was ");
+
+        $r2_1 = virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: com.google.gson.stream.JsonToken peek()>();
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2_1);
+
+        $r5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r1;
+
+     label1:
+        return;
+    }
+
+    private java.lang.Object peekStack()
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        java.util.List $r1, $r2;
+        int $i0, $i0_1;
+        java.lang.Object $r3;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $r2 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $i0 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        $i0_1 = $i0 + -1;
+
+        $r3 = interfaceinvoke $r1.<java.util.List: java.lang.Object get(int)>($i0_1);
+
+        return $r3;
+    }
+
+    private java.lang.Object popStack()
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        java.util.List $r1, $r2;
+        int $i0, $i0_1;
+        java.lang.Object $r3;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $r2 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $i0 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        $i0_1 = $i0 + -1;
+
+        $r3 = interfaceinvoke $r1.<java.util.List: java.lang.Object remove(int)>($i0_1);
+
+        return $r3;
+    }
+
+    public void beginArray() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.stream.JsonToken $r1;
+        java.util.List $r2;
+        java.lang.Object $r3;
+        com.google.gson.JsonArray $r4;
+        java.util.Iterator $r5;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken BEGIN_ARRAY>;
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: void expect(com.google.gson.stream.JsonToken)>($r1);
+
+        $r3 = specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object peekStack()>();
+
+        $r4 = (com.google.gson.JsonArray) $r3;
+
+        $r2 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $r5 = virtualinvoke $r4.<com.google.gson.JsonArray: java.util.Iterator iterator()>();
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r5);
+
+        return;
+    }
+
+    public void beginObject() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.stream.JsonToken $r1;
+        java.util.List $r2;
+        java.lang.Object $r3;
+        com.google.gson.JsonObject $r4;
+        java.util.Set $r5;
+        java.util.Iterator $r6;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken BEGIN_OBJECT>;
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: void expect(com.google.gson.stream.JsonToken)>($r1);
+
+        $r3 = specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object peekStack()>();
+
+        $r4 = (com.google.gson.JsonObject) $r3;
+
+        $r2 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $r5 = virtualinvoke $r4.<com.google.gson.JsonObject: java.util.Set entrySet()>();
+
+        $r6 = interfaceinvoke $r5.<java.util.Set: java.util.Iterator iterator()>();
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r6);
+
+        return;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        java.lang.Object $r1;
+        java.util.List $r2, $r2_1;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r2 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        interfaceinvoke $r2.<java.util.List: void clear()>();
+
+        $r2_1 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $r1 = <com.google.gson.internal.bind.JsonTreeReader: java.lang.Object SENTINEL_CLOSED>;
+
+        interfaceinvoke $r2_1.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void endArray() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.stream.JsonToken $r1;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken END_ARRAY>;
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: void expect(com.google.gson.stream.JsonToken)>($r1);
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        return;
+    }
+
+    public void endObject() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.stream.JsonToken $r1;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken END_OBJECT>;
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: void expect(com.google.gson.stream.JsonToken)>($r1);
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        return;
+    }
+
+    public boolean hasNext() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.stream.JsonToken $r1, $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: com.google.gson.stream.JsonToken peek()>();
+
+        $r2 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken END_OBJECT>;
+
+(0)     if $r1 == $r2 goto label1;
+
+        $r2_1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken END_ARRAY>;
+
+(1)     if $r1 == $r2_1 goto label1;
+
+        return 1;
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return 0;
+    }
+
+    public boolean nextBoolean() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.stream.JsonToken $r1;
+        java.lang.Object $r2;
+        com.google.gson.JsonPrimitive $r3;
+        boolean $z0;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken BOOLEAN>;
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: void expect(com.google.gson.stream.JsonToken)>($r1);
+
+        $r2 = specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        $r3 = (com.google.gson.JsonPrimitive) $r2;
+
+        $z0 = virtualinvoke $r3.<com.google.gson.JsonPrimitive: boolean getAsBoolean()>();
+
+        return $z0;
+    }
+
+    public double nextDouble() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        java.lang.IllegalStateException $r1;
+        java.lang.NumberFormatException $r2;
+        com.google.gson.stream.JsonToken $r3, $r4, $r4_1, $r4_2, $r4_3;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7;
+        java.lang.String $r6, $r6_1;
+        java.lang.Object $r7;
+        com.google.gson.JsonPrimitive $r8;
+        double $d0;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r3 = virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: com.google.gson.stream.JsonToken peek()>();
+
+        $r4 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NUMBER>;
+
+(0)     if $r3 == $r4 goto label1;
+
+        $r4_1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken STRING>;
+
+(1)     if $r3 == $r4_1 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected ");
+
+        $r4_2 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NUMBER>;
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r4_2);
+
+        $r5_3 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" but was ");
+
+        $r5_4 = virtualinvoke $r5_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+        $r6 = virtualinvoke $r5_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r6);
+
+        throw $r1;
+
+     label1:
+        $r4_3 = Phi($r4 #0, $r4_1 #1);
+
+        $r7 = specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object peekStack()>();
+
+        $r8 = (com.google.gson.JsonPrimitive) $r7;
+
+        $d0 = virtualinvoke $r8.<com.google.gson.JsonPrimitive: double getAsDouble()>();
+
+        $z0 = virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: boolean isLenient()>();
+
+(2)     if $z0 != 0 goto label3;
+
+        $z0_1 = staticinvoke <java.lang.Double: boolean isNaN(double)>($d0);
+
+(3)     if $z0_1 != 0 goto label2;
+
+        $z0_2 = staticinvoke <java.lang.Double: boolean isInfinite(double)>($d0);
+
+(4)     if $z0_2 == 0 goto label3;
+
+     label2:
+        $z0_3 = Phi($z0_1 #3, $z0_2 #4);
+
+        $r2 = new java.lang.NumberFormatException;
+
+        $r5_5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5_5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_6 = virtualinvoke $r5_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("JSON forbids NaN and infinities: ");
+
+        $r5_7 = virtualinvoke $r5_6.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r6_1 = virtualinvoke $r5_7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.NumberFormatException: void <init>(java.lang.String)>($r6_1);
+
+        throw $r2;
+
+     label3:
+        $z0_4 = Phi($z0 #2, $z0_2 #4);
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        return $d0;
+    }
+
+    public int nextInt() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        java.lang.IllegalStateException $r1;
+        com.google.gson.stream.JsonToken $r2, $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.lang.String $r5;
+        java.lang.Object $r6;
+        com.google.gson.JsonPrimitive $r7;
+        int $i0;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r2 = virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: com.google.gson.stream.JsonToken peek()>();
+
+        $r3 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NUMBER>;
+
+(0)     if $r2 == $r3 goto label1;
+
+        $r3_1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken STRING>;
+
+(1)     if $r2 == $r3_1 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected ");
+
+        $r3_2 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NUMBER>;
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3_2);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" but was ");
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        $r5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r1;
+
+     label1:
+        $r3_3 = Phi($r3 #0, $r3_1 #1);
+
+        $r6 = specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object peekStack()>();
+
+        $r7 = (com.google.gson.JsonPrimitive) $r6;
+
+        $i0 = virtualinvoke $r7.<com.google.gson.JsonPrimitive: int getAsInt()>();
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        return $i0;
+    }
+
+    public long nextLong() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        java.lang.IllegalStateException $r1;
+        com.google.gson.stream.JsonToken $r2, $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.lang.String $r5;
+        java.lang.Object $r6;
+        com.google.gson.JsonPrimitive $r7;
+        long $l0;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r2 = virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: com.google.gson.stream.JsonToken peek()>();
+
+        $r3 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NUMBER>;
+
+(0)     if $r2 == $r3 goto label1;
+
+        $r3_1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken STRING>;
+
+(1)     if $r2 == $r3_1 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected ");
+
+        $r3_2 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NUMBER>;
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3_2);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" but was ");
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        $r5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r1;
+
+     label1:
+        $r3_3 = Phi($r3 #0, $r3_1 #1);
+
+        $r6 = specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object peekStack()>();
+
+        $r7 = (com.google.gson.JsonPrimitive) $r6;
+
+        $l0 = virtualinvoke $r7.<com.google.gson.JsonPrimitive: long getAsLong()>();
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        return $l0;
+    }
+
+    public java.lang.String nextName() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.stream.JsonToken $r1;
+        java.util.List $r2;
+        java.lang.Object $r3, $r3_1, $r3_2, $r3_3;
+        java.util.Iterator $r4;
+        java.util.Map$Entry $r5;
+        java.lang.String $r6;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NAME>;
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: void expect(com.google.gson.stream.JsonToken)>($r1);
+
+        $r3 = specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object peekStack()>();
+
+        $r4 = (java.util.Iterator) $r3;
+
+        $r3_1 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.util.Map$Entry) $r3_1;
+
+        $r2 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $r3_2 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r3_2);
+
+        $r3_3 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r6 = (java.lang.String) $r3_3;
+
+        return $r6;
+    }
+
+    public void nextNull() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.stream.JsonToken $r1;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NULL>;
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: void expect(com.google.gson.stream.JsonToken)>($r1);
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        return;
+    }
+
+    public java.lang.String nextString() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        java.lang.IllegalStateException $r1;
+        com.google.gson.stream.JsonToken $r2, $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.lang.String $r5, $r5_1;
+        java.lang.Object $r6;
+        com.google.gson.JsonPrimitive $r7;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r2 = virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: com.google.gson.stream.JsonToken peek()>();
+
+        $r3 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken STRING>;
+
+(0)     if $r2 == $r3 goto label1;
+
+        $r3_1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NUMBER>;
+
+(1)     if $r2 == $r3_1 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected ");
+
+        $r3_2 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken STRING>;
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3_2);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" but was ");
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        $r5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r1;
+
+     label1:
+        $r3_3 = Phi($r3 #0, $r3_1 #1);
+
+        $r6 = specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        $r7 = (com.google.gson.JsonPrimitive) $r6;
+
+        $r5_1 = virtualinvoke $r7.<com.google.gson.JsonPrimitive: java.lang.String getAsString()>();
+
+        return $r5_1;
+    }
+
+    public com.google.gson.stream.JsonToken peek() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        java.util.List $r1, $r4, $r1_1, $r1_2;
+        java.lang.IllegalStateException $r2;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9;
+        java.lang.Object $r3, $r5, $r3_1, $r5_1;
+        int $i0, $i0_1;
+        java.util.Iterator $r6;
+        com.google.gson.stream.JsonToken $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8, $r7_9, $r7_10;
+        com.google.gson.JsonPrimitive $r8;
+        java.lang.AssertionError $r9, $r9_1;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $z0 = interfaceinvoke $r1.<java.util.List: boolean isEmpty()>();
+
+        if $z0 == 0 goto label01;
+
+        $r7 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken END_DOCUMENT>;
+
+        return $r7;
+
+     label01:
+        $r3 = specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object peekStack()>();
+
+        $z0_1 = $r3 instanceof java.util.Iterator;
+
+        if $z0_1 == 0 goto label05;
+
+        $r4 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $r1_1 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $i0 = interfaceinvoke $r1_1.<java.util.List: int size()>();
+
+        $i0_1 = $i0 + -2;
+
+        $r5 = interfaceinvoke $r4.<java.util.List: java.lang.Object get(int)>($i0_1);
+
+        $z0_2 = $r5 instanceof com.google.gson.JsonObject;
+
+        $r6 = (java.util.Iterator) $r3;
+
+        $z1 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label03;
+
+        if $z0_2 == 0 goto label02;
+
+        $r7_1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NAME>;
+
+        return $r7_1;
+
+     label02:
+        $r1_2 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $r3_1 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        interfaceinvoke $r1_2.<java.util.List: boolean add(java.lang.Object)>($r3_1);
+
+        $r7_2 = virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: com.google.gson.stream.JsonToken peek()>();
+
+        return $r7_2;
+
+     label03:
+        if $z0_2 == 0 goto label04;
+
+        $r7_3 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken END_OBJECT>;
+
+        return $r7_3;
+
+     label04:
+        $r7_4 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken END_ARRAY>;
+
+        return $r7_4;
+
+     label05:
+        $z0_3 = $r3 instanceof com.google.gson.JsonObject;
+
+        if $z0_3 == 0 goto label06;
+
+        $r7_5 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken BEGIN_OBJECT>;
+
+        return $r7_5;
+
+     label06:
+        $z0_4 = $r3 instanceof com.google.gson.JsonArray;
+
+        if $z0_4 == 0 goto label07;
+
+        $r7_6 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken BEGIN_ARRAY>;
+
+        return $r7_6;
+
+     label07:
+        $z0_5 = $r3 instanceof com.google.gson.JsonPrimitive;
+
+        if $z0_5 == 0 goto label11;
+
+        $r8 = (com.google.gson.JsonPrimitive) $r3;
+
+        $z0_6 = virtualinvoke $r8.<com.google.gson.JsonPrimitive: boolean isString()>();
+
+        if $z0_6 == 0 goto label08;
+
+        $r7_7 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken STRING>;
+
+        return $r7_7;
+
+     label08:
+        $z0_7 = virtualinvoke $r8.<com.google.gson.JsonPrimitive: boolean isBoolean()>();
+
+        if $z0_7 == 0 goto label09;
+
+        $r7_8 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken BOOLEAN>;
+
+        return $r7_8;
+
+     label09:
+        $z0_8 = virtualinvoke $r8.<com.google.gson.JsonPrimitive: boolean isNumber()>();
+
+        if $z0_8 == 0 goto label10;
+
+        $r7_9 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NUMBER>;
+
+        return $r7_9;
+
+     label10:
+        $r9 = new java.lang.AssertionError;
+
+        specialinvoke $r9.<java.lang.AssertionError: void <init>()>();
+
+        throw $r9;
+
+     label11:
+        $z0_9 = $r3 instanceof com.google.gson.JsonNull;
+
+        if $z0_9 == 0 goto label12;
+
+        $r7_10 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NULL>;
+
+        return $r7_10;
+
+     label12:
+        $r5_1 = <com.google.gson.internal.bind.JsonTreeReader: java.lang.Object SENTINEL_CLOSED>;
+
+        if $r3 != $r5_1 goto label13;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("JsonReader is closed");
+
+        throw $r2;
+
+     label13:
+        $r9_1 = new java.lang.AssertionError;
+
+        specialinvoke $r9_1.<java.lang.AssertionError: void <init>()>();
+
+        throw $r9_1;
+    }
+
+    public void promoteNameToValue() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.stream.JsonToken $r1;
+        com.google.gson.JsonPrimitive $r2;
+        java.lang.Object $r3, $r3_1, $r3_2, $r3_3;
+        java.util.Iterator $r4;
+        java.util.Map$Entry $r5;
+        java.util.List $r6, $r6_1;
+        java.lang.String $r7;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NAME>;
+
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: void expect(com.google.gson.stream.JsonToken)>($r1);
+
+        $r3 = specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object peekStack()>();
+
+        $r4 = (java.util.Iterator) $r3;
+
+        $r3_1 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.util.Map$Entry) $r3_1;
+
+        $r6 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $r3_2 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        interfaceinvoke $r6.<java.util.List: boolean add(java.lang.Object)>($r3_2);
+
+        $r6_1 = $r0.<com.google.gson.internal.bind.JsonTreeReader: java.util.List stack>;
+
+        $r2 = new com.google.gson.JsonPrimitive;
+
+        $r3_3 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r7 = (java.lang.String) $r3_3;
+
+        specialinvoke $r2.<com.google.gson.JsonPrimitive: void <init>(java.lang.String)>($r7);
+
+        interfaceinvoke $r6_1.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+        return;
+    }
+
+    public void skipValue() throws java.io.IOException
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        com.google.gson.stream.JsonToken $r1, $r2;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r2 = virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: com.google.gson.stream.JsonToken peek()>();
+
+        $r1 = <com.google.gson.stream.JsonToken: com.google.gson.stream.JsonToken NAME>;
+
+        if $r2 != $r1 goto label1;
+
+        virtualinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.String nextName()>();
+
+        return;
+
+     label1:
+        specialinvoke $r0.<com.google.gson.internal.bind.JsonTreeReader: java.lang.Object popStack()>();
+
+        return;
+    }
+
+    public java.lang.String toString()
+    {
+        com.google.gson.internal.bind.JsonTreeReader $r0;
+        java.lang.Class $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: com.google.gson.internal.bind.JsonTreeReader;
+
+        $r1 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r2 = virtualinvoke $r1.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        return $r2;
+    }
+}

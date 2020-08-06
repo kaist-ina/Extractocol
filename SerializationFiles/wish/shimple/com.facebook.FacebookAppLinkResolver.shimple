@@ -1,0 +1,400 @@
+public class com.facebook.FacebookAppLinkResolver extends java.lang.Object implements bolts.AppLinkResolver
+{
+    private static final java.lang.String APP_LINK_ANDROID_TARGET_KEY;
+    private static final java.lang.String APP_LINK_KEY;
+    private static final java.lang.String APP_LINK_TARGET_APP_NAME_KEY;
+    private static final java.lang.String APP_LINK_TARGET_CLASS_KEY;
+    private static final java.lang.String APP_LINK_TARGET_PACKAGE_KEY;
+    private static final java.lang.String APP_LINK_TARGET_SHOULD_FALLBACK_KEY;
+    private static final java.lang.String APP_LINK_TARGET_URL_KEY;
+    private static final java.lang.String APP_LINK_WEB_TARGET_KEY;
+    private final java.util.HashMap cachedAppLinks;
+
+    public void <init>()
+    {
+        com.facebook.FacebookAppLinkResolver $r0;
+        java.util.HashMap $r1;
+
+        $r0 := @this: com.facebook.FacebookAppLinkResolver;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.facebook.FacebookAppLinkResolver: java.util.HashMap cachedAppLinks> = $r1;
+
+        return;
+    }
+
+    static bolts.AppLink$Target access$000(org.json.JSONObject)
+    {
+        org.json.JSONObject $r0;
+        bolts.AppLink$Target $r1;
+
+        $r0 := @parameter0: org.json.JSONObject;
+
+        $r1 = staticinvoke <com.facebook.FacebookAppLinkResolver: bolts.AppLink$Target getAndroidTargetFromJson(org.json.JSONObject)>($r0);
+
+        return $r1;
+    }
+
+    static android.net.Uri access$100(android.net.Uri, org.json.JSONObject)
+    {
+        org.json.JSONObject $r0;
+        android.net.Uri $r1, $r1_1;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r0 := @parameter1: org.json.JSONObject;
+
+        $r1_1 = staticinvoke <com.facebook.FacebookAppLinkResolver: android.net.Uri getWebFallbackUriFromJson(android.net.Uri,org.json.JSONObject)>($r1, $r0);
+
+        return $r1_1;
+    }
+
+    static java.util.HashMap access$200(com.facebook.FacebookAppLinkResolver)
+    {
+        com.facebook.FacebookAppLinkResolver $r0;
+        java.util.HashMap r1;
+
+        $r0 := @parameter0: com.facebook.FacebookAppLinkResolver;
+
+        r1 = $r0.<com.facebook.FacebookAppLinkResolver: java.util.HashMap cachedAppLinks>;
+
+        return r1;
+    }
+
+    private static bolts.AppLink$Target getAndroidTargetFromJson(org.json.JSONObject)
+    {
+        org.json.JSONObject $r0;
+        bolts.AppLink$Target $r1;
+        java.lang.String $r2, $r3, $r4, $r5;
+        android.net.Uri $r6, $r6_1, $r6_2;
+
+        $r0 := @parameter0: org.json.JSONObject;
+
+        $r2 = staticinvoke <com.facebook.FacebookAppLinkResolver: java.lang.String tryGetStringFromJson(org.json.JSONObject,java.lang.String,java.lang.String)>($r0, "package", null);
+
+        if $r2 != null goto label1;
+
+        return null;
+
+     label1:
+        $r3 = staticinvoke <com.facebook.FacebookAppLinkResolver: java.lang.String tryGetStringFromJson(org.json.JSONObject,java.lang.String,java.lang.String)>($r0, "class", null);
+
+        $r4 = staticinvoke <com.facebook.FacebookAppLinkResolver: java.lang.String tryGetStringFromJson(org.json.JSONObject,java.lang.String,java.lang.String)>($r0, "app_name", null);
+
+        $r5 = staticinvoke <com.facebook.FacebookAppLinkResolver: java.lang.String tryGetStringFromJson(org.json.JSONObject,java.lang.String,java.lang.String)>($r0, "url", null);
+
+        $r6 = null;
+
+(0)     if $r5 == null goto label2;
+
+(1)     $r6_1 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r5);
+
+     label2:
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        $r1 = new bolts.AppLink$Target;
+
+        specialinvoke $r1.<bolts.AppLink$Target: void <init>(java.lang.String,java.lang.String,android.net.Uri,java.lang.String)>($r2, $r3, $r6_2, $r4);
+
+        return $r1;
+    }
+
+    private static android.net.Uri getWebFallbackUriFromJson(android.net.Uri, org.json.JSONObject)
+    {
+        android.net.Uri $r0, $r4, $r4_1, $r4_2, $r4_3;
+        org.json.JSONException $r1;
+        org.json.JSONObject $r2, $r2_1, $r2_2;
+        boolean $z0;
+        java.lang.String $r3;
+
+        $r0 := @parameter0: android.net.Uri;
+
+(0)     $r2 := @parameter1: org.json.JSONObject;
+
+     label1:
+(1)     $r2_1 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("web");
+
+        $z0 = staticinvoke <com.facebook.FacebookAppLinkResolver: boolean tryGetBooleanFromJson(org.json.JSONObject,java.lang.String,boolean)>($r2_1, "should_fallback", 1);
+
+     label2:
+        if $z0 != 0 goto label3;
+
+        return null;
+
+     label3:
+        $r3 = staticinvoke <com.facebook.FacebookAppLinkResolver: java.lang.String tryGetStringFromJson(org.json.JSONObject,java.lang.String,java.lang.String)>($r2_1, "url", null);
+
+     label4:
+        $r4 = null;
+
+(2)     if $r3 == null goto label6;
+
+     label5:
+(3)     $r4_1 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r3);
+
+     label6:
+        $r4_2 = Phi($r4 #2, $r4_1 #3);
+
+        if $r4_2 != null goto label8;
+
+        return $r0;
+
+     label7:
+        $r1 := @caughtexception;
+
+        $r4_3 = Phi($r4 #0, $r4_1 #3);
+
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return $r0;
+
+     label8:
+        return $r4_2;
+
+        catch org.json.JSONException from label1 to label2 with label7;
+        catch org.json.JSONException from label3 to label4 with label7;
+        catch org.json.JSONException from label5 to label6 with label7;
+    }
+
+    private static boolean tryGetBooleanFromJson(org.json.JSONObject, java.lang.String, boolean)
+    {
+        org.json.JSONObject $r0;
+        java.lang.String $r1;
+        org.json.JSONException $r2;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @parameter0: org.json.JSONObject;
+
+        $r1 := @parameter1: java.lang.String;
+
+(0)     $z0 := @parameter2: boolean;
+
+     label1:
+(1)     $z0_1 = virtualinvoke $r0.<org.json.JSONObject: boolean getBoolean(java.lang.String)>($r1);
+
+     label2:
+        return $z0_1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return $z0_2;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    private static java.lang.String tryGetStringFromJson(org.json.JSONObject, java.lang.String, java.lang.String)
+    {
+        org.json.JSONObject $r0;
+        java.lang.String $r1, $r3, $r3_1, $r3_2;
+        org.json.JSONException $r2;
+
+        $r0 := @parameter0: org.json.JSONObject;
+
+        $r3 := @parameter1: java.lang.String;
+
+(0)     $r1 := @parameter2: java.lang.String;
+
+     label1:
+(1)     $r3_1 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String getString(java.lang.String)>($r3);
+
+     label2:
+        return $r3_1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return $r1;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    public bolts.Task getAppLinkFromUrlInBackground(android.net.Uri)
+    {
+        com.facebook.FacebookAppLinkResolver $r0;
+        android.net.Uri $r1;
+        java.util.ArrayList $r2;
+        com.facebook.FacebookAppLinkResolver$1 $r3;
+        bolts.Task $r4, $r4_1;
+
+        $r0 := @this: com.facebook.FacebookAppLinkResolver;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r4 = virtualinvoke $r0.<com.facebook.FacebookAppLinkResolver: bolts.Task getAppLinkFromUrlsInBackground(java.util.List)>($r2);
+
+        $r3 = new com.facebook.FacebookAppLinkResolver$1;
+
+        specialinvoke $r3.<com.facebook.FacebookAppLinkResolver$1: void <init>(com.facebook.FacebookAppLinkResolver,android.net.Uri)>($r0, $r1);
+
+        $r4_1 = virtualinvoke $r4.<bolts.Task: bolts.Task onSuccess(bolts.Continuation)>($r3);
+
+        return $r4_1;
+    }
+
+    public bolts.Task getAppLinkFromUrlsInBackground(java.util.List)
+    {
+        com.facebook.FacebookAppLinkResolver $r0;
+        java.util.List $r1;
+        java.util.HashMap $r2, $r5, $r6;
+        java.util.HashSet $r3;
+        java.lang.StringBuilder $r4;
+        java.lang.Throwable $r7;
+        android.os.Bundle $r8;
+        com.facebook.Request $r9;
+        com.facebook.FacebookAppLinkResolver$2 $r10;
+        java.util.Iterator $r11;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.Object $r12, $r12_1, $r12_2, $r12_3;
+        android.net.Uri $r13;
+        bolts.AppLink $r14;
+        java.lang.String $r15, $r15_1, $r15_2, $r15_3;
+        bolts.Task $r16, $r16_1;
+        bolts.Task$TaskCompletionSource $r17;
+        java.lang.Object[] $r18;
+
+        $r0 := @this: com.facebook.FacebookAppLinkResolver;
+
+        $r1 := @parameter0: java.util.List;
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        $r3 = new java.util.HashSet;
+
+        specialinvoke $r3.<java.util.HashSet: void <init>()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+(0)     $r11 = interfaceinvoke $r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label01:
+        $r12 = Phi($r12 #0, $r12_2 #3, $r12_2 #5);
+
+        $z0 = Phi($z0 #0, $z0_1 #3, $z0_2 #5);
+
+        $r15 = Phi($r15 #0, $r15 #3, $r15_1 #5);
+
+        $z0_1 = interfaceinvoke $r11.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label09;
+
+        $r12_1 = interfaceinvoke $r11.<java.util.Iterator: java.lang.Object next()>();
+
+        $r13 = (android.net.Uri) $r12_1;
+
+        $r5 = $r0.<com.facebook.FacebookAppLinkResolver: java.util.HashMap cachedAppLinks>;
+
+(1)     entermonitor $r5;
+
+     label02:
+        $r6 = $r0.<com.facebook.FacebookAppLinkResolver: java.util.HashMap cachedAppLinks>;
+
+(2)     $r12_2 = virtualinvoke $r6.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r13);
+
+        $r14 = (bolts.AppLink) $r12_2;
+
+        exitmonitor $r5;
+
+     label03:
+        if $r14 == null goto label07;
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r13, $r14);
+
+(3)     goto label01;
+
+     label04:
+        $r7 := @caughtexception;
+
+(4)     $r12_3 = Phi($r12_1 #1, $r12_2 #2, $r12_3 #4);
+
+     label05:
+        exitmonitor $r5;
+
+     label06:
+        throw $r7;
+
+     label07:
+        $z0_2 = virtualinvoke $r3.<java.util.HashSet: boolean isEmpty()>();
+
+        if $z0_2 != 0 goto label08;
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(44);
+
+     label08:
+        $r15_1 = virtualinvoke $r13.<android.net.Uri: java.lang.String toString()>();
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r15_1);
+
+        virtualinvoke $r3.<java.util.HashSet: boolean add(java.lang.Object)>($r13);
+
+(5)     goto label01;
+
+     label09:
+        $z0_3 = virtualinvoke $r3.<java.util.HashSet: boolean isEmpty()>();
+
+        if $z0_3 == 0 goto label10;
+
+        $r16 = staticinvoke <bolts.Task: bolts.Task forResult(java.lang.Object)>($r2);
+
+        return $r16;
+
+     label10:
+        $r17 = staticinvoke <bolts.Task: bolts.Task$TaskCompletionSource create()>();
+
+        $r8 = new android.os.Bundle;
+
+        specialinvoke $r8.<android.os.Bundle: void <init>()>();
+
+        $r15_2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r8.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("ids", $r15_2);
+
+        $r18 = newarray (java.lang.Object)[3];
+
+        $r18[0] = "app_links";
+
+        $r18[1] = "android";
+
+        $r18[2] = "web";
+
+        $r15_3 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s.fields(%s,%s)", $r18);
+
+        virtualinvoke $r8.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("fields", $r15_3);
+
+        $r9 = new com.facebook.Request;
+
+        $r10 = new com.facebook.FacebookAppLinkResolver$2;
+
+        specialinvoke $r10.<com.facebook.FacebookAppLinkResolver$2: void <init>(com.facebook.FacebookAppLinkResolver,bolts.Task$TaskCompletionSource,java.util.Map,java.util.HashSet)>($r0, $r17, $r2, $r3);
+
+        specialinvoke $r9.<com.facebook.Request: void <init>(com.facebook.Session,java.lang.String,android.os.Bundle,com.facebook.HttpMethod,com.facebook.Request$Callback)>(null, "", $r8, null, $r10);
+
+        virtualinvoke $r9.<com.facebook.Request: com.facebook.RequestAsyncTask executeAsync()>();
+
+        $r16_1 = virtualinvoke $r17.<bolts.Task$TaskCompletionSource: bolts.Task getTask()>();
+
+        return $r16_1;
+
+        catch java.lang.Throwable from label02 to label03 with label04;
+        catch java.lang.Throwable from label05 to label06 with label04;
+    }
+}

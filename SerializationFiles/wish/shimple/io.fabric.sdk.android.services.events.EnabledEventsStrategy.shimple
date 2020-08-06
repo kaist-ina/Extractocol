@@ -1,0 +1,527 @@
+public abstract class io.fabric.sdk.android.services.events.EnabledEventsStrategy extends java.lang.Object implements io.fabric.sdk.android.services.events.EventsStrategy
+{
+    static final int UNDEFINED_ROLLOVER_INTERVAL_SECONDS;
+    protected final android.content.Context context;
+    final java.util.concurrent.ScheduledExecutorService executorService;
+    protected final io.fabric.sdk.android.services.events.EventsFilesManager filesManager;
+    volatile int rolloverIntervalSeconds;
+    final java.util.concurrent.atomic.AtomicReference scheduledRolloverFutureRef;
+
+    public void <init>(android.content.Context, java.util.concurrent.ScheduledExecutorService, io.fabric.sdk.android.services.events.EventsFilesManager)
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+        android.content.Context $r1;
+        java.util.concurrent.ScheduledExecutorService $r2;
+        io.fabric.sdk.android.services.events.EventsFilesManager $r3;
+        java.util.concurrent.atomic.AtomicReference $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.util.concurrent.ScheduledExecutorService;
+
+        $r3 := @parameter2: io.fabric.sdk.android.services.events.EventsFilesManager;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: int rolloverIntervalSeconds> = -1;
+
+        $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context> = $r1;
+
+        $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: java.util.concurrent.ScheduledExecutorService executorService> = $r2;
+
+        $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: io.fabric.sdk.android.services.events.EventsFilesManager filesManager> = $r3;
+
+        $r4 = new java.util.concurrent.atomic.AtomicReference;
+
+        specialinvoke $r4.<java.util.concurrent.atomic.AtomicReference: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: java.util.concurrent.atomic.AtomicReference scheduledRolloverFutureRef> = $r4;
+
+        return;
+    }
+
+    public void cancelTimeBasedFileRollOver()
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+        android.content.Context $r1;
+        java.util.concurrent.atomic.AtomicReference $r2, $r2_1, $r2_2, $r2_3;
+        java.lang.Object $r3, $r3_1, $r3_2;
+        java.util.concurrent.ScheduledFuture $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: java.util.concurrent.atomic.AtomicReference scheduledRolloverFutureRef>;
+
+        $r3 = virtualinvoke $r2.<java.util.concurrent.atomic.AtomicReference: java.lang.Object get()>();
+
+(0)     if $r3 == null goto label1;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlled(android.content.Context,java.lang.String)>($r1, "Cancelling time-based rollover because no events are currently being generated.");
+
+        $r2_1 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: java.util.concurrent.atomic.AtomicReference scheduledRolloverFutureRef>;
+
+        $r3_1 = virtualinvoke $r2_1.<java.util.concurrent.atomic.AtomicReference: java.lang.Object get()>();
+
+        $r4 = (java.util.concurrent.ScheduledFuture) $r3_1;
+
+        interfaceinvoke $r4.<java.util.concurrent.ScheduledFuture: boolean cancel(boolean)>(0);
+
+        $r2_2 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: java.util.concurrent.atomic.AtomicReference scheduledRolloverFutureRef>;
+
+(1)     virtualinvoke $r2_2.<java.util.concurrent.atomic.AtomicReference: void set(java.lang.Object)>(null);
+
+     label1:
+        $r2_3 = Phi($r2 #0, $r2_2 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    protected void configureRollover(int)
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+        long $l0;
+        int $i1, $i1_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        $i1 := @parameter0: int;
+
+        $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: int rolloverIntervalSeconds> = $i1;
+
+        $i1_1 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: int rolloverIntervalSeconds>;
+
+        $l0 = (long) $i1_1;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: void scheduleTimeBasedFileRollOver(long,long)>(0L, $l0);
+
+        return;
+    }
+
+    public void deleteAllEvents()
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+        io.fabric.sdk.android.services.events.EventsFilesManager $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: io.fabric.sdk.android.services.events.EventsFilesManager filesManager>;
+
+        virtualinvoke $r1.<io.fabric.sdk.android.services.events.EventsFilesManager: void deleteAllEventsFiles()>();
+
+        return;
+    }
+
+    public int getRollover()
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+        int i0;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        i0 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: int rolloverIntervalSeconds>;
+
+        return i0;
+    }
+
+    public void recordEvent(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+        java.lang.Object $r1;
+        io.fabric.sdk.android.services.events.EventsFilesManager $r2;
+        java.io.IOException $r3;
+        java.lang.String $r4;
+        android.content.Context $r5, $r5_1, $r5_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r5 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+        $r4 = virtualinvoke $r1.<java.lang.Object: java.lang.String toString()>();
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlled(android.content.Context,java.lang.String)>($r5, $r4);
+
+        $r2 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: io.fabric.sdk.android.services.events.EventsFilesManager filesManager>;
+
+     label1:
+(0)     virtualinvoke $r2.<io.fabric.sdk.android.services.events.EventsFilesManager: void writeEvent(java.lang.Object)>($r1);
+
+     label2:
+        $r5_1 = Phi($r5 #0, $r5_2 #1);
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: void scheduleTimeBasedRollOverIfNeeded()>();
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r5_2 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlledError(android.content.Context,java.lang.String,java.lang.Throwable)>($r5_2, "Failed to write event.", $r3);
+
+(1)     goto label2;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public boolean rollFileOver()
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+        io.fabric.sdk.android.services.events.EventsFilesManager $r1;
+        java.io.IOException $r2;
+        android.content.Context $r3;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: io.fabric.sdk.android.services.events.EventsFilesManager filesManager>;
+
+     label1:
+        $z0 = virtualinvoke $r1.<io.fabric.sdk.android.services.events.EventsFilesManager: boolean rollFileOver()>();
+
+     label2:
+        return $z0;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlledError(android.content.Context,java.lang.String,java.lang.Throwable)>($r3, "Failed to roll file over.", $r2);
+
+        return 0;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    void scheduleTimeBasedFileRollOver(long, long)
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+        long $l0, $l1;
+        io.fabric.sdk.android.services.events.TimeBasedFileRollOverRunnable $r1;
+        java.util.concurrent.ScheduledExecutorService $r2;
+        java.util.concurrent.TimeUnit $r3;
+        java.util.concurrent.RejectedExecutionException $r4;
+        java.util.concurrent.atomic.AtomicReference $r5, $r5_1, $r5_2;
+        java.lang.Object $r6;
+        boolean $z0, $z0_1, $z0_2;
+        android.content.Context $r7, $r7_1, $r7_2, $r7_3;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        java.lang.String $r9;
+        java.util.concurrent.ScheduledFuture $r10;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        $l0 := @parameter0: long;
+
+        $l1 := @parameter1: long;
+
+        $r5 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: java.util.concurrent.atomic.AtomicReference scheduledRolloverFutureRef>;
+
+        $r6 = virtualinvoke $r5.<java.util.concurrent.atomic.AtomicReference: java.lang.Object get()>();
+
+        if $r6 != null goto label4;
+
+(0)     $z0 = 1;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0_2 #2);
+
+(1)     if $z0_1 == 0 goto label6;
+
+        $r1 = new io.fabric.sdk.android.services.events.TimeBasedFileRollOverRunnable;
+
+        $r7 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.events.TimeBasedFileRollOverRunnable: void <init>(android.content.Context,io.fabric.sdk.android.services.events.FileRollOverManager)>($r7, $r0);
+
+        $r7_1 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Scheduling time based file roll over every ");
+
+        $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l1);
+
+        $r8_3 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" seconds");
+
+        $r9 = virtualinvoke $r8_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlled(android.content.Context,java.lang.String)>($r7_1, $r9);
+
+        $r5_1 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: java.util.concurrent.atomic.AtomicReference scheduledRolloverFutureRef>;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: java.util.concurrent.ScheduledExecutorService executorService>;
+
+        $r3 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+     label2:
+        $r10 = interfaceinvoke $r2.<java.util.concurrent.ScheduledExecutorService: java.util.concurrent.ScheduledFuture scheduleAtFixedRate(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)>($r1, $l0, $l1, $r3);
+
+        virtualinvoke $r5_1.<java.util.concurrent.atomic.AtomicReference: void set(java.lang.Object)>($r10);
+
+     label3:
+        return;
+
+     label4:
+        $z0_2 = 0;
+
+(2)     goto label1;
+
+     label5:
+        $r4 := @caughtexception;
+
+        $r7_2 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+(3)     staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlledError(android.content.Context,java.lang.String,java.lang.Throwable)>($r7_2, "Failed to schedule time based file roll over", $r4);
+
+     label6:
+        $r7_3 = Phi($r7 #1, $r7_2 #3);
+
+        $r8_4 = Phi($r8 #1, $r8_3 #3);
+
+        $r5_2 = Phi($r5 #1, $r5_1 #3);
+
+        return;
+
+        catch java.util.concurrent.RejectedExecutionException from label2 to label3 with label5;
+    }
+
+    public void scheduleTimeBasedRollOverIfNeeded()
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+        long $l0, $l1;
+        int $i2, $i2_1, $i2_2;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        $i2 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: int rolloverIntervalSeconds>;
+
+        if $i2 == -1 goto label2;
+
+(0)     $z0 = 1;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0_2 #1);
+
+        if $z0_1 == 0 goto label3;
+
+        $i2_1 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: int rolloverIntervalSeconds>;
+
+        $l0 = (long) $i2_1;
+
+        $i2_2 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: int rolloverIntervalSeconds>;
+
+        $l1 = (long) $i2_2;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: void scheduleTimeBasedFileRollOver(long,long)>($l0, $l1);
+
+        return;
+
+     label2:
+        $z0_2 = 0;
+
+(1)     goto label1;
+
+     label3:
+        return;
+    }
+
+    void sendAndCleanUpIfSuccess()
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+        java.util.Locale $r1;
+        java.lang.Object[] $r2;
+        java.lang.Exception $r3;
+        io.fabric.sdk.android.services.events.FilesSender $r4;
+        android.content.Context $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6;
+        int $i0, $i1, $i0_1, $i1_1, $i1_2, $i1_3, $i0_2, $i1_4, $i0_3, $i1_5, $i0_4, $i1_6, $i0_5;
+        io.fabric.sdk.android.services.events.EventsFilesManager $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7;
+        java.util.List $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+        java.lang.Integer $r8;
+        java.lang.String $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5;
+        boolean $z0;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2, $r10_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        $r4 = virtualinvoke $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: io.fabric.sdk.android.services.events.FilesSender getFilesSender()>();
+
+        if $r4 != null goto label01;
+
+        $r5 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlled(android.content.Context,java.lang.String)>($r5, "skipping files send because we don\'t yet know the target endpoint");
+
+        return;
+
+     label01:
+        $r5_1 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlled(android.content.Context,java.lang.String)>($r5_1, "Sending all files");
+
+        $i0 = 0;
+
+        $r6 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: io.fabric.sdk.android.services.events.EventsFilesManager filesManager>;
+
+(0)     $r7 = virtualinvoke $r6.<io.fabric.sdk.android.services.events.EventsFilesManager: java.util.List getBatchOfFilesToSend()>();
+
+     label02:
+        $i1 = Phi($i1 #0, $i1_4 #14);
+
+        $r6_1 = Phi($r6 #0, $r6_4 #14);
+
+        $r9 = Phi($r9 #0, $r9_1 #14);
+
+        $r5_2 = Phi($r5_1 #0, $r5_3 #14);
+
+        $r7_1 = Phi($r7 #0, $r7_2 #14);
+
+        $i0_1 = Phi($i0 #0, $i0_3 #14);
+
+(1)     $i1_1 = interfaceinvoke $r7_1.<java.util.List: int size()>();
+
+     label03:
+(2)     if $i1_1 <= 0 goto label12;
+
+     label04:
+(3)     $r5_3 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+     label05:
+        $r1 = <java.util.Locale: java.util.Locale US>;
+
+     label06:
+        $r2 = newarray (java.lang.Object)[1];
+
+(4)     $i1_2 = interfaceinvoke $r7_1.<java.util.List: int size()>();
+
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1_2);
+
+        $r2[0] = $r8;
+
+(5)     $r9_1 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r1, "attempt to send batch of %d files", $r2);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlled(android.content.Context,java.lang.String)>($r5_3, $r9_1);
+
+        $z0 = interfaceinvoke $r4.<io.fabric.sdk.android.services.events.FilesSender: boolean send(java.util.List)>($r7_1);
+
+     label07:
+(6)     if $z0 == 0 goto label11;
+
+     label08:
+(7)     $i1_3 = interfaceinvoke $r7_1.<java.util.List: int size()>();
+
+     label09:
+(8)     $i0_2 = $i0_1 + $i1_3;
+
+     label10:
+(9)     $r6_2 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: io.fabric.sdk.android.services.events.EventsFilesManager filesManager>;
+
+(10)    virtualinvoke $r6_2.<io.fabric.sdk.android.services.events.EventsFilesManager: void deleteSentFiles(java.util.List)>($r7_1);
+
+     label11:
+        $i1_4 = Phi($i1_2 #6, $i1_3 #10);
+
+        $r6_3 = Phi($r6_1 #6, $r6_2 #10);
+
+        $i0_3 = Phi($i0_1 #6, $i0_2 #10);
+
+(11)    if $z0 != 0 goto label13;
+
+     label12:
+        $i1_5 = Phi($i1_1 #2, $i1_4 #11, $i1_6 #15);
+
+        $r6_5 = Phi($r6_1 #2, $r6_3 #11, $r6_7 #15);
+
+        $r10 = Phi($r10 #2, $r10 #11, $r10_3 #15);
+
+        $r9_2 = Phi($r9 #2, $r9_1 #11, $r9_5 #15);
+
+        $r5_4 = Phi($r5_2 #2, $r5_3 #11, $r5_6 #15);
+
+        $r7_3 = Phi($r7_1 #2, $r7_1 #11, $r7_4 #15);
+
+        $i0_4 = Phi($i0_1 #2, $i0_3 #11, $i0_5 #15);
+
+        if $i0_4 != 0 goto label16;
+
+        $r6_6 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: io.fabric.sdk.android.services.events.EventsFilesManager filesManager>;
+
+        virtualinvoke $r6_6.<io.fabric.sdk.android.services.events.EventsFilesManager: void deleteOldestInRollOverIfOverMax()>();
+
+        return;
+
+     label13:
+(12)    $r6_4 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: io.fabric.sdk.android.services.events.EventsFilesManager filesManager>;
+
+(13)    $r7_2 = virtualinvoke $r6_4.<io.fabric.sdk.android.services.events.EventsFilesManager: java.util.List getBatchOfFilesToSend()>();
+
+     label14:
+(14)    goto label02;
+
+     label15:
+        $r3 := @caughtexception;
+
+        $i1_6 = Phi($i1 #0, $i1_1 #1, $i1_2 #4, $i1_3 #7, $i1_4 #11);
+
+        $r6_7 = Phi($r6 #0, $r6_1 #1, $r6_2 #9, $r6_3 #11, $r6_4 #12);
+
+        $r9_3 = Phi($r9 #0, $r9_1 #5);
+
+        $r5_5 = Phi($r5_1 #0, $r5_2 #1, $r5_3 #3);
+
+        $r7_4 = Phi($r7 #0, $r7_1 #1, $r7_2 #13);
+
+        $i0_5 = Phi($i0 #0, $i0_1 #1, $i0_2 #8, $i0_3 #11);
+
+        $r5_6 = $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: android.content.Context context>;
+
+        $r10_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Failed to send batch of analytics files to server: ");
+
+        $r9_4 = virtualinvoke $r3.<java.lang.Exception: java.lang.String getMessage()>();
+
+        $r10_3 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9_4);
+
+        $r9_5 = virtualinvoke $r10_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlledError(android.content.Context,java.lang.String,java.lang.Throwable)>($r5_6, $r9_5, $r3);
+
+(15)    goto label12;
+
+     label16:
+        return;
+
+        catch java.lang.Exception from label02 to label03 with label15;
+        catch java.lang.Exception from label04 to label05 with label15;
+        catch java.lang.Exception from label06 to label07 with label15;
+        catch java.lang.Exception from label08 to label09 with label15;
+        catch java.lang.Exception from label10 to label11 with label15;
+        catch java.lang.Exception from label13 to label14 with label15;
+    }
+
+    public void sendEvents()
+    {
+        io.fabric.sdk.android.services.events.EnabledEventsStrategy $r0;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EnabledEventsStrategy;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.events.EnabledEventsStrategy: void sendAndCleanUpIfSuccess()>();
+
+        return;
+    }
+}

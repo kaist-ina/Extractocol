@@ -1,0 +1,157 @@
+public final class io.fabric.sdk.android.services.common.ExecutorUtils extends java.lang.Object
+{
+    private static final long DEFAULT_TERMINATION_TIMEOUT;
+
+    private void <init>()
+    {
+        io.fabric.sdk.android.services.common.ExecutorUtils $r0;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.ExecutorUtils;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static final void addDelayedShutdownHook(java.lang.String, java.util.concurrent.ExecutorService)
+    {
+        java.lang.String $r0;
+        java.util.concurrent.ExecutorService $r1;
+        java.util.concurrent.TimeUnit $r2;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.util.concurrent.ExecutorService;
+
+        $r2 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+        staticinvoke <io.fabric.sdk.android.services.common.ExecutorUtils: void addDelayedShutdownHook(java.lang.String,java.util.concurrent.ExecutorService,long,java.util.concurrent.TimeUnit)>($r0, $r1, 2L, $r2);
+
+        return;
+    }
+
+    public static final void addDelayedShutdownHook(java.lang.String, java.util.concurrent.ExecutorService, long, java.util.concurrent.TimeUnit)
+    {
+        java.util.concurrent.ExecutorService $r0;
+        long $l0;
+        java.util.concurrent.TimeUnit $r1;
+        java.lang.Thread $r2;
+        io.fabric.sdk.android.services.common.ExecutorUtils$2 $r3;
+        java.lang.String $r4, $r4_1;
+        java.lang.Runtime $r5;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2;
+
+        $r4 := @parameter0: java.lang.String;
+
+        $r0 := @parameter1: java.util.concurrent.ExecutorService;
+
+        $l0 := @parameter2: long;
+
+        $r1 := @parameter3: java.util.concurrent.TimeUnit;
+
+        $r5 = staticinvoke <java.lang.Runtime: java.lang.Runtime getRuntime()>();
+
+        $r2 = new java.lang.Thread;
+
+        $r3 = new io.fabric.sdk.android.services.common.ExecutorUtils$2;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.common.ExecutorUtils$2: void <init>(java.lang.String,java.util.concurrent.ExecutorService,long,java.util.concurrent.TimeUnit)>($r4, $r0, $l0, $r1);
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Crashlytics Shutdown Hook for ");
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4_1 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.Thread: void <init>(java.lang.Runnable,java.lang.String)>($r3, $r4_1);
+
+        virtualinvoke $r5.<java.lang.Runtime: void addShutdownHook(java.lang.Thread)>($r2);
+
+        return;
+    }
+
+    public static io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor buildRetryThreadPoolExecutor(java.lang.String, int, io.fabric.sdk.android.services.concurrency.internal.RetryPolicy, io.fabric.sdk.android.services.concurrency.internal.Backoff)
+    {
+        java.lang.String $r0;
+        int $i0;
+        io.fabric.sdk.android.services.concurrency.internal.RetryPolicy $r1;
+        io.fabric.sdk.android.services.concurrency.internal.Backoff $r2;
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r3;
+        java.util.concurrent.ThreadFactory $r4;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $i0 := @parameter1: int;
+
+        $r1 := @parameter2: io.fabric.sdk.android.services.concurrency.internal.RetryPolicy;
+
+        $r2 := @parameter3: io.fabric.sdk.android.services.concurrency.internal.Backoff;
+
+        $r4 = staticinvoke <io.fabric.sdk.android.services.common.ExecutorUtils: java.util.concurrent.ThreadFactory getNamedThreadFactory(java.lang.String)>($r0);
+
+        $r3 = new io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: void <init>(int,java.util.concurrent.ThreadFactory,io.fabric.sdk.android.services.concurrency.internal.RetryPolicy,io.fabric.sdk.android.services.concurrency.internal.Backoff)>($i0, $r4, $r1, $r2);
+
+        staticinvoke <io.fabric.sdk.android.services.common.ExecutorUtils: void addDelayedShutdownHook(java.lang.String,java.util.concurrent.ExecutorService)>($r0, $r3);
+
+        return $r3;
+    }
+
+    public static java.util.concurrent.ExecutorService buildSingleThreadExecutorService(java.lang.String)
+    {
+        java.lang.String $r0;
+        java.util.concurrent.ThreadFactory $r1;
+        java.util.concurrent.ExecutorService $r2;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = staticinvoke <io.fabric.sdk.android.services.common.ExecutorUtils: java.util.concurrent.ThreadFactory getNamedThreadFactory(java.lang.String)>($r0);
+
+        $r2 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.ExecutorService newSingleThreadExecutor(java.util.concurrent.ThreadFactory)>($r1);
+
+        staticinvoke <io.fabric.sdk.android.services.common.ExecutorUtils: void addDelayedShutdownHook(java.lang.String,java.util.concurrent.ExecutorService)>($r0, $r2);
+
+        return $r2;
+    }
+
+    public static java.util.concurrent.ScheduledExecutorService buildSingleThreadScheduledExecutorService(java.lang.String)
+    {
+        java.lang.String $r0;
+        java.util.concurrent.ThreadFactory $r1;
+        java.util.concurrent.ScheduledExecutorService $r2;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = staticinvoke <io.fabric.sdk.android.services.common.ExecutorUtils: java.util.concurrent.ThreadFactory getNamedThreadFactory(java.lang.String)>($r0);
+
+        $r2 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.ScheduledExecutorService newSingleThreadScheduledExecutor(java.util.concurrent.ThreadFactory)>($r1);
+
+        staticinvoke <io.fabric.sdk.android.services.common.ExecutorUtils: void addDelayedShutdownHook(java.lang.String,java.util.concurrent.ExecutorService)>($r0, $r2);
+
+        return $r2;
+    }
+
+    public static final java.util.concurrent.ThreadFactory getNamedThreadFactory(java.lang.String)
+    {
+        java.lang.String $r0;
+        java.util.concurrent.atomic.AtomicLong $r1;
+        io.fabric.sdk.android.services.common.ExecutorUtils$1 $r2;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = new java.util.concurrent.atomic.AtomicLong;
+
+        specialinvoke $r1.<java.util.concurrent.atomic.AtomicLong: void <init>(long)>(1L);
+
+        $r2 = new io.fabric.sdk.android.services.common.ExecutorUtils$1;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.common.ExecutorUtils$1: void <init>(java.lang.String,java.util.concurrent.atomic.AtomicLong)>($r0, $r1);
+
+        return $r2;
+    }
+}

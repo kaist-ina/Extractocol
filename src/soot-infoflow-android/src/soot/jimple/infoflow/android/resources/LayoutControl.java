@@ -10,6 +10,9 @@
  ******************************************************************************/
 package soot.jimple.infoflow.android.resources;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import soot.SootClass;
 
 /**
@@ -23,6 +26,7 @@ public class LayoutControl {
 	private final int id;
 	private final SootClass viewClass;
 	private boolean isSensitive;
+	private Map<String, Object> additionalAttributes = null;
 	
 	public LayoutControl(int id, SootClass viewClass) {
 		this.id = id;
@@ -34,6 +38,12 @@ public class LayoutControl {
 		this.isSensitive = isSensitive;
 	}
 	
+	public LayoutControl(int id, SootClass viewClass, boolean isSensitive,
+			Map<String, Object> additionalAttributes) {
+		this(id, viewClass, isSensitive);
+		this.additionalAttributes = additionalAttributes;
+	}
+
 	public int getID() {
 		return this.id;
 	}
@@ -50,6 +60,25 @@ public class LayoutControl {
 		return this.isSensitive;
 	}
 	
+	/**
+	 * Adds an additional attribute to this layout control
+	 * @param key The key of the attribute
+	 * @param value The value of the attribute
+	 */
+	public void addAdditionalAttribute(String key, String value) {
+		if (additionalAttributes != null)
+			additionalAttributes = new HashMap<>();
+		additionalAttributes.put(key, value);
+	}
+	
+	/**
+	 * Gets the additional attributes associated with this layout control
+	 * @return The additional attributes associated with this layout control
+	 */
+	public Map<String, Object> getAdditionalAttributes() {
+		return additionalAttributes;
+	}
+	
 	@Override
 	public String toString() {
 		return id + " - " + viewClass;
@@ -62,6 +91,8 @@ public class LayoutControl {
 		result = prime * result + id;
 		result = prime * result + (isSensitive ? 1231 : 1237);
 		result = prime * result + ((viewClass == null) ? 0 : viewClass.hashCode());
+		result = prime * result + ((additionalAttributes == null)
+				? 0 : additionalAttributes.hashCode());
 		return result;
 	}
 	
@@ -82,6 +113,11 @@ public class LayoutControl {
 			if (other.viewClass != null)
 				return false;
 		} else if (!viewClass.equals(other.viewClass))
+			return false;
+		if (additionalAttributes == null) {
+			if (other.additionalAttributes != null)
+				return false;
+		} else if (!additionalAttributes.equals(other.additionalAttributes))
 			return false;
 		return true;
 	}

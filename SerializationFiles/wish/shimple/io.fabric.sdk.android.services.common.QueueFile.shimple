@@ -1,0 +1,1777 @@
+public class io.fabric.sdk.android.services.common.QueueFile extends java.lang.Object implements java.io.Closeable
+{
+    static final int HEADER_LENGTH;
+    private static final int INITIAL_LENGTH;
+    private static final java.util.logging.Logger LOGGER;
+    private final byte[] buffer;
+    private int elementCount;
+    int fileLength;
+    private io.fabric.sdk.android.services.common.QueueFile$Element first;
+    private io.fabric.sdk.android.services.common.QueueFile$Element last;
+    private final java.io.RandomAccessFile raf;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        java.lang.String $r1;
+        java.util.logging.Logger $r2;
+
+        $r0 = class "io/fabric/sdk/android/services/common/QueueFile";
+
+        $r1 = virtualinvoke $r0.<java.lang.Class: java.lang.String getName()>();
+
+        $r2 = staticinvoke <java.util.logging.Logger: java.util.logging.Logger getLogger(java.lang.String)>($r1);
+
+        <io.fabric.sdk.android.services.common.QueueFile: java.util.logging.Logger LOGGER> = $r2;
+
+        return;
+    }
+
+    public void <init>(java.io.File) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        java.io.File $r1;
+        byte[] $r2;
+        boolean $z0;
+        java.io.RandomAccessFile $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $r1 := @parameter0: java.io.File;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r2 = newarray (byte)[16];
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer> = $r2;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label1;
+
+        staticinvoke <io.fabric.sdk.android.services.common.QueueFile: void initialize(java.io.File)>($r1);
+
+     label1:
+        $r3 = staticinvoke <io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile open(java.io.File)>($r1);
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf> = $r3;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void readHeader()>();
+
+        return;
+    }
+
+    void <init>(java.io.RandomAccessFile) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        java.io.RandomAccessFile $r1;
+        byte[] $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $r1 := @parameter0: java.io.RandomAccessFile;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r2 = newarray (byte)[16];
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer> = $r2;
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf> = $r1;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void readHeader()>();
+
+        return;
+    }
+
+    static int access$100(io.fabric.sdk.android.services.common.QueueFile, int)
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0, $i0_1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i0 := @parameter1: int;
+
+        $i0_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: int wrapPosition(int)>($i0);
+
+        return $i0_1;
+    }
+
+    static java.lang.Object access$200(java.lang.Object, java.lang.String)
+    {
+        java.lang.String $r0;
+        java.lang.Object $r1, $r1_1;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r0 := @parameter1: java.lang.String;
+
+        $r1_1 = staticinvoke <io.fabric.sdk.android.services.common.QueueFile: java.lang.Object nonNull(java.lang.Object,java.lang.String)>($r1, $r0);
+
+        return $r1_1;
+    }
+
+    static void access$300(io.fabric.sdk.android.services.common.QueueFile, int, byte[], int, int) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0, $i1, $i2;
+        byte[] $r1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i0 := @parameter1: int;
+
+        $r1 := @parameter2: byte[];
+
+        $i1 := @parameter3: int;
+
+        $i2 := @parameter4: int;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void ringRead(int,byte[],int,int)>($i0, $r1, $i1, $i2);
+
+        return;
+    }
+
+    static java.io.RandomAccessFile access$400(io.fabric.sdk.android.services.common.QueueFile)
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        java.io.RandomAccessFile r1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.services.common.QueueFile;
+
+        r1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        return r1;
+    }
+
+    private void expandIfNecessary(int) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        java.io.RandomAccessFile $r1;
+        byte $b0;
+        java.lang.AssertionError $r2;
+        int $i1, $i2, $i3, $i4, $i1_1, $i3_1, $i4_1, $i1_2, $i3_2, $i1_3, $i4_2, $i2_1, $i2_2, $i3_3, $i2_3, $i2_4, $i3_4, $i3_5, $i2_5, $i2_6, $i3_6, $i2_7, $i3_7, $i2_8, $i3_8, $i2_9, $i2_10, $i3_9, $i4_3, $i3_10, $i2_11, $i3_11, $i4_4, $i2_12, $i3_12, $i4_5;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r3, $r5, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8, $r3_9, $r3_10;
+        java.nio.channels.FileChannel $r4;
+        long $l5, $l6, $l5_1, $l5_2, $l5_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i1 := @parameter0: int;
+
+        $i2 = $i1 + 4;
+
+        $i1_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: int remainingBytes()>();
+
+        $i3 = $i1_1;
+
+        if $i1_1 < $i2 goto label1;
+
+        return;
+
+     label1:
+(0)     $i4 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+     label2:
+        $i3_1 = Phi($i3 #0, $i3_2 #1);
+
+        $i4_1 = Phi($i4 #0, $i4_2 #1);
+
+        $i1_2 = Phi($i1_1 #0, $i1_3 #1);
+
+        $i3_2 = $i3_1 + $i4_1;
+
+        $i1_3 = $i4_1 << 1;
+
+        $i4_2 = $i1_3;
+
+(1)     if $i3_2 < $i2 goto label2;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void setLength(int)>($i1_3);
+
+        $r3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i2_1 = $r3.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        $i2_2 = $i2_1 + 4;
+
+        $r3_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i3_3 = $r3_1.<io.fabric.sdk.android.services.common.QueueFile$Element: int length>;
+
+        $i2_3 = $i2_2 + $i3_3;
+
+        $i2_4 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: int wrapPosition(int)>($i2_3);
+
+        $r3_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        $i3_4 = $r3_2.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+(2)     if $i2_4 >= $i3_4 goto label3;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $r4 = virtualinvoke $r1.<java.io.RandomAccessFile: java.nio.channels.FileChannel getChannel()>();
+
+        $i3_5 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        $l5 = (long) $i3_5;
+
+        virtualinvoke $r4.<java.nio.channels.FileChannel: java.nio.channels.FileChannel position(long)>($l5);
+
+        $i2_5 = $i2_4 + -4;
+
+        $l5_1 = (long) $i2_5;
+
+        $l5_2 = virtualinvoke $r4.<java.nio.channels.FileChannel: long transferTo(long,long,java.nio.channels.WritableByteChannel)>(16L, $l5_1, $r4);
+
+        $l6 = (long) $i2_5;
+
+        $b0 = $l5_2 cmp $l6;
+
+(3)     if $b0 == 0 goto label3;
+
+        $r2 = new java.lang.AssertionError;
+
+        specialinvoke $r2.<java.lang.AssertionError: void <init>(java.lang.Object)>("Copied insufficient number of bytes!");
+
+        throw $r2;
+
+     label3:
+        $i2_6 = Phi($i2_4 #2, $i2_5 #3);
+
+        $l5_3 = Phi($l5 #2, $l5_2 #3);
+
+        $i3_6 = Phi($i3_4 #2, $i3_5 #3);
+
+        $r3_3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i2_7 = $r3_3.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        $r3_4 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        $i3_7 = $r3_4.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        if $i2_7 >= $i3_7 goto label5;
+
+        $i2_8 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        $r3_5 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i3_8 = $r3_5.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        $i2_9 = $i2_8 + $i3_8;
+
+        $i2_10 = $i2_9 + -16;
+
+        $i3_9 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+        $r3_6 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        $i4_3 = $r3_6.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void writeHeader(int,int,int,int)>($i1_3, $i3_9, $i4_3, $i2_10);
+
+        $r3_7 = new io.fabric.sdk.android.services.common.QueueFile$Element;
+
+        $r5 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i3_10 = $r5.<io.fabric.sdk.android.services.common.QueueFile$Element: int length>;
+
+        specialinvoke $r3_7.<io.fabric.sdk.android.services.common.QueueFile$Element: void <init>(int,int)>($i2_10, $i3_10);
+
+(4)     $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last> = $r3_7;
+
+     label4:
+        $i2_11 = Phi($i2_10 #4, $i2_12 #5);
+
+        $r3_8 = Phi($r3_7 #4, $r3_10 #5);
+
+        $i3_11 = Phi($i3_10 #4, $i3_12 #5);
+
+        $i4_4 = Phi($i4_3 #4, $i4_5 #5);
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength> = $i1_3;
+
+        return;
+
+     label5:
+        $i2_12 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+        $r3_9 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        $i3_12 = $r3_9.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        $r3_10 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i4_5 = $r3_10.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void writeHeader(int,int,int,int)>($i1_3, $i2_12, $i3_12, $i4_5);
+
+(5)     goto label4;
+    }
+
+    private static void initialize(java.io.File) throws java.io.IOException
+    {
+        java.io.File $r0, $r1;
+        byte[] $r2;
+        int[] $r3;
+        java.io.IOException $r4;
+        java.lang.Throwable $r5;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2;
+        java.lang.String $r7, $r7_1;
+        java.io.RandomAccessFile $r8;
+        boolean $z0;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r1 = new java.io.File;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = virtualinvoke $r0.<java.io.File: java.lang.String getPath()>();
+
+        $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".tmp");
+
+        $r7_1 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.io.File: void <init>(java.lang.String)>($r7_1);
+
+        $r8 = staticinvoke <io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile open(java.io.File)>($r1);
+
+     label1:
+        virtualinvoke $r8.<java.io.RandomAccessFile: void setLength(long)>(4096L);
+
+        virtualinvoke $r8.<java.io.RandomAccessFile: void seek(long)>(0L);
+
+        $r2 = newarray (byte)[16];
+
+        $r3 = newarray (int)[4];
+
+        $r3[0] = 4096;
+
+        $r3[1] = 0;
+
+        $r3[2] = 0;
+
+        $r3[3] = 0;
+
+        staticinvoke <io.fabric.sdk.android.services.common.QueueFile: void writeInts(byte[],int[])>($r2, $r3);
+
+        virtualinvoke $r8.<java.io.RandomAccessFile: void write(byte[])>($r2);
+
+     label2:
+        virtualinvoke $r8.<java.io.RandomAccessFile: void close()>();
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean renameTo(java.io.File)>($r0);
+
+        if $z0 != 0 goto label4;
+
+        $r4 = new java.io.IOException;
+
+        specialinvoke $r4.<java.io.IOException: void <init>(java.lang.String)>("Rename failed!");
+
+        throw $r4;
+
+     label3:
+        $r5 := @caughtexception;
+
+        virtualinvoke $r8.<java.io.RandomAccessFile: void close()>();
+
+        throw $r5;
+
+     label4:
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private static java.lang.Object nonNull(java.lang.Object, java.lang.String)
+    {
+        java.lang.Object $r0;
+        java.lang.String $r1;
+        java.lang.NullPointerException $r2;
+
+        $r0 := @parameter0: java.lang.Object;
+
+        $r1 := @parameter1: java.lang.String;
+
+        if $r0 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>($r1);
+
+        throw $r2;
+
+     label1:
+        return $r0;
+    }
+
+    private static java.io.RandomAccessFile open(java.io.File) throws java.io.FileNotFoundException
+    {
+        java.io.File $r0;
+        java.io.RandomAccessFile $r1;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r1 = new java.io.RandomAccessFile;
+
+        specialinvoke $r1.<java.io.RandomAccessFile: void <init>(java.io.File,java.lang.String)>($r0, "rwd");
+
+        return $r1;
+    }
+
+    private io.fabric.sdk.android.services.common.QueueFile$Element readElement(int) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0, $i2;
+        long $l1;
+        java.io.RandomAccessFile $r1, $r1_1;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r2, $r2_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i0 := @parameter0: int;
+
+        if $i0 != 0 goto label1;
+
+        $r2 = <io.fabric.sdk.android.services.common.QueueFile$Element: io.fabric.sdk.android.services.common.QueueFile$Element NULL>;
+
+        return $r2;
+
+     label1:
+        $r1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $l1 = (long) $i0;
+
+        virtualinvoke $r1.<java.io.RandomAccessFile: void seek(long)>($l1);
+
+        $r2_1 = new io.fabric.sdk.android.services.common.QueueFile$Element;
+
+        $r1_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $i2 = virtualinvoke $r1_1.<java.io.RandomAccessFile: int readInt()>();
+
+        specialinvoke $r2_1.<io.fabric.sdk.android.services.common.QueueFile$Element: void <init>(int,int)>($i0, $i2);
+
+        return $r2_1;
+    }
+
+    private void readHeader() throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        byte $b0;
+        java.io.IOException $r1;
+        java.io.RandomAccessFile $r2, $r2_1, $r2_2, $r2_3;
+        byte[] $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        int $i1, $i4, $i1_1, $i1_2, $i1_3, $i1_4;
+        long $l2, $l3, $l2_1;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.lang.String $r5;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r6, $r6_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        virtualinvoke $r2.<java.io.RandomAccessFile: void seek(long)>(0L);
+
+        $r2_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $r3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+        virtualinvoke $r2_1.<java.io.RandomAccessFile: void readFully(byte[])>($r3);
+
+        $r3_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+        $i1 = staticinvoke <io.fabric.sdk.android.services.common.QueueFile: int readInt(byte[],int)>($r3_1, 0);
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength> = $i1;
+
+        $i1_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        $l2 = (long) $i1_1;
+
+        $r2_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $l3 = virtualinvoke $r2_2.<java.io.RandomAccessFile: long length()>();
+
+        $b0 = $l2 cmp $l3;
+
+        if $b0 <= 0 goto label1;
+
+        $r1 = new java.io.IOException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("File is truncated. Expected length: ");
+
+        $i1_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1_2);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", Actual length: ");
+
+        $r2_3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $l2_1 = virtualinvoke $r2_3.<java.io.RandomAccessFile: long length()>();
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l2_1);
+
+        $r5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.io.IOException: void <init>(java.lang.String)>($r5);
+
+        throw $r1;
+
+     label1:
+        $r3_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+        $i1_3 = staticinvoke <io.fabric.sdk.android.services.common.QueueFile: int readInt(byte[],int)>($r3_2, 4);
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount> = $i1_3;
+
+        $r3_3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+        $i1_4 = staticinvoke <io.fabric.sdk.android.services.common.QueueFile: int readInt(byte[],int)>($r3_3, 8);
+
+        $r3_4 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+        $i4 = staticinvoke <io.fabric.sdk.android.services.common.QueueFile: int readInt(byte[],int)>($r3_4, 12);
+
+        $r6 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element readElement(int)>($i1_4);
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first> = $r6;
+
+        $r6_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element readElement(int)>($i4);
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last> = $r6_1;
+
+        return;
+    }
+
+    private static int readInt(byte[], int)
+    {
+        byte[] $r0;
+        short $s0, $s0_1, $s0_2, $s0_3;
+        int $i1, $i3, $i4, $i4_1, $i3_1, $i4_2, $i4_3, $i3_2, $i1_1, $i1_2;
+        byte $b2, $b2_1, $b2_2, $b2_3;
+
+        $r0 := @parameter0: byte[];
+
+        $i1 := @parameter1: int;
+
+        $b2 = $r0[$i1];
+
+        $s0 = $b2 & 255;
+
+        $i3 = $s0 << 24;
+
+        $i4 = $i1 + 1;
+
+        $b2_1 = $r0[$i4];
+
+        $s0_1 = $b2_1 & 255;
+
+        $i4_1 = $s0_1 << 16;
+
+        $i3_1 = $i3 + $i4_1;
+
+        $i4_2 = $i1 + 2;
+
+        $b2_2 = $r0[$i4_2];
+
+        $s0_2 = $b2_2 & 255;
+
+        $i4_3 = $s0_2 << 8;
+
+        $i3_2 = $i3_1 + $i4_3;
+
+        $i1_1 = $i1 + 3;
+
+        $b2_3 = $r0[$i1_1];
+
+        $s0_3 = $b2_3 & 255;
+
+        $i1_2 = $i3_2 + $s0_3;
+
+        return $i1_2;
+    }
+
+    private int remainingBytes()
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0, $i1, $i0_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i0 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        $i1 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: int usedBytes()>();
+
+        $i0_1 = $i0 - $i1;
+
+        return $i0_1;
+    }
+
+    private void ringRead(int, byte[], int, int) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        byte[] $r1;
+        int $i0, $i1, $i2, $i3, $i4, $i2_1, $i1_1, $i1_2, $i2_2, $i3_1;
+        java.io.RandomAccessFile $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+        long $l5, $l5_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i2 := @parameter0: int;
+
+        $r1 := @parameter1: byte[];
+
+        $i3 := @parameter2: int;
+
+        $i0 := @parameter3: int;
+
+        $i2_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: int wrapPosition(int)>($i2);
+
+        $i4 = $i2_1 + $i0;
+
+        $i1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        if $i4 > $i1 goto label1;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $l5 = (long) $i2_1;
+
+        virtualinvoke $r2.<java.io.RandomAccessFile: void seek(long)>($l5);
+
+        $r2_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        virtualinvoke $r2_1.<java.io.RandomAccessFile: void readFully(byte[],int,int)>($r1, $i3, $i0);
+
+        return;
+
+     label1:
+        $i1_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        $i1_2 = $i1_1 - $i2_1;
+
+        $r2_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $l5_1 = (long) $i2_1;
+
+        virtualinvoke $r2_2.<java.io.RandomAccessFile: void seek(long)>($l5_1);
+
+        $r2_3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        virtualinvoke $r2_3.<java.io.RandomAccessFile: void readFully(byte[],int,int)>($r1, $i3, $i1_2);
+
+        $r2_4 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        virtualinvoke $r2_4.<java.io.RandomAccessFile: void seek(long)>(16L);
+
+        $r2_5 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $i2_2 = $i3 + $i1_2;
+
+        $i3_1 = $i0 - $i1_2;
+
+        virtualinvoke $r2_5.<java.io.RandomAccessFile: void readFully(byte[],int,int)>($r1, $i2_2, $i3_1);
+
+        return;
+    }
+
+    private void ringWrite(int, byte[], int, int) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        byte[] $r1;
+        int $i0, $i1, $i2, $i3, $i4, $i2_1, $i1_1, $i1_2, $i2_2, $i3_1;
+        java.io.RandomAccessFile $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+        long $l5, $l5_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i2 := @parameter0: int;
+
+        $r1 := @parameter1: byte[];
+
+        $i3 := @parameter2: int;
+
+        $i0 := @parameter3: int;
+
+        $i2_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: int wrapPosition(int)>($i2);
+
+        $i4 = $i2_1 + $i0;
+
+        $i1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        if $i4 > $i1 goto label1;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $l5 = (long) $i2_1;
+
+        virtualinvoke $r2.<java.io.RandomAccessFile: void seek(long)>($l5);
+
+        $r2_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        virtualinvoke $r2_1.<java.io.RandomAccessFile: void write(byte[],int,int)>($r1, $i3, $i0);
+
+        return;
+
+     label1:
+        $i1_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        $i1_2 = $i1_1 - $i2_1;
+
+        $r2_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $l5_1 = (long) $i2_1;
+
+        virtualinvoke $r2_2.<java.io.RandomAccessFile: void seek(long)>($l5_1);
+
+        $r2_3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        virtualinvoke $r2_3.<java.io.RandomAccessFile: void write(byte[],int,int)>($r1, $i3, $i1_2);
+
+        $r2_4 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        virtualinvoke $r2_4.<java.io.RandomAccessFile: void seek(long)>(16L);
+
+        $r2_5 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $i2_2 = $i3 + $i1_2;
+
+        $i3_1 = $i0 - $i1_2;
+
+        virtualinvoke $r2_5.<java.io.RandomAccessFile: void write(byte[],int,int)>($r1, $i2_2, $i3_1);
+
+        return;
+    }
+
+    private void setLength(int) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0;
+        long $l1;
+        java.nio.channels.FileChannel $r1;
+        java.io.RandomAccessFile $r2, $r2_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i0 := @parameter0: int;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $l1 = (long) $i0;
+
+        virtualinvoke $r2.<java.io.RandomAccessFile: void setLength(long)>($l1);
+
+        $r2_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $r1 = virtualinvoke $r2_1.<java.io.RandomAccessFile: java.nio.channels.FileChannel getChannel()>();
+
+        virtualinvoke $r1.<java.nio.channels.FileChannel: void force(boolean)>(1);
+
+        return;
+    }
+
+    private int wrapPosition(int)
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0, $i1, $i0_1, $i1_1, $i0_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i0 := @parameter0: int;
+
+        $i1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        if $i0 >= $i1 goto label1;
+
+        return $i0;
+
+     label1:
+        $i0_1 = $i0 + 16;
+
+        $i1_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        $i0_2 = $i0_1 - $i1_1;
+
+        return $i0_2;
+    }
+
+    private void writeHeader(int, int, int, int) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0, $i1, $i2, $i3;
+        int[] $r1;
+        byte[] $r2, $r2_1;
+        java.io.RandomAccessFile $r3, $r3_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $i3 := @parameter3: int;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+        $r1 = newarray (int)[4];
+
+        $r1[0] = $i0;
+
+        $r1[1] = $i1;
+
+        $r1[2] = $i2;
+
+        $r1[3] = $i3;
+
+        staticinvoke <io.fabric.sdk.android.services.common.QueueFile: void writeInts(byte[],int[])>($r2, $r1);
+
+        $r3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        virtualinvoke $r3.<java.io.RandomAccessFile: void seek(long)>(0L);
+
+        $r3_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        $r2_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+        virtualinvoke $r3_1.<java.io.RandomAccessFile: void write(byte[])>($r2_1);
+
+        return;
+    }
+
+    private static void writeInt(byte[], int, int)
+    {
+        byte[] $r0;
+        int $i0, $i1, $i2, $i4, $i2_1, $i2_2, $i4_1, $i1_1;
+        byte $b3, $b3_1, $b3_2, $b3_3;
+
+        $r0 := @parameter0: byte[];
+
+        $i1 := @parameter1: int;
+
+        $i0 := @parameter2: int;
+
+        $i2 = $i0 >> 24;
+
+        $b3 = (byte) $i2;
+
+        $r0[$i1] = $b3;
+
+        $i2_1 = $i1 + 1;
+
+        $i4 = $i0 >> 16;
+
+        $b3_1 = (byte) $i4;
+
+        $r0[$i2_1] = $b3_1;
+
+        $i2_2 = $i1 + 2;
+
+        $i4_1 = $i0 >> 8;
+
+        $b3_2 = (byte) $i4_1;
+
+        $r0[$i2_2] = $b3_2;
+
+        $i1_1 = $i1 + 3;
+
+        $b3_3 = (byte) $i0;
+
+        $r0[$i1_1] = $b3_3;
+
+        return;
+    }
+
+    private static transient void writeInts(byte[], int[])
+    {
+        byte[] $r0;
+        int[] $r1;
+        int $i0, $i1, $i2, $i3, $i3_1, $i2_1, $i2_2, $i3_2;
+
+        $r0 := @parameter0: byte[];
+
+        $r1 := @parameter1: int[];
+
+        $i2 = 0;
+
+        $i0 = lengthof $r1;
+
+(0)     $i3 = 0;
+
+     label1:
+        $i3_1 = Phi($i3 #0, $i3_2 #1);
+
+        $i2_1 = Phi($i2 #0, $i2_2 #1);
+
+        if $i3_1 >= $i0 goto label2;
+
+        $i1 = $r1[$i3_1];
+
+        staticinvoke <io.fabric.sdk.android.services.common.QueueFile: void writeInt(byte[],int,int)>($r0, $i2_1, $i1);
+
+        $i2_2 = $i2_1 + 4;
+
+        $i3_2 = $i3_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    public void add(byte[]) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        byte[] $r1;
+        int $i0;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 = lengthof $r1;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void add(byte[],int,int)>($r1, 0, $i0);
+
+        return;
+    }
+
+    public void add(byte[], int, int) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        byte[] $r1, $r6, $r6_1, $r6_2;
+        java.lang.IndexOutOfBoundsException $r2;
+        java.lang.Throwable $r3;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r4, $r5, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7;
+        int $i0, $i1, $i2, $i3, $i2_1, $i2_2, $i2_3, $i2_4, $i2_5, $i2_6, $i2_7, $i0_1, $i0_2, $i1_1, $i2_8, $i2_9, $i3_1, $i0_3, $i0_4, $i0_5, $i2_10, $i2_11, $i3_2, $i2_12, $i2_13, $i2_14, $i3_3, $i2_15, $i0_6, $i1_2;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+(0)     entermonitor $r0;
+
+     label01:
+        staticinvoke <io.fabric.sdk.android.services.common.QueueFile: java.lang.Object nonNull(java.lang.Object,java.lang.String)>($r1, "buffer");
+
+        $i2 = $i0 | $i1;
+
+(1)     if $i2 < 0 goto label02;
+
+(2)     $i2_1 = lengthof $r1;
+
+(3)     $i2_2 = $i2_1 - $i0;
+
+(4)     if $i1 <= $i2_2 goto label04;
+
+     label02:
+        $i2_14 = Phi($i2 #1, $i2_2 #4);
+
+(5)     $r2 = new java.lang.IndexOutOfBoundsException;
+
+        specialinvoke $r2.<java.lang.IndexOutOfBoundsException: void <init>()>();
+
+        throw $r2;
+
+     label03:
+        $r3 := @caughtexception;
+
+        $r6_2 = Phi($r6 #0, $r6_1 #9);
+
+        $i3_3 = Phi($i3 #0, $i3_1 #16, $i3_2 #26);
+
+        $i2_15 = Phi($i2 #0, $i2_1 #2, $i2_2 #3, $i2_14 #5, $i2_3 #6, $i2_4 #7, $i2_5 #8, $i2_6 #10, $i2_7 #11, $i2_8 #14, $i2_9 #15, $i2_10 #23, $i2_11 #24, $i2_12 #27, $i2_13 #28);
+
+        $i0_6 = Phi($i0 #0, $i0_1 #12, $i0_2 #13, $i0_3 #17, $i0_4 #18, $i0_5 #31);
+
+        $r4_7 = Phi($r4 #0, $r4_1 #13, $r4_2 #20, $r4_5 #22, $r4_6 #25, $r4_4 #30);
+
+        $i1_2 = Phi($i1 #0, $i1_1 #13);
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+     label04:
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void expandIfNecessary(int)>($i1);
+
+        $z0 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: boolean isEmpty()>();
+
+        if $z0 == 0 goto label08;
+
+(6)     $i2_3 = 16;
+
+     label05:
+        $i3 = Phi($i3 #6, $i3_2 #29);
+
+        $i2_4 = Phi($i2_3 #6, $i2_13 #29);
+
+        $r4 = Phi($r4 #6, $r4_6 #29);
+
+(7)     $r5 = new io.fabric.sdk.android.services.common.QueueFile$Element;
+
+        specialinvoke $r5.<io.fabric.sdk.android.services.common.QueueFile$Element: void <init>(int,int)>($i2_4, $i1);
+
+        $r6 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+        staticinvoke <io.fabric.sdk.android.services.common.QueueFile: void writeInt(byte[],int,int)>($r6, 0, $i1);
+
+(8)     $i2_5 = $r5.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+(9)     $r6_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void ringWrite(int,byte[],int,int)>($i2_5, $r6_1, 0, 4);
+
+(10)    $i2_6 = $r5.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+(11)    $i2_7 = $i2_6 + 4;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void ringWrite(int,byte[],int,int)>($i2_7, $r1, $i0, $i1);
+
+        if $z0 == 0 goto label09;
+
+(12)    $i0_1 = $r5.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+     label06:
+        $i0_2 = Phi($i0_1 #12, $i0_5 #32);
+
+        $r4_1 = Phi($r4 #12, $r4_4 #32);
+
+(13)    $i1_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+(14)    $i2_8 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+(15)    $i2_9 = $i2_8 + 1;
+
+(16)    $i3_1 = $r5.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void writeHeader(int,int,int,int)>($i1_1, $i2_9, $i0_2, $i3_1);
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last> = $r5;
+
+(17)    $i0_3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+(18)    $i0_4 = $i0_3 + 1;
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount> = $i0_4;
+
+(19)    if $z0 == 0 goto label07;
+
+(20)    $r4_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+(21)    $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first> = $r4_2;
+
+     label07:
+        $r4_3 = Phi($r4_1 #19, $r4_2 #21);
+
+        exitmonitor $r0;
+
+        return;
+
+     label08:
+(22)    $r4_5 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+(23)    $i2_10 = $r4_5.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+(24)    $i2_11 = $i2_10 + 4;
+
+(25)    $r4_6 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+(26)    $i3_2 = $r4_6.<io.fabric.sdk.android.services.common.QueueFile$Element: int length>;
+
+(27)    $i2_12 = $i2_11 + $i3_2;
+
+(28)    $i2_13 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: int wrapPosition(int)>($i2_12);
+
+(29)    goto label05;
+
+     label09:
+(30)    $r4_4 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+(31)    $i0_5 = $r4_4.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+     label10:
+(32)    goto label06;
+
+        catch java.lang.Throwable from label01 to label03 with label03;
+        catch java.lang.Throwable from label04 to label07 with label03;
+        catch java.lang.Throwable from label08 to label10 with label03;
+    }
+
+    public void clear() throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0;
+        java.lang.Throwable $r1;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r2, $r2_1, $r2_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+(0)     entermonitor $r0;
+
+     label1:
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void writeHeader(int,int,int,int)>(4096, 0, 0, 0);
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount> = 0;
+
+        $r2 = <io.fabric.sdk.android.services.common.QueueFile$Element: io.fabric.sdk.android.services.common.QueueFile$Element NULL>;
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first> = $r2;
+
+(1)     $r2_1 = <io.fabric.sdk.android.services.common.QueueFile$Element: io.fabric.sdk.android.services.common.QueueFile$Element NULL>;
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last> = $r2_1;
+
+        $i0 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        if $i0 <= 4096 goto label2;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void setLength(int)>(4096);
+
+     label2:
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength> = 4096;
+
+     label3:
+        exitmonitor $r0;
+
+        return;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        java.io.RandomAccessFile $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        entermonitor $r0;
+
+     label1:
+        $r1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: java.io.RandomAccessFile raf>;
+
+        virtualinvoke $r1.<java.io.RandomAccessFile: void close()>();
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void forEach(io.fabric.sdk.android.services.common.QueueFile$ElementReader) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        io.fabric.sdk.android.services.common.QueueFile$ElementReader $r1;
+        io.fabric.sdk.android.services.common.QueueFile$ElementInputStream $r2;
+        java.lang.Throwable $r3;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r4, $r4_1, $r4_2, $r4_3;
+        int $i0, $i1, $i2, $i0_1, $i1_1, $i2_1, $i0_2, $i0_3, $i0_4, $i2_2, $i0_5, $i0_6, $i1_2, $i0_7, $i2_3, $i1_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.common.QueueFile$ElementReader;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r4 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        $i0 = $r4.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+(1)     $i1 = 0;
+
+     label2:
+        $i0_1 = Phi($i0 #1, $i0_6 #10);
+
+        $r4_1 = Phi($r4 #1, $r4_2 #10);
+
+        $i2 = Phi($i2 #1, $i2_2 #10);
+
+        $i1_1 = Phi($i1 #1, $i1_2 #10);
+
+(2)     $i2_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+        if $i1_1 >= $i2_1 goto label4;
+
+(3)     $r4_2 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element readElement(int)>($i0_1);
+
+        $r2 = new io.fabric.sdk.android.services.common.QueueFile$ElementInputStream;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.common.QueueFile$ElementInputStream: void <init>(io.fabric.sdk.android.services.common.QueueFile,io.fabric.sdk.android.services.common.QueueFile$Element,io.fabric.sdk.android.services.common.QueueFile$1)>($r0, $r4_2, null);
+
+(4)     $i0_2 = $r4_2.<io.fabric.sdk.android.services.common.QueueFile$Element: int length>;
+
+        interfaceinvoke $r1.<io.fabric.sdk.android.services.common.QueueFile$ElementReader: void read(java.io.InputStream,int)>($r2, $i0_2);
+
+(5)     $i0_3 = $r4_2.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+(6)     $i0_4 = $i0_3 + 4;
+
+(7)     $i2_2 = $r4_2.<io.fabric.sdk.android.services.common.QueueFile$Element: int length>;
+
+(8)     $i0_5 = $i0_4 + $i2_2;
+
+(9)     $i0_6 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: int wrapPosition(int)>($i0_5);
+
+     label3:
+        $i1_2 = $i1_1 + 1;
+
+(10)    goto label2;
+
+     label4:
+        exitmonitor $r0;
+
+        return;
+
+     label5:
+        $r3 := @caughtexception;
+
+        $i0_7 = Phi($i0 #0, $i0_1 #2, $i0_2 #4, $i0_3 #5, $i0_4 #6, $i0_5 #8, $i0_6 #9);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #2, $r4_2 #3);
+
+        $i2_3 = Phi($i2 #0, $i2_1 #2, $i2_2 #7);
+
+        $i1_3 = Phi($i1 #0, $i1_2 #10, $i1_1 #2);
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label3 with label5;
+    }
+
+    public boolean hasSpaceFor(int, int)
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0, $i1, $i2, $i1_1, $i2_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i2 := @parameter0: int;
+
+        $i0 := @parameter1: int;
+
+        $i1 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: int usedBytes()>();
+
+        $i1_1 = $i1 + 4;
+
+        $i2_1 = $i1_1 + $i2;
+
+        if $i2_1 > $i0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isEmpty()
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0;
+        java.lang.Throwable $r1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        entermonitor $r0;
+
+     label1:
+        $i0 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+     label2:
+        if $i0 != 0 goto label4;
+
+(0)     $z0 = 1;
+
+     label3:
+        $z0_1 = Phi($z0 #0, $z0_2 #1);
+
+        exitmonitor $r0;
+
+        return $z0_1;
+
+     label4:
+        $z0_2 = 0;
+
+(1)     goto label3;
+
+     label5:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+    }
+
+    public void peek(io.fabric.sdk.android.services.common.QueueFile$ElementReader) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        io.fabric.sdk.android.services.common.QueueFile$ElementReader $r1;
+        io.fabric.sdk.android.services.common.QueueFile$ElementInputStream $r2;
+        java.lang.Throwable $r3;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.common.QueueFile$ElementReader;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $i0 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+(1)     if $i0 <= 0 goto label2;
+
+        $r2 = new io.fabric.sdk.android.services.common.QueueFile$ElementInputStream;
+
+        $r4 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.common.QueueFile$ElementInputStream: void <init>(io.fabric.sdk.android.services.common.QueueFile,io.fabric.sdk.android.services.common.QueueFile$Element,io.fabric.sdk.android.services.common.QueueFile$1)>($r0, $r4, null);
+
+(2)     $r4_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+(3)     $i0_1 = $r4_1.<io.fabric.sdk.android.services.common.QueueFile$Element: int length>;
+
+(4)     interfaceinvoke $r1.<io.fabric.sdk.android.services.common.QueueFile$ElementReader: void read(java.io.InputStream,int)>($r2, $i0_1);
+
+     label2:
+        $i0_2 = Phi($i0 #1, $i0_1 #4);
+
+        $r4_2 = Phi($r4 #1, $r4_1 #4);
+
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $i0_3 = Phi($i0 #0, $i0_1 #3);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #2);
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public byte[] peek() throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3;
+        java.lang.Throwable $r1;
+        boolean $z0;
+        byte[] $r2, $r2_1, $r2_2, $r2_3;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $z0 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: boolean isEmpty()>();
+
+     label2:
+        if $z0 == 0 goto label4;
+
+(1)     $r2 = null;
+
+     label3:
+        $r2_1 = Phi($r2 #1, $r2_2 #7);
+
+        $i1 = Phi($i1 #1, $i1_2 #7);
+
+        $r3 = Phi($r3 #1, $r3_2 #7);
+
+        exitmonitor $r0;
+
+        return $r2_1;
+
+     label4:
+(2)     $r3_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        $i0 = $r3_1.<io.fabric.sdk.android.services.common.QueueFile$Element: int length>;
+
+(3)     $r2_2 = newarray (byte)[$i0];
+
+(4)     $r3_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+(5)     $i1_1 = $r3_2.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+(6)     $i1_2 = $i1_1 + 4;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void ringRead(int,byte[],int,int)>($i1_2, $r2_2, 0, $i0);
+
+     label5:
+(7)     goto label3;
+
+     label6:
+        $r1 := @caughtexception;
+
+        $r2_3 = Phi($r2 #0, $r2_2 #3);
+
+        $i1_3 = Phi($i1 #0, $i1_1 #5, $i1_2 #6);
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    public void remove() throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        java.util.NoSuchElementException $r1;
+        java.lang.Throwable $r2;
+        int $i0, $i1, $i2, $i3, $i4, $i1_1, $i1_2, $i1_3, $i2_1, $i1_4, $i1_5, $i2_2, $i3_1, $i0_1, $i0_2, $i3_2, $i3_3, $i3_4, $i2_3, $i1_6, $i0_3;
+        boolean $z0;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        byte[] $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $z0 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: boolean isEmpty()>();
+
+        if $z0 == 0 goto label3;
+
+        $r1 = new java.util.NoSuchElementException;
+
+        specialinvoke $r1.<java.util.NoSuchElementException: void <init>()>();
+
+        throw $r1;
+
+     label2:
+        $r2 := @caughtexception;
+
+        $r3_5 = Phi($r3 #0, $r3_1 #2, $r3_2 #5, $r3_3 #14, $r3_4 #18);
+
+        $i3_4 = Phi($i3 #0, $i3_1 #12, $i3_2 #16, $i3_3 #17);
+
+        $i2_3 = Phi($i2 #0, $i2_1 #6, $i2_2 #11);
+
+        $i1_6 = Phi($i1 #0, $i1_2 #3, $i1_3 #4, $i1_4 #7, $i1_5 #8);
+
+        $i0_3 = Phi($i0 #0, $i0_1 #13, $i0_2 #15);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #9, $r4_2 #10);
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+     label3:
+        $i1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+        if $i1 != 1 goto label5;
+
+(1)     virtualinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void clear()>();
+
+     label4:
+        $r3 = Phi($r3 #1, $r3_4 #19);
+
+        $i3 = Phi($i3 #1, $i3_3 #19);
+
+        $i2 = Phi($i2 #1, $i2_2 #19);
+
+        $i1_1 = Phi($i1 #1, $i1_5 #19);
+
+        $i0 = Phi($i0 #1, $i0_2 #19);
+
+        $r4 = Phi($r4 #1, $r4_2 #19);
+
+        exitmonitor $r0;
+
+        return;
+
+     label5:
+(2)     $r3_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+(3)     $i1_2 = $r3_1.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+(4)     $i1_3 = $i1_2 + 4;
+
+(5)     $r3_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+(6)     $i2_1 = $r3_2.<io.fabric.sdk.android.services.common.QueueFile$Element: int length>;
+
+(7)     $i1_4 = $i1_3 + $i2_1;
+
+(8)     $i1_5 = specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: int wrapPosition(int)>($i1_4);
+
+(9)     $r4_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void ringRead(int,byte[],int,int)>($i1_5, $r4_1, 0, 4);
+
+(10)    $r4_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: byte[] buffer>;
+
+(11)    $i2_2 = staticinvoke <io.fabric.sdk.android.services.common.QueueFile: int readInt(byte[],int)>($r4_2, 0);
+
+(12)    $i3_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+(13)    $i0_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+        $i4 = $i0_1 + -1;
+
+(14)    $r3_3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+(15)    $i0_2 = $r3_3.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void writeHeader(int,int,int,int)>($i3_1, $i4, $i1_5, $i0_2);
+
+(16)    $i3_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+(17)    $i3_3 = $i3_2 + -1;
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount> = $i3_3;
+
+(18)    $r3_4 = new io.fabric.sdk.android.services.common.QueueFile$Element;
+
+        specialinvoke $r3_4.<io.fabric.sdk.android.services.common.QueueFile$Element: void <init>(int,int)>($i1_5, $i2_2);
+
+        $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first> = $r3_4;
+
+     label6:
+(19)    goto label4;
+
+        catch java.lang.Throwable from label1 to label2 with label2;
+        catch java.lang.Throwable from label3 to label4 with label2;
+        catch java.lang.Throwable from label5 to label6 with label2;
+    }
+
+    public int size()
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        java.lang.Throwable $r1;
+        int i0;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        entermonitor $r0;
+
+     label1:
+        i0 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+     label2:
+        exitmonitor $r0;
+
+        return i0;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public java.lang.String toString()
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        java.lang.StringBuilder $r1, $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        io.fabric.sdk.android.services.common.QueueFile$1 $r2;
+        java.io.IOException $r3;
+        java.util.logging.Logger $r4;
+        java.util.logging.Level $r5;
+        java.lang.Class $r6;
+        java.lang.String $r7, $r7_1;
+        int $i0, $i0_1;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r9, $r9_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r7 = virtualinvoke $r6.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        $r8 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(91);
+
+        $r8_1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("fileLength=");
+
+        $i0 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8_2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", size=");
+
+        $i0_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+        virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_1);
+
+        $r8_3 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", first=");
+
+        $r9 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        virtualinvoke $r8_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r9);
+
+        $r8_4 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", last=");
+
+        $r9_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        virtualinvoke $r8_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r9_1);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", element lengths=[");
+
+        $r2 = new io.fabric.sdk.android.services.common.QueueFile$1;
+
+     label1:
+        specialinvoke $r2.<io.fabric.sdk.android.services.common.QueueFile$1: void <init>(io.fabric.sdk.android.services.common.QueueFile,java.lang.StringBuilder)>($r0, $r1);
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.common.QueueFile: void forEach(io.fabric.sdk.android.services.common.QueueFile$ElementReader)>($r2);
+
+     label2:
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]]");
+
+        $r7_1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r7_1;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r4 = <io.fabric.sdk.android.services.common.QueueFile: java.util.logging.Logger LOGGER>;
+
+        $r5 = <java.util.logging.Level: java.util.logging.Level WARNING>;
+
+        virtualinvoke $r4.<java.util.logging.Logger: void log(java.util.logging.Level,java.lang.String,java.lang.Throwable)>($r5, "read error", $r3);
+
+        goto label2;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public int usedBytes()
+    {
+        io.fabric.sdk.android.services.common.QueueFile $r0;
+        int $i0, $i1, $i0_1, $i0_2, $i1_1, $i0_3, $i0_4, $i1_2, $i0_5, $i0_6, $i0_7, $i0_8, $i1_3, $i0_9, $i1_4, $i0_10, $i1_5, $i0_11;
+        io.fabric.sdk.android.services.common.QueueFile$Element $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5, $r1_6, $r1_7;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.QueueFile;
+
+        $i0 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int elementCount>;
+
+        if $i0 != 0 goto label1;
+
+        return 16;
+
+     label1:
+        $r1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i0_1 = $r1.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        $r1_1 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        $i1 = $r1_1.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        if $i0_1 < $i1 goto label2;
+
+        $r1_2 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i0_2 = $r1_2.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        $r1_3 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        $i1_1 = $r1_3.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        $i0_3 = $i0_2 - $i1_1;
+
+        $i0_4 = $i0_3 + 4;
+
+        $r1_4 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i1_2 = $r1_4.<io.fabric.sdk.android.services.common.QueueFile$Element: int length>;
+
+        $i0_5 = $i0_4 + $i1_2;
+
+        $i0_6 = $i0_5 + 16;
+
+        return $i0_6;
+
+     label2:
+        $r1_5 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i0_7 = $r1_5.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        $i0_8 = $i0_7 + 4;
+
+        $r1_6 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element last>;
+
+        $i1_3 = $r1_6.<io.fabric.sdk.android.services.common.QueueFile$Element: int length>;
+
+        $i0_9 = $i0_8 + $i1_3;
+
+        $i1_4 = $r0.<io.fabric.sdk.android.services.common.QueueFile: int fileLength>;
+
+        $i0_10 = $i0_9 + $i1_4;
+
+        $r1_7 = $r0.<io.fabric.sdk.android.services.common.QueueFile: io.fabric.sdk.android.services.common.QueueFile$Element first>;
+
+        $i1_5 = $r1_7.<io.fabric.sdk.android.services.common.QueueFile$Element: int position>;
+
+        $i0_11 = $i0_10 - $i1_5;
+
+        return $i0_11;
+    }
+}

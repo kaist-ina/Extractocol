@@ -1,0 +1,590 @@
+public abstract class io.fabric.sdk.android.services.concurrency.AsyncTask extends java.lang.Object
+{
+    private static final int CORE_POOL_SIZE;
+    private static final int CPU_COUNT;
+    private static final int KEEP_ALIVE;
+    private static final java.lang.String LOG_TAG;
+    private static final int MAXIMUM_POOL_SIZE;
+    private static final int MESSAGE_POST_PROGRESS;
+    private static final int MESSAGE_POST_RESULT;
+    public static final java.util.concurrent.Executor SERIAL_EXECUTOR;
+    public static final java.util.concurrent.Executor THREAD_POOL_EXECUTOR;
+    private static volatile java.util.concurrent.Executor defaultExecutor;
+    private static final io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler handler;
+    private static final java.util.concurrent.BlockingQueue poolWorkQueue;
+    private static final java.util.concurrent.ThreadFactory threadFactory;
+    private final java.util.concurrent.atomic.AtomicBoolean cancelled;
+    private final java.util.concurrent.FutureTask future;
+    private volatile io.fabric.sdk.android.services.concurrency.AsyncTask$Status status;
+    private final java.util.concurrent.atomic.AtomicBoolean taskInvoked;
+    private final io.fabric.sdk.android.services.concurrency.AsyncTask$WorkerRunnable worker;
+
+    static void <clinit>()
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask$1 $r0;
+        java.util.concurrent.LinkedBlockingQueue $r1;
+        java.util.concurrent.ThreadPoolExecutor $r2;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6;
+        java.util.concurrent.TimeUnit $r3;
+        java.util.concurrent.BlockingQueue $r4;
+        java.util.concurrent.ThreadFactory $r5;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor $r6;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler $r7;
+        java.util.concurrent.Executor $r8;
+        java.lang.Runtime $r9;
+
+        $r9 = staticinvoke <java.lang.Runtime: java.lang.Runtime getRuntime()>();
+
+        $i0 = virtualinvoke $r9.<java.lang.Runtime: int availableProcessors()>();
+
+        <io.fabric.sdk.android.services.concurrency.AsyncTask: int CPU_COUNT> = $i0;
+
+        $i0_1 = <io.fabric.sdk.android.services.concurrency.AsyncTask: int CPU_COUNT>;
+
+        $i0_2 = $i0_1 + 1;
+
+        <io.fabric.sdk.android.services.concurrency.AsyncTask: int CORE_POOL_SIZE> = $i0_2;
+
+        $i0_3 = <io.fabric.sdk.android.services.concurrency.AsyncTask: int CPU_COUNT>;
+
+        $i0_4 = $i0_3 * 2;
+
+        $i0_5 = $i0_4 + 1;
+
+        <io.fabric.sdk.android.services.concurrency.AsyncTask: int MAXIMUM_POOL_SIZE> = $i0_5;
+
+        $r0 = new io.fabric.sdk.android.services.concurrency.AsyncTask$1;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask$1: void <init>()>();
+
+        <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.ThreadFactory threadFactory> = $r0;
+
+        $r1 = new java.util.concurrent.LinkedBlockingQueue;
+
+        specialinvoke $r1.<java.util.concurrent.LinkedBlockingQueue: void <init>(int)>(128);
+
+        <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.BlockingQueue poolWorkQueue> = $r1;
+
+        $r2 = new java.util.concurrent.ThreadPoolExecutor;
+
+        $i1 = <io.fabric.sdk.android.services.concurrency.AsyncTask: int CORE_POOL_SIZE>;
+
+        $i0_6 = <io.fabric.sdk.android.services.concurrency.AsyncTask: int MAXIMUM_POOL_SIZE>;
+
+        $r3 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+        $r4 = <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.BlockingQueue poolWorkQueue>;
+
+        $r5 = <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.ThreadFactory threadFactory>;
+
+        specialinvoke $r2.<java.util.concurrent.ThreadPoolExecutor: void <init>(int,int,long,java.util.concurrent.TimeUnit,java.util.concurrent.BlockingQueue,java.util.concurrent.ThreadFactory)>($i1, $i0_6, 1L, $r3, $r4, $r5);
+
+        <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.Executor THREAD_POOL_EXECUTOR> = $r2;
+
+        $r6 = new io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor;
+
+        specialinvoke $r6.<io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor: void <init>(io.fabric.sdk.android.services.concurrency.AsyncTask$1)>(null);
+
+        <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.Executor SERIAL_EXECUTOR> = $r6;
+
+        $r7 = new io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler;
+
+        specialinvoke $r7.<io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler: void <init>()>();
+
+        <io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler handler> = $r7;
+
+        $r8 = <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.Executor SERIAL_EXECUTOR>;
+
+        <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.Executor defaultExecutor> = $r8;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$Status $r1;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$2 $r2;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$3 $r3;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$WorkerRunnable $r4;
+        java.util.concurrent.atomic.AtomicBoolean $r5, $r5_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = <io.fabric.sdk.android.services.concurrency.AsyncTask$Status: io.fabric.sdk.android.services.concurrency.AsyncTask$Status PENDING>;
+
+        $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$Status status> = $r1;
+
+        $r5 = new java.util.concurrent.atomic.AtomicBoolean;
+
+        specialinvoke $r5.<java.util.concurrent.atomic.AtomicBoolean: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.atomic.AtomicBoolean cancelled> = $r5;
+
+        $r5_1 = new java.util.concurrent.atomic.AtomicBoolean;
+
+        specialinvoke $r5_1.<java.util.concurrent.atomic.AtomicBoolean: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.atomic.AtomicBoolean taskInvoked> = $r5_1;
+
+        $r2 = new io.fabric.sdk.android.services.concurrency.AsyncTask$2;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.concurrency.AsyncTask$2: void <init>(io.fabric.sdk.android.services.concurrency.AsyncTask)>($r0);
+
+        $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$WorkerRunnable worker> = $r2;
+
+        $r3 = new io.fabric.sdk.android.services.concurrency.AsyncTask$3;
+
+        $r4 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$WorkerRunnable worker>;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.concurrency.AsyncTask$3: void <init>(io.fabric.sdk.android.services.concurrency.AsyncTask,java.util.concurrent.Callable)>($r0, $r4);
+
+        $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.FutureTask future> = $r3;
+
+        return;
+    }
+
+    static java.util.concurrent.atomic.AtomicBoolean access$200(io.fabric.sdk.android.services.concurrency.AsyncTask)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.util.concurrent.atomic.AtomicBoolean r1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        r1 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.atomic.AtomicBoolean taskInvoked>;
+
+        return r1;
+    }
+
+    static java.lang.Object access$300(io.fabric.sdk.android.services.concurrency.AsyncTask, java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.lang.Object $r1, $r1_1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter1: java.lang.Object;
+
+        $r1_1 = specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.lang.Object postResult(java.lang.Object)>($r1);
+
+        return $r1_1;
+    }
+
+    static void access$400(io.fabric.sdk.android.services.concurrency.AsyncTask, java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.lang.Object $r1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter1: java.lang.Object;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: void postResultIfNotInvoked(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    static void access$500(io.fabric.sdk.android.services.concurrency.AsyncTask, java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.lang.Object $r1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter1: java.lang.Object;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: void finish(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public static void execute(java.lang.Runnable)
+    {
+        java.lang.Runnable $r0;
+        java.util.concurrent.Executor $r1;
+
+        $r0 := @parameter0: java.lang.Runnable;
+
+        $r1 = <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.Executor defaultExecutor>;
+
+        interfaceinvoke $r1.<java.util.concurrent.Executor: void execute(java.lang.Runnable)>($r0);
+
+        return;
+    }
+
+    private void finish(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.lang.Object $r1;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$Status $r2;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $z0 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: boolean isCancelled()>();
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: void onCancelled(java.lang.Object)>($r1);
+
+     label1:
+        $r2 = <io.fabric.sdk.android.services.concurrency.AsyncTask$Status: io.fabric.sdk.android.services.concurrency.AsyncTask$Status FINISHED>;
+
+        $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$Status status> = $r2;
+
+        return;
+
+     label2:
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: void onPostExecute(java.lang.Object)>($r1);
+
+        goto label1;
+    }
+
+    public static void init()
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler $r0;
+
+        $r0 = <io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler handler>;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler: android.os.Looper getLooper()>();
+
+        return;
+    }
+
+    private java.lang.Object postResult(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.lang.Object $r1;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler $r2;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$AsyncTaskResult $r3;
+        java.lang.Object[] $r4;
+        android.os.Message $r5;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = <io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler handler>;
+
+        $r3 = new io.fabric.sdk.android.services.concurrency.AsyncTask$AsyncTaskResult;
+
+        $r4 = newarray (java.lang.Object)[1];
+
+        $r4[0] = $r1;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.concurrency.AsyncTask$AsyncTaskResult: void <init>(io.fabric.sdk.android.services.concurrency.AsyncTask,java.lang.Object[])>($r0, $r4);
+
+        $r5 = virtualinvoke $r2.<io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler: android.os.Message obtainMessage(int,java.lang.Object)>(1, $r3);
+
+        virtualinvoke $r5.<android.os.Message: void sendToTarget()>();
+
+        return $r1;
+    }
+
+    private void postResultIfNotInvoked(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.lang.Object $r1;
+        java.util.concurrent.atomic.AtomicBoolean $r2;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.atomic.AtomicBoolean taskInvoked>;
+
+        $z0 = virtualinvoke $r2.<java.util.concurrent.atomic.AtomicBoolean: boolean get()>();
+
+        if $z0 != 0 goto label1;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.lang.Object postResult(java.lang.Object)>($r1);
+
+     label1:
+        return;
+    }
+
+    public static void setDefaultExecutor(java.util.concurrent.Executor)
+    {
+        java.util.concurrent.Executor $r0;
+
+        $r0 := @parameter0: java.util.concurrent.Executor;
+
+        <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.Executor defaultExecutor> = $r0;
+
+        return;
+    }
+
+    public final boolean cancel(boolean)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.util.concurrent.atomic.AtomicBoolean $r1;
+        java.util.concurrent.FutureTask $r2;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.atomic.AtomicBoolean cancelled>;
+
+        virtualinvoke $r1.<java.util.concurrent.atomic.AtomicBoolean: void set(boolean)>(1);
+
+        $r2 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.FutureTask future>;
+
+        $z0_1 = virtualinvoke $r2.<java.util.concurrent.FutureTask: boolean cancel(boolean)>($z0);
+
+        return $z0_1;
+    }
+
+    protected abstract transient java.lang.Object doInBackground(java.lang.Object[]);
+
+    public final transient io.fabric.sdk.android.services.concurrency.AsyncTask execute(java.lang.Object[])
+    {
+        java.lang.Object[] $r0;
+        java.util.concurrent.Executor $r1;
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r2, $r2_1;
+
+        $r2 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r0 := @parameter0: java.lang.Object[];
+
+        $r1 = <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.Executor defaultExecutor>;
+
+        $r2_1 = virtualinvoke $r2.<io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask executeOnExecutor(java.util.concurrent.Executor,java.lang.Object[])>($r1, $r0);
+
+        return $r2_1;
+    }
+
+    public final transient io.fabric.sdk.android.services.concurrency.AsyncTask executeOnExecutor(java.util.concurrent.Executor, java.lang.Object[])
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.util.concurrent.Executor $r1;
+        java.lang.Object[] $r2;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$Status $r3, $r7, $r3_1, $r3_2, $r3_3;
+        int[] $r4;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$WorkerRunnable $r5;
+        java.util.concurrent.FutureTask $r6;
+        int $i0, $i0_1, $i0_2;
+        java.lang.IllegalStateException $r8, $r8_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter0: java.util.concurrent.Executor;
+
+        $r2 := @parameter1: java.lang.Object[];
+
+        $r7 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$Status status>;
+
+        $r3 = <io.fabric.sdk.android.services.concurrency.AsyncTask$Status: io.fabric.sdk.android.services.concurrency.AsyncTask$Status PENDING>;
+
+(0)     if $r7 == $r3 goto label2;
+
+        $r4 = <io.fabric.sdk.android.services.concurrency.AsyncTask$4: int[] $SwitchMap$io$fabric$sdk$android$services$concurrency$AsyncTask$Status>;
+
+        $r3_1 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$Status status>;
+
+        $i0 = virtualinvoke $r3_1.<io.fabric.sdk.android.services.concurrency.AsyncTask$Status: int ordinal()>();
+
+        $i0_1 = $r4[$i0];
+
+        lookupswitch($i0_1)
+        {
+            case 1: goto label3;
+            case 2: goto label4;
+            default: goto label1;
+        };
+
+     label1:
+(1)     goto label2;
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $r3_3 = <io.fabric.sdk.android.services.concurrency.AsyncTask$Status: io.fabric.sdk.android.services.concurrency.AsyncTask$Status RUNNING>;
+
+        $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$Status status> = $r3_3;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: void onPreExecute()>();
+
+        $r5 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$WorkerRunnable worker>;
+
+        $r5.<io.fabric.sdk.android.services.concurrency.AsyncTask$WorkerRunnable: java.lang.Object[] params> = $r2;
+
+        $r6 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.FutureTask future>;
+
+        interfaceinvoke $r1.<java.util.concurrent.Executor: void execute(java.lang.Runnable)>($r6);
+
+        return $r0;
+
+     label3:
+        $r8 = new java.lang.IllegalStateException;
+
+        specialinvoke $r8.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Cannot execute task: the task is already running.");
+
+        throw $r8;
+
+     label4:
+        $r8_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r8_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Cannot execute task: the task has already been executed (a task can be executed only once)");
+
+        throw $r8_1;
+    }
+
+    public final java.lang.Object get() throws java.lang.InterruptedException, java.util.concurrent.ExecutionException
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.util.concurrent.FutureTask $r1;
+        java.lang.Object $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.FutureTask future>;
+
+        $r2 = virtualinvoke $r1.<java.util.concurrent.FutureTask: java.lang.Object get()>();
+
+        return $r2;
+    }
+
+    public final java.lang.Object get(long, java.util.concurrent.TimeUnit) throws java.lang.InterruptedException, java.util.concurrent.ExecutionException, java.util.concurrent.TimeoutException
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        long $l0;
+        java.util.concurrent.TimeUnit $r1;
+        java.util.concurrent.FutureTask $r2;
+        java.lang.Object $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.util.concurrent.TimeUnit;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.FutureTask future>;
+
+        $r3 = virtualinvoke $r2.<java.util.concurrent.FutureTask: java.lang.Object get(long,java.util.concurrent.TimeUnit)>($l0, $r1);
+
+        return $r3;
+    }
+
+    public final io.fabric.sdk.android.services.concurrency.AsyncTask$Status getStatus()
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$Status r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        r1 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$Status status>;
+
+        return r1;
+    }
+
+    public final boolean isCancelled()
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.util.concurrent.atomic.AtomicBoolean $r1;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.atomic.AtomicBoolean cancelled>;
+
+        $z0 = virtualinvoke $r1.<java.util.concurrent.atomic.AtomicBoolean: boolean get()>();
+
+        return $z0;
+    }
+
+    protected void onCancelled()
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        return;
+    }
+
+    protected void onCancelled(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.lang.Object $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: void onCancelled()>();
+
+        return;
+    }
+
+    protected void onPostExecute(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.lang.Object $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        return;
+    }
+
+    protected void onPreExecute()
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        return;
+    }
+
+    protected transient void onProgressUpdate(java.lang.Object[])
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.lang.Object[] $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter0: java.lang.Object[];
+
+        return;
+    }
+
+    protected final transient void publishProgress(java.lang.Object[])
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask $r0;
+        java.lang.Object[] $r1;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler $r2;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$AsyncTaskResult $r3;
+        boolean $z0;
+        android.os.Message $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask;
+
+        $r1 := @parameter0: java.lang.Object[];
+
+        $z0 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask: boolean isCancelled()>();
+
+        if $z0 != 0 goto label1;
+
+        $r2 = <io.fabric.sdk.android.services.concurrency.AsyncTask: io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler handler>;
+
+        $r3 = new io.fabric.sdk.android.services.concurrency.AsyncTask$AsyncTaskResult;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.concurrency.AsyncTask$AsyncTaskResult: void <init>(io.fabric.sdk.android.services.concurrency.AsyncTask,java.lang.Object[])>($r0, $r1);
+
+        $r4 = virtualinvoke $r2.<io.fabric.sdk.android.services.concurrency.AsyncTask$InternalHandler: android.os.Message obtainMessage(int,java.lang.Object)>(2, $r3);
+
+        virtualinvoke $r4.<android.os.Message: void sendToTarget()>();
+
+     label1:
+        return;
+    }
+}

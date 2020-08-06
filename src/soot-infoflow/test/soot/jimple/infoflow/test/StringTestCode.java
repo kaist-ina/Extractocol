@@ -10,7 +10,11 @@
  ******************************************************************************/
 package soot.jimple.infoflow.test;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import soot.jimple.infoflow.test.android.AccountManager;
 import soot.jimple.infoflow.test.android.ConnectionManager;
@@ -274,5 +278,20 @@ public class StringTestCode {
         ConnectionManager cm = new ConnectionManager();
         cm.publish(newString);
     }
+	
+	public void stringFileStreamTest1() throws IOException {
+		FileInputStream fis1 = new FileInputStream(new File("D1.txt"));
+		byte[] b1 = read(new byte[100], fis1);
+
+		String s1 = new String(b1, StandardCharsets.UTF_8);
+		FileOutputStream fos = new FileOutputStream(new File("D3.txt"));
+		fos.write(s1.getBytes());
+		fos.close();
+	}
+
+	private byte[] read(byte[] bs, FileInputStream fis1) throws IOException {
+		fis1.read(bs, 0, 100);
+		return bs;
+	}
 	
 }

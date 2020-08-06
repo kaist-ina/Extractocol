@@ -11,7 +11,6 @@
 package soot.jimple.infoflow.test.junit;
 
 import java.io.File;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 import soot.jimple.infoflow.taintWrappers.EasyTaintWrapper;
 
 /**
@@ -40,7 +39,7 @@ public class EasyWrapperTests extends JUnitTests {
 		EasyTaintWrapper wrapper = easyWrapper.clone();
 		wrapper.setAlwaysModelEqualsHashCode(true);
 		
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void equalsTest()>");
     	infoflow.setTaintWrapper(wrapper);
@@ -53,7 +52,7 @@ public class EasyWrapperTests extends JUnitTests {
 		EasyTaintWrapper wrapper = easyWrapper.clone();
 		wrapper.setAlwaysModelEqualsHashCode(true);
 		
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void hashCodeTest()>");
     	infoflow.setTaintWrapper(wrapper);
@@ -66,7 +65,7 @@ public class EasyWrapperTests extends JUnitTests {
 		EasyTaintWrapper wrapper = easyWrapper.clone();
 		wrapper.setAlwaysModelEqualsHashCode(true);
 
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void equalsTest2()>");
     	infoflow.setTaintWrapper(wrapper);
@@ -79,7 +78,7 @@ public class EasyWrapperTests extends JUnitTests {
 		EasyTaintWrapper wrapper = easyWrapper.clone();
 		wrapper.setAlwaysModelEqualsHashCode(true);
 		
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void hashCodeTest2()>");
     	infoflow.setTaintWrapper(wrapper);
@@ -92,7 +91,7 @@ public class EasyWrapperTests extends JUnitTests {
 		EasyTaintWrapper wrapper = easyWrapper.clone();
 		wrapper.setAggressiveMode(true);
 		
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void constantTest1()>");
     	infoflow.setTaintWrapper(wrapper);
@@ -105,7 +104,7 @@ public class EasyWrapperTests extends JUnitTests {
 		EasyTaintWrapper wrapper = easyWrapper.clone();
 		wrapper.setAggressiveMode(false);
 		
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void constantTest1()>");
     	infoflow.setTaintWrapper(wrapper);
@@ -120,7 +119,7 @@ public class EasyWrapperTests extends JUnitTests {
 		wrapper.addMethodForWrapping("soot.jimple.infoflow.test.EasyWrapperTestCode$I1",
 				"java.lang.String getSecret()");
 		
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void interfaceInheritanceTest()>");
     	infoflow.setTaintWrapper(wrapper);
@@ -135,7 +134,7 @@ public class EasyWrapperTests extends JUnitTests {
 		wrapper.addMethodForWrapping("soot.jimple.infoflow.test.EasyWrapperTestCode$I1",
 				"void taintMe(java.lang.String)");
 		
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void interfaceInheritanceTest2()>");
     	infoflow.setTaintWrapper(wrapper);
@@ -150,7 +149,7 @@ public class EasyWrapperTests extends JUnitTests {
 		wrapper.addMethodForWrapping("soot.jimple.infoflow.test.EasyWrapperTestCode$I1",
 				"void taintMe(java.lang.String)");
 		
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void interfaceInheritanceTest3()>");
     	infoflow.setTaintWrapper(wrapper);
@@ -165,7 +164,7 @@ public class EasyWrapperTests extends JUnitTests {
 		wrapper.addMethodForWrapping("soot.jimple.infoflow.test.EasyWrapperTestCode$I1",
 				"void taintMe(java.lang.String)");
 		
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void interfaceInheritanceTest4()>");
     	infoflow.setTaintWrapper(wrapper);
@@ -175,7 +174,7 @@ public class EasyWrapperTests extends JUnitTests {
 	
 	@Test(timeout=300000)
     public void stringConcatTest(){
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.EasyWrapperTestCode: void stringConcatTest()>");
     	infoflow.setTaintWrapper(easyWrapper);

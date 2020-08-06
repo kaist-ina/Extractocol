@@ -1,0 +1,161 @@
+abstract class com.facebook.internal.NativeProtocol$NativeAppInfo extends java.lang.Object
+{
+    private static final java.lang.String FBI_HASH;
+    private static final java.lang.String FBL_HASH;
+    private static final java.lang.String FBR_HASH;
+    private static final java.util.HashSet validAppSignatureHashes;
+
+    static void <clinit>()
+    {
+        java.util.HashSet $r0;
+
+        $r0 = staticinvoke <com.facebook.internal.NativeProtocol$NativeAppInfo: java.util.HashSet buildAppSignatureHashes()>();
+
+        <com.facebook.internal.NativeProtocol$NativeAppInfo: java.util.HashSet validAppSignatureHashes> = $r0;
+
+        return;
+    }
+
+    private void <init>()
+    {
+        com.facebook.internal.NativeProtocol$NativeAppInfo $r0;
+
+        $r0 := @this: com.facebook.internal.NativeProtocol$NativeAppInfo;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    void <init>(com.facebook.internal.NativeProtocol$1)
+    {
+        com.facebook.internal.NativeProtocol$NativeAppInfo $r0;
+        com.facebook.internal.NativeProtocol$1 $r1;
+
+        $r0 := @this: com.facebook.internal.NativeProtocol$NativeAppInfo;
+
+        $r1 := @parameter0: com.facebook.internal.NativeProtocol$1;
+
+        specialinvoke $r0.<com.facebook.internal.NativeProtocol$NativeAppInfo: void <init>()>();
+
+        return;
+    }
+
+    private static java.util.HashSet buildAppSignatureHashes()
+    {
+        java.util.HashSet $r0;
+
+        $r0 = new java.util.HashSet;
+
+        specialinvoke $r0.<java.util.HashSet: void <init>()>();
+
+        virtualinvoke $r0.<java.util.HashSet: boolean add(java.lang.Object)>("8a3c4b262d721acd49a4bf97d5213199c86fa2b9");
+
+        virtualinvoke $r0.<java.util.HashSet: boolean add(java.lang.Object)>("a4b7452e2ed8f5f191058ca7bbfd26b0d3214bfc");
+
+        virtualinvoke $r0.<java.util.HashSet: boolean add(java.lang.Object)>("5e8f16062ea3cd2c4a0d547876baa6f38cabf625");
+
+        return $r0;
+    }
+
+    protected abstract java.lang.String getPackage();
+
+    public boolean validateSignature(android.content.Context, java.lang.String)
+    {
+        com.facebook.internal.NativeProtocol$NativeAppInfo $r0;
+        android.content.Context $r1;
+        java.lang.String $r2, $r7, $r7_1, $r7_2, $r7_3;
+        android.content.pm.Signature[] $r3;
+        android.content.pm.Signature $r4;
+        java.util.HashSet $r5;
+        android.content.pm.PackageManager$NameNotFoundException $r6;
+        android.content.pm.ApplicationInfo $r8;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i1_1, $i1_2, $i0_4, $i1_3, $i0_5;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.content.pm.PackageManager $r9;
+        android.content.pm.PackageInfo $r10;
+        byte[] $r11;
+
+        $r0 := @this: com.facebook.internal.NativeProtocol$NativeAppInfo;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r7 := @parameter1: java.lang.String;
+
+        $r2 = <android.os.Build: java.lang.String BRAND>;
+
+        $r8 = virtualinvoke $r1.<android.content.Context: android.content.pm.ApplicationInfo getApplicationInfo()>();
+
+        $i0 = $r8.<android.content.pm.ApplicationInfo: int flags>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean startsWith(java.lang.String)>("generic");
+
+(0)     if $z0 == 0 goto label1;
+
+        $i0_1 = $i0 & 2;
+
+(1)     if $i0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+(2)     $r9 = virtualinvoke $r1.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r10 = virtualinvoke $r9.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>($r7, 64);
+
+     label2:
+        $r3 = $r10.<android.content.pm.PackageInfo: android.content.pm.Signature[] signatures>;
+
+        $i0_3 = lengthof $r3;
+
+(3)     $i1 = 0;
+
+     label3:
+        $r7_1 = Phi($r7 #3, $r7_2 #5);
+
+        $i1_1 = Phi($i1 #3, $i1_2 #5);
+
+        $z0_1 = Phi($z0 #3, $z0_2 #5);
+
+(4)     if $i1_1 >= $i0_3 goto label5;
+
+        $r4 = $r3[$i1_1];
+
+        $r11 = virtualinvoke $r4.<android.content.pm.Signature: byte[] toByteArray()>();
+
+        $r7_2 = staticinvoke <com.facebook.internal.Utility: java.lang.String sha1hash(byte[])>($r11);
+
+        $r5 = <com.facebook.internal.NativeProtocol$NativeAppInfo: java.util.HashSet validAppSignatureHashes>;
+
+        $z0_2 = virtualinvoke $r5.<java.util.HashSet: boolean contains(java.lang.Object)>($r7_2);
+
+        if $z0_2 != 0 goto label6;
+
+        $i1_2 = $i1_1 + 1;
+
+(5)     goto label3;
+
+     label4:
+        $r6 := @caughtexception;
+
+(6)     $i0_4 = Phi($i0 #0, $i0_1 #1, $i0_2 #2);
+
+     label5:
+        $r7_3 = Phi($r7_1 #4, $r7 #6);
+
+        $i1_3 = Phi($i1_1 #4, $i1 #6);
+
+        $z0_3 = Phi($z0_1 #4, $z0 #6);
+
+        $i0_5 = Phi($i0_3 #4, $i0_4 #6);
+
+        return 0;
+
+     label6:
+        return 1;
+
+        catch android.content.pm.PackageManager$NameNotFoundException from label1 to label2 with label4;
+    }
+}

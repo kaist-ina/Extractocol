@@ -1,0 +1,214 @@
+public class ch.boye.httpclientandroidlib.protocol.RequestContent extends java.lang.Object implements ch.boye.httpclientandroidlib.HttpRequestInterceptor
+{
+    private final boolean overwrite;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.protocol.RequestContent $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.protocol.RequestContent;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.protocol.RequestContent: void <init>(boolean)>(0);
+
+        return;
+    }
+
+    public void <init>(boolean)
+    {
+        ch.boye.httpclientandroidlib.protocol.RequestContent $r0;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.protocol.RequestContent;
+
+        $z0 := @parameter0: boolean;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.protocol.RequestContent: boolean overwrite> = $z0;
+
+        return;
+    }
+
+    public void process(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.protocol.RequestContent $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        java.lang.IllegalArgumentException $r3;
+        byte $b0;
+        ch.boye.httpclientandroidlib.HttpVersion $r4;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11;
+        ch.boye.httpclientandroidlib.RequestLine $r5;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r6;
+        ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest $r7;
+        ch.boye.httpclientandroidlib.HttpEntity $r8;
+        ch.boye.httpclientandroidlib.ProtocolException $r9, $r9_1, $r9_2;
+        long $l1, $l1_1, $l1_2, $l1_3, $l1_4;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2;
+        java.lang.String $r11, $r11_1, $r11_2, $r11_3;
+        ch.boye.httpclientandroidlib.Header $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.protocol.RequestContent;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label01;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request may not be null");
+
+        throw $r3;
+
+     label01:
+        $z0 = $r1 instanceof ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest;
+
+(0)     if $z0 == 0 goto label11;
+
+        $z0_1 = $r0.<ch.boye.httpclientandroidlib.protocol.RequestContent: boolean overwrite>;
+
+        if $z0_1 == 0 goto label03;
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void removeHeaders(java.lang.String)>("Transfer-Encoding");
+
+(1)     interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void removeHeaders(java.lang.String)>("Content-Length");
+
+     label02:
+        $z0_2 = Phi($z0_1 #1, $z0_10 #2);
+
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r6 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.RequestLine: ch.boye.httpclientandroidlib.ProtocolVersion getProtocolVersion()>();
+
+        $r7 = (ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest) $r1;
+
+        $r8 = interfaceinvoke $r7.<ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+        if $r8 != null goto label05;
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void addHeader(java.lang.String,java.lang.String)>("Content-Length", "0");
+
+        return;
+
+     label03:
+        $z0_9 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: boolean containsHeader(java.lang.String)>("Transfer-Encoding");
+
+        if $z0_9 == 0 goto label04;
+
+        $r9_1 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        specialinvoke $r9_1.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>("Transfer-encoding header already present");
+
+        throw $r9_1;
+
+     label04:
+        $z0_10 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: boolean containsHeader(java.lang.String)>("Content-Length");
+
+(2)     if $z0_10 == 0 goto label02;
+
+        $r9_2 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        specialinvoke $r9_2.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>("Content-Length header already present");
+
+        throw $r9_2;
+
+     label05:
+        $z0_3 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.HttpEntity: boolean isChunked()>();
+
+(3)     if $z0_3 != 0 goto label06;
+
+        $l1 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.HttpEntity: long getContentLength()>();
+
+        $b0 = $l1 cmp 0L;
+
+(4)     if $b0 >= 0 goto label10;
+
+     label06:
+        $l1_2 = Phi($l1 #3, $l1 #4);
+
+        $r4 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_0>;
+
+        $z0_4 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.ProtocolVersion: boolean lessEquals(ch.boye.httpclientandroidlib.ProtocolVersion)>($r4);
+
+        if $z0_4 == 0 goto label07;
+
+        $r9 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Chunked transfer encoding not allowed for ");
+
+        $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6);
+
+        $r11_1 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r9.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>($r11_1);
+
+        throw $r9;
+
+     label07:
+(5)     interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void addHeader(java.lang.String,java.lang.String)>("Transfer-Encoding", "chunked");
+
+     label08:
+        $z0_5 = Phi($z0_4 #5, $z0_3 #11);
+
+        $l1_3 = Phi($l1_2 #5, $l1_1 #11);
+
+        $r11_2 = Phi($r11 #5, $r11 #11);
+
+        $r12 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.HttpEntity: ch.boye.httpclientandroidlib.Header getContentType()>();
+
+(6)     if $r12 == null goto label09;
+
+        $z0_6 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: boolean containsHeader(java.lang.String)>("Content-Type");
+
+(7)     if $z0_6 != 0 goto label09;
+
+        $r12_1 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.HttpEntity: ch.boye.httpclientandroidlib.Header getContentType()>();
+
+(8)     interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void addHeader(ch.boye.httpclientandroidlib.Header)>($r12_1);
+
+     label09:
+        $z0_7 = Phi($z0_5 #6, $z0_6 #7, $z0_6 #8);
+
+        $r12_2 = Phi($r12 #6, $r12 #7, $r12_1 #8);
+
+        $r12_3 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.HttpEntity: ch.boye.httpclientandroidlib.Header getContentEncoding()>();
+
+(9)     if $r12_3 == null goto label11;
+
+        $z0_8 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: boolean containsHeader(java.lang.String)>("Content-Encoding");
+
+(10)    if $z0_8 != 0 goto label11;
+
+        $r12_4 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.HttpEntity: ch.boye.httpclientandroidlib.Header getContentEncoding()>();
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void addHeader(ch.boye.httpclientandroidlib.Header)>($r12_4);
+
+        return;
+
+     label10:
+        $l1_1 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.HttpEntity: long getContentLength()>();
+
+        $r11 = staticinvoke <java.lang.Long: java.lang.String toString(long)>($l1_1);
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void addHeader(java.lang.String,java.lang.String)>("Content-Length", $r11);
+
+(11)    goto label08;
+
+     label11:
+        $z0_11 = Phi($z0 #0, $z0_7 #9, $z0_8 #10);
+
+        $r12_5 = Phi($r12 #0, $r12_3 #9, $r12_3 #10);
+
+        $l1_4 = Phi($l1 #0, $l1_3 #9, $l1_3 #10);
+
+        $r11_3 = Phi($r11 #0, $r11_2 #9, $r11_2 #10);
+
+        return;
+    }
+}

@@ -1,0 +1,258 @@
+final class de.greenrobot.event.HandlerPoster extends android.os.Handler
+{
+    private final de.greenrobot.event.EventBus eventBus;
+    private boolean handlerActive;
+    private final int maxMillisInsideHandleMessage;
+    private final de.greenrobot.event.PendingPostQueue queue;
+
+    void <init>(de.greenrobot.event.EventBus, android.os.Looper, int)
+    {
+        de.greenrobot.event.HandlerPoster $r0;
+        de.greenrobot.event.EventBus $r1;
+        android.os.Looper $r2;
+        int $i0;
+        de.greenrobot.event.PendingPostQueue $r3;
+
+        $r0 := @this: de.greenrobot.event.HandlerPoster;
+
+        $r1 := @parameter0: de.greenrobot.event.EventBus;
+
+        $r2 := @parameter1: android.os.Looper;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<android.os.Handler: void <init>(android.os.Looper)>($r2);
+
+        $r0.<de.greenrobot.event.HandlerPoster: de.greenrobot.event.EventBus eventBus> = $r1;
+
+        $r0.<de.greenrobot.event.HandlerPoster: int maxMillisInsideHandleMessage> = $i0;
+
+        $r3 = new de.greenrobot.event.PendingPostQueue;
+
+        specialinvoke $r3.<de.greenrobot.event.PendingPostQueue: void <init>()>();
+
+        $r0.<de.greenrobot.event.HandlerPoster: de.greenrobot.event.PendingPostQueue queue> = $r3;
+
+        return;
+    }
+
+    void enqueue(de.greenrobot.event.Subscription, java.lang.Object)
+    {
+        de.greenrobot.event.HandlerPoster $r0;
+        de.greenrobot.event.Subscription $r1;
+        java.lang.Object $r2;
+        de.greenrobot.event.PendingPostQueue $r3;
+        de.greenrobot.event.EventBusException $r4;
+        java.lang.Throwable $r5;
+        de.greenrobot.event.PendingPost $r6;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.os.Message $r7;
+
+        $r0 := @this: de.greenrobot.event.HandlerPoster;
+
+        $r1 := @parameter0: de.greenrobot.event.Subscription;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r6 = staticinvoke <de.greenrobot.event.PendingPost: de.greenrobot.event.PendingPost obtainPendingPost(de.greenrobot.event.Subscription,java.lang.Object)>($r1, $r2);
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r3 = $r0.<de.greenrobot.event.HandlerPoster: de.greenrobot.event.PendingPostQueue queue>;
+
+        virtualinvoke $r3.<de.greenrobot.event.PendingPostQueue: void enqueue(de.greenrobot.event.PendingPost)>($r6);
+
+        $z0 = $r0.<de.greenrobot.event.HandlerPoster: boolean handlerActive>;
+
+(1)     if $z0 != 0 goto label4;
+
+        $r0.<de.greenrobot.event.HandlerPoster: boolean handlerActive> = 1;
+
+        $r7 = virtualinvoke $r0.<de.greenrobot.event.HandlerPoster: android.os.Message obtainMessage()>();
+
+(2)     $z0_1 = virtualinvoke $r0.<de.greenrobot.event.HandlerPoster: boolean sendMessage(android.os.Message)>($r7);
+
+(3)     if $z0_1 != 0 goto label4;
+
+        $r4 = new de.greenrobot.event.EventBusException;
+
+        specialinvoke $r4.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>("Could not send handler message");
+
+        throw $r4;
+
+     label2:
+        $r5 := @caughtexception;
+
+(4)     $z0_3 = Phi($z0 #0, $z0_1 #2, $z0_3 #4, $z0_2 #5);
+
+        exitmonitor $r0;
+
+     label3:
+        throw $r5;
+
+     label4:
+        $z0_2 = Phi($z0 #1, $z0_1 #3);
+
+(5)     exitmonitor $r0;
+
+     label5:
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label2;
+        catch java.lang.Throwable from label4 to label5 with label2;
+    }
+
+    public void handleMessage(android.os.Message)
+    {
+        de.greenrobot.event.HandlerPoster $r0;
+        de.greenrobot.event.EventBus $r1;
+        int $i0;
+        long $l1, $l3, $l4, $l1_1, $l1_2, $l1_3;
+        byte $b2;
+        de.greenrobot.event.EventBusException $r2;
+        java.lang.Throwable $r3, $r4;
+        android.os.Message $r5, $r5_1, $r5_2;
+        de.greenrobot.event.PendingPostQueue $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        de.greenrobot.event.PendingPost $r7, $r8, $r7_1, $r8_1, $r7_2, $r8_2, $r8_3, $r7_3, $r8_4, $r7_4, $r8_5, $r7_5;
+        boolean $z0;
+
+        $r0 := @this: de.greenrobot.event.HandlerPoster;
+
+(0)     $r5 := @parameter0: android.os.Message;
+
+     label01:
+(1)     $l3 = staticinvoke <android.os.SystemClock: long uptimeMillis()>();
+
+     label02:
+        $r8 = Phi($r8 #1, $r8_4 #13);
+
+        $r6 = Phi($r6 #1, $r6_4 #13);
+
+        $l1 = Phi($l1 #1, $l1_2 #13);
+
+        $r7 = Phi($r7 #1, $r7_4 #13);
+
+(2)     $r6_1 = $r0.<de.greenrobot.event.HandlerPoster: de.greenrobot.event.PendingPostQueue queue>;
+
+(3)     $r7_1 = virtualinvoke $r6_1.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost poll()>();
+
+     label03:
+        $r8_1 = $r7_1;
+
+(4)     if $r7_1 != null goto label08;
+
+     label04:
+(5)     entermonitor $r0;
+
+     label05:
+(6)     $r6_2 = $r0.<de.greenrobot.event.HandlerPoster: de.greenrobot.event.PendingPostQueue queue>;
+
+(7)     $r7_2 = virtualinvoke $r6_2.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost poll()>();
+
+(8)     $r8_2 = $r7_2;
+
+        if $r7_2 != null goto label07;
+
+        $r0.<de.greenrobot.event.HandlerPoster: boolean handlerActive> = 0;
+
+        exitmonitor $r0;
+
+     label06:
+        $r0.<de.greenrobot.event.HandlerPoster: boolean handlerActive> = 0;
+
+        return;
+
+     label07:
+(9)     exitmonitor $r0;
+
+     label08:
+        $r8_4 = Phi($r8_1 #4, $r8_2 #9);
+
+        $r6_4 = Phi($r6_1 #4, $r6_2 #9);
+
+        $r7_4 = Phi($r7_1 #4, $r7_2 #9);
+
+(10)    $r1 = $r0.<de.greenrobot.event.HandlerPoster: de.greenrobot.event.EventBus eventBus>;
+
+        virtualinvoke $r1.<de.greenrobot.event.EventBus: void invokeSubscriber(de.greenrobot.event.PendingPost)>($r8_4);
+
+(11)    $l1_1 = staticinvoke <android.os.SystemClock: long uptimeMillis()>();
+
+     label09:
+        $l4 = $l1_1 - $l3;
+
+     label10:
+        $i0 = $r0.<de.greenrobot.event.HandlerPoster: int maxMillisInsideHandleMessage>;
+
+(12)    $l1_2 = (long) $i0;
+
+     label11:
+        $b2 = $l4 cmp $l1_2;
+
+(13)    if $b2 < 0 goto label02;
+
+     label12:
+(14)    $r5_1 = virtualinvoke $r0.<de.greenrobot.event.HandlerPoster: android.os.Message obtainMessage()>();
+
+        $z0 = virtualinvoke $r0.<de.greenrobot.event.HandlerPoster: boolean sendMessage(android.os.Message)>($r5_1);
+
+     label13:
+        if $z0 != 0 goto label19;
+
+     label14:
+        $r2 = new de.greenrobot.event.EventBusException;
+
+        specialinvoke $r2.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>("Could not send handler message");
+
+        throw $r2;
+
+     label15:
+        $r3 := @caughtexception;
+
+        $r5_2 = Phi($r5 #0, $r5_1 #14);
+
+        $r8_5 = Phi($r8 #0, $r8_1 #4, $r8_2 #9, $r8_4 #10, $r8_3 #16);
+
+        $r6_5 = Phi($r6 #0, $r6_1 #2, $r6_2 #9, $r6_4 #10, $r6_3 #16);
+
+        $l1_3 = Phi($l1 #0, $l1_1 #11, $l1_2 #12);
+
+        $r7_5 = Phi($r7 #0, $r7_1 #3, $r7_2 #9, $r7_4 #10, $r7_3 #16);
+
+        $r0.<de.greenrobot.event.HandlerPoster: boolean handlerActive> = 0;
+
+        throw $r3;
+
+     label16:
+        $r4 := @caughtexception;
+
+        $r8_3 = Phi($r8_1 #5, $r8_2 #8, $r8_3 #15);
+
+        $r6_3 = Phi($r6_1 #5, $r6_2 #6, $r6_3 #15);
+
+(15)    $r7_3 = Phi($r7_1 #5, $r7_2 #7, $r7_3 #15);
+
+     label17:
+(16)    exitmonitor $r0;
+
+     label18:
+        throw $r4;
+
+     label19:
+        $r0.<de.greenrobot.event.HandlerPoster: boolean handlerActive> = 1;
+
+        return;
+
+        catch java.lang.Throwable from label01 to label03 with label15;
+        catch java.lang.Throwable from label04 to label05 with label15;
+        catch java.lang.Throwable from label05 to label06 with label16;
+        catch java.lang.Throwable from label07 to label08 with label16;
+        catch java.lang.Throwable from label08 to label09 with label15;
+        catch java.lang.Throwable from label10 to label11 with label15;
+        catch java.lang.Throwable from label12 to label13 with label15;
+        catch java.lang.Throwable from label14 to label15 with label15;
+        catch java.lang.Throwable from label17 to label18 with label16;
+        catch java.lang.Throwable from label18 to label19 with label15;
+    }
+}

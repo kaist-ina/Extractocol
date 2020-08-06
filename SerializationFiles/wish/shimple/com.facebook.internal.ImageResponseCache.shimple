@@ -1,0 +1,302 @@
+class com.facebook.internal.ImageResponseCache extends java.lang.Object
+{
+    static final java.lang.String TAG;
+    private static volatile com.facebook.internal.FileLruCache imageCache;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        java.lang.String $r1;
+
+        $r0 = class "com/facebook/internal/ImageResponseCache";
+
+        $r1 = virtualinvoke $r0.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        <com.facebook.internal.ImageResponseCache: java.lang.String TAG> = $r1;
+
+        return;
+    }
+
+    void <init>()
+    {
+        com.facebook.internal.ImageResponseCache $r0;
+
+        $r0 := @this: com.facebook.internal.ImageResponseCache;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static void clearCache(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.io.IOException $r1;
+        com.facebook.LoggingBehavior $r2;
+        java.lang.String $r3, $r6, $r6_1;
+        com.facebook.internal.FileLruCache $r4;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+     label1:
+        $r4 = staticinvoke <com.facebook.internal.ImageResponseCache: com.facebook.internal.FileLruCache getCache(android.content.Context)>($r0);
+
+        virtualinvoke $r4.<com.facebook.internal.FileLruCache: void clearCache()>();
+
+     label2:
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        $r2 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior CACHE>;
+
+        $r3 = <com.facebook.internal.ImageResponseCache: java.lang.String TAG>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("clearCache failed ");
+
+        $r6 = virtualinvoke $r1.<java.io.IOException: java.lang.String getMessage()>();
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6_1 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,int,java.lang.String,java.lang.String)>($r2, 5, $r3, $r6_1);
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    static com.facebook.internal.FileLruCache getCache(android.content.Context) throws java.io.IOException
+    {
+        java.lang.String $r0;
+        com.facebook.internal.FileLruCache$Limits $r1;
+        java.lang.Throwable $r2;
+        android.content.Context $r3, $r3_1, $r3_2, $r3_3;
+        com.facebook.internal.FileLruCache $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+
+        $r3 := @parameter0: android.content.Context;
+
+(0)     entermonitor class "com/facebook/internal/ImageResponseCache";
+
+     label1:
+        $r4 = <com.facebook.internal.ImageResponseCache: com.facebook.internal.FileLruCache imageCache>;
+
+     label2:
+(1)     if $r4 != null goto label4;
+
+     label3:
+(2)     $r4_1 = new com.facebook.internal.FileLruCache;
+
+(3)     $r3_1 = virtualinvoke $r3.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r0 = <com.facebook.internal.ImageResponseCache: java.lang.String TAG>;
+
+        $r1 = new com.facebook.internal.FileLruCache$Limits;
+
+        specialinvoke $r1.<com.facebook.internal.FileLruCache$Limits: void <init>()>();
+
+        specialinvoke $r4_1.<com.facebook.internal.FileLruCache: void <init>(android.content.Context,java.lang.String,com.facebook.internal.FileLruCache$Limits)>($r3_1, $r0, $r1);
+
+(4)     <com.facebook.internal.ImageResponseCache: com.facebook.internal.FileLruCache imageCache> = $r4_1;
+
+     label4:
+        $r3_2 = Phi($r3 #1, $r3_1 #4);
+
+        $r4_2 = Phi($r4 #1, $r4_1 #4);
+
+(5)     $r4_3 = <com.facebook.internal.ImageResponseCache: com.facebook.internal.FileLruCache imageCache>;
+
+     label5:
+        exitmonitor class "com/facebook/internal/ImageResponseCache";
+
+        return $r4_3;
+
+     label6:
+        $r2 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_1 #3, $r3_2 #5);
+
+        $r4_4 = Phi($r4 #0, $r4_1 #2, $r4_3 #5);
+
+        exitmonitor class "com/facebook/internal/ImageResponseCache";
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label3 to label5 with label6;
+    }
+
+    static java.io.InputStream getCachedImageStream(java.net.URI, android.content.Context)
+    {
+        java.net.URI $r0;
+        android.content.Context $r1;
+        java.io.IOException $r2;
+        com.facebook.LoggingBehavior $r3;
+        boolean $z0;
+        com.facebook.internal.FileLruCache $r4;
+        java.lang.String $r5, $r7, $r5_1, $r5_2, $r5_3;
+        java.io.InputStream $r6;
+
+        $r0 := @parameter0: java.net.URI;
+
+        $r1 := @parameter1: android.content.Context;
+
+(0)     if $r0 == null goto label4;
+
+        $z0 = staticinvoke <com.facebook.internal.ImageResponseCache: boolean isCDNURL(java.net.URI)>($r0);
+
+(1)     if $z0 == 0 goto label4;
+
+     label1:
+        $r4 = staticinvoke <com.facebook.internal.ImageResponseCache: com.facebook.internal.FileLruCache getCache(android.content.Context)>($r1);
+
+        $r5 = virtualinvoke $r0.<java.net.URI: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r4.<com.facebook.internal.FileLruCache: java.io.InputStream get(java.lang.String)>($r5);
+
+     label2:
+        return $r6;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r5_1 = Phi($r5 #1);
+
+        $r3 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior CACHE>;
+
+        $r5_2 = <com.facebook.internal.ImageResponseCache: java.lang.String TAG>;
+
+        $r7 = virtualinvoke $r2.<java.io.IOException: java.lang.String toString()>();
+
+(2)     staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,int,java.lang.String,java.lang.String)>($r3, 5, $r5_2, $r7);
+
+     label4:
+        $r5_3 = Phi($r5 #0, $r5 #1, $r5_2 #2);
+
+        return null;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    static java.io.InputStream interceptAndCacheImageStream(android.content.Context, java.net.HttpURLConnection) throws java.io.IOException
+    {
+        android.content.Context $r0;
+        java.net.HttpURLConnection $r1;
+        com.facebook.internal.ImageResponseCache$BufferedHttpInputStream $r2;
+        java.net.URISyntaxException $r3;
+        java.io.IOException $r4;
+        int $i0;
+        java.net.URL $r5;
+        java.io.InputStream $r6, $r6_1, $r6_2, $r6_3;
+        java.net.URI $r7;
+        boolean $z0;
+        com.facebook.internal.FileLruCache $r8;
+        java.lang.String $r9;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.net.HttpURLConnection;
+
+        $i0 = virtualinvoke $r1.<java.net.HttpURLConnection: int getResponseCode()>();
+
+        if $i0 != 200 goto label09;
+
+        $r5 = virtualinvoke $r1.<java.net.HttpURLConnection: java.net.URL getURL()>();
+
+(0)     $r6 = virtualinvoke $r1.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+     label01:
+        $r7 = virtualinvoke $r5.<java.net.URL: java.net.URI toURI()>();
+
+        $z0 = staticinvoke <com.facebook.internal.ImageResponseCache: boolean isCDNURL(java.net.URI)>($r7);
+
+     label02:
+        if $z0 == 0 goto label10;
+
+     label03:
+        $r8 = staticinvoke <com.facebook.internal.ImageResponseCache: com.facebook.internal.FileLruCache getCache(android.content.Context)>($r0);
+
+        $r9 = virtualinvoke $r5.<java.net.URL: java.lang.String toString()>();
+
+     label04:
+        $r2 = new com.facebook.internal.ImageResponseCache$BufferedHttpInputStream;
+
+     label05:
+        specialinvoke $r2.<com.facebook.internal.ImageResponseCache$BufferedHttpInputStream: void <init>(java.io.InputStream,java.net.HttpURLConnection)>($r6, $r1);
+
+(1)     $r6_1 = virtualinvoke $r8.<com.facebook.internal.FileLruCache: java.io.InputStream interceptAndPut(java.lang.String,java.io.InputStream)>($r9, $r2);
+
+     label06:
+        return $r6_1;
+
+     label07:
+        $r3 := @caughtexception;
+
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        return $r6_2;
+
+     label08:
+        $r4 := @caughtexception;
+
+        $r6_3 = Phi($r6 #0, $r6_1 #1);
+
+        return $r6_3;
+
+     label09:
+        return null;
+
+     label10:
+        return $r6;
+
+        catch java.io.IOException from label01 to label02 with label08;
+        catch java.net.URISyntaxException from label01 to label02 with label07;
+        catch java.io.IOException from label03 to label04 with label08;
+        catch java.net.URISyntaxException from label03 to label04 with label07;
+        catch java.io.IOException from label05 to label06 with label08;
+        catch java.net.URISyntaxException from label05 to label06 with label07;
+    }
+
+    private static boolean isCDNURL(java.net.URI)
+    {
+        java.net.URI $r0;
+        java.lang.String $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+
+        $r0 := @parameter0: java.net.URI;
+
+(0)     if $r0 == null goto label2;
+
+        $r1 = virtualinvoke $r0.<java.net.URI: java.lang.String getHost()>();
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean endsWith(java.lang.String)>("fbcdn.net");
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_1 = virtualinvoke $r1.<java.lang.String: boolean startsWith(java.lang.String)>("fbcdn");
+
+(1)     if $z0_1 == 0 goto label2;
+
+        $z0_2 = virtualinvoke $r1.<java.lang.String: boolean endsWith(java.lang.String)>("akamaihd.net");
+
+(2)     if $z0_2 != 0 goto label3;
+
+     label2:
+        $z0_3 = Phi($z0 #0, $z0_1 #1, $z0_2 #2);
+
+        return 0;
+
+     label3:
+        return 1;
+    }
+}

@@ -1,0 +1,1102 @@
+class android.support.v4.app.NotificationManagerCompat$SideChannelManager extends java.lang.Object implements android.content.ServiceConnection, android.os.Handler$Callback
+{
+    private static final java.lang.String KEY_BINDER;
+    private static final int MSG_QUEUE_TASK;
+    private static final int MSG_RETRY_LISTENER_QUEUE;
+    private static final int MSG_SERVICE_CONNECTED;
+    private static final int MSG_SERVICE_DISCONNECTED;
+    private java.util.Set mCachedEnabledPackages;
+    private final android.content.Context mContext;
+    private final android.os.Handler mHandler;
+    private final android.os.HandlerThread mHandlerThread;
+    private final java.util.Map mRecordMap;
+
+    public void <init>(android.content.Context)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.content.Context $r1;
+        java.util.HashMap $r2;
+        java.util.HashSet $r3;
+        android.os.Handler $r4;
+        android.os.Looper $r5;
+        android.os.HandlerThread $r6, $r6_1, $r6_2;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Map mRecordMap> = $r2;
+
+        $r3 = new java.util.HashSet;
+
+        specialinvoke $r3.<java.util.HashSet: void <init>()>();
+
+        $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Set mCachedEnabledPackages> = $r3;
+
+        $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.content.Context mContext> = $r1;
+
+        $r6 = new android.os.HandlerThread;
+
+        specialinvoke $r6.<android.os.HandlerThread: void <init>(java.lang.String)>("NotificationManagerCompat");
+
+        $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.HandlerThread mHandlerThread> = $r6;
+
+        $r6_1 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.HandlerThread mHandlerThread>;
+
+        virtualinvoke $r6_1.<android.os.HandlerThread: void start()>();
+
+        $r4 = new android.os.Handler;
+
+        $r6_2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.HandlerThread mHandlerThread>;
+
+        $r5 = virtualinvoke $r6_2.<android.os.HandlerThread: android.os.Looper getLooper()>();
+
+        specialinvoke $r4.<android.os.Handler: void <init>(android.os.Looper,android.os.Handler$Callback)>($r5, $r0);
+
+        $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.Handler mHandler> = $r4;
+
+        return;
+    }
+
+    private boolean ensureServiceBound(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.content.Intent $r2, $r2_1;
+        android.content.ComponentName $r3, $r3_1, $r3_2;
+        android.content.Context $r4, $r4_1, $r4_2;
+        int $i0;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2, $r5_3;
+        java.lang.String $r6;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord;
+
+        $z0 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: boolean bound>;
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>(java.lang.String)>("android.support.BIND_NOTIFICATION_SIDE_CHANNEL");
+
+        $r3 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.content.ComponentName componentName>;
+
+        $r2_1 = virtualinvoke $r2.<android.content.Intent: android.content.Intent setComponent(android.content.ComponentName)>($r3);
+
+        $r4 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.content.Context mContext>;
+
+        $i0 = staticinvoke <android.support.v4.app.NotificationManagerCompat: int access$000()>();
+
+        $z0_1 = virtualinvoke $r4.<android.content.Context: boolean bindService(android.content.Intent,android.content.ServiceConnection,int)>($r2_1, $r0, $i0);
+
+        $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: boolean bound> = $z0_1;
+
+        $z0_2 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: boolean bound>;
+
+        if $z0_2 == 0 goto label3;
+
+(0)     $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: int retryCount> = 0;
+
+     label2:
+        $r4_1 = Phi($r4 #0, $r4_2 #1);
+
+        $r5 = Phi($r5 #0, $r5_3 #1);
+
+        $r3_1 = Phi($r3 #0, $r3_2 #1);
+
+        $z0_3 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: boolean bound>;
+
+        return $z0_3;
+
+     label3:
+        $r5_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r5_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unable to bind to listener ");
+
+        $r3_2 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.content.ComponentName componentName>;
+
+        $r5_3 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3_2);
+
+        $r6 = virtualinvoke $r5_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("NotifManCompat", $r6);
+
+        $r4_2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.content.Context mContext>;
+
+        virtualinvoke $r4_2.<android.content.Context: void unbindService(android.content.ServiceConnection)>($r0);
+
+(1)     goto label2;
+    }
+
+    private void ensureServiceUnbound(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord $r1;
+        boolean $z0;
+        android.content.Context $r2;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord;
+
+        $z0 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: boolean bound>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.content.Context mContext>;
+
+        virtualinvoke $r2.<android.content.Context: void unbindService(android.content.ServiceConnection)>($r0);
+
+        $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: boolean bound> = 0;
+
+     label1:
+        $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.support.v4.app.INotificationSideChannel service> = null;
+
+        return;
+    }
+
+    private void handleQueueTask(android.support.v4.app.NotificationManagerCompat$Task)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.support.v4.app.NotificationManagerCompat$Task $r1;
+        java.util.Map $r2;
+        java.util.LinkedList $r3;
+        java.util.Collection $r4;
+        java.util.Iterator $r5;
+        boolean $z0;
+        java.lang.Object $r6;
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord $r7;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.support.v4.app.NotificationManagerCompat$Task;
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void updateListenerMap()>();
+
+        $r2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Map mRecordMap>;
+
+        $r4 = interfaceinvoke $r2.<java.util.Map: java.util.Collection values()>();
+
+        $r5 = interfaceinvoke $r4.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        $r7 = (android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord) $r6;
+
+        $r3 = $r7.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: java.util.LinkedList taskQueue>;
+
+        virtualinvoke $r3.<java.util.LinkedList: boolean add(java.lang.Object)>($r1);
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void processListenerQueue(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)>($r7);
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    private void handleRetryListenerQueue(android.content.ComponentName)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.content.ComponentName $r1;
+        java.util.Map $r2;
+        java.lang.Object $r3;
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord $r4;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.content.ComponentName;
+
+        $r2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Map mRecordMap>;
+
+        $r3 = interfaceinvoke $r2.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r4 = (android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord) $r3;
+
+        if $r4 == null goto label1;
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void processListenerQueue(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)>($r4);
+
+     label1:
+        return;
+    }
+
+    private void handleServiceConnected(android.content.ComponentName, android.os.IBinder)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.content.ComponentName $r1;
+        android.os.IBinder $r2;
+        java.util.Map $r3;
+        java.lang.Object $r4;
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord $r5;
+        android.support.v4.app.INotificationSideChannel $r6;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.content.ComponentName;
+
+        $r2 := @parameter1: android.os.IBinder;
+
+        $r3 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Map mRecordMap>;
+
+        $r4 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r5 = (android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord) $r4;
+
+        if $r5 == null goto label1;
+
+        $r6 = staticinvoke <android.support.v4.app.INotificationSideChannel$Stub: android.support.v4.app.INotificationSideChannel asInterface(android.os.IBinder)>($r2);
+
+        $r5.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.support.v4.app.INotificationSideChannel service> = $r6;
+
+        $r5.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: int retryCount> = 0;
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void processListenerQueue(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)>($r5);
+
+     label1:
+        return;
+    }
+
+    private void handleServiceDisconnected(android.content.ComponentName)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.content.ComponentName $r1;
+        java.util.Map $r2;
+        java.lang.Object $r3;
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord $r4;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.content.ComponentName;
+
+        $r2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Map mRecordMap>;
+
+        $r3 = interfaceinvoke $r2.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r4 = (android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord) $r3;
+
+        if $r4 == null goto label1;
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void ensureServiceUnbound(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)>($r4);
+
+     label1:
+        return;
+    }
+
+    private void processListenerQueue(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord $r1;
+        android.os.DeadObjectException $r2;
+        android.os.RemoteException $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9, $r4_10, $r4_11, $r4_12, $r4_13, $r4_14, $r4_15, $r4_16, $r4_17, $r4_18, $r4_19, $r4_20;
+        android.content.ComponentName $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        java.util.LinkedList $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8, $r6_9;
+        int $i0;
+        java.lang.String $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8, $r7_9;
+        android.support.v4.app.INotificationSideChannel $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6;
+        java.lang.Object $r9;
+        android.support.v4.app.NotificationManagerCompat$Task $r10;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord;
+
+        $z0 = staticinvoke <android.util.Log: boolean isLoggable(java.lang.String,int)>("NotifManCompat", 3);
+
+(0)     if $z0 == 0 goto label01;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Processing component ");
+
+        $r5 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.content.ComponentName componentName>;
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", ");
+
+        $r6 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: java.util.LinkedList taskQueue>;
+
+        $i0 = virtualinvoke $r6.<java.util.LinkedList: int size()>();
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4_5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" queued tasks");
+
+        $r7 = virtualinvoke $r4_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("NotifManCompat", $r7);
+
+     label01:
+        $r4_6 = Phi($r4 #0, $r4_5 #1);
+
+        $r5_1 = Phi($r5 #0, $r5 #1);
+
+        $r6_1 = Phi($r6 #0, $r6 #1);
+
+        $r7_1 = Phi($r7 #0, $r7 #1);
+
+        $r6_2 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: java.util.LinkedList taskQueue>;
+
+        $z0_1 = virtualinvoke $r6_2.<java.util.LinkedList: boolean isEmpty()>();
+
+        if $z0_1 == 0 goto label02;
+
+        return;
+
+     label02:
+        $z0_2 = specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: boolean ensureServiceBound(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)>($r1);
+
+(2)     if $z0_2 == 0 goto label03;
+
+        $r8 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.support.v4.app.INotificationSideChannel service>;
+
+(3)     if $r8 != null goto label11;
+
+     label03:
+        $r8_6 = Phi($r8 #2, $r8 #3);
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void scheduleListenerRetry(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)>($r1);
+
+        return;
+
+     label04:
+(4)     $z0_4 = staticinvoke <android.util.Log: boolean isLoggable(java.lang.String,int)>("NotifManCompat", 3);
+
+     label05:
+(5)     if $z0_4 == 0 goto label07;
+
+(6)     $r4_8 = new java.lang.StringBuilder;
+
+     label06:
+        specialinvoke $r4_8.<java.lang.StringBuilder: void <init>()>();
+
+(7)     $r4_9 = virtualinvoke $r4_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Sending task ");
+
+(8)     $r4_10 = virtualinvoke $r4_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r10);
+
+(9)     $r7_3 = virtualinvoke $r4_10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(10)    staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("NotifManCompat", $r7_3);
+
+     label07:
+        $r4_11 = Phi($r4_7 #5, $r4_10 #10);
+
+        $r7_4 = Phi($r7_2 #5, $r7_3 #10);
+
+(11)    $r8_2 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.support.v4.app.INotificationSideChannel service>;
+
+     label08:
+        interfaceinvoke $r10.<android.support.v4.app.NotificationManagerCompat$Task: void send(android.support.v4.app.INotificationSideChannel)>($r8_2);
+
+     label09:
+(12)    $r6_5 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: java.util.LinkedList taskQueue>;
+
+     label10:
+(13)    virtualinvoke $r6_5.<java.util.LinkedList: java.lang.Object remove()>();
+
+     label11:
+        $r4_7 = Phi($r4_6 #3, $r4_11 #13);
+
+        $z0_3 = Phi($z0_2 #3, $z0_4 #13);
+
+        $r6_3 = Phi($r6_2 #3, $r6_5 #13);
+
+        $r7_2 = Phi($r7_1 #3, $r7_4 #13);
+
+        $r8_1 = Phi($r8 #3, $r8_2 #13);
+
+        $r6_4 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: java.util.LinkedList taskQueue>;
+
+        $r9 = virtualinvoke $r6_4.<java.util.LinkedList: java.lang.Object peek()>();
+
+        $r10 = (android.support.v4.app.NotificationManagerCompat$Task) $r9;
+
+(14)    if $r10 != null goto label04;
+
+     label12:
+        $r4_12 = Phi($r4_7 #14, $r4_13 #15, $r4_16 #16, $r4_20 #17);
+
+        $z0_5 = Phi($z0_3 #14, $z0_8 #15, $z0_8 #16, $z0_9 #17);
+
+        $r5_2 = Phi($r5_1 #14, $r5_1 #15, $r5_3 #16, $r5_4 #17);
+
+        $r6_6 = Phi($r6_4 #14, $r6_8 #15, $r6_8 #16, $r6_9 #17);
+
+        $r7_5 = Phi($r7_2 #14, $r7_6 #15, $r7_7 #16, $r7_9 #17);
+
+        $r8_3 = Phi($r8_1 #14, $r8_4 #15, $r8_4 #16, $r8_5 #17);
+
+        $r6_7 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: java.util.LinkedList taskQueue>;
+
+        $z0_6 = virtualinvoke $r6_7.<java.util.LinkedList: boolean isEmpty()>();
+
+        if $z0_6 != 0 goto label15;
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void scheduleListenerRetry(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)>($r1);
+
+        return;
+
+     label13:
+        $r2 := @caughtexception;
+
+        $r4_13 = Phi($r4_7 #14, $r4_8 #6, $r4_9 #7, $r4_10 #8, $r4_11 #11);
+
+        $z0_7 = Phi($z0_3 #14, $z0_4 #4);
+
+        $r6_8 = Phi($r6_4 #14, $r6_5 #12);
+
+        $r7_6 = Phi($r7_2 #14, $r7_3 #9, $r7_4 #11);
+
+        $r8_4 = Phi($r8_1 #14, $r8_2 #11);
+
+        $z0_8 = staticinvoke <android.util.Log: boolean isLoggable(java.lang.String,int)>("NotifManCompat", 3);
+
+(15)    if $z0_8 == 0 goto label12;
+
+        $r4_14 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_14.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_15 = virtualinvoke $r4_14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Remote service has died: ");
+
+        $r5_3 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.content.ComponentName componentName>;
+
+        $r4_16 = virtualinvoke $r4_15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5_3);
+
+        $r7_7 = virtualinvoke $r4_16.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("NotifManCompat", $r7_7);
+
+(16)    goto label12;
+
+     label14:
+        $r3 := @caughtexception;
+
+        $r4_17 = Phi($r4_7 #14, $r4_8 #6, $r4_9 #7, $r4_10 #8, $r4_11 #11);
+
+        $z0_9 = Phi($z0_3 #14, $z0_4 #4);
+
+        $r6_9 = Phi($r6_4 #14, $r6_5 #12);
+
+        $r7_8 = Phi($r7_2 #14, $r7_3 #9, $r7_4 #11);
+
+        $r8_5 = Phi($r8_1 #14, $r8_2 #11);
+
+        $r4_18 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_18.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_19 = virtualinvoke $r4_18.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("RemoteException communicating with ");
+
+        $r5_4 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.content.ComponentName componentName>;
+
+        $r4_20 = virtualinvoke $r4_19.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5_4);
+
+        $r7_9 = virtualinvoke $r4_20.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>("NotifManCompat", $r7_9, $r3);
+
+(17)    goto label12;
+
+     label15:
+        return;
+
+        catch android.os.DeadObjectException from label04 to label05 with label13;
+        catch android.os.RemoteException from label04 to label05 with label14;
+        catch android.os.DeadObjectException from label06 to label07 with label13;
+        catch android.os.RemoteException from label06 to label07 with label14;
+        catch android.os.DeadObjectException from label08 to label09 with label13;
+        catch android.os.RemoteException from label08 to label09 with label14;
+        catch android.os.DeadObjectException from label10 to label11 with label13;
+        catch android.os.RemoteException from label10 to label11 with label14;
+    }
+
+    private void scheduleListenerRetry(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord $r1;
+        long $l0;
+        android.os.Handler $r2, $r2_1, $r2_2;
+        android.content.ComponentName $r3, $r3_1, $r3_2;
+        boolean $z0, $z0_1;
+        int $i1, $i1_1, $i1_2, $i1_3, $i1_4, $i1_5, $i1_6, $i1_7, $i1_8;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9, $r4_10, $r4_11, $r4_12;
+        java.util.LinkedList $r5, $r5_1;
+        java.lang.String $r6, $r6_1, $r6_2;
+        android.os.Message $r7;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord;
+
+        $r2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.Handler mHandler>;
+
+        $r3 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.content.ComponentName componentName>;
+
+        $z0 = virtualinvoke $r2.<android.os.Handler: boolean hasMessages(int,java.lang.Object)>(3, $r3);
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $i1 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: int retryCount>;
+
+        $i1_1 = $i1 + 1;
+
+        $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: int retryCount> = $i1_1;
+
+        $i1_2 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: int retryCount>;
+
+        if $i1_2 <= 6 goto label2;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Giving up on delivering ");
+
+        $r5 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: java.util.LinkedList taskQueue>;
+
+        $i1_3 = virtualinvoke $r5.<java.util.LinkedList: int size()>();
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1_3);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" tasks to ");
+
+        $r3_1 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.content.ComponentName componentName>;
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3_1);
+
+        $r4_5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" after ");
+
+        $i1_4 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: int retryCount>;
+
+        $r4_6 = virtualinvoke $r4_5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1_4);
+
+        $r4_7 = virtualinvoke $r4_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" retries");
+
+        $r6 = virtualinvoke $r4_7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("NotifManCompat", $r6);
+
+        $r5_1 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: java.util.LinkedList taskQueue>;
+
+        virtualinvoke $r5_1.<java.util.LinkedList: void clear()>();
+
+        return;
+
+     label2:
+        $i1_5 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: int retryCount>;
+
+        $i1_6 = $i1_5 + -1;
+
+        $i1_7 = 1 << $i1_6;
+
+        $i1_8 = $i1_7 * 1000;
+
+        $z0_1 = staticinvoke <android.util.Log: boolean isLoggable(java.lang.String,int)>("NotifManCompat", 3);
+
+(0)     if $z0_1 == 0 goto label3;
+
+        $r4_8 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_8.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_9 = virtualinvoke $r4_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Scheduling retry for ");
+
+        $r4_10 = virtualinvoke $r4_9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1_8);
+
+        $r4_11 = virtualinvoke $r4_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ms");
+
+        $r6_1 = virtualinvoke $r4_11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("NotifManCompat", $r6_1);
+
+     label3:
+        $r4_12 = Phi($r4 #0, $r4_11 #1);
+
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        $r2_1 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.Handler mHandler>;
+
+        $r3_2 = $r1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.content.ComponentName componentName>;
+
+        $r7 = virtualinvoke $r2_1.<android.os.Handler: android.os.Message obtainMessage(int,java.lang.Object)>(3, $r3_2);
+
+        $r2_2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.Handler mHandler>;
+
+        $l0 = (long) $i1_8;
+
+        virtualinvoke $r2_2.<android.os.Handler: boolean sendMessageDelayed(android.os.Message,long)>($r7, $l0);
+
+        return;
+    }
+
+    private void updateListenerMap()
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        java.util.Set $r1, $r4, $r1_1;
+        java.util.HashSet $r2;
+        android.content.Context $r3, $r3_1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11;
+        android.content.pm.PackageManager $r5;
+        android.content.Intent $r6, $r6_1;
+        java.util.List $r7;
+        java.util.Iterator $r8, $r8_1, $r8_2;
+        java.lang.Object $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9;
+        android.content.pm.ResolveInfo $r10;
+        android.content.pm.ServiceInfo $r11, $r11_1, $r11_2, $r11_3, $r11_4;
+        java.lang.String $r12, $r14, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8, $r12_9, $r12_10;
+        android.content.ComponentName $r13, $r13_1, $r13_2, $r13_3;
+        java.lang.StringBuilder $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6, $r15_7, $r15_8, $r15_9, $r15_10, $r15_11, $r15_12, $r15_13, $r15_14;
+        java.util.Map $r16, $r16_1, $r16_2, $r16_3;
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord $r17, $r17_1, $r17_2, $r17_3;
+        java.util.Map$Entry $r18;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r3 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.content.Context mContext>;
+
+        $r4 = staticinvoke <android.support.v4.app.NotificationManagerCompat: java.util.Set getEnabledListenerPackages(android.content.Context)>($r3);
+
+        $r1 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Set mCachedEnabledPackages>;
+
+        $z0 = interfaceinvoke $r4.<java.util.Set: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label01;
+
+        return;
+
+     label01:
+        $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Set mCachedEnabledPackages> = $r4;
+
+        $r3_1 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.content.Context mContext>;
+
+        $r5 = virtualinvoke $r3_1.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r6 = new android.content.Intent;
+
+        specialinvoke $r6.<android.content.Intent: void <init>()>();
+
+        $r6_1 = virtualinvoke $r6.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.support.BIND_NOTIFICATION_SIDE_CHANNEL");
+
+        $r7 = virtualinvoke $r5.<android.content.pm.PackageManager: java.util.List queryIntentServices(android.content.Intent,int)>($r6_1, 4);
+
+        $r2 = new java.util.HashSet;
+
+        specialinvoke $r2.<java.util.HashSet: void <init>()>();
+
+(0)     $r8 = interfaceinvoke $r7.<java.util.List: java.util.Iterator iterator()>();
+
+     label02:
+        $z0_1 = Phi($z0 #0, $z0_3 #1, $z0_3 #2, $z0_3 #3);
+
+        $r12 = Phi($r12 #0, $r12_1 #1, $r12_4 #2, $r12_3 #3);
+
+        $r11 = Phi($r11 #0, $r11_1 #1, $r11_4 #2, $r11_4 #3);
+
+        $r13 = Phi($r13 #0, $r13 #1, $r13_1 #2, $r13_1 #3);
+
+        $r9 = Phi($r9 #0, $r9_1 #1, $r9_1 #2, $r9_1 #3);
+
+        $r15 = Phi($r15 #0, $r15 #1, $r15_4 #2, $r15 #3);
+
+        $z0_2 = interfaceinvoke $r8.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_2 == 0 goto label04;
+
+        $r9_1 = interfaceinvoke $r8.<java.util.Iterator: java.lang.Object next()>();
+
+        $r10 = (android.content.pm.ResolveInfo) $r9_1;
+
+        $r11_1 = $r10.<android.content.pm.ResolveInfo: android.content.pm.ServiceInfo serviceInfo>;
+
+        $r12_1 = $r11_1.<android.content.pm.PackageItemInfo: java.lang.String packageName>;
+
+        $z0_3 = interfaceinvoke $r4.<java.util.Set: boolean contains(java.lang.Object)>($r12_1);
+
+(1)     if $z0_3 == 0 goto label02;
+
+        $r13_1 = new android.content.ComponentName;
+
+        $r11_2 = $r10.<android.content.pm.ResolveInfo: android.content.pm.ServiceInfo serviceInfo>;
+
+        $r12_2 = $r11_2.<android.content.pm.PackageItemInfo: java.lang.String packageName>;
+
+        $r11_3 = $r10.<android.content.pm.ResolveInfo: android.content.pm.ServiceInfo serviceInfo>;
+
+        $r14 = $r11_3.<android.content.pm.PackageItemInfo: java.lang.String name>;
+
+        specialinvoke $r13_1.<android.content.ComponentName: void <init>(java.lang.String,java.lang.String)>($r12_2, $r14);
+
+        $r11_4 = $r10.<android.content.pm.ResolveInfo: android.content.pm.ServiceInfo serviceInfo>;
+
+        $r12_3 = $r11_4.<android.content.pm.ServiceInfo: java.lang.String permission>;
+
+        if $r12_3 == null goto label03;
+
+        $r15_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r15_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r15_2 = virtualinvoke $r15_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Permission present on component ");
+
+        $r15_3 = virtualinvoke $r15_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r13_1);
+
+        $r15_4 = virtualinvoke $r15_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", not adding listener record.");
+
+        $r12_4 = virtualinvoke $r15_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("NotifManCompat", $r12_4);
+
+(2)     goto label02;
+
+     label03:
+        interfaceinvoke $r2.<java.util.Set: boolean add(java.lang.Object)>($r13_1);
+
+(3)     goto label02;
+
+     label04:
+(4)     $r8_1 = interfaceinvoke $r2.<java.util.Set: java.util.Iterator iterator()>();
+
+     label05:
+        $r17 = Phi($r17 #4, $r17 #5, $r17_1 #8);
+
+        $z0_4 = Phi($z0_2 #4, $z0_6 #5, $z0_7 #8);
+
+        $r12_5 = Phi($r12 #4, $r12_5 #5, $r12_7 #8);
+
+        $r13_2 = Phi($r13 #4, $r13_3 #5, $r13_3 #8);
+
+        $r16 = Phi($r16 #4, $r16_1 #5, $r16_2 #8);
+
+        $r9_2 = Phi($r9 #4, $r9_3 #5, $r9_3 #8);
+
+        $r15_5 = Phi($r15 #4, $r15_5 #5, $r15_9 #8);
+
+        $z0_5 = interfaceinvoke $r8_1.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_5 == 0 goto label07;
+
+        $r9_3 = interfaceinvoke $r8_1.<java.util.Iterator: java.lang.Object next()>();
+
+        $r13_3 = (android.content.ComponentName) $r9_3;
+
+        $r16_1 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Map mRecordMap>;
+
+        $z0_6 = interfaceinvoke $r16_1.<java.util.Map: boolean containsKey(java.lang.Object)>($r13_3);
+
+(5)     if $z0_6 != 0 goto label05;
+
+        $z0_7 = staticinvoke <android.util.Log: boolean isLoggable(java.lang.String,int)>("NotifManCompat", 3);
+
+(6)     if $z0_7 == 0 goto label06;
+
+        $r15_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r15_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r15_7 = virtualinvoke $r15_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Adding listener record for ");
+
+        $r15_8 = virtualinvoke $r15_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r13_3);
+
+        $r12_6 = virtualinvoke $r15_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(7)     staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("NotifManCompat", $r12_6);
+
+     label06:
+        $r12_7 = Phi($r12_5 #6, $r12_6 #7);
+
+        $r15_9 = Phi($r15_5 #6, $r15_8 #7);
+
+        $r16_2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Map mRecordMap>;
+
+        $r17_1 = new android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord;
+
+        specialinvoke $r17_1.<android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: void <init>(android.content.ComponentName)>($r13_3);
+
+        interfaceinvoke $r16_2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r13_3, $r17_1);
+
+(8)     goto label05;
+
+     label07:
+        $r16_3 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Map mRecordMap>;
+
+        $r1_1 = interfaceinvoke $r16_3.<java.util.Map: java.util.Set entrySet()>();
+
+(9)     $r8_2 = interfaceinvoke $r1_1.<java.util.Set: java.util.Iterator iterator()>();
+
+     label08:
+        $r17_2 = Phi($r17 #9, $r17_2 #10, $r17_3 #13);
+
+        $z0_8 = Phi($z0_5 #9, $z0_10 #10, $z0_11 #13);
+
+        $r12_8 = Phi($r12_5 #9, $r12_8 #10, $r12_10 #13);
+
+        $r9_4 = Phi($r9_2 #9, $r9_6 #10, $r9_9 #13);
+
+        $r15_10 = Phi($r15_5 #9, $r15_10 #10, $r15_14 #13);
+
+        $z0_9 = interfaceinvoke $r8_2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_9 == 0 goto label10;
+
+        $r9_5 = interfaceinvoke $r8_2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r18 = (java.util.Map$Entry) $r9_5;
+
+        $r9_6 = interfaceinvoke $r18.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $z0_10 = interfaceinvoke $r2.<java.util.Set: boolean contains(java.lang.Object)>($r9_6);
+
+(10)    if $z0_10 != 0 goto label08;
+
+        $z0_11 = staticinvoke <android.util.Log: boolean isLoggable(java.lang.String,int)>("NotifManCompat", 3);
+
+(11)    if $z0_11 == 0 goto label09;
+
+        $r15_11 = new java.lang.StringBuilder;
+
+        specialinvoke $r15_11.<java.lang.StringBuilder: void <init>()>();
+
+        $r15_12 = virtualinvoke $r15_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Removing listener record for ");
+
+        $r9_7 = interfaceinvoke $r18.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r15_13 = virtualinvoke $r15_12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r9_7);
+
+        $r12_9 = virtualinvoke $r15_13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(12)    staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("NotifManCompat", $r12_9);
+
+     label09:
+        $r12_10 = Phi($r12_8 #11, $r12_9 #12);
+
+        $r9_8 = Phi($r9_6 #11, $r9_7 #12);
+
+        $r15_14 = Phi($r15_10 #11, $r15_13 #12);
+
+        $r9_9 = interfaceinvoke $r18.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r17_3 = (android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord) $r9_9;
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void ensureServiceUnbound(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)>($r17_3);
+
+        interfaceinvoke $r8_2.<java.util.Iterator: void remove()>();
+
+(13)    goto label08;
+
+     label10:
+        return;
+    }
+
+    public boolean handleMessage(android.os.Message)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.os.Message $r1;
+        int $i0;
+        android.os.IBinder $r2;
+        java.lang.Object $r3, $r3_1, $r3_2, $r3_3;
+        android.support.v4.app.NotificationManagerCompat$Task $r4;
+        android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent $r5;
+        android.content.ComponentName $r6, $r6_1, $r6_2;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.os.Message;
+
+        $i0 = $r1.<android.os.Message: int what>;
+
+        lookupswitch($i0)
+        {
+            case 0: goto label3;
+            case 1: goto label4;
+            case 2: goto label5;
+            case 3: goto label6;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        return 0;
+
+     label3:
+        $r3 = $r1.<android.os.Message: java.lang.Object obj>;
+
+        $r4 = (android.support.v4.app.NotificationManagerCompat$Task) $r3;
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void handleQueueTask(android.support.v4.app.NotificationManagerCompat$Task)>($r4);
+
+        return 1;
+
+     label4:
+        $r3_1 = $r1.<android.os.Message: java.lang.Object obj>;
+
+        $r5 = (android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent) $r3_1;
+
+        $r6 = $r5.<android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent: android.content.ComponentName componentName>;
+
+        $r2 = $r5.<android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent: android.os.IBinder iBinder>;
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void handleServiceConnected(android.content.ComponentName,android.os.IBinder)>($r6, $r2);
+
+        return 1;
+
+     label5:
+        $r3_2 = $r1.<android.os.Message: java.lang.Object obj>;
+
+        $r6_1 = (android.content.ComponentName) $r3_2;
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void handleServiceDisconnected(android.content.ComponentName)>($r6_1);
+
+        return 1;
+
+     label6:
+        $r3_3 = $r1.<android.os.Message: java.lang.Object obj>;
+
+        $r6_2 = (android.content.ComponentName) $r3_3;
+
+        specialinvoke $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: void handleRetryListenerQueue(android.content.ComponentName)>($r6_2);
+
+        return 1;
+    }
+
+    public void onServiceConnected(android.content.ComponentName, android.os.IBinder)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.content.ComponentName $r1;
+        android.os.IBinder $r2;
+        android.os.Handler $r3;
+        android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent $r4;
+        boolean $z0;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2, $r5_3;
+        java.lang.String $r6;
+        android.os.Message $r7;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.content.ComponentName;
+
+        $r2 := @parameter1: android.os.IBinder;
+
+        $z0 = staticinvoke <android.util.Log: boolean isLoggable(java.lang.String,int)>("NotifManCompat", 3);
+
+(0)     if $z0 == 0 goto label1;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Connected to service ");
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r6 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("NotifManCompat", $r6);
+
+     label1:
+        $r5_3 = Phi($r5 #0, $r5_2 #1);
+
+        $r3 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.Handler mHandler>;
+
+        $r4 = new android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent;
+
+        specialinvoke $r4.<android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent: void <init>(android.content.ComponentName,android.os.IBinder)>($r1, $r2);
+
+        $r7 = virtualinvoke $r3.<android.os.Handler: android.os.Message obtainMessage(int,java.lang.Object)>(1, $r4);
+
+        virtualinvoke $r7.<android.os.Message: void sendToTarget()>();
+
+        return;
+    }
+
+    public void onServiceDisconnected(android.content.ComponentName)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.content.ComponentName $r1;
+        android.os.Handler $r2;
+        boolean $z0;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.String $r4;
+        android.os.Message $r5;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.content.ComponentName;
+
+        $z0 = staticinvoke <android.util.Log: boolean isLoggable(java.lang.String,int)>("NotifManCompat", 3);
+
+(0)     if $z0 == 0 goto label1;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Disconnected from service ");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r4 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("NotifManCompat", $r4);
+
+     label1:
+        $r3_3 = Phi($r3 #0, $r3_2 #1);
+
+        $r2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.Handler mHandler>;
+
+        $r5 = virtualinvoke $r2.<android.os.Handler: android.os.Message obtainMessage(int,java.lang.Object)>(2, $r1);
+
+        virtualinvoke $r5.<android.os.Message: void sendToTarget()>();
+
+        return;
+    }
+
+    public void queueTask(android.support.v4.app.NotificationManagerCompat$Task)
+    {
+        android.support.v4.app.NotificationManagerCompat$SideChannelManager $r0;
+        android.support.v4.app.NotificationManagerCompat$Task $r1;
+        android.os.Handler $r2;
+        android.os.Message $r3;
+
+        $r0 := @this: android.support.v4.app.NotificationManagerCompat$SideChannelManager;
+
+        $r1 := @parameter0: android.support.v4.app.NotificationManagerCompat$Task;
+
+        $r2 = $r0.<android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.Handler mHandler>;
+
+        $r3 = virtualinvoke $r2.<android.os.Handler: android.os.Message obtainMessage(int,java.lang.Object)>(0, $r1);
+
+        virtualinvoke $r3.<android.os.Message: void sendToTarget()>();
+
+        return;
+    }
+}

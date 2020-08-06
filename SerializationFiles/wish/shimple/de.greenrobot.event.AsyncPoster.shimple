@@ -1,0 +1,86 @@
+class de.greenrobot.event.AsyncPoster extends java.lang.Object implements java.lang.Runnable
+{
+    private final de.greenrobot.event.EventBus eventBus;
+    private final de.greenrobot.event.PendingPostQueue queue;
+
+    void <init>(de.greenrobot.event.EventBus)
+    {
+        de.greenrobot.event.AsyncPoster $r0;
+        de.greenrobot.event.EventBus $r1;
+        de.greenrobot.event.PendingPostQueue $r2;
+
+        $r0 := @this: de.greenrobot.event.AsyncPoster;
+
+        $r1 := @parameter0: de.greenrobot.event.EventBus;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<de.greenrobot.event.AsyncPoster: de.greenrobot.event.EventBus eventBus> = $r1;
+
+        $r2 = new de.greenrobot.event.PendingPostQueue;
+
+        specialinvoke $r2.<de.greenrobot.event.PendingPostQueue: void <init>()>();
+
+        $r0.<de.greenrobot.event.AsyncPoster: de.greenrobot.event.PendingPostQueue queue> = $r2;
+
+        return;
+    }
+
+    public void enqueue(de.greenrobot.event.Subscription, java.lang.Object)
+    {
+        de.greenrobot.event.AsyncPoster $r0;
+        de.greenrobot.event.Subscription $r1;
+        java.lang.Object $r2;
+        de.greenrobot.event.PendingPostQueue $r3;
+        java.util.concurrent.ExecutorService $r4;
+        de.greenrobot.event.PendingPost $r5;
+
+        $r0 := @this: de.greenrobot.event.AsyncPoster;
+
+        $r1 := @parameter0: de.greenrobot.event.Subscription;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r5 = staticinvoke <de.greenrobot.event.PendingPost: de.greenrobot.event.PendingPost obtainPendingPost(de.greenrobot.event.Subscription,java.lang.Object)>($r1, $r2);
+
+        $r3 = $r0.<de.greenrobot.event.AsyncPoster: de.greenrobot.event.PendingPostQueue queue>;
+
+        virtualinvoke $r3.<de.greenrobot.event.PendingPostQueue: void enqueue(de.greenrobot.event.PendingPost)>($r5);
+
+        $r4 = <de.greenrobot.event.EventBus: java.util.concurrent.ExecutorService executorService>;
+
+        interfaceinvoke $r4.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r0);
+
+        return;
+    }
+
+    public void run()
+    {
+        de.greenrobot.event.AsyncPoster $r0;
+        de.greenrobot.event.PendingPostQueue $r1;
+        java.lang.IllegalStateException $r2;
+        de.greenrobot.event.EventBus $r3;
+        de.greenrobot.event.PendingPost $r4;
+
+        $r0 := @this: de.greenrobot.event.AsyncPoster;
+
+        $r1 = $r0.<de.greenrobot.event.AsyncPoster: de.greenrobot.event.PendingPostQueue queue>;
+
+        $r4 = virtualinvoke $r1.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost poll()>();
+
+        if $r4 != null goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("No pending post available");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<de.greenrobot.event.AsyncPoster: de.greenrobot.event.EventBus eventBus>;
+
+        virtualinvoke $r3.<de.greenrobot.event.EventBus: void invokeSubscriber(de.greenrobot.event.PendingPost)>($r4);
+
+        return;
+    }
+}

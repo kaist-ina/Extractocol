@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 import soot.jimple.infoflow.config.IInfoflowConfig;
 import soot.jimple.infoflow.taintWrappers.EasyTaintWrapper;
 import soot.options.Options;
@@ -22,7 +23,7 @@ public class ExceptionTests extends JUnitTests {
 	
 	@Test
 	public void exceptionControlFlowTest1() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void exceptionControlFlowTest1()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -31,7 +32,7 @@ public class ExceptionTests extends JUnitTests {
 
 	@Test
 	public void exceptionControlWrappedFlowTest1() throws IOException {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		infoflow.setTaintWrapper(new EasyTaintWrapper(new File("EasyTaintWrapperSource.txt")));
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void exceptionControlFlowTest1()>");
@@ -41,7 +42,7 @@ public class ExceptionTests extends JUnitTests {
 
 	@Test
 	public void exceptionControlFlowTestNoJDK1() throws IOException {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		infoflow.setTaintWrapper(new EasyTaintWrapper(new File("EasyTaintWrapperSource.txt")));
     	infoflow.setSootConfig(new IInfoflowConfig() {
 			
@@ -52,6 +53,7 @@ public class ExceptionTests extends JUnitTests {
 				excludeList.add("javax.");
 				options.set_exclude(excludeList);
 				options.set_prepend_classpath(false);
+				Options.v().set_ignore_classpath_errors(true);
 			}
 			
 		});
@@ -64,7 +66,7 @@ public class ExceptionTests extends JUnitTests {
 
 	@Test
 	public void exceptionControlFlowTest2() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void exceptionControlFlowTest2()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -73,7 +75,7 @@ public class ExceptionTests extends JUnitTests {
 	
 	@Test
 	public void exceptionControlFlowTest3() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void exceptionControlFlowTest3()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -82,7 +84,7 @@ public class ExceptionTests extends JUnitTests {
 	
 	@Test
 	public void exceptionDataFlowTest1() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void exceptionDataFlowTest1()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -91,7 +93,7 @@ public class ExceptionTests extends JUnitTests {
 
 	@Test
 	public void exceptionDataFlowTest2() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void exceptionDataFlowTest2()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -100,12 +102,49 @@ public class ExceptionTests extends JUnitTests {
 
 	@Test
 	public void disabledExceptionTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void disabledExceptionTest()>");
-		infoflow.setEnableExceptionTracking(false);
+		infoflow.getConfig().setEnableExceptionTracking(false);
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
 		negativeCheckInfoflow(infoflow);
 	}
 	
+	@Test
+	public void callMethodParamReturnTest1() {
+		IInfoflow infoflow = initInfoflow();
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void callMethodParamReturnTest1()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		checkInfoflow(infoflow, 1);
+	}
+
+	@Test
+	@Ignore("FlowDroid cannot know that the exception will always happen")
+	public void callMethodParamReturnTest2() {
+		IInfoflow infoflow = initInfoflow();
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void callMethodParamReturnTest2()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		negativeCheckInfoflow(infoflow);
+	}
+
+	@Test
+	public void callMethodParamReturnTest2b() {
+		IInfoflow infoflow = initInfoflow();
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void callMethodParamReturnTest2b()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		checkInfoflow(infoflow, 1);
+	}
+
+	@Test
+	public void callMethodParamReturnTest3() {
+		IInfoflow infoflow = initInfoflow();
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.ExceptionTestCode: void callMethodParamReturnTest3()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		checkInfoflow(infoflow, 2);
+	}
+
 }

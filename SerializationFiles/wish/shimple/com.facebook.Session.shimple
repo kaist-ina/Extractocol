@@ -1,0 +1,4551 @@
+public class com.facebook.Session extends java.lang.Object implements java.io.Serializable
+{
+    public static final java.lang.String ACTION_ACTIVE_SESSION_CLOSED;
+    public static final java.lang.String ACTION_ACTIVE_SESSION_OPENED;
+    public static final java.lang.String ACTION_ACTIVE_SESSION_SET;
+    public static final java.lang.String ACTION_ACTIVE_SESSION_UNSET;
+    private static final java.lang.String AUTH_BUNDLE_SAVE_KEY;
+    public static final int DEFAULT_AUTHORIZE_ACTIVITY_CODE;
+    private static final java.lang.String MANAGE_PERMISSION_PREFIX;
+    private static final java.util.Set OTHER_PUBLISH_PERMISSIONS;
+    private static final java.lang.String PUBLISH_PERMISSION_PREFIX;
+    private static final java.lang.String SESSION_BUNDLE_SAVE_KEY;
+    private static final java.lang.Object STATIC_LOCK;
+    public static final java.lang.String TAG;
+    private static final int TOKEN_EXTEND_RETRY_SECONDS;
+    private static final int TOKEN_EXTEND_THRESHOLD_SECONDS;
+    public static final java.lang.String WEB_VIEW_ERROR_CODE_KEY;
+    public static final java.lang.String WEB_VIEW_FAILING_URL_KEY;
+    private static com.facebook.Session activeSession;
+    private static final long serialVersionUID;
+    private static volatile android.content.Context staticContext;
+    private com.facebook.AppEventsLogger appEventsLogger;
+    private java.lang.String applicationId;
+    private volatile android.os.Bundle authorizationBundle;
+    private com.facebook.AuthorizationClient authorizationClient;
+    private com.facebook.Session$AutoPublishAsyncTask autoPublishAsyncTask;
+    private final java.util.List callbacks;
+    private volatile com.facebook.Session$TokenRefreshRequest currentTokenRefreshRequest;
+    private android.os.Handler handler;
+    private java.util.Date lastAttemptedTokenExtendDate;
+    private final java.lang.Object lock;
+    private com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest;
+    private com.facebook.SessionState state;
+    private com.facebook.TokenCachingStrategy tokenCachingStrategy;
+    private com.facebook.AccessToken tokenInfo;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        java.lang.Object $r1;
+        com.facebook.Session$1 $r2;
+        java.lang.String $r3;
+
+        $r0 = class "com/facebook/Session";
+
+        $r3 = virtualinvoke $r0.<java.lang.Class: java.lang.String getCanonicalName()>();
+
+        <com.facebook.Session: java.lang.String TAG> = $r3;
+
+        $r1 = new java.lang.Object;
+
+        specialinvoke $r1.<java.lang.Object: void <init>()>();
+
+        <com.facebook.Session: java.lang.Object STATIC_LOCK> = $r1;
+
+        $r2 = new com.facebook.Session$1;
+
+        specialinvoke $r2.<com.facebook.Session$1: void <init>()>();
+
+        <com.facebook.Session: java.util.Set OTHER_PUBLISH_PERMISSIONS> = $r2;
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        com.facebook.Session $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<com.facebook.Session: void <init>(android.content.Context,java.lang.String,com.facebook.TokenCachingStrategy,boolean)>($r1, null, null, 1);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, java.lang.String, com.facebook.TokenCachingStrategy)
+    {
+        com.facebook.Session $r0;
+        android.content.Context $r1;
+        java.lang.String $r2;
+        com.facebook.TokenCachingStrategy $r3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: com.facebook.TokenCachingStrategy;
+
+        specialinvoke $r0.<com.facebook.Session: void <init>(android.content.Context,java.lang.String,com.facebook.TokenCachingStrategy,boolean)>($r1, $r2, $r3, 1);
+
+        return;
+    }
+
+    void <init>(android.content.Context, java.lang.String, com.facebook.TokenCachingStrategy, boolean)
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        com.facebook.SharedPreferencesTokenCachingStrategy $r2;
+        java.util.ArrayList $r3;
+        android.os.Handler $r4;
+        java.util.Date $r5, $r12, $r5_1;
+        android.content.Context $r6, $r6_1, $r6_2;
+        java.lang.String $r7, $r7_1, $r7_2;
+        com.facebook.TokenCachingStrategy $r8, $r8_1, $r8_2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.os.Bundle $r9, $r9_1, $r9_2;
+        com.facebook.SessionState $r10, $r10_1;
+        android.os.Looper $r11;
+        com.facebook.AccessToken $r13, $r13_1, $r13_2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r6 := @parameter0: android.content.Context;
+
+        $r7 := @parameter1: java.lang.String;
+
+        $r8 := @parameter2: com.facebook.TokenCachingStrategy;
+
+        $z0 := @parameter3: boolean;
+
+        $r9 = null;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r5 = new java.util.Date;
+
+        specialinvoke $r5.<java.util.Date: void <init>(long)>(0L);
+
+        $r0.<com.facebook.Session: java.util.Date lastAttemptedTokenExtendDate> = $r5;
+
+        $r1 = new java.lang.Object;
+
+        specialinvoke $r1.<java.lang.Object: void <init>()>();
+
+        $r0.<com.facebook.Session: java.lang.Object lock> = $r1;
+
+(0)     if $r6 == null goto label1;
+
+(1)     if $r7 != null goto label1;
+
+(2)     $r7_1 = staticinvoke <com.facebook.internal.Utility: java.lang.String getMetadataApplicationId(android.content.Context)>($r6);
+
+     label1:
+        $r7_2 = Phi($r7 #0, $r7 #1, $r7_1 #2);
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r7_2, "applicationId");
+
+        staticinvoke <com.facebook.Session: void initializeStaticContext(android.content.Context)>($r6);
+
+(3)     if $r8 != null goto label2;
+
+        $r2 = new com.facebook.SharedPreferencesTokenCachingStrategy;
+
+        $r8_1 = $r2;
+
+        $r6_1 = <com.facebook.Session: android.content.Context staticContext>;
+
+(4)     specialinvoke $r2.<com.facebook.SharedPreferencesTokenCachingStrategy: void <init>(android.content.Context)>($r6_1);
+
+     label2:
+        $r8_2 = Phi($r8 #3, $r8_1 #4);
+
+        $r6_2 = Phi($r6 #3, $r6_1 #4);
+
+        $r0.<com.facebook.Session: java.lang.String applicationId> = $r7_2;
+
+        $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy> = $r8_2;
+
+        $r10 = <com.facebook.SessionState: com.facebook.SessionState CREATED>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r10;
+
+        $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest> = null;
+
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.facebook.Session: java.util.List callbacks> = $r3;
+
+        $r4 = new android.os.Handler;
+
+        $r11 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r4.<android.os.Handler: void <init>(android.os.Looper)>($r11);
+
+        $r0.<com.facebook.Session: android.os.Handler handler> = $r4;
+
+(5)     if $z0 == 0 goto label3;
+
+(6)     $r9_1 = virtualinvoke $r8_2.<com.facebook.TokenCachingStrategy: android.os.Bundle load()>();
+
+     label3:
+        $r9_2 = Phi($r9 #5, $r9_1 #6);
+
+        $z0_1 = staticinvoke <com.facebook.TokenCachingStrategy: boolean hasTokenInformation(android.os.Bundle)>($r9_2);
+
+        if $z0_1 == 0 goto label6;
+
+        $r12 = staticinvoke <com.facebook.TokenCachingStrategy: java.util.Date getDate(android.os.Bundle,java.lang.String)>($r9_2, "com.facebook.TokenCachingStrategy.ExpirationDate");
+
+        $r5_1 = new java.util.Date;
+
+        specialinvoke $r5_1.<java.util.Date: void <init>()>();
+
+(7)     if $r12 == null goto label4;
+
+        $z0_2 = virtualinvoke $r12.<java.util.Date: boolean before(java.util.Date)>($r5_1);
+
+(8)     if $z0_2 == 0 goto label5;
+
+     label4:
+        $z0_3 = Phi($z0_1 #7, $z0_2 #8);
+
+        virtualinvoke $r8_2.<com.facebook.TokenCachingStrategy: void clear()>();
+
+        $r13_1 = staticinvoke <com.facebook.AccessToken: com.facebook.AccessToken createEmptyToken()>();
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r13_1;
+
+        return;
+
+     label5:
+        $r13 = staticinvoke <com.facebook.AccessToken: com.facebook.AccessToken createFromCache(android.os.Bundle)>($r9_2);
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r13;
+
+        $r10_1 = <com.facebook.SessionState: com.facebook.SessionState CREATED_TOKEN_LOADED>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r10_1;
+
+        return;
+
+     label6:
+        $r13_2 = staticinvoke <com.facebook.AccessToken: com.facebook.AccessToken createEmptyToken()>();
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r13_2;
+
+        return;
+    }
+
+    private void <init>(java.lang.String, com.facebook.SessionState, com.facebook.AccessToken, java.util.Date, boolean, com.facebook.Session$AuthorizationRequest)
+    {
+        com.facebook.Session $r0;
+        java.lang.String $r1;
+        com.facebook.SessionState $r2;
+        com.facebook.AccessToken $r3;
+        java.util.Date $r4, $r6;
+        boolean $z0;
+        com.facebook.Session$AuthorizationRequest $r5;
+        java.lang.Object $r7;
+        android.os.Handler $r8;
+        java.util.ArrayList $r9;
+        android.os.Looper $r10;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.facebook.SessionState;
+
+        $r3 := @parameter2: com.facebook.AccessToken;
+
+        $r4 := @parameter3: java.util.Date;
+
+        $z0 := @parameter4: boolean;
+
+        $r5 := @parameter5: com.facebook.Session$AuthorizationRequest;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r6 = new java.util.Date;
+
+        specialinvoke $r6.<java.util.Date: void <init>(long)>(0L);
+
+        $r0.<com.facebook.Session: java.util.Date lastAttemptedTokenExtendDate> = $r6;
+
+        $r7 = new java.lang.Object;
+
+        specialinvoke $r7.<java.lang.Object: void <init>()>();
+
+        $r0.<com.facebook.Session: java.lang.Object lock> = $r7;
+
+        $r0.<com.facebook.Session: java.lang.String applicationId> = $r1;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r2;
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r3;
+
+        $r0.<com.facebook.Session: java.util.Date lastAttemptedTokenExtendDate> = $r4;
+
+        $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest> = $r5;
+
+        $r8 = new android.os.Handler;
+
+        $r10 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r8.<android.os.Handler: void <init>(android.os.Looper)>($r10);
+
+        $r0.<com.facebook.Session: android.os.Handler handler> = $r8;
+
+        $r0.<com.facebook.Session: com.facebook.Session$TokenRefreshRequest currentTokenRefreshRequest> = null;
+
+        $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy> = null;
+
+        $r9 = new java.util.ArrayList;
+
+        specialinvoke $r9.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.facebook.Session: java.util.List callbacks> = $r9;
+
+        return;
+    }
+
+    void <init>(java.lang.String, com.facebook.SessionState, com.facebook.AccessToken, java.util.Date, boolean, com.facebook.Session$AuthorizationRequest, com.facebook.Session$1)
+    {
+        com.facebook.Session $r0;
+        java.lang.String $r1;
+        com.facebook.SessionState $r2;
+        com.facebook.AccessToken $r3;
+        java.util.Date $r4;
+        boolean $z0;
+        com.facebook.Session$AuthorizationRequest $r5;
+        com.facebook.Session$1 $r6;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.facebook.SessionState;
+
+        $r3 := @parameter2: com.facebook.AccessToken;
+
+        $r4 := @parameter3: java.util.Date;
+
+        $z0 := @parameter4: boolean;
+
+        $r5 := @parameter5: com.facebook.Session$AuthorizationRequest;
+
+        $r6 := @parameter6: com.facebook.Session$1;
+
+        specialinvoke $r0.<com.facebook.Session: void <init>(java.lang.String,com.facebook.SessionState,com.facebook.AccessToken,java.util.Date,boolean,com.facebook.Session$AuthorizationRequest)>($r1, $r2, $r3, $r4, $z0, $r5);
+
+        return;
+    }
+
+    private void <init>(java.lang.String, com.facebook.SessionState, com.facebook.AccessToken, java.util.Date, boolean, com.facebook.Session$AuthorizationRequest, java.util.Set)
+    {
+        com.facebook.Session $r0;
+        java.lang.String $r1;
+        com.facebook.SessionState $r2;
+        com.facebook.AccessToken $r3;
+        java.util.Date $r4, $r7;
+        boolean $z0;
+        com.facebook.Session$AuthorizationRequest $r5;
+        java.util.Set $r6;
+        java.lang.Object $r8;
+        android.os.Handler $r9;
+        java.util.ArrayList $r10;
+        android.os.Looper $r11;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.facebook.SessionState;
+
+        $r3 := @parameter2: com.facebook.AccessToken;
+
+        $r4 := @parameter3: java.util.Date;
+
+        $z0 := @parameter4: boolean;
+
+        $r5 := @parameter5: com.facebook.Session$AuthorizationRequest;
+
+        $r6 := @parameter6: java.util.Set;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r7 = new java.util.Date;
+
+        specialinvoke $r7.<java.util.Date: void <init>(long)>(0L);
+
+        $r0.<com.facebook.Session: java.util.Date lastAttemptedTokenExtendDate> = $r7;
+
+        $r8 = new java.lang.Object;
+
+        specialinvoke $r8.<java.lang.Object: void <init>()>();
+
+        $r0.<com.facebook.Session: java.lang.Object lock> = $r8;
+
+        $r0.<com.facebook.Session: java.lang.String applicationId> = $r1;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r2;
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r3;
+
+        $r0.<com.facebook.Session: java.util.Date lastAttemptedTokenExtendDate> = $r4;
+
+        $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest> = $r5;
+
+        $r9 = new android.os.Handler;
+
+        $r11 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r9.<android.os.Handler: void <init>(android.os.Looper)>($r11);
+
+        $r0.<com.facebook.Session: android.os.Handler handler> = $r9;
+
+        $r0.<com.facebook.Session: com.facebook.Session$TokenRefreshRequest currentTokenRefreshRequest> = null;
+
+        $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy> = null;
+
+        $r10 = new java.util.ArrayList;
+
+        specialinvoke $r10.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.facebook.Session: java.util.List callbacks> = $r10;
+
+        return;
+    }
+
+    void <init>(java.lang.String, com.facebook.SessionState, com.facebook.AccessToken, java.util.Date, boolean, com.facebook.Session$AuthorizationRequest, java.util.Set, com.facebook.Session$1)
+    {
+        com.facebook.Session $r0;
+        java.lang.String $r1;
+        com.facebook.SessionState $r2;
+        com.facebook.AccessToken $r3;
+        java.util.Date $r4;
+        boolean $z0;
+        com.facebook.Session$AuthorizationRequest $r5;
+        java.util.Set $r6;
+        com.facebook.Session$1 $r7;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.facebook.SessionState;
+
+        $r3 := @parameter2: com.facebook.AccessToken;
+
+        $r4 := @parameter3: java.util.Date;
+
+        $z0 := @parameter4: boolean;
+
+        $r5 := @parameter5: com.facebook.Session$AuthorizationRequest;
+
+        $r6 := @parameter6: java.util.Set;
+
+        $r7 := @parameter7: com.facebook.Session$1;
+
+        specialinvoke $r0.<com.facebook.Session: void <init>(java.lang.String,com.facebook.SessionState,com.facebook.AccessToken,java.util.Date,boolean,com.facebook.Session$AuthorizationRequest,java.util.Set)>($r1, $r2, $r3, $r4, $z0, $r5, $r6);
+
+        return;
+    }
+
+    static void access$1100(com.facebook.Session, int, com.facebook.AuthorizationClient$Result)
+    {
+        com.facebook.Session $r0;
+        int $i0;
+        com.facebook.AuthorizationClient$Result $r1;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        $i0 := @parameter1: int;
+
+        $r1 := @parameter2: com.facebook.AuthorizationClient$Result;
+
+        specialinvoke $r0.<com.facebook.Session: void handleAuthorizationResult(int,com.facebook.AuthorizationClient$Result)>($i0, $r1);
+
+        return;
+    }
+
+    static java.util.List access$1200(com.facebook.Session)
+    {
+        com.facebook.Session $r0;
+        java.util.List r1;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        r1 = $r0.<com.facebook.Session: java.util.List callbacks>;
+
+        return r1;
+    }
+
+    static android.os.Handler access$1300(com.facebook.Session)
+    {
+        com.facebook.Session $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        r1 = $r0.<com.facebook.Session: android.os.Handler handler>;
+
+        return r1;
+    }
+
+    static void access$1400(android.os.Handler, java.lang.Runnable)
+    {
+        android.os.Handler $r0;
+        java.lang.Runnable $r1;
+
+        $r0 := @parameter0: android.os.Handler;
+
+        $r1 := @parameter1: java.lang.Runnable;
+
+        staticinvoke <com.facebook.Session: void runWithHandlerOrExecutor(android.os.Handler,java.lang.Runnable)>($r0, $r1);
+
+        return;
+    }
+
+    static android.content.Context access$1500()
+    {
+        android.content.Context r0;
+
+        r0 = <com.facebook.Session: android.content.Context staticContext>;
+
+        return r0;
+    }
+
+    static com.facebook.Session$TokenRefreshRequest access$1600(com.facebook.Session)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$TokenRefreshRequest r1;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        r1 = $r0.<com.facebook.Session: com.facebook.Session$TokenRefreshRequest currentTokenRefreshRequest>;
+
+        return r1;
+    }
+
+    static com.facebook.Session$TokenRefreshRequest access$1602(com.facebook.Session, com.facebook.Session$TokenRefreshRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$TokenRefreshRequest $r1;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        $r1 := @parameter1: com.facebook.Session$TokenRefreshRequest;
+
+        $r0.<com.facebook.Session: com.facebook.Session$TokenRefreshRequest currentTokenRefreshRequest> = $r1;
+
+        return $r1;
+    }
+
+    static com.facebook.Session$AutoPublishAsyncTask access$1802(com.facebook.Session, com.facebook.Session$AutoPublishAsyncTask)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$AutoPublishAsyncTask $r1;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        $r1 := @parameter1: com.facebook.Session$AutoPublishAsyncTask;
+
+        $r0.<com.facebook.Session: com.facebook.Session$AutoPublishAsyncTask autoPublishAsyncTask> = $r1;
+
+        return $r1;
+    }
+
+    static java.lang.Object access$200(com.facebook.Session)
+    {
+        com.facebook.Session $r0;
+        java.lang.Object r1;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+        return r1;
+    }
+
+    static com.facebook.AccessToken access$300(com.facebook.Session)
+    {
+        com.facebook.Session $r0;
+        com.facebook.AccessToken r1;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        r1 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+        return r1;
+    }
+
+    static com.facebook.AccessToken access$302(com.facebook.Session, com.facebook.AccessToken)
+    {
+        com.facebook.Session $r0;
+        com.facebook.AccessToken $r1;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        $r1 := @parameter1: com.facebook.AccessToken;
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r1;
+
+        return $r1;
+    }
+
+    static com.facebook.SessionState access$400(com.facebook.Session)
+    {
+        com.facebook.Session $r0;
+        com.facebook.SessionState r1;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        r1 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        return r1;
+    }
+
+    private static boolean areEqual(java.lang.Object, java.lang.Object)
+    {
+        java.lang.Object $r0, $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.Object;
+
+        $r1 := @parameter1: java.lang.Object;
+
+        if $r0 != null goto label2;
+
+        if $r1 != null goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+
+     label2:
+        $z0 = virtualinvoke $r0.<java.lang.Object: boolean equals(java.lang.Object)>($r1);
+
+        return $z0;
+    }
+
+    private void autoPublishAsync()
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$AutoPublishAsyncTask $r1, $r6, $r6_1, $r6_2, $r6_3;
+        java.lang.String $r2;
+        android.content.Context $r3;
+        java.lang.Void[] $r4;
+        java.lang.Throwable $r5;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r6 = null;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r1 = $r0.<com.facebook.Session: com.facebook.Session$AutoPublishAsyncTask autoPublishAsyncTask>;
+
+(1)     if $r1 != null goto label2;
+
+        $z0 = staticinvoke <com.facebook.Settings: boolean getShouldAutoPublishInstall()>();
+
+(2)     if $z0 == 0 goto label2;
+
+        $r2 = $r0.<com.facebook.Session: java.lang.String applicationId>;
+
+(3)     if $r2 == null goto label2;
+
+(4)     $r6_1 = new com.facebook.Session$AutoPublishAsyncTask;
+
+        $r3 = <com.facebook.Session: android.content.Context staticContext>;
+
+        specialinvoke $r6_1.<com.facebook.Session$AutoPublishAsyncTask: void <init>(com.facebook.Session,java.lang.String,android.content.Context)>($r0, $r2, $r3);
+
+(5)     $r0.<com.facebook.Session: com.facebook.Session$AutoPublishAsyncTask autoPublishAsyncTask> = $r6_1;
+
+     label2:
+        $r6_2 = Phi($r6 #1, $r6 #2, $r6 #3, $r6_1 #5);
+
+(6)     exitmonitor $r0;
+
+     label3:
+        if $r6_2 == null goto label7;
+
+        $r4 = newarray (java.lang.Void)[0];
+
+        virtualinvoke $r6_2.<com.facebook.Session$AutoPublishAsyncTask: android.os.AsyncTask execute(java.lang.Object[])>($r4);
+
+        return;
+
+     label4:
+        $r5 := @caughtexception;
+
+(7)     $r6_3 = Phi($r6 #0, $r6_1 #4, $r6_2 #6, $r6_3 #7);
+
+     label5:
+        exitmonitor $r0;
+
+     label6:
+        throw $r5;
+
+     label7:
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label5 to label6 with label4;
+    }
+
+    private void finishAuthorization(com.facebook.AccessToken, java.lang.Exception)
+    {
+        com.facebook.Session $r0;
+        com.facebook.AccessToken $r1;
+        java.lang.Exception $r2;
+        com.facebook.SessionState $r3, $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.AccessToken;
+
+        $r2 := @parameter1: java.lang.Exception;
+
+        $r3 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        if $r1 == null goto label2;
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r1;
+
+        specialinvoke $r0.<com.facebook.Session: void saveTokenToCache(com.facebook.AccessToken)>($r1);
+
+        $r4 = <com.facebook.SessionState: com.facebook.SessionState OPENED>;
+
+(0)     $r0.<com.facebook.Session: com.facebook.SessionState state> = $r4;
+
+     label1:
+        $r4_1 = Phi($r4 #0, $r4 #1, $r4_3 #2);
+
+        $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest> = null;
+
+        $r4_2 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        virtualinvoke $r0.<com.facebook.Session: void postStateChange(com.facebook.SessionState,com.facebook.SessionState,java.lang.Exception)>($r3, $r4_2, $r2);
+
+        return;
+
+     label2:
+(1)     if $r2 == null goto label1;
+
+        $r4_3 = <com.facebook.SessionState: com.facebook.SessionState CLOSED_LOGIN_FAILED>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r4_3;
+
+(2)     goto label1;
+    }
+
+    private void finishReauthorization(com.facebook.AccessToken, java.lang.Exception)
+    {
+        com.facebook.Session $r0;
+        com.facebook.AccessToken $r1;
+        java.lang.Exception $r2;
+        com.facebook.SessionState $r3, $r4, $r4_1, $r4_2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.AccessToken;
+
+        $r2 := @parameter1: java.lang.Exception;
+
+        $r3 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+(0)     if $r1 == null goto label1;
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r1;
+
+        specialinvoke $r0.<com.facebook.Session: void saveTokenToCache(com.facebook.AccessToken)>($r1);
+
+        $r4 = <com.facebook.SessionState: com.facebook.SessionState OPENED_TOKEN_UPDATED>;
+
+(1)     $r0.<com.facebook.Session: com.facebook.SessionState state> = $r4;
+
+     label1:
+        $r4_1 = Phi($r4 #0, $r4 #1);
+
+        $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest> = null;
+
+        $r4_2 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        virtualinvoke $r0.<com.facebook.Session: void postStateChange(com.facebook.SessionState,com.facebook.SessionState,java.lang.Exception)>($r3, $r4_2, $r2);
+
+        return;
+    }
+
+    public static final com.facebook.Session getActiveSession()
+    {
+        java.lang.Object $r0;
+        java.lang.Throwable $r1;
+        com.facebook.Session r2;
+
+        $r0 = <com.facebook.Session: java.lang.Object STATIC_LOCK>;
+
+        entermonitor $r0;
+
+     label1:
+        r2 = <com.facebook.Session: com.facebook.Session activeSession>;
+
+        exitmonitor $r0;
+
+     label2:
+        return r2;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+     label4:
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    private com.facebook.AppEventsLogger getAppEventsLogger()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        android.content.Context $r2;
+        java.lang.String $r3;
+        java.lang.Throwable $r4;
+        com.facebook.AppEventsLogger $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r1;
+
+     label1:
+        $r5 = $r0.<com.facebook.Session: com.facebook.AppEventsLogger appEventsLogger>;
+
+(1)     if $r5 != null goto label2;
+
+        $r2 = <com.facebook.Session: android.content.Context staticContext>;
+
+        $r3 = $r0.<com.facebook.Session: java.lang.String applicationId>;
+
+(2)     $r5_1 = staticinvoke <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger newLogger(android.content.Context,java.lang.String)>($r2, $r3);
+
+(3)     $r0.<com.facebook.Session: com.facebook.AppEventsLogger appEventsLogger> = $r5_1;
+
+     label2:
+        $r5_2 = Phi($r5 #1, $r5_1 #3);
+
+(4)     $r5_3 = $r0.<com.facebook.Session: com.facebook.AppEventsLogger appEventsLogger>;
+
+        exitmonitor $r1;
+
+     label3:
+        return $r5_3;
+
+     label4:
+        $r4 := @caughtexception;
+
+(5)     $r5_4 = Phi($r5 #0, $r5_1 #2, $r5_3 #4, $r5_4 #5);
+
+        exitmonitor $r1;
+
+     label5:
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label4 to label5 with label4;
+    }
+
+    private android.content.Intent getLoginActivityIntent(com.facebook.Session$AuthorizationRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$AuthorizationRequest $r1;
+        android.content.Intent $r2;
+        android.content.Context $r3;
+        com.facebook.SessionLoginBehavior $r4;
+        java.lang.String $r5;
+        com.facebook.AuthorizationClient$AuthorizationRequest $r6;
+        android.os.Bundle $r7;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$AuthorizationRequest;
+
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>()>();
+
+        $r3 = staticinvoke <com.facebook.Session: android.content.Context getStaticContext()>();
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent setClass(android.content.Context,java.lang.Class)>($r3, class "com/facebook/LoginActivity");
+
+        $r4 = virtualinvoke $r1.<com.facebook.Session$AuthorizationRequest: com.facebook.SessionLoginBehavior getLoginBehavior()>();
+
+        $r5 = virtualinvoke $r4.<com.facebook.SessionLoginBehavior: java.lang.String toString()>();
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent setAction(java.lang.String)>($r5);
+
+        $r6 = virtualinvoke $r1.<com.facebook.Session$AuthorizationRequest: com.facebook.AuthorizationClient$AuthorizationRequest getAuthorizationClientRequest()>();
+
+        $r7 = staticinvoke <com.facebook.LoginActivity: android.os.Bundle populateIntentExtras(com.facebook.AuthorizationClient$AuthorizationRequest)>($r6);
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent putExtras(android.os.Bundle)>($r7);
+
+        return $r2;
+    }
+
+    static android.content.Context getStaticContext()
+    {
+        android.content.Context r0;
+
+        r0 = <com.facebook.Session: android.content.Context staticContext>;
+
+        return r0;
+    }
+
+    private void handleAuthorizationResult(int, com.facebook.AuthorizationClient$Result)
+    {
+        com.facebook.Session $r0;
+        int $i0;
+        com.facebook.AuthorizationClient$Result $r1;
+        com.facebook.AuthorizationClient$Result$Code $r2, $r8, $r2_1, $r2_2;
+        java.util.Map $r3;
+        com.facebook.FacebookAuthorizationException $r4;
+        com.facebook.FacebookOperationCanceledException $r5;
+        com.facebook.AccessToken $r6, $r6_1, $r6_2;
+        com.facebook.FacebookException $r7, $r7_1, $r7_2, $r7_3;
+        java.lang.String $r9, $r9_1, $r9_2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: com.facebook.AuthorizationClient$Result;
+
+        $r6 = null;
+
+        $r7 = null;
+
+        if $i0 != -1 goto label3;
+
+        $r8 = $r1.<com.facebook.AuthorizationClient$Result: com.facebook.AuthorizationClient$Result$Code code>;
+
+        $r2 = <com.facebook.AuthorizationClient$Result$Code: com.facebook.AuthorizationClient$Result$Code SUCCESS>;
+
+        if $r8 != $r2 goto label2;
+
+(0)     $r6_1 = $r1.<com.facebook.AuthorizationClient$Result: com.facebook.AccessToken token>;
+
+     label1:
+        $r9_1 = Phi($r9 #0, $r9 #1, $r9 #2, $r9_2 #3);
+
+        $r6_2 = Phi($r6_1 #0, $r6 #1, $r6 #2, $r6 #3);
+
+        $r7_2 = Phi($r7 #0, $r7_1 #1, $r7 #2, $r7_3 #3);
+
+        $r2_1 = Phi($r2 #0, $r2 #1, $r2 #2, $r2 #3);
+
+        $r2_2 = $r1.<com.facebook.AuthorizationClient$Result: com.facebook.AuthorizationClient$Result$Code code>;
+
+        $r3 = $r1.<com.facebook.AuthorizationClient$Result: java.util.Map loggingExtras>;
+
+        specialinvoke $r0.<com.facebook.Session: void logAuthorizationComplete(com.facebook.AuthorizationClient$Result$Code,java.util.Map,java.lang.Exception)>($r2_2, $r3, $r7_2);
+
+        $r0.<com.facebook.Session: com.facebook.AuthorizationClient authorizationClient> = null;
+
+        virtualinvoke $r0.<com.facebook.Session: void finishAuthOrReauth(com.facebook.AccessToken,java.lang.Exception)>($r6_2, $r7_2);
+
+        return;
+
+     label2:
+        $r4 = new com.facebook.FacebookAuthorizationException;
+
+        $r7_1 = $r4;
+
+        $r9 = $r1.<com.facebook.AuthorizationClient$Result: java.lang.String errorMessage>;
+
+        specialinvoke $r4.<com.facebook.FacebookAuthorizationException: void <init>(java.lang.String)>($r9);
+
+(1)     goto label1;
+
+     label3:
+(2)     if $i0 != 0 goto label1;
+
+        $r5 = new com.facebook.FacebookOperationCanceledException;
+
+        $r7_3 = $r5;
+
+        $r9_2 = $r1.<com.facebook.AuthorizationClient$Result: java.lang.String errorMessage>;
+
+        specialinvoke $r5.<com.facebook.FacebookOperationCanceledException: void <init>(java.lang.String)>($r9_2);
+
+(3)     goto label1;
+    }
+
+    static com.facebook.Session$PermissionsPair handlePermissionResponse(com.facebook.Response)
+    {
+        com.facebook.Response $r0;
+        java.util.ArrayList $r1, $r2;
+        com.facebook.Session$PermissionsPair $r3;
+        com.facebook.FacebookRequestError $r4;
+        com.facebook.model.GraphObject $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        com.facebook.model.GraphMultiResult $r6;
+        com.facebook.model.GraphObjectList $r7;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6;
+        java.lang.Object $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8, $r8_9, $r8_10, $r8_11;
+        java.util.Iterator $r9, $r9_1, $r9_2;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8;
+        java.lang.String $r10, $r11, $r10_1, $r10_2, $r10_3, $r10_4;
+        java.util.Map $r12;
+        java.util.Set $r13;
+        java.util.Map$Entry $r14;
+        java.lang.Integer $r15;
+
+        $r0 := @parameter0: com.facebook.Response;
+
+        $r4 = virtualinvoke $r0.<com.facebook.Response: com.facebook.FacebookRequestError getError()>();
+
+        if $r4 == null goto label1;
+
+        return null;
+
+     label1:
+        $r5 = virtualinvoke $r0.<com.facebook.Response: com.facebook.model.GraphObject getGraphObjectAs(java.lang.Class)>(class "com/facebook/model/GraphMultiResult");
+
+        $r6 = (com.facebook.model.GraphMultiResult) $r5;
+
+(0)     if $r6 == null goto label7;
+
+        $r7 = interfaceinvoke $r6.<com.facebook.model.GraphMultiResult: com.facebook.model.GraphObjectList getData()>();
+
+(1)     if $r7 == null goto label7;
+
+        $i0 = interfaceinvoke $r7.<com.facebook.model.GraphObjectList: int size()>();
+
+(2)     if $i0 == 0 goto label7;
+
+        $r1 = new java.util.ArrayList;
+
+        $i0_1 = interfaceinvoke $r7.<com.facebook.model.GraphObjectList: int size()>();
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>(int)>($i0_1);
+
+        $r2 = new java.util.ArrayList;
+
+        $i0_2 = interfaceinvoke $r7.<com.facebook.model.GraphObjectList: int size()>();
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>(int)>($i0_2);
+
+        $r8 = interfaceinvoke $r7.<com.facebook.model.GraphObjectList: java.lang.Object get(int)>(0);
+
+        $r5_1 = (com.facebook.model.GraphObject) $r8;
+
+        $r8_1 = interfaceinvoke $r5_1.<com.facebook.model.GraphObject: java.lang.Object getProperty(java.lang.String)>("permission");
+
+        if $r8_1 == null goto label4;
+
+(3)     $r9 = interfaceinvoke $r7.<com.facebook.model.GraphObjectList: java.util.Iterator iterator()>();
+
+     label2:
+        $r10 = Phi($r10 #3, $r10_1 #5, $r10_1 #6, $r10_1 #7, $r10_1 #8);
+
+        $r5_2 = Phi($r5_1 #3, $r5_3 #5, $r5_3 #6, $r5_3 #7, $r5_3 #8);
+
+        $r8_2 = Phi($r8_1 #3, $r8_4 #5, $r8_5 #6, $r8_5 #7, $r8_5 #8);
+
+        $z0 = Phi($z0 #3, $z0_2 #5, $z0_3 #6, $z0_4 #7, $z0_4 #8);
+
+        $z0_1 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+(4)     if $z0_1 == 0 goto label6;
+
+        $r8_3 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5_3 = (com.facebook.model.GraphObject) $r8_3;
+
+        $r8_4 = interfaceinvoke $r5_3.<com.facebook.model.GraphObject: java.lang.Object getProperty(java.lang.String)>("permission");
+
+        $r10_1 = (java.lang.String) $r8_4;
+
+        $z0_2 = virtualinvoke $r10_1.<java.lang.String: boolean equals(java.lang.Object)>("installed");
+
+(5)     if $z0_2 != 0 goto label2;
+
+        $r8_5 = interfaceinvoke $r5_3.<com.facebook.model.GraphObject: java.lang.Object getProperty(java.lang.String)>("status");
+
+        $r11 = (java.lang.String) $r8_5;
+
+        $z0_3 = virtualinvoke $r11.<java.lang.String: boolean equals(java.lang.Object)>("granted");
+
+        if $z0_3 == 0 goto label3;
+
+        interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r10_1);
+
+(6)     goto label2;
+
+     label3:
+        $z0_4 = virtualinvoke $r11.<java.lang.String: boolean equals(java.lang.Object)>("declined");
+
+(7)     if $z0_4 == 0 goto label2;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r10_1);
+
+(8)     goto label2;
+
+     label4:
+        $r12 = interfaceinvoke $r5_1.<com.facebook.model.GraphObject: java.util.Map asMap()>();
+
+        $r13 = interfaceinvoke $r12.<java.util.Map: java.util.Set entrySet()>();
+
+(9)     $r9_1 = interfaceinvoke $r13.<java.util.Set: java.util.Iterator iterator()>();
+
+     label5:
+        $r10_2 = Phi($r10 #9, $r10_3 #11, $r10_3 #12, $r10_3 #13);
+
+        $i0_3 = Phi($i0_2 #9, $i0_3 #11, $i0_4 #12, $i0_4 #13);
+
+        $r8_6 = Phi($r8_1 #9, $r8_8 #11, $r8_9 #12, $r8_10 #13);
+
+        $z0_5 = Phi($z0 #9, $z0_7 #11, $z0_7 #12, $z0_7 #13);
+
+        $z0_6 = interfaceinvoke $r9_1.<java.util.Iterator: boolean hasNext()>();
+
+(10)    if $z0_6 == 0 goto label6;
+
+        $r8_7 = interfaceinvoke $r9_1.<java.util.Iterator: java.lang.Object next()>();
+
+        $r14 = (java.util.Map$Entry) $r8_7;
+
+        $r8_8 = interfaceinvoke $r14.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r10_3 = (java.lang.String) $r8_8;
+
+        $z0_7 = virtualinvoke $r10_3.<java.lang.String: boolean equals(java.lang.Object)>("installed");
+
+(11)    if $z0_7 != 0 goto label5;
+
+        $r8_9 = interfaceinvoke $r14.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r15 = (java.lang.Integer) $r8_9;
+
+        $i0_4 = virtualinvoke $r15.<java.lang.Integer: int intValue()>();
+
+(12)    if $i0_4 != 1 goto label5;
+
+        $r8_10 = interfaceinvoke $r14.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r8_10);
+
+(13)    goto label5;
+
+     label6:
+        $r10_4 = Phi($r10 #4, $r10_2 #10);
+
+        $i0_5 = Phi($i0_2 #4, $i0_3 #10);
+
+        $r9_2 = Phi($r9 #4, $r9_1 #10);
+
+        $r5_4 = Phi($r5_2 #4, $r5_1 #10);
+
+        $r8_11 = Phi($r8_2 #4, $r8_6 #10);
+
+        $z0_8 = Phi($z0_1 #4, $z0_6 #10);
+
+        $r3 = new com.facebook.Session$PermissionsPair;
+
+        specialinvoke $r3.<com.facebook.Session$PermissionsPair: void <init>(java.util.List,java.util.List)>($r1, $r2);
+
+        return $r3;
+
+     label7:
+        $i0_6 = Phi($i0 #0, $i0 #1, $i0 #2);
+
+        return null;
+    }
+
+    static void initializeStaticContext(android.content.Context)
+    {
+        android.content.Context $r0, $r1, $r2, $r1_1, $r2_1, $r2_2, $r1_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+(0)     if $r0 == null goto label3;
+
+        $r1 = <com.facebook.Session: android.content.Context staticContext>;
+
+(1)     if $r1 != null goto label3;
+
+        $r1_1 = virtualinvoke $r0.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r2 = $r1_1;
+
+(2)     if $r1_1 == null goto label2;
+
+     label1:
+        $r2_1 = Phi($r2 #2, $r2_2 #3);
+
+        <com.facebook.Session: android.content.Context staticContext> = $r2_1;
+
+        return;
+
+     label2:
+        $r2_2 = $r0;
+
+(3)     goto label1;
+
+     label3:
+        $r1_2 = Phi($r1 #0, $r1 #1);
+
+        return;
+    }
+
+    public static boolean isPublishPermission(java.lang.String)
+    {
+        java.lang.String $r0;
+        java.util.Set $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+
+        $r0 := @parameter0: java.lang.String;
+
+(0)     if $r0 == null goto label2;
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean startsWith(java.lang.String)>("publish");
+
+(1)     if $z0 != 0 goto label1;
+
+        $z0_1 = virtualinvoke $r0.<java.lang.String: boolean startsWith(java.lang.String)>("manage");
+
+(2)     if $z0_1 != 0 goto label1;
+
+        $r1 = <com.facebook.Session: java.util.Set OTHER_PUBLISH_PERMISSIONS>;
+
+        $z0_2 = interfaceinvoke $r1.<java.util.Set: boolean contains(java.lang.Object)>($r0);
+
+(3)     if $z0_2 == 0 goto label2;
+
+     label1:
+        $z0_3 = Phi($z0 #1, $z0_1 #2, $z0_2 #3);
+
+        return 1;
+
+     label2:
+        $z0_4 = Phi($z0 #0, $z0_2 #3);
+
+        return 0;
+    }
+
+    private void logAuthorizationComplete(com.facebook.AuthorizationClient$Result$Code, java.util.Map, java.lang.Exception)
+    {
+        java.util.Map $r0, $r12, $r12_1, $r12_2, $r12_3;
+        java.lang.Exception $r1;
+        org.json.JSONException $r2;
+        com.facebook.Session $r3, $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        com.facebook.AuthorizationClient$Result$Code $r4, $r4_1, $r4_2;
+        com.facebook.Session$AuthorizationRequest $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        android.os.Bundle $r7, $r8, $r8_1, $r7_1, $r7_2, $r8_2;
+        java.lang.String $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r9_11, $r9_12;
+        long $l0;
+        com.facebook.AppEventsLogger $r10;
+        org.json.JSONObject $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.util.Set $r13;
+        java.util.Iterator $r14;
+        java.lang.Object $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6;
+        java.util.Map$Entry $r16;
+
+        $r3 := @this: com.facebook.Session;
+
+        $r4 := @parameter0: com.facebook.AuthorizationClient$Result$Code;
+
+        $r0 := @parameter1: java.util.Map;
+
+        $r1 := @parameter2: java.lang.Exception;
+
+        $r5 = $r3.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        $r6 = $r3;
+
+        if $r5 != null goto label02;
+
+        $r7 = staticinvoke <com.facebook.AuthorizationClient: android.os.Bundle newAuthorizationLoggingBundle(java.lang.String)>("");
+
+        $r8 = $r7;
+
+        $r4_1 = <com.facebook.AuthorizationClient$Result$Code: com.facebook.AuthorizationClient$Result$Code ERROR>;
+
+        $r9 = virtualinvoke $r4_1.<com.facebook.AuthorizationClient$Result$Code: java.lang.String getLoggingValue()>();
+
+        virtualinvoke $r7.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("2_result", $r9);
+
+(0)     virtualinvoke $r7.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("5_error_message", "Unexpected call to logAuthorizationComplete with null pendingAuthorizationRequest.");
+
+     label01:
+        $r12 = Phi($r12 #0, $r12_3 #21, $r12_3 #22);
+
+        $r5_1 = Phi($r5 #0, $r5_5 #21, $r5_5 #22);
+
+        $z0 = Phi($z0 #0, $z0_5 #21, $z0_5 #22);
+
+        $r9_1 = Phi($r9 #0, $r9_11 #21, $r9_12 #22);
+
+        $r8_1 = Phi($r8 #0, $r8_2 #21, $r8_2 #22);
+
+        $r6_1 = Phi($r6 #0, $r6_4 #21, $r6_4 #22);
+
+        $r15 = Phi($r15 #0, $r15_6 #21, $r15_6 #22);
+
+        $r7_1 = Phi($r7 #0, $r7_2 #21, $r7_2 #22);
+
+        $r4_2 = Phi($r4_1 #0, $r4 #21, $r4 #22);
+
+        $r11 = Phi($r11 #0, $r11_7 #21, $r11_7 #22);
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        virtualinvoke $r8_1.<android.os.Bundle: void putLong(java.lang.String,long)>("1_timestamp_ms", $l0);
+
+        $r10 = specialinvoke $r6_1.<com.facebook.Session: com.facebook.AppEventsLogger getAppEventsLogger()>();
+
+        virtualinvoke $r10.<com.facebook.AppEventsLogger: void logSdkEvent(java.lang.String,java.lang.Double,android.os.Bundle)>("fb_mobile_login_complete", null, $r8_1);
+
+        return;
+
+     label02:
+        $r5_2 = $r3.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        $r9_2 = virtualinvoke $r5_2.<com.facebook.Session$AuthorizationRequest: java.lang.String getAuthId()>();
+
+        $r7_2 = staticinvoke <com.facebook.AuthorizationClient: android.os.Bundle newAuthorizationLoggingBundle(java.lang.String)>($r9_2);
+
+        $r8_2 = $r7_2;
+
+(1)     if $r4 == null goto label03;
+
+        $r9_3 = virtualinvoke $r4.<com.facebook.AuthorizationClient$Result$Code: java.lang.String getLoggingValue()>();
+
+(2)     virtualinvoke $r7_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("2_result", $r9_3);
+
+     label03:
+        $r9_4 = Phi($r9_2 #1, $r9_3 #2);
+
+(3)     if $r1 == null goto label04;
+
+        $r9_5 = virtualinvoke $r1.<java.lang.Exception: java.lang.String getMessage()>();
+
+(4)     if $r9_5 == null goto label04;
+
+        $r9_6 = virtualinvoke $r1.<java.lang.Exception: java.lang.String getMessage()>();
+
+(5)     virtualinvoke $r7_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("5_error_message", $r9_6);
+
+     label04:
+        $r9_7 = Phi($r9_4 #3, $r9_5 #4, $r9_6 #5);
+
+        $r11_1 = null;
+
+        $r5_3 = $r3.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        $r6_2 = $r3;
+
+        $r12_1 = staticinvoke <com.facebook.Session$AuthorizationRequest: java.util.Map access$500(com.facebook.Session$AuthorizationRequest)>($r5_3);
+
+        $z0_1 = interfaceinvoke $r12_1.<java.util.Map: boolean isEmpty()>();
+
+(6)     if $z0_1 != 0 goto label05;
+
+        $r11_2 = new org.json.JSONObject;
+
+        $r5_4 = $r3.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        $r6_3 = $r3;
+
+        $r12_2 = staticinvoke <com.facebook.Session$AuthorizationRequest: java.util.Map access$500(com.facebook.Session$AuthorizationRequest)>($r5_4);
+
+(7)     specialinvoke $r11_2.<org.json.JSONObject: void <init>(java.util.Map)>($r12_2);
+
+     label05:
+        $r12_3 = Phi($r12_1 #6, $r12_2 #7);
+
+        $r5_5 = Phi($r5_3 #6, $r5_4 #7);
+
+        $r6_4 = Phi($r6_2 #6, $r6_3 #7);
+
+        $r11_3 = Phi($r11_1 #6, $r11_2 #7);
+
+(8)     if $r0 == null goto label16;
+
+(9)     if $r11_3 != null goto label06;
+
+        $r11_4 = new org.json.JSONObject;
+
+(10)    specialinvoke $r11_4.<org.json.JSONObject: void <init>()>();
+
+     label06:
+        $r11_5 = Phi($r11_3 #9, $r11_4 #10);
+
+(11)    $r13 = interfaceinvoke $r0.<java.util.Map: java.util.Set entrySet()>();
+
+(12)    $r14 = interfaceinvoke $r13.<java.util.Set: java.util.Iterator iterator()>();
+
+     label07:
+        $z0_2 = Phi($z0_1 #12, $z0_3 #19);
+
+        $r9_8 = Phi($r9_7 #12, $r9_9 #19);
+
+        $r15_1 = Phi($r15 #12, $r15_4 #19);
+
+(13)    $z0_3 = interfaceinvoke $r14.<java.util.Iterator: boolean hasNext()>();
+
+     label08:
+(14)    if $z0_3 == 0 goto label16;
+
+     label09:
+(15)    $r15_2 = interfaceinvoke $r14.<java.util.Iterator: java.lang.Object next()>();
+
+     label10:
+        $r16 = (java.util.Map$Entry) $r15_2;
+
+     label11:
+(16)    $r15_3 = interfaceinvoke $r16.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+     label12:
+(17)    $r9_9 = (java.lang.String) $r15_3;
+
+     label13:
+(18)    $r15_4 = interfaceinvoke $r16.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        virtualinvoke $r11_5.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>($r9_9, $r15_4);
+
+     label14:
+(19)    goto label07;
+
+     label15:
+        $r2 := @caughtexception;
+
+        $z0_4 = Phi($z0_1 #9, $z0_3 #13);
+
+        $r9_10 = Phi($r9_7 #9, $r9_8 #13, $r9_9 #17);
+
+        $r15_5 = Phi($r15 #9, $r15_1 #13, $r15_2 #15, $r15_3 #16, $r15_4 #18);
+
+(20)    $r11_6 = Phi($r11_3 #9, $r11_4 #10, $r11_5 #11);
+
+     label16:
+        $z0_5 = Phi($z0_1 #8, $z0_3 #14, $z0_4 #20);
+
+        $r9_11 = Phi($r9_7 #8, $r9_8 #14, $r9_10 #20);
+
+        $r15_6 = Phi($r15 #8, $r15_1 #14, $r15_5 #20);
+
+        $r11_7 = Phi($r11_3 #8, $r11_5 #14, $r11_6 #20);
+
+(21)    if $r11_7 == null goto label01;
+
+        $r9_12 = virtualinvoke $r11_7.<org.json.JSONObject: java.lang.String toString()>();
+
+        virtualinvoke $r7_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("6_extras", $r9_12);
+
+(22)    goto label01;
+
+        catch org.json.JSONException from label06 to label08 with label15;
+        catch org.json.JSONException from label09 to label10 with label15;
+        catch org.json.JSONException from label11 to label12 with label15;
+        catch org.json.JSONException from label13 to label14 with label15;
+    }
+
+    private void logAuthorizationStart()
+    {
+        com.facebook.Session $r0;
+        org.json.JSONObject $r1;
+        org.json.JSONException $r2;
+        com.facebook.Session$AuthorizationRequest $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6;
+        android.os.Bundle $r5;
+        long $l0;
+        com.facebook.SessionLoginBehavior $r6;
+        int $i1;
+        boolean $z0;
+        java.util.List $r7;
+        com.facebook.SessionDefaultAudience $r8;
+        com.facebook.AppEventsLogger $r9;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r3 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        $r4 = virtualinvoke $r3.<com.facebook.Session$AuthorizationRequest: java.lang.String getAuthId()>();
+
+        $r5 = staticinvoke <com.facebook.AuthorizationClient: android.os.Bundle newAuthorizationLoggingBundle(java.lang.String)>($r4);
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        virtualinvoke $r5.<android.os.Bundle: void putLong(java.lang.String,long)>("1_timestamp_ms", $l0);
+
+(0)     $r1 = new org.json.JSONObject;
+
+     label01:
+        specialinvoke $r1.<org.json.JSONObject: void <init>()>();
+
+     label02:
+(1)     $r3_1 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+     label03:
+        $r6 = staticinvoke <com.facebook.Session$AuthorizationRequest: com.facebook.SessionLoginBehavior access$700(com.facebook.Session$AuthorizationRequest)>($r3_1);
+
+(2)     $r4_1 = virtualinvoke $r6.<com.facebook.SessionLoginBehavior: java.lang.String toString()>();
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("login_behavior", $r4_1);
+
+     label04:
+(3)     $r3_2 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+     label05:
+        $i1 = staticinvoke <com.facebook.Session$AuthorizationRequest: int access$800(com.facebook.Session$AuthorizationRequest)>($r3_2);
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("request_code", $i1);
+
+     label06:
+(4)     $r3_3 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+     label07:
+        $z0 = staticinvoke <com.facebook.Session$AuthorizationRequest: boolean access$600(com.facebook.Session$AuthorizationRequest)>($r3_3);
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,boolean)>("is_legacy", $z0);
+
+     label08:
+(5)     $r3_4 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+     label09:
+        $r7 = staticinvoke <com.facebook.Session$AuthorizationRequest: java.util.List access$900(com.facebook.Session$AuthorizationRequest)>($r3_4);
+
+(6)     $r4_2 = staticinvoke <android.text.TextUtils: java.lang.String join(java.lang.CharSequence,java.lang.Iterable)>(",", $r7);
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("permissions", $r4_2);
+
+     label10:
+(7)     $r3_5 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+     label11:
+        $r8 = staticinvoke <com.facebook.Session$AuthorizationRequest: com.facebook.SessionDefaultAudience access$1000(com.facebook.Session$AuthorizationRequest)>($r3_5);
+
+(8)     $r4_3 = virtualinvoke $r8.<com.facebook.SessionDefaultAudience: java.lang.String toString()>();
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("default_audience", $r4_3);
+
+(9)     $r4_4 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String toString()>();
+
+(10)    virtualinvoke $r5.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("6_extras", $r4_4);
+
+     label12:
+        $r3_6 = Phi($r3_5 #10, $r3_7 #11);
+
+        $r4_5 = Phi($r4_4 #10, $r4_6 #11);
+
+        $r9 = specialinvoke $r0.<com.facebook.Session: com.facebook.AppEventsLogger getAppEventsLogger()>();
+
+        virtualinvoke $r9.<com.facebook.AppEventsLogger: void logSdkEvent(java.lang.String,java.lang.Double,android.os.Bundle)>("fb_mobile_login_start", null, $r5);
+
+        return;
+
+     label13:
+        $r2 := @caughtexception;
+
+        $r3_7 = Phi($r3 #0, $r3_1 #1, $r3_2 #3, $r3_3 #4, $r3_4 #5, $r3_5 #7);
+
+        $r4_6 = Phi($r4 #0, $r4_1 #2, $r4_2 #6, $r4_3 #8, $r4_4 #9);
+
+(11)    goto label12;
+
+        catch org.json.JSONException from label01 to label02 with label13;
+        catch org.json.JSONException from label03 to label04 with label13;
+        catch org.json.JSONException from label05 to label06 with label13;
+        catch org.json.JSONException from label07 to label08 with label13;
+        catch org.json.JSONException from label09 to label10 with label13;
+        catch org.json.JSONException from label11 to label12 with label13;
+    }
+
+    private void open(com.facebook.Session$OpenRequest, com.facebook.internal.SessionAuthorizationType)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$OpenRequest $r1;
+        com.facebook.internal.SessionAuthorizationType $r2;
+        java.lang.Object $r3;
+        int[] $r4;
+        java.lang.Throwable $r5;
+        java.lang.IllegalArgumentException $r6;
+        com.facebook.Session$AuthorizationRequest $r7, $r7_1, $r7_2, $r7_3;
+        com.facebook.SessionState $r8, $r9, $r8_1, $r9_1, $r9_2, $r9_3, $r8_2, $r9_4, $r9_5, $r9_6, $r8_3;
+        java.lang.UnsupportedOperationException $r10, $r10_1, $r10_2;
+        int $i0, $i0_1, $i0_2;
+        com.facebook.Session$StatusCallback $r11;
+        java.util.List $r12, $r13, $r12_1, $r12_2, $r12_3, $r12_4;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$OpenRequest;
+
+        $r2 := @parameter1: com.facebook.internal.SessionAuthorizationType;
+
+        specialinvoke $r0.<com.facebook.Session: void validatePermissions(com.facebook.Session$AuthorizationRequest,com.facebook.internal.SessionAuthorizationType)>($r1, $r2);
+
+        specialinvoke $r0.<com.facebook.Session: void validateLoginBehavior(com.facebook.Session$AuthorizationRequest)>($r1);
+
+        $r3 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r3;
+
+     label01:
+        $r7 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        if $r7 == null goto label03;
+
+        $r8 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r9 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r10 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r10.<java.lang.UnsupportedOperationException: void <init>(java.lang.String)>("Session: an attempt was made to open a session that has a pending request.");
+
+        virtualinvoke $r0.<com.facebook.Session: void postStateChange(com.facebook.SessionState,com.facebook.SessionState,java.lang.Exception)>($r8, $r9, $r10);
+
+        exitmonitor $r3;
+
+     label02:
+        return;
+
+     label03:
+(1)     $r8_1 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r4 = <com.facebook.Session$5: int[] $SwitchMap$com$facebook$SessionState>;
+
+(2)     $r9_1 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $i0 = virtualinvoke $r9_1.<com.facebook.SessionState: int ordinal()>();
+
+(3)     $i0_1 = $r4[$i0];
+
+        lookupswitch($i0_1)
+        {
+            case 1: goto label08;
+            case 2: goto label05;
+            case 3: goto label13;
+            default: goto label04;
+        };
+
+     label04:
+        goto label05;
+
+     label05:
+(4)     $r10_1 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r10_1.<java.lang.UnsupportedOperationException: void <init>(java.lang.String)>("Session: an attempt was made to open an already opened session.");
+
+        throw $r10_1;
+
+     label06:
+        $r5 := @caughtexception;
+
+        $z0_4 = Phi($z0 #0, $z0_4 #5, $z0_1 #11, $z0_2 #14, $z0_3 #17);
+
+        $r7_3 = Phi($r7 #0, $r7_3 #5, $r7_1 #8, $r7_2 #17);
+
+        $r9_6 = Phi($r9 #0, $r9_1 #2, $r9_6 #5, $r9_2 #6, $r9_3 #8, $r9_4 #18, $r9_5 #20);
+
+        $r12_4 = Phi($r12 #0, $r12_4 #5, $r12_1 #10, $r12_2 #13, $r12_3 #17);
+
+        $r10_2 = Phi($r10 #0, $r10_1 #4, $r10_2 #5);
+
+        $i0_2 = Phi($i0 #0, $i0_1 #3, $i0_2 #5);
+
+(5)     $r8_3 = Phi($r8 #0, $r8_1 #1, $r8_3 #5);
+
+        exitmonitor $r3;
+
+     label07:
+        throw $r5;
+
+     label08:
+(6)     $r9_2 = <com.facebook.SessionState: com.facebook.SessionState OPENING>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r9_2;
+
+        if $r1 != null goto label09;
+
+        $r6 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("openRequest cannot be null when opening a new Session");
+
+        throw $r6;
+
+     label09:
+(7)     $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest> = $r1;
+
+     label10:
+        $z0 = Phi($z0 #7, $z0_3 #19, $z0_3 #21);
+
+        $r7_1 = Phi($r7 #7, $r7_2 #19, $r7_2 #21);
+
+        $r9_3 = Phi($r9_2 #7, $r9_4 #19, $r9_5 #21);
+
+        $r12 = Phi($r12 #7, $r12_3 #19, $r12_3 #21);
+
+(8)     if $r1 == null goto label11;
+
+        $r11 = virtualinvoke $r1.<com.facebook.Session$OpenRequest: com.facebook.Session$StatusCallback getCallback()>();
+
+        virtualinvoke $r0.<com.facebook.Session: void addCallback(com.facebook.Session$StatusCallback)>($r11);
+
+     label11:
+        virtualinvoke $r0.<com.facebook.Session: void postStateChange(com.facebook.SessionState,com.facebook.SessionState,java.lang.Exception)>($r8_1, $r9_3, null);
+
+        exitmonitor $r3;
+
+     label12:
+        $r8_2 = <com.facebook.SessionState: com.facebook.SessionState OPENING>;
+
+        if $r9_3 != $r8_2 goto label18;
+
+        virtualinvoke $r0.<com.facebook.Session: void authorize(com.facebook.Session$AuthorizationRequest)>($r1);
+
+        return;
+
+     label13:
+(9)     if $r1 == null goto label15;
+
+     label14:
+(10)    $r12_1 = virtualinvoke $r1.<com.facebook.Session$OpenRequest: java.util.List getPermissions()>();
+
+(11)    $z0_1 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.util.Collection)>($r12_1);
+
+(12)    if $z0_1 != 0 goto label15;
+
+(13)    $r12_2 = virtualinvoke $r1.<com.facebook.Session$OpenRequest: java.util.List getPermissions()>();
+
+        $r13 = virtualinvoke $r0.<com.facebook.Session: java.util.List getPermissions()>();
+
+(14)    $z0_2 = staticinvoke <com.facebook.internal.Utility: boolean isSubset(java.util.Collection,java.util.Collection)>($r12_2, $r13);
+
+(15)    if $z0_2 != 0 goto label15;
+
+(16)    $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest> = $r1;
+
+     label15:
+        $z0_3 = Phi($z0 #9, $z0_1 #12, $z0_2 #15, $z0_2 #16);
+
+        $r12_3 = Phi($r12 #9, $r12_1 #12, $r12_2 #15, $r12_2 #16);
+
+(17)    $r7_2 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        if $r7_2 != null goto label16;
+
+(18)    $r9_4 = <com.facebook.SessionState: com.facebook.SessionState OPENED>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r9_4;
+
+(19)    goto label10;
+
+     label16:
+(20)    $r9_5 = <com.facebook.SessionState: com.facebook.SessionState OPENING>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r9_5;
+
+     label17:
+(21)    goto label10;
+
+     label18:
+        return;
+
+        catch java.lang.Throwable from label01 to label02 with label06;
+        catch java.lang.Throwable from label03 to label07 with label06;
+        catch java.lang.Throwable from label08 to label12 with label06;
+        catch java.lang.Throwable from label14 to label17 with label06;
+    }
+
+    public static com.facebook.Session openActiveSession(android.app.Activity, boolean, com.facebook.Session$StatusCallback)
+    {
+        android.app.Activity $r0;
+        boolean $z0;
+        com.facebook.Session$StatusCallback $r1;
+        com.facebook.Session$OpenRequest $r2, $r2_1;
+        com.facebook.Session $r3;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $z0 := @parameter1: boolean;
+
+        $r1 := @parameter2: com.facebook.Session$StatusCallback;
+
+        $r2 = new com.facebook.Session$OpenRequest;
+
+        specialinvoke $r2.<com.facebook.Session$OpenRequest: void <init>(android.app.Activity)>($r0);
+
+        $r2_1 = virtualinvoke $r2.<com.facebook.Session$OpenRequest: com.facebook.Session$OpenRequest setCallback(com.facebook.Session$StatusCallback)>($r1);
+
+        $r3 = staticinvoke <com.facebook.Session: com.facebook.Session openActiveSession(android.content.Context,boolean,com.facebook.Session$OpenRequest)>($r0, $z0, $r2_1);
+
+        return $r3;
+    }
+
+    public static com.facebook.Session openActiveSession(android.app.Activity, boolean, java.util.List, com.facebook.Session$StatusCallback)
+    {
+        android.app.Activity $r0;
+        boolean $z0;
+        java.util.List $r1;
+        com.facebook.Session$StatusCallback $r2;
+        com.facebook.Session$OpenRequest $r3, $r3_1, $r3_2;
+        com.facebook.Session $r4;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $z0 := @parameter1: boolean;
+
+        $r1 := @parameter2: java.util.List;
+
+        $r2 := @parameter3: com.facebook.Session$StatusCallback;
+
+        $r3 = new com.facebook.Session$OpenRequest;
+
+        specialinvoke $r3.<com.facebook.Session$OpenRequest: void <init>(android.app.Activity)>($r0);
+
+        $r3_1 = virtualinvoke $r3.<com.facebook.Session$OpenRequest: com.facebook.Session$OpenRequest setCallback(com.facebook.Session$StatusCallback)>($r2);
+
+        $r3_2 = virtualinvoke $r3_1.<com.facebook.Session$OpenRequest: com.facebook.Session$OpenRequest setPermissions(java.util.List)>($r1);
+
+        $r4 = staticinvoke <com.facebook.Session: com.facebook.Session openActiveSession(android.content.Context,boolean,com.facebook.Session$OpenRequest)>($r0, $z0, $r3_2);
+
+        return $r4;
+    }
+
+    public static com.facebook.Session openActiveSession(android.content.Context, android.support.v4.app.Fragment, boolean, com.facebook.Session$StatusCallback)
+    {
+        android.content.Context $r0;
+        android.support.v4.app.Fragment $r1;
+        boolean $z0;
+        com.facebook.Session$StatusCallback $r2;
+        com.facebook.Session$OpenRequest $r3, $r3_1;
+        com.facebook.Session $r4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: android.support.v4.app.Fragment;
+
+        $z0 := @parameter2: boolean;
+
+        $r2 := @parameter3: com.facebook.Session$StatusCallback;
+
+        $r3 = new com.facebook.Session$OpenRequest;
+
+        specialinvoke $r3.<com.facebook.Session$OpenRequest: void <init>(android.support.v4.app.Fragment)>($r1);
+
+        $r3_1 = virtualinvoke $r3.<com.facebook.Session$OpenRequest: com.facebook.Session$OpenRequest setCallback(com.facebook.Session$StatusCallback)>($r2);
+
+        $r4 = staticinvoke <com.facebook.Session: com.facebook.Session openActiveSession(android.content.Context,boolean,com.facebook.Session$OpenRequest)>($r0, $z0, $r3_1);
+
+        return $r4;
+    }
+
+    public static com.facebook.Session openActiveSession(android.content.Context, android.support.v4.app.Fragment, boolean, java.util.List, com.facebook.Session$StatusCallback)
+    {
+        android.content.Context $r0;
+        android.support.v4.app.Fragment $r1;
+        boolean $z0;
+        java.util.List $r2;
+        com.facebook.Session$StatusCallback $r3;
+        com.facebook.Session$OpenRequest $r4, $r4_1, $r4_2;
+        com.facebook.Session $r5;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: android.support.v4.app.Fragment;
+
+        $z0 := @parameter2: boolean;
+
+        $r2 := @parameter3: java.util.List;
+
+        $r3 := @parameter4: com.facebook.Session$StatusCallback;
+
+        $r4 = new com.facebook.Session$OpenRequest;
+
+        specialinvoke $r4.<com.facebook.Session$OpenRequest: void <init>(android.support.v4.app.Fragment)>($r1);
+
+        $r4_1 = virtualinvoke $r4.<com.facebook.Session$OpenRequest: com.facebook.Session$OpenRequest setCallback(com.facebook.Session$StatusCallback)>($r3);
+
+        $r4_2 = virtualinvoke $r4_1.<com.facebook.Session$OpenRequest: com.facebook.Session$OpenRequest setPermissions(java.util.List)>($r2);
+
+        $r5 = staticinvoke <com.facebook.Session: com.facebook.Session openActiveSession(android.content.Context,boolean,com.facebook.Session$OpenRequest)>($r0, $z0, $r4_2);
+
+        return $r5;
+    }
+
+    private static com.facebook.Session openActiveSession(android.content.Context, boolean, com.facebook.Session$OpenRequest)
+    {
+        android.content.Context $r0;
+        boolean $z0, $z1;
+        com.facebook.Session$OpenRequest $r1;
+        com.facebook.Session$Builder $r2;
+        com.facebook.SessionState $r3, $r5;
+        com.facebook.Session $r4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $z0 := @parameter1: boolean;
+
+        $r1 := @parameter2: com.facebook.Session$OpenRequest;
+
+        $r2 = new com.facebook.Session$Builder;
+
+        specialinvoke $r2.<com.facebook.Session$Builder: void <init>(android.content.Context)>($r0);
+
+        $r4 = virtualinvoke $r2.<com.facebook.Session$Builder: com.facebook.Session build()>();
+
+        $r3 = <com.facebook.SessionState: com.facebook.SessionState CREATED_TOKEN_LOADED>;
+
+        $r5 = virtualinvoke $r4.<com.facebook.Session: com.facebook.SessionState getState()>();
+
+        $z1 = virtualinvoke $r3.<com.facebook.SessionState: boolean equals(java.lang.Object)>($r5);
+
+        if $z1 != 0 goto label1;
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        staticinvoke <com.facebook.Session: void setActiveSession(com.facebook.Session)>($r4);
+
+        virtualinvoke $r4.<com.facebook.Session: void openForRead(com.facebook.Session$OpenRequest)>($r1);
+
+        return $r4;
+
+     label2:
+        return null;
+    }
+
+    public static com.facebook.Session openActiveSessionFromCache(android.content.Context)
+    {
+        android.content.Context $r0;
+        com.facebook.Session $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.facebook.Session: com.facebook.Session openActiveSession(android.content.Context,boolean,com.facebook.Session$OpenRequest)>($r0, 0, null);
+
+        return $r1;
+    }
+
+    public static com.facebook.Session openActiveSessionWithAccessToken(android.content.Context, com.facebook.AccessToken, com.facebook.Session$StatusCallback)
+    {
+        android.content.Context $r0;
+        com.facebook.AccessToken $r1;
+        com.facebook.Session$StatusCallback $r2;
+        com.facebook.Session $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.AccessToken;
+
+        $r2 := @parameter2: com.facebook.Session$StatusCallback;
+
+        $r3 = new com.facebook.Session;
+
+        specialinvoke $r3.<com.facebook.Session: void <init>(android.content.Context,java.lang.String,com.facebook.TokenCachingStrategy,boolean)>($r0, null, null, 0);
+
+        staticinvoke <com.facebook.Session: void setActiveSession(com.facebook.Session)>($r3);
+
+        virtualinvoke $r3.<com.facebook.Session: void open(com.facebook.AccessToken,com.facebook.Session$StatusCallback)>($r1, $r2);
+
+        return $r3;
+    }
+
+    static void postActiveSessionAction(java.lang.String)
+    {
+        java.lang.String $r0;
+        android.content.Intent $r1;
+        android.content.Context $r2;
+        android.support.v4.content.LocalBroadcastManager $r3;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = new android.content.Intent;
+
+        specialinvoke $r1.<android.content.Intent: void <init>(java.lang.String)>($r0);
+
+        $r2 = staticinvoke <com.facebook.Session: android.content.Context getStaticContext()>();
+
+        $r3 = staticinvoke <android.support.v4.content.LocalBroadcastManager: android.support.v4.content.LocalBroadcastManager getInstance(android.content.Context)>($r2);
+
+        virtualinvoke $r3.<android.support.v4.content.LocalBroadcastManager: boolean sendBroadcast(android.content.Intent)>($r1);
+
+        return;
+    }
+
+    private void readObject(java.io.ObjectInputStream) throws java.io.InvalidObjectException
+    {
+        com.facebook.Session $r0;
+        java.io.ObjectInputStream $r1;
+        java.io.InvalidObjectException $r2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: java.io.ObjectInputStream;
+
+        $r2 = new java.io.InvalidObjectException;
+
+        specialinvoke $r2.<java.io.InvalidObjectException: void <init>(java.lang.String)>("Cannot readObject, serialization proxy required");
+
+        throw $r2;
+    }
+
+    private void requestNewPermissions(com.facebook.Session$NewPermissionsRequest, com.facebook.internal.SessionAuthorizationType)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$NewPermissionsRequest $r1;
+        com.facebook.internal.SessionAuthorizationType $r2;
+        java.lang.Object $r3;
+        com.facebook.Session$AuthorizationRequest $r4;
+        java.lang.Throwable $r5;
+        java.lang.UnsupportedOperationException $r6, $r6_1, $r6_2, $r6_3;
+        com.facebook.SessionState $r7, $r7_1, $r7_2;
+        boolean $z0, $z0_1, $z0_2;
+        java.lang.String $r8;
+        com.facebook.Session$StatusCallback $r9;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$NewPermissionsRequest;
+
+        $r2 := @parameter1: com.facebook.internal.SessionAuthorizationType;
+
+        specialinvoke $r0.<com.facebook.Session: void validatePermissions(com.facebook.Session$AuthorizationRequest,com.facebook.internal.SessionAuthorizationType)>($r1, $r2);
+
+        specialinvoke $r0.<com.facebook.Session: void validateLoginBehavior(com.facebook.Session$AuthorizationRequest)>($r1);
+
+        if $r1 == null goto label8;
+
+        $r3 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r3;
+
+     label1:
+        $r4 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        if $r4 == null goto label4;
+
+        $r6 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r6.<java.lang.UnsupportedOperationException: void <init>(java.lang.String)>("Session: an attempt was made to request new permissions for a session that has a pending request.");
+
+        throw $r6;
+
+     label2:
+        $r5 := @caughtexception;
+
+        $z0_2 = Phi($z0 #0, $z0_2 #1, $z0_1 #3);
+
+        $r6_3 = Phi($r6 #0, $r6_3 #1, $r6_1 #4, $r6_2 #5);
+
+(1)     $r7_2 = Phi($r7 #0, $r7_2 #1, $r7_1 #2);
+
+        exitmonitor $r3;
+
+     label3:
+        throw $r5;
+
+     label4:
+        $r7 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $z0 = virtualinvoke $r7.<com.facebook.SessionState: boolean isOpened()>();
+
+        if $z0 == 0 goto label6;
+
+        $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest> = $r1;
+
+        exitmonitor $r3;
+
+     label5:
+        $r8 = virtualinvoke $r0.<com.facebook.Session: java.lang.String getAccessToken()>();
+
+        virtualinvoke $r1.<com.facebook.Session$NewPermissionsRequest: void setValidateSameFbidAsToken(java.lang.String)>($r8);
+
+        $r9 = virtualinvoke $r1.<com.facebook.Session$NewPermissionsRequest: com.facebook.Session$StatusCallback getCallback()>();
+
+        virtualinvoke $r0.<com.facebook.Session: void addCallback(com.facebook.Session$StatusCallback)>($r9);
+
+        virtualinvoke $r0.<com.facebook.Session: void authorize(com.facebook.Session$AuthorizationRequest)>($r1);
+
+        return;
+
+     label6:
+(2)     $r7_1 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+(3)     $z0_1 = virtualinvoke $r7_1.<com.facebook.SessionState: boolean isClosed()>();
+
+        if $z0_1 == 0 goto label7;
+
+(4)     $r6_1 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r6_1.<java.lang.UnsupportedOperationException: void <init>(java.lang.String)>("Session: an attempt was made to request new permissions for a session that has been closed.");
+
+        throw $r6_1;
+
+     label7:
+(5)     $r6_2 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r6_2.<java.lang.UnsupportedOperationException: void <init>(java.lang.String)>("Session: an attempt was made to request new permissions for a session that is not currently open.");
+
+        throw $r6_2;
+
+     label8:
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label2;
+        catch java.lang.Throwable from label4 to label5 with label2;
+        catch java.lang.Throwable from label6 to label8 with label2;
+    }
+
+    private boolean resolveIntent(android.content.Intent)
+    {
+        com.facebook.Session $r0;
+        android.content.Intent $r1;
+        android.content.Context $r2;
+        android.content.pm.PackageManager $r3;
+        android.content.pm.ResolveInfo $r4;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $r2 = staticinvoke <com.facebook.Session: android.content.Context getStaticContext()>();
+
+        $r3 = virtualinvoke $r2.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r4 = virtualinvoke $r3.<android.content.pm.PackageManager: android.content.pm.ResolveInfo resolveActivity(android.content.Intent,int)>($r1, 0);
+
+        if $r4 != null goto label1;
+
+        return 0;
+
+     label1:
+        return 1;
+    }
+
+    public static final com.facebook.Session restoreSession(android.content.Context, com.facebook.TokenCachingStrategy, com.facebook.Session$StatusCallback, android.os.Bundle)
+    {
+        android.content.Context $r0;
+        com.facebook.TokenCachingStrategy $r1;
+        com.facebook.Session$StatusCallback $r2;
+        java.io.ByteArrayInputStream $r3;
+        java.io.ObjectInputStream $r4;
+        java.lang.ClassNotFoundException $r5;
+        com.facebook.SharedPreferencesTokenCachingStrategy $r6;
+        java.io.IOException $r7;
+        android.os.Bundle $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        byte[] $r9;
+        java.lang.Object $r10;
+        com.facebook.Session $r11;
+        java.lang.String $r12, $r12_1, $r12_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.TokenCachingStrategy;
+
+        $r2 := @parameter2: com.facebook.Session$StatusCallback;
+
+        $r8 := @parameter3: android.os.Bundle;
+
+        if $r8 != null goto label01;
+
+        return null;
+
+     label01:
+        $r9 = virtualinvoke $r8.<android.os.Bundle: byte[] getByteArray(java.lang.String)>("com.facebook.sdk.Session.saveSessionKey");
+
+(0)     if $r9 == null goto label11;
+
+        $r3 = new java.io.ByteArrayInputStream;
+
+        specialinvoke $r3.<java.io.ByteArrayInputStream: void <init>(byte[])>($r9);
+
+(1)     $r4 = new java.io.ObjectInputStream;
+
+     label02:
+        specialinvoke $r4.<java.io.ObjectInputStream: void <init>(java.io.InputStream)>($r3);
+
+        $r10 = virtualinvoke $r4.<java.io.ObjectInputStream: java.lang.Object readObject()>();
+
+     label03:
+        $r11 = (com.facebook.Session) $r10;
+
+     label04:
+        staticinvoke <com.facebook.Session: void initializeStaticContext(android.content.Context)>($r0);
+
+     label05:
+        if $r1 == null goto label12;
+
+        $r11.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy> = $r1;
+
+     label06:
+        if $r2 == null goto label08;
+
+     label07:
+        virtualinvoke $r11.<com.facebook.Session: void addCallback(com.facebook.Session$StatusCallback)>($r2);
+
+     label08:
+(2)     $r8_1 = virtualinvoke $r8.<android.os.Bundle: android.os.Bundle getBundle(java.lang.String)>("com.facebook.sdk.Session.authBundleKey");
+
+     label09:
+        $r11.<com.facebook.Session: android.os.Bundle authorizationBundle> = $r8_1;
+
+        return $r11;
+
+     label10:
+        $r5 := @caughtexception;
+
+        $r8_2 = Phi($r8 #1, $r8_1 #2);
+
+        $r12 = <com.facebook.Session: java.lang.String TAG>;
+
+(3)     staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>($r12, "Unable to restore session", $r5);
+
+     label11:
+        $r8_4 = Phi($r8 #0, $r8_2 #3, $r8_3 #4);
+
+        $r12_2 = Phi($r12 #0, $r12 #3, $r12_1 #4);
+
+        return null;
+
+     label12:
+        $r6 = new com.facebook.SharedPreferencesTokenCachingStrategy;
+
+     label13:
+        specialinvoke $r6.<com.facebook.SharedPreferencesTokenCachingStrategy: void <init>(android.content.Context)>($r0);
+
+     label14:
+        $r11.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy> = $r6;
+
+        goto label06;
+
+     label15:
+        $r7 := @caughtexception;
+
+        $r8_3 = Phi($r8 #1, $r8_1 #2);
+
+        $r12_1 = <com.facebook.Session: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>($r12_1, "Unable to restore session.", $r7);
+
+(4)     goto label11;
+
+        catch java.lang.ClassNotFoundException from label02 to label03 with label10;
+        catch java.io.IOException from label02 to label03 with label15;
+        catch java.lang.ClassNotFoundException from label04 to label05 with label10;
+        catch java.io.IOException from label04 to label05 with label15;
+        catch java.lang.ClassNotFoundException from label07 to label09 with label10;
+        catch java.io.IOException from label07 to label09 with label15;
+        catch java.lang.ClassNotFoundException from label13 to label14 with label10;
+        catch java.io.IOException from label13 to label14 with label15;
+    }
+
+    private static void runWithHandlerOrExecutor(android.os.Handler, java.lang.Runnable)
+    {
+        android.os.Handler $r0;
+        java.lang.Runnable $r1;
+        java.util.concurrent.Executor $r2;
+
+        $r0 := @parameter0: android.os.Handler;
+
+        $r1 := @parameter1: java.lang.Runnable;
+
+        if $r0 == null goto label1;
+
+        virtualinvoke $r0.<android.os.Handler: boolean post(java.lang.Runnable)>($r1);
+
+        return;
+
+     label1:
+        $r2 = staticinvoke <com.facebook.Settings: java.util.concurrent.Executor getExecutor()>();
+
+        interfaceinvoke $r2.<java.util.concurrent.Executor: void execute(java.lang.Runnable)>($r1);
+
+        return;
+    }
+
+    public static final void saveSession(com.facebook.Session, android.os.Bundle)
+    {
+        com.facebook.Session $r0;
+        android.os.Bundle $r1, $r4;
+        java.io.ByteArrayOutputStream $r2;
+        java.io.ObjectOutputStream $r3;
+        java.io.IOException $r5;
+        com.facebook.FacebookException $r6;
+        boolean $z0;
+        byte[] $r7;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        $r1 := @parameter1: android.os.Bundle;
+
+        if $r1 == null goto label4;
+
+        if $r0 == null goto label4;
+
+        $z0 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("com.facebook.sdk.Session.saveSessionKey");
+
+        if $z0 != 0 goto label4;
+
+        $r2 = new java.io.ByteArrayOutputStream;
+
+        specialinvoke $r2.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        $r3 = new java.io.ObjectOutputStream;
+
+     label1:
+        specialinvoke $r3.<java.io.ObjectOutputStream: void <init>(java.io.OutputStream)>($r2);
+
+        virtualinvoke $r3.<java.io.ObjectOutputStream: void writeObject(java.lang.Object)>($r0);
+
+     label2:
+        $r7 = virtualinvoke $r2.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        virtualinvoke $r1.<android.os.Bundle: void putByteArray(java.lang.String,byte[])>("com.facebook.sdk.Session.saveSessionKey", $r7);
+
+        $r4 = $r0.<com.facebook.Session: android.os.Bundle authorizationBundle>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putBundle(java.lang.String,android.os.Bundle)>("com.facebook.sdk.Session.authBundleKey", $r4);
+
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        $r6 = new com.facebook.FacebookException;
+
+        specialinvoke $r6.<com.facebook.FacebookException: void <init>(java.lang.String,java.lang.Throwable)>("Unable to save session.", $r5);
+
+        throw $r6;
+
+     label4:
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    private void saveTokenToCache(com.facebook.AccessToken)
+    {
+        com.facebook.Session $r0;
+        com.facebook.AccessToken $r1;
+        android.os.Bundle $r2;
+        com.facebook.TokenCachingStrategy $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.AccessToken;
+
+(0)     if $r1 == null goto label1;
+
+        $r3 = $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy>;
+
+(1)     if $r3 == null goto label1;
+
+        $r3_1 = $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy>;
+
+        $r2 = virtualinvoke $r1.<com.facebook.AccessToken: android.os.Bundle toCacheBundle()>();
+
+(2)     virtualinvoke $r3_1.<com.facebook.TokenCachingStrategy: void save(android.os.Bundle)>($r2);
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3 #1, $r3_1 #2);
+
+        return;
+    }
+
+    public static final void setActiveSession(com.facebook.Session)
+    {
+        com.facebook.Session $r0, $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.Object $r1;
+        java.lang.Throwable $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: com.facebook.Session;
+
+        $r1 = <com.facebook.Session: java.lang.Object STATIC_LOCK>;
+
+(0)     entermonitor $r1;
+
+     label1:
+        $r3 = <com.facebook.Session: com.facebook.Session activeSession>;
+
+(1)     if $r0 == $r3 goto label4;
+
+(2)     $r3_1 = <com.facebook.Session: com.facebook.Session activeSession>;
+
+        if $r3_1 == null goto label2;
+
+        virtualinvoke $r3_1.<com.facebook.Session: void close()>();
+
+     label2:
+        <com.facebook.Session: com.facebook.Session activeSession> = $r0;
+
+        if $r3_1 == null goto label3;
+
+        staticinvoke <com.facebook.Session: void postActiveSessionAction(java.lang.String)>("com.facebook.sdk.ACTIVE_SESSION_UNSET");
+
+     label3:
+(3)     if $r0 == null goto label4;
+
+        staticinvoke <com.facebook.Session: void postActiveSessionAction(java.lang.String)>("com.facebook.sdk.ACTIVE_SESSION_SET");
+
+        $z0 = virtualinvoke $r0.<com.facebook.Session: boolean isOpened()>();
+
+(4)     if $z0 == 0 goto label4;
+
+(5)     staticinvoke <com.facebook.Session: void postActiveSessionAction(java.lang.String)>("com.facebook.sdk.ACTIVE_SESSION_OPENED");
+
+     label4:
+        $r3_2 = Phi($r3 #1, $r3_1 #3, $r3_1 #4, $r3_1 #5);
+
+(6)     exitmonitor $r1;
+
+     label5:
+        return;
+
+     label6:
+        $r2 := @caughtexception;
+
+(7)     $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #6, $r3_3 #7);
+
+        exitmonitor $r1;
+
+     label7:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label5 with label6;
+        catch java.lang.Throwable from label6 to label7 with label6;
+    }
+
+    private void tryLegacyAuth(com.facebook.Session$AuthorizationRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$AuthorizationRequest $r1;
+        com.facebook.Session$3 $r2;
+        com.facebook.AuthorizationClient $r3, $r3_1, $r3_2, $r3_3;
+        android.content.Context $r4;
+        com.facebook.AuthorizationClient$AuthorizationRequest $r5;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$AuthorizationRequest;
+
+        $r3 = new com.facebook.AuthorizationClient;
+
+        specialinvoke $r3.<com.facebook.AuthorizationClient: void <init>()>();
+
+        $r0.<com.facebook.Session: com.facebook.AuthorizationClient authorizationClient> = $r3;
+
+        $r3_1 = $r0.<com.facebook.Session: com.facebook.AuthorizationClient authorizationClient>;
+
+        $r2 = new com.facebook.Session$3;
+
+        specialinvoke $r2.<com.facebook.Session$3: void <init>(com.facebook.Session)>($r0);
+
+        virtualinvoke $r3_1.<com.facebook.AuthorizationClient: void setOnCompletedListener(com.facebook.AuthorizationClient$OnCompletedListener)>($r2);
+
+        $r3_2 = $r0.<com.facebook.Session: com.facebook.AuthorizationClient authorizationClient>;
+
+        $r4 = staticinvoke <com.facebook.Session: android.content.Context getStaticContext()>();
+
+        virtualinvoke $r3_2.<com.facebook.AuthorizationClient: void setContext(android.content.Context)>($r4);
+
+        $r3_3 = $r0.<com.facebook.Session: com.facebook.AuthorizationClient authorizationClient>;
+
+        $r5 = virtualinvoke $r1.<com.facebook.Session$AuthorizationRequest: com.facebook.AuthorizationClient$AuthorizationRequest getAuthorizationClientRequest()>();
+
+        virtualinvoke $r3_3.<com.facebook.AuthorizationClient: void startOrContinueAuth(com.facebook.AuthorizationClient$AuthorizationRequest)>($r5);
+
+        return;
+    }
+
+    private boolean tryLoginActivity(com.facebook.Session$AuthorizationRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$AuthorizationRequest $r1;
+        android.content.ActivityNotFoundException $r2;
+        android.content.Intent $r3;
+        boolean $z0;
+        com.facebook.Session$StartActivityDelegate $r4;
+        int $i0;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$AuthorizationRequest;
+
+        $r3 = specialinvoke $r0.<com.facebook.Session: android.content.Intent getLoginActivityIntent(com.facebook.Session$AuthorizationRequest)>($r1);
+
+        $z0 = specialinvoke $r0.<com.facebook.Session: boolean resolveIntent(android.content.Intent)>($r3);
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r4 = virtualinvoke $r1.<com.facebook.Session$AuthorizationRequest: com.facebook.Session$StartActivityDelegate getStartActivityDelegate()>();
+
+        $i0 = virtualinvoke $r1.<com.facebook.Session$AuthorizationRequest: int getRequestCode()>();
+
+        interfaceinvoke $r4.<com.facebook.Session$StartActivityDelegate: void startActivityForResult(android.content.Intent,int)>($r3, $i0);
+
+     label2:
+        return 1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        return 0;
+
+        catch android.content.ActivityNotFoundException from label1 to label2 with label3;
+    }
+
+    private void validateLoginBehavior(com.facebook.Session$AuthorizationRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$AuthorizationRequest $r1;
+        android.content.Intent $r2;
+        com.facebook.FacebookException $r3;
+        java.lang.Object[] $r4;
+        java.lang.Class $r5;
+        boolean $z0, $z0_1, $z0_2;
+        android.content.Context $r6;
+        com.facebook.SessionLoginBehavior $r7;
+        java.lang.String $r8, $r8_1;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$AuthorizationRequest;
+
+(0)     if $r1 == null goto label1;
+
+        $z0 = staticinvoke <com.facebook.Session$AuthorizationRequest: boolean access$600(com.facebook.Session$AuthorizationRequest)>($r1);
+
+(1)     if $z0 != 0 goto label1;
+
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>()>();
+
+        $r6 = staticinvoke <com.facebook.Session: android.content.Context getStaticContext()>();
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent setClass(android.content.Context,java.lang.Class)>($r6, class "com/facebook/LoginActivity");
+
+        $z0_1 = specialinvoke $r0.<com.facebook.Session: boolean resolveIntent(android.content.Intent)>($r2);
+
+(2)     if $z0_1 != 0 goto label1;
+
+        $r3 = new com.facebook.FacebookException;
+
+        $r4 = newarray (java.lang.Object)[2];
+
+        $r7 = virtualinvoke $r1.<com.facebook.Session$AuthorizationRequest: com.facebook.SessionLoginBehavior getLoginBehavior()>();
+
+        $r4[0] = $r7;
+
+        $r5 = class "com/facebook/LoginActivity";
+
+        $r8 = virtualinvoke $r5.<java.lang.Class: java.lang.String getName()>();
+
+        $r4[1] = $r8;
+
+        $r8_1 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("Cannot use SessionLoginBehavior %s when %s is not declared as an activity in AndroidManifest.xml", $r4);
+
+        specialinvoke $r3.<com.facebook.FacebookException: void <init>(java.lang.String)>($r8_1);
+
+        throw $r3;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0 #1, $z0_1 #2);
+
+        return;
+    }
+
+    private void validatePermissions(com.facebook.Session$AuthorizationRequest, com.facebook.internal.SessionAuthorizationType)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$AuthorizationRequest $r1;
+        com.facebook.internal.SessionAuthorizationType $r2, $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.util.List $r3, $r3_1, $r3_2, $r3_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8;
+        com.facebook.FacebookException $r5, $r5_1;
+        java.util.Iterator $r6;
+        java.lang.Object $r7;
+        java.lang.String $r8, $r10, $r8_1, $r10_1, $r10_2, $r8_2, $r10_3, $r8_3;
+        java.lang.Object[] $r9, $r9_1, $r9_2, $r9_3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$AuthorizationRequest;
+
+        $r2 := @parameter1: com.facebook.internal.SessionAuthorizationType;
+
+(0)     if $r1 == null goto label1;
+
+        $r3 = virtualinvoke $r1.<com.facebook.Session$AuthorizationRequest: java.util.List getPermissions()>();
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.util.Collection)>($r3);
+
+(1)     if $z0 == 0 goto label2;
+
+     label1:
+        $z0_6 = Phi($z0 #0, $z0 #1);
+
+        $r3_2 = Phi($r3 #0, $r3 #1);
+
+        $r4_3 = <com.facebook.internal.SessionAuthorizationType: com.facebook.internal.SessionAuthorizationType PUBLISH>;
+
+        $z0_7 = virtualinvoke $r4_3.<com.facebook.internal.SessionAuthorizationType: boolean equals(java.lang.Object)>($r2);
+
+(2)     if $z0_7 == 0 goto label5;
+
+        $r5_1 = new com.facebook.FacebookException;
+
+        specialinvoke $r5_1.<com.facebook.FacebookException: void <init>(java.lang.String)>("Cannot request publish or manage authorization with no permissions.");
+
+        throw $r5_1;
+
+     label2:
+        $r3_1 = virtualinvoke $r1.<com.facebook.Session$AuthorizationRequest: java.util.List getPermissions()>();
+
+(3)     $r6 = interfaceinvoke $r3_1.<java.util.List: java.util.Iterator iterator()>();
+
+     label3:
+        $r10 = Phi($r10 #3, $r10 #5, $r10 #6, $r10_2 #7);
+
+        $z0_1 = Phi($z0 #3, $z0_4 #5, $z0_5 #6, $z0_5 #7);
+
+        $r9 = Phi($r9 #3, $r9 #5, $r9 #6, $r9_2 #7);
+
+        $r4 = Phi($r4 #3, $r4_1 #5, $r4_2 #6, $r4_2 #7);
+
+        $r8 = Phi($r8 #3, $r8_1 #5, $r8_1 #6, $r8_2 #7);
+
+        $z0_2 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+(4)     if $z0_2 == 0 goto label5;
+
+        $r7 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r8_1 = (java.lang.String) $r7;
+
+        $z0_3 = staticinvoke <com.facebook.Session: boolean isPublishPermission(java.lang.String)>($r8_1);
+
+        if $z0_3 == 0 goto label4;
+
+        $r4_1 = <com.facebook.internal.SessionAuthorizationType: com.facebook.internal.SessionAuthorizationType READ>;
+
+        $z0_4 = virtualinvoke $r4_1.<com.facebook.internal.SessionAuthorizationType: boolean equals(java.lang.Object)>($r2);
+
+(5)     if $z0_4 == 0 goto label3;
+
+        $r5 = new com.facebook.FacebookException;
+
+        $r9_1 = newarray (java.lang.Object)[1];
+
+        $r9_1[0] = $r8_1;
+
+        $r10_1 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("Cannot pass a publish or manage permission (%s) to a request for read authorization", $r9_1);
+
+        specialinvoke $r5.<com.facebook.FacebookException: void <init>(java.lang.String)>($r10_1);
+
+        throw $r5;
+
+     label4:
+        $r4_2 = <com.facebook.internal.SessionAuthorizationType: com.facebook.internal.SessionAuthorizationType PUBLISH>;
+
+        $z0_5 = virtualinvoke $r4_2.<com.facebook.internal.SessionAuthorizationType: boolean equals(java.lang.Object)>($r2);
+
+(6)     if $z0_5 == 0 goto label3;
+
+        $r10_2 = <com.facebook.Session: java.lang.String TAG>;
+
+        $r9_2 = newarray (java.lang.Object)[1];
+
+        $r9_2[0] = $r8_1;
+
+        $r8_2 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("Should not pass a read permission (%s) to a request for publish or manage authorization", $r9_2);
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>($r10_2, $r8_2);
+
+(7)     goto label3;
+
+     label5:
+        $r10_3 = Phi($r10 #2, $r10 #4);
+
+        $z0_8 = Phi($z0_7 #2, $z0_2 #4);
+
+        $r9_3 = Phi($r9 #2, $r9 #4);
+
+        $r4_4 = Phi($r4_3 #2, $r4 #4);
+
+        $r8_3 = Phi($r8 #2, $r8 #4);
+
+        $r3_3 = Phi($r3_2 #2, $r3_1 #4);
+
+        return;
+    }
+
+    private java.lang.Object writeReplace()
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$SerializationProxyV1 $r1;
+        java.lang.String $r2;
+        com.facebook.SessionState $r3;
+        com.facebook.AccessToken $r4;
+        java.util.Date $r5;
+        com.facebook.Session$AuthorizationRequest $r6;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = new com.facebook.Session$SerializationProxyV1;
+
+        $r2 = $r0.<com.facebook.Session: java.lang.String applicationId>;
+
+        $r3 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r4 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+        $r5 = $r0.<com.facebook.Session: java.util.Date lastAttemptedTokenExtendDate>;
+
+        $r6 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        specialinvoke $r1.<com.facebook.Session$SerializationProxyV1: void <init>(java.lang.String,com.facebook.SessionState,com.facebook.AccessToken,java.util.Date,boolean,com.facebook.Session$AuthorizationRequest)>($r2, $r3, $r4, $r5, 0, $r6);
+
+        return $r1;
+    }
+
+    public final void addCallback(com.facebook.Session$StatusCallback)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$StatusCallback $r1;
+        java.util.List $r2, $r4, $r4_1, $r4_2, $r4_3;
+        java.lang.Throwable $r3;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$StatusCallback;
+
+        $r2 = $r0.<com.facebook.Session: java.util.List callbacks>;
+
+        entermonitor $r2;
+
+(0)     if $r1 == null goto label2;
+
+     label1:
+        $r4 = $r0.<com.facebook.Session: java.util.List callbacks>;
+
+        $z0 = interfaceinvoke $r4.<java.util.List: boolean contains(java.lang.Object)>($r1);
+
+(1)     if $z0 != 0 goto label2;
+
+(2)     $r4_1 = $r0.<com.facebook.Session: java.util.List callbacks>;
+
+(3)     interfaceinvoke $r4_1.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+     label2:
+        $r4_2 = Phi($r4 #0, $r4 #1, $r4_1 #3);
+
+(4)     exitmonitor $r2;
+
+     label3:
+        return;
+
+     label4:
+        $r3 := @caughtexception;
+
+(5)     $r4_3 = Phi($r4 #0, $r4_1 #2, $r4_2 #4, $r4_3 #5);
+
+        exitmonitor $r2;
+
+     label5:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label4 to label5 with label4;
+    }
+
+    void authorize(com.facebook.Session$AuthorizationRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$AuthorizationRequest $r1, $r9, $r9_1, $r9_2;
+        java.lang.Object $r2;
+        com.facebook.SessionState $r3, $r11, $r11_1, $r11_2, $r11_3;
+        int[] $r4;
+        com.facebook.FacebookException $r5;
+        com.facebook.AuthorizationClient$Result$Code $r6;
+        java.lang.Throwable $r7;
+        java.lang.String $r8, $r8_1, $r8_2, $r8_3;
+        boolean $z0, $z1, $z0_1, $z1_1, $z1_2, $z0_2;
+        java.util.Map $r10, $r10_1, $r10_2;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$AuthorizationRequest;
+
+        $r8 = $r0.<com.facebook.Session: java.lang.String applicationId>;
+
+        virtualinvoke $r1.<com.facebook.Session$AuthorizationRequest: void setApplicationId(java.lang.String)>($r8);
+
+        specialinvoke $r0.<com.facebook.Session: void autoPublishAsync()>();
+
+        specialinvoke $r0.<com.facebook.Session: void logAuthorizationStart()>();
+
+        $z0 = specialinvoke $r0.<com.facebook.Session: boolean tryLoginActivity(com.facebook.Session$AuthorizationRequest)>($r1);
+
+        $z1 = $z0;
+
+        $r9 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        $r10 = staticinvoke <com.facebook.Session$AuthorizationRequest: java.util.Map access$500(com.facebook.Session$AuthorizationRequest)>($r9);
+
+        if $z0 == 0 goto label07;
+
+(0)     $r8_1 = "1";
+
+     label01:
+        $r8_2 = Phi($r8_1 #0, $r8_3 #8);
+
+        interfaceinvoke $r10.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("try_login_activity", $r8_2);
+
+(1)     if $z0 != 0 goto label02;
+
+        $z0_1 = staticinvoke <com.facebook.Session$AuthorizationRequest: boolean access$600(com.facebook.Session$AuthorizationRequest)>($r1);
+
+(2)     if $z0_1 == 0 goto label02;
+
+        $r9_1 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        $r10_1 = staticinvoke <com.facebook.Session$AuthorizationRequest: java.util.Map access$500(com.facebook.Session$AuthorizationRequest)>($r9_1);
+
+        interfaceinvoke $r10_1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("try_legacy", "1");
+
+        specialinvoke $r0.<com.facebook.Session: void tryLegacyAuth(com.facebook.Session$AuthorizationRequest)>($r1);
+
+(3)     $z1_1 = 1;
+
+     label02:
+        $z1_2 = Phi($z1 #1, $z1 #2, $z1_1 #3);
+
+        $z0_2 = Phi($z0 #1, $z0_1 #2, $z0_1 #3);
+
+        $r9_2 = Phi($r9 #1, $r9 #2, $r9_1 #3);
+
+        $r10_2 = Phi($r10 #1, $r10 #2, $r10_1 #3);
+
+        if $z1_2 != 0 goto label12;
+
+        $r2 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(4)     entermonitor $r2;
+
+     label03:
+        $r3 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r4 = <com.facebook.Session$5: int[] $SwitchMap$com$facebook$SessionState>;
+
+        $r11 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $i0 = virtualinvoke $r11.<com.facebook.SessionState: int ordinal()>();
+
+(5)     $i0_1 = $r4[$i0];
+
+        lookupswitch($i0_1)
+        {
+            case 6: goto label08;
+            case 7: goto label08;
+            default: goto label04;
+        };
+
+     label04:
+        goto label05;
+
+     label05:
+(6)     $r11_1 = <com.facebook.SessionState: com.facebook.SessionState CLOSED_LOGIN_FAILED>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r11_1;
+
+        $r5 = new com.facebook.FacebookException;
+
+        specialinvoke $r5.<com.facebook.FacebookException: void <init>(java.lang.String)>("Log in attempt failed: LoginActivity could not be started, and not legacy request");
+
+        $r6 = <com.facebook.AuthorizationClient$Result$Code: com.facebook.AuthorizationClient$Result$Code ERROR>;
+
+        specialinvoke $r0.<com.facebook.Session: void logAuthorizationComplete(com.facebook.AuthorizationClient$Result$Code,java.util.Map,java.lang.Exception)>($r6, null, $r5);
+
+(7)     $r11_2 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        virtualinvoke $r0.<com.facebook.Session: void postStateChange(com.facebook.SessionState,com.facebook.SessionState,java.lang.Exception)>($r3, $r11_2, $r5);
+
+        exitmonitor $r2;
+
+     label06:
+        return;
+
+     label07:
+        $r8_3 = "0";
+
+(8)     goto label01;
+
+     label08:
+        exitmonitor $r2;
+
+     label09:
+        return;
+
+     label10:
+        $r7 := @caughtexception;
+
+        $i0_2 = Phi($i0 #4, $i0_1 #5, $i0_2 #9);
+
+(9)     $r11_3 = Phi($r11 #4, $r11_1 #6, $r11_2 #7, $r11_3 #9);
+
+        exitmonitor $r2;
+
+     label11:
+        throw $r7;
+
+     label12:
+        return;
+
+        catch java.lang.Throwable from label03 to label06 with label10;
+        catch java.lang.Throwable from label08 to label09 with label10;
+        catch java.lang.Throwable from label10 to label11 with label10;
+    }
+
+    public final void close()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        com.facebook.SessionState $r2, $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6;
+        int[] $r3;
+        com.facebook.FacebookException $r4;
+        java.lang.Throwable $r5;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r1;
+
+     label1:
+        $r2 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r3 = <com.facebook.Session$5: int[] $SwitchMap$com$facebook$SessionState>;
+
+        $r6 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $i0 = virtualinvoke $r6.<com.facebook.SessionState: int ordinal()>();
+
+(1)     $i0_1 = $r3[$i0];
+
+        lookupswitch($i0_1)
+        {
+            case 1: goto label5;
+            case 2: goto label5;
+            case 3: goto label8;
+            case 4: goto label8;
+            case 5: goto label8;
+            default: goto label2;
+        };
+
+     label2:
+(2)     goto label3;
+
+     label3:
+        $r6_1 = Phi($r6 #2, $r6_3 #6, $r6_5 #10);
+
+(3)     exitmonitor $r1;
+
+     label4:
+        return;
+
+     label5:
+(4)     $r6_2 = <com.facebook.SessionState: com.facebook.SessionState CLOSED_LOGIN_FAILED>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r6_2;
+
+(5)     $r6_3 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r4 = new com.facebook.FacebookException;
+
+        specialinvoke $r4.<com.facebook.FacebookException: void <init>(java.lang.String)>("Log in attempt aborted.");
+
+        virtualinvoke $r0.<com.facebook.Session: void postStateChange(com.facebook.SessionState,com.facebook.SessionState,java.lang.Exception)>($r2, $r6_3, $r4);
+
+(6)     goto label3;
+
+     label6:
+        $r5 := @caughtexception;
+
+        $r6_6 = Phi($r6 #0, $r6_1 #3, $r6_2 #4, $r6_3 #5, $r6_6 #7, $r6_4 #8, $r6_5 #9);
+
+(7)     $i0_2 = Phi($i0 #0, $i0_1 #1, $i0_2 #7);
+
+        exitmonitor $r1;
+
+     label7:
+        throw $r5;
+
+     label8:
+(8)     $r6_4 = <com.facebook.SessionState: com.facebook.SessionState CLOSED>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r6_4;
+
+(9)     $r6_5 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        virtualinvoke $r0.<com.facebook.Session: void postStateChange(com.facebook.SessionState,com.facebook.SessionState,java.lang.Exception)>($r2, $r6_5, null);
+
+     label9:
+(10)    goto label3;
+
+        catch java.lang.Throwable from label1 to label4 with label6;
+        catch java.lang.Throwable from label5 to label7 with label6;
+        catch java.lang.Throwable from label8 to label9 with label6;
+    }
+
+    public final void closeAndClearTokenInformation()
+    {
+        com.facebook.Session $r0;
+        com.facebook.TokenCachingStrategy $r1, $r1_1, $r1_2;
+        android.content.Context $r2, $r2_1;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy>;
+
+(1)     virtualinvoke $r1_1.<com.facebook.TokenCachingStrategy: void clear()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $r2 = <com.facebook.Session: android.content.Context staticContext>;
+
+        staticinvoke <com.facebook.internal.Utility: void clearFacebookCookies(android.content.Context)>($r2);
+
+        $r2_1 = <com.facebook.Session: android.content.Context staticContext>;
+
+        staticinvoke <com.facebook.internal.Utility: void clearCaches(android.content.Context)>($r2_1);
+
+        virtualinvoke $r0.<com.facebook.Session: void close()>();
+
+        return;
+    }
+
+    public boolean equals(java.lang.Object)
+    {
+        com.facebook.Session $r0, $r8;
+        java.lang.Object $r1;
+        java.lang.String $r2, $r3;
+        android.os.Bundle $r4, $r5;
+        com.facebook.SessionState $r6, $r7;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.util.Date $r9, $r10;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $z0 = $r1 instanceof com.facebook.Session;
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r8 = (com.facebook.Session) $r1;
+
+        $r2 = $r8.<com.facebook.Session: java.lang.String applicationId>;
+
+        $r3 = $r0.<com.facebook.Session: java.lang.String applicationId>;
+
+        $z0_1 = staticinvoke <com.facebook.Session: boolean areEqual(java.lang.Object,java.lang.Object)>($r2, $r3);
+
+(0)     if $z0_1 == 0 goto label2;
+
+        $r4 = $r8.<com.facebook.Session: android.os.Bundle authorizationBundle>;
+
+        $r5 = $r0.<com.facebook.Session: android.os.Bundle authorizationBundle>;
+
+        $z0_2 = staticinvoke <com.facebook.Session: boolean areEqual(java.lang.Object,java.lang.Object)>($r4, $r5);
+
+(1)     if $z0_2 == 0 goto label2;
+
+        $r6 = $r8.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r7 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $z0_3 = staticinvoke <com.facebook.Session: boolean areEqual(java.lang.Object,java.lang.Object)>($r6, $r7);
+
+(2)     if $z0_3 == 0 goto label2;
+
+        $r9 = virtualinvoke $r8.<com.facebook.Session: java.util.Date getExpirationDate()>();
+
+        $r10 = virtualinvoke $r0.<com.facebook.Session: java.util.Date getExpirationDate()>();
+
+        $z0_4 = staticinvoke <com.facebook.Session: boolean areEqual(java.lang.Object,java.lang.Object)>($r9, $r10);
+
+(3)     if $z0_4 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        $z0_5 = Phi($z0_1 #0, $z0_2 #1, $z0_3 #2, $z0_4 #3);
+
+        return 0;
+    }
+
+    void extendAccessToken()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        com.facebook.Session$TokenRefreshRequest $r2, $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        java.lang.Throwable $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r3 = null;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r1;
+
+     label1:
+        $r2 = $r0.<com.facebook.Session: com.facebook.Session$TokenRefreshRequest currentTokenRefreshRequest>;
+
+(1)     if $r2 != null goto label3;
+
+(2)     $r3_1 = new com.facebook.Session$TokenRefreshRequest;
+
+        specialinvoke $r3_1.<com.facebook.Session$TokenRefreshRequest: void <init>(com.facebook.Session)>($r0);
+
+     label2:
+(3)     $r0.<com.facebook.Session: com.facebook.Session$TokenRefreshRequest currentTokenRefreshRequest> = $r3_1;
+
+     label3:
+        $r3_2 = Phi($r3 #1, $r3_1 #3);
+
+(4)     exitmonitor $r1;
+
+     label4:
+        if $r3_2 == null goto label9;
+
+        virtualinvoke $r3_2.<com.facebook.Session$TokenRefreshRequest: void bind()>();
+
+        return;
+
+     label5:
+        $r4_1 := @caughtexception;
+
+        $r4_2 = Phi($r4 #0, $r4_2 #5, $r4_3 #6);
+
+(5)     $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #4, $r3_3 #5, $r3_4 #6);
+
+     label6:
+        $r4_3 = Phi($r4_2 #5, $r4 #7);
+
+        $r3_4 = Phi($r3_3 #5, $r3_1 #7);
+
+(6)     exitmonitor $r1;
+
+     label7:
+        throw $r4_3;
+
+     label8:
+        $r4 := @caughtexception;
+
+(7)     goto label6;
+
+     label9:
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.lang.Throwable from label2 to label3 with label8;
+        catch java.lang.Throwable from label3 to label4 with label5;
+        catch java.lang.Throwable from label6 to label7 with label5;
+    }
+
+    void extendAccessTokenIfNeeded()
+    {
+        com.facebook.Session $r0;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.Session;
+
+        $z0 = virtualinvoke $r0.<com.facebook.Session: boolean shouldExtendAccessToken()>();
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r0.<com.facebook.Session: void extendAccessToken()>();
+
+     label1:
+        return;
+    }
+
+    void extendTokenCompleted(android.os.Bundle)
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        int[] $r2;
+        java.lang.String $r3, $r9;
+        java.lang.Throwable $r4;
+        android.os.Bundle $r5, $r5_1, $r5_2, $r5_3;
+        com.facebook.SessionState $r6, $r7, $r6_1, $r7_1, $r7_2, $r7_3, $r6_2, $r7_4;
+        int $i0, $i0_1, $i0_2;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3;
+        com.facebook.AccessToken $r10, $r10_1, $r10_2, $r10_3, $r10_4;
+        com.facebook.TokenCachingStrategy $r11, $r11_1, $r11_2, $r11_3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r5 := @parameter0: android.os.Bundle;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r1;
+
+     label01:
+        $r6 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r2 = <com.facebook.Session$5: int[] $SwitchMap$com$facebook$SessionState>;
+
+        $r7 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $i0 = virtualinvoke $r7.<com.facebook.SessionState: int ordinal()>();
+
+(1)     $i0_1 = $r2[$i0];
+
+(2)     lookupswitch($i0_1)
+        {
+            case 4: goto label05;
+            case 5: goto label06;
+            default: goto label02;
+        };
+
+     label02:
+        goto label03;
+
+     label03:
+        $r3 = <com.facebook.Session: java.lang.String TAG>;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+(3)     $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("refreshToken ignored in state ");
+
+(4)     $r6_1 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+(5)     $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6_1);
+
+        $r9 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r3, $r9);
+
+        exitmonitor $r1;
+
+     label04:
+        return;
+
+     label05:
+(6)     $r7_1 = <com.facebook.SessionState: com.facebook.SessionState OPENED_TOKEN_UPDATED>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r7_1;
+
+(7)     $r7_2 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+(8)     virtualinvoke $r0.<com.facebook.Session: void postStateChange(com.facebook.SessionState,com.facebook.SessionState,java.lang.Exception)>($r6, $r7_2, null);
+
+     label06:
+        $r7_3 = Phi($r7 #2, $r7_2 #8);
+
+(9)     $r10 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+(10)    $r10_1 = staticinvoke <com.facebook.AccessToken: com.facebook.AccessToken createFromRefresh(com.facebook.AccessToken,android.os.Bundle)>($r10, $r5);
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r10_1;
+
+        $r11 = $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy>;
+
+(11)    if $r11 == null goto label07;
+
+(12)    $r11_1 = $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy>;
+
+(13)    $r10_2 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+(14)    $r5_1 = virtualinvoke $r10_2.<com.facebook.AccessToken: android.os.Bundle toCacheBundle()>();
+
+(15)    virtualinvoke $r11_1.<com.facebook.TokenCachingStrategy: void save(android.os.Bundle)>($r5_1);
+
+     label07:
+        $r11_2 = Phi($r11 #11, $r11_1 #15);
+
+        $r5_2 = Phi($r5 #11, $r5_1 #15);
+
+        $r10_3 = Phi($r10_1 #11, $r10_2 #15);
+
+(16)    exitmonitor $r1;
+
+     label08:
+        return;
+
+     label09:
+        $r4 := @caughtexception;
+
+        $r8_3 = Phi($r8 #0, $r8_1 #3, $r8_2 #5, $r8_3 #17);
+
+        $r11_3 = Phi($r11 #0, $r11_1 #12, $r11_2 #16, $r11_3 #17);
+
+        $r5_3 = Phi($r5 #0, $r5_1 #14, $r5_2 #16, $r5_3 #17);
+
+        $r6_2 = Phi($r6 #0, $r6_1 #4, $r6_2 #17);
+
+        $r10_4 = Phi($r10 #0, $r10_1 #10, $r10_2 #13, $r10_3 #16, $r10_4 #17);
+
+        $r7_4 = Phi($r7 #0, $r7_1 #6, $r7_2 #7, $r7_3 #9, $r7_4 #17);
+
+(17)    $i0_2 = Phi($i0 #0, $i0_1 #1, $i0_2 #17);
+
+        exitmonitor $r1;
+
+     label10:
+        throw $r4;
+
+        catch java.lang.Throwable from label01 to label04 with label09;
+        catch java.lang.Throwable from label05 to label08 with label09;
+        catch java.lang.Throwable from label09 to label10 with label09;
+    }
+
+    void finishAuthOrReauth(com.facebook.AccessToken, java.lang.Exception)
+    {
+        com.facebook.Session $r0;
+        com.facebook.FacebookException $r1;
+        java.lang.Object $r2;
+        int[] $r3;
+        java.lang.Throwable $r4;
+        java.lang.String $r5, $r10;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        com.facebook.AccessToken $r7, $r7_1, $r7_2;
+        java.lang.Exception $r8, $r8_1, $r8_2;
+        boolean $z0;
+        com.facebook.SessionState $r9, $r9_1, $r9_2, $r9_3;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r7 := @parameter0: com.facebook.AccessToken;
+
+        $r8 := @parameter1: java.lang.Exception;
+
+(0)     if $r7 == null goto label01;
+
+        $z0 = virtualinvoke $r7.<com.facebook.AccessToken: boolean isInvalid()>();
+
+(1)     if $z0 == 0 goto label01;
+
+        $r7_1 = null;
+
+        $r1 = new com.facebook.FacebookException;
+
+        $r8_1 = $r1;
+
+(2)     specialinvoke $r1.<com.facebook.FacebookException: void <init>(java.lang.String)>("Invalid access token.");
+
+     label01:
+        $r8_2 = Phi($r8 #0, $r8 #1, $r8_1 #2);
+
+        $r7_2 = Phi($r7 #0, $r7 #1, $r7_1 #2);
+
+        $r2 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(3)     entermonitor $r2;
+
+     label02:
+        $r3 = <com.facebook.Session$5: int[] $SwitchMap$com$facebook$SessionState>;
+
+        $r9 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $i0 = virtualinvoke $r9.<com.facebook.SessionState: int ordinal()>();
+
+(4)     $i0_1 = $r3[$i0];
+
+        lookupswitch($i0_1)
+        {
+            case 1: goto label10;
+            case 2: goto label06;
+            case 3: goto label10;
+            case 4: goto label09;
+            case 5: goto label09;
+            case 6: goto label10;
+            case 7: goto label10;
+            default: goto label03;
+        };
+
+     label03:
+(5)     goto label04;
+
+     label04:
+        $r6 = Phi($r6 #5, $r6 #7, $r6 #9, $r6_3 #14);
+
+        $r9_1 = Phi($r9 #5, $r9 #7, $r9 #9, $r9_2 #14);
+
+(6)     exitmonitor $r2;
+
+     label05:
+        return;
+
+     label06:
+        specialinvoke $r0.<com.facebook.Session: void finishAuthorization(com.facebook.AccessToken,java.lang.Exception)>($r7_2, $r8_2);
+
+(7)     goto label04;
+
+     label07:
+        $r4 := @caughtexception;
+
+        $r6_4 = Phi($r6 #3, $r6_4 #8, $r6_1 #10, $r6_2 #11, $r6_3 #13);
+
+        $r9_3 = Phi($r9 #3, $r9_1 #6, $r9_3 #8, $r9_2 #12);
+
+(8)     $i0_2 = Phi($i0 #3, $i0_1 #4, $i0_2 #8);
+
+        exitmonitor $r2;
+
+     label08:
+        throw $r4;
+
+     label09:
+        specialinvoke $r0.<com.facebook.Session: void finishReauthorization(com.facebook.AccessToken,java.lang.Exception)>($r7_2, $r8_2);
+
+(9)     goto label04;
+
+     label10:
+        $r5 = <com.facebook.Session: java.lang.String TAG>;
+
+(10)    $r6_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_1.<java.lang.StringBuilder: void <init>()>();
+
+(11)    $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unexpected call to finishAuthOrReauth in state ");
+
+(12)    $r9_2 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+(13)    $r6_3 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r9_2);
+
+        $r10 = virtualinvoke $r6_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r5, $r10);
+
+     label11:
+(14)    goto label04;
+
+        catch java.lang.Throwable from label02 to label05 with label07;
+        catch java.lang.Throwable from label06 to label08 with label07;
+        catch java.lang.Throwable from label09 to label11 with label07;
+    }
+
+    public final java.lang.String getAccessToken()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        java.lang.Throwable $r2;
+        java.lang.String $r3, $r3_1, $r3_2, $r3_3;
+        com.facebook.AccessToken $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r1;
+
+     label1:
+        $r4 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+        if $r4 != null goto label4;
+
+(1)     $r3 = null;
+
+     label2:
+        $r4_1 = Phi($r4 #1, $r4_2 #5);
+
+        $r3_1 = Phi($r3 #1, $r3_2 #5);
+
+(2)     exitmonitor $r1;
+
+     label3:
+        return $r3_1;
+
+     label4:
+(3)     $r4_2 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+(4)     $r3_2 = virtualinvoke $r4_2.<com.facebook.AccessToken: java.lang.String getToken()>();
+
+(5)     goto label2;
+
+     label5:
+        $r2 := @caughtexception;
+
+        $r4_3 = Phi($r4 #0, $r4_1 #2, $r4_2 #3, $r4_3 #6);
+
+(6)     $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #4, $r3_3 #6);
+
+        exitmonitor $r1;
+
+     label6:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label3 with label5;
+        catch java.lang.Throwable from label4 to label6 with label5;
+    }
+
+    public final java.lang.String getApplicationId()
+    {
+        com.facebook.Session $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.facebook.Session;
+
+        r1 = $r0.<com.facebook.Session: java.lang.String applicationId>;
+
+        return r1;
+    }
+
+    public final android.os.Bundle getAuthorizationBundle()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        java.lang.Throwable $r2;
+        android.os.Bundle r3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+        entermonitor $r1;
+
+     label1:
+        r3 = $r0.<com.facebook.Session: android.os.Bundle authorizationBundle>;
+
+        exitmonitor $r1;
+
+     label2:
+        return r3;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r1;
+
+     label4:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public final java.util.List getDeclinedPermissions()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        java.lang.Throwable $r2;
+        java.util.List $r3, $r3_1, $r3_2, $r3_3;
+        com.facebook.AccessToken $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r1;
+
+     label1:
+        $r4 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+        if $r4 != null goto label4;
+
+(1)     $r3 = null;
+
+     label2:
+        $r3_1 = Phi($r3 #1, $r3_2 #5);
+
+        $r4_1 = Phi($r4 #1, $r4_2 #5);
+
+(2)     exitmonitor $r1;
+
+     label3:
+        return $r3_1;
+
+     label4:
+(3)     $r4_2 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+(4)     $r3_2 = virtualinvoke $r4_2.<com.facebook.AccessToken: java.util.List getDeclinedPermissions()>();
+
+(5)     goto label2;
+
+     label5:
+        $r2 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #4, $r3_3 #6);
+
+(6)     $r4_3 = Phi($r4 #0, $r4_1 #2, $r4_2 #3, $r4_3 #6);
+
+        exitmonitor $r1;
+
+     label6:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label3 with label5;
+        catch java.lang.Throwable from label4 to label6 with label5;
+    }
+
+    public final java.util.Date getExpirationDate()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        java.lang.Throwable $r2;
+        java.util.Date $r3, $r3_1, $r3_2, $r3_3;
+        com.facebook.AccessToken $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r1;
+
+     label1:
+        $r4 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+        if $r4 != null goto label4;
+
+(1)     $r3 = null;
+
+     label2:
+        $r3_1 = Phi($r3 #1, $r3_2 #5);
+
+        $r4_1 = Phi($r4 #1, $r4_2 #5);
+
+(2)     exitmonitor $r1;
+
+     label3:
+        return $r3_1;
+
+     label4:
+(3)     $r4_2 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+(4)     $r3_2 = virtualinvoke $r4_2.<com.facebook.AccessToken: java.util.Date getExpires()>();
+
+(5)     goto label2;
+
+     label5:
+        $r2 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #4, $r3_3 #6);
+
+(6)     $r4_3 = Phi($r4 #0, $r4_1 #2, $r4_2 #3, $r4_3 #6);
+
+        exitmonitor $r1;
+
+     label6:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label3 with label5;
+        catch java.lang.Throwable from label4 to label6 with label5;
+    }
+
+    java.util.Date getLastAttemptedTokenExtendDate()
+    {
+        com.facebook.Session $r0;
+        java.util.Date r1;
+
+        $r0 := @this: com.facebook.Session;
+
+        r1 = $r0.<com.facebook.Session: java.util.Date lastAttemptedTokenExtendDate>;
+
+        return r1;
+    }
+
+    public final java.util.List getPermissions()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        java.lang.Throwable $r2;
+        java.util.List $r3, $r3_1, $r3_2, $r3_3;
+        com.facebook.AccessToken $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r1;
+
+     label1:
+        $r4 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+        if $r4 != null goto label4;
+
+(1)     $r3 = null;
+
+     label2:
+        $r4_1 = Phi($r4 #1, $r4_2 #5);
+
+        $r3_1 = Phi($r3 #1, $r3_2 #5);
+
+(2)     exitmonitor $r1;
+
+     label3:
+        return $r3_1;
+
+     label4:
+(3)     $r4_2 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+(4)     $r3_2 = virtualinvoke $r4_2.<com.facebook.AccessToken: java.util.List getPermissions()>();
+
+(5)     goto label2;
+
+     label5:
+        $r2 := @caughtexception;
+
+        $r4_3 = Phi($r4 #0, $r4_1 #2, $r4_2 #3, $r4_3 #6);
+
+(6)     $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #4, $r3_3 #6);
+
+        exitmonitor $r1;
+
+     label6:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label3 with label5;
+        catch java.lang.Throwable from label4 to label6 with label5;
+    }
+
+    public final com.facebook.SessionState getState()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        java.lang.Throwable $r2;
+        com.facebook.SessionState r3;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+        entermonitor $r1;
+
+     label1:
+        r3 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        exitmonitor $r1;
+
+     label2:
+        return r3;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r1;
+
+     label4:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    com.facebook.AccessToken getTokenInfo()
+    {
+        com.facebook.Session $r0;
+        com.facebook.AccessToken r1;
+
+        $r0 := @this: com.facebook.Session;
+
+        r1 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+        return r1;
+    }
+
+    public int hashCode()
+    {
+        com.facebook.Session $r0;
+
+        $r0 := @this: com.facebook.Session;
+
+        return 0;
+    }
+
+    public final boolean isClosed()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        com.facebook.SessionState $r2;
+        java.lang.Throwable $r3;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+        entermonitor $r1;
+
+     label1:
+        $r2 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $z0 = virtualinvoke $r2.<com.facebook.SessionState: boolean isClosed()>();
+
+        exitmonitor $r1;
+
+     label2:
+        return $z0;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r1;
+
+     label4:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public final boolean isOpened()
+    {
+        com.facebook.Session $r0;
+        java.lang.Object $r1;
+        com.facebook.SessionState $r2;
+        java.lang.Throwable $r3;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+        entermonitor $r1;
+
+     label1:
+        $r2 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $z0 = virtualinvoke $r2.<com.facebook.SessionState: boolean isOpened()>();
+
+        exitmonitor $r1;
+
+     label2:
+        return $z0;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r1;
+
+     label4:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public boolean isPermissionGranted(java.lang.String)
+    {
+        com.facebook.Session $r0;
+        java.lang.String $r1;
+        java.util.List $r2;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke $r0.<com.facebook.Session: java.util.List getPermissions()>();
+
+        if $r2 == null goto label1;
+
+        $z0 = interfaceinvoke $r2.<java.util.List: boolean contains(java.lang.Object)>($r1);
+
+        return $z0;
+
+     label1:
+        return 0;
+    }
+
+    public final boolean onActivityResult(android.app.Activity, int, int, android.content.Intent)
+    {
+        com.facebook.Session $r0;
+        android.app.Activity $r1;
+        int $i0, $i1, $i2;
+        android.content.Intent $r2;
+        java.lang.Object $r3;
+        java.lang.Throwable $r4;
+        com.facebook.FacebookOperationCanceledException $r5;
+        com.facebook.FacebookException $r6, $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        com.facebook.Session$AuthorizationRequest $r7, $r7_1, $r7_2, $r7_3;
+        com.facebook.AuthorizationClient$Result$Code $r9, $r9_1, $r9_2;
+        java.io.Serializable $r10;
+        com.facebook.AuthorizationClient$Result $r11;
+        com.facebook.AuthorizationClient $r12, $r12_1, $r12_2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 := @parameter3: android.content.Intent;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r1, "currentActivity");
+
+        staticinvoke <com.facebook.Session: void initializeStaticContext(android.content.Context)>($r1);
+
+        $r3 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r3;
+
+     label01:
+        $r7 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+(1)     if $r7 == null goto label02;
+
+(2)     $r7_1 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        $i2 = virtualinvoke $r7_1.<com.facebook.Session$AuthorizationRequest: int getRequestCode()>();
+
+(3)     if $i0 == $i2 goto label04;
+
+     label02:
+        $r7_2 = Phi($r7 #1, $r7_1 #3);
+
+(4)     exitmonitor $r3;
+
+     label03:
+        return 0;
+
+     label04:
+        exitmonitor $r3;
+
+     label05:
+        $r8 = null;
+
+        $r9 = <com.facebook.AuthorizationClient$Result$Code: com.facebook.AuthorizationClient$Result$Code ERROR>;
+
+        if $r2 == null goto label10;
+
+        $r10 = virtualinvoke $r2.<android.content.Intent: java.io.Serializable getSerializableExtra(java.lang.String)>("com.facebook.LoginActivity:Result");
+
+        $r11 = (com.facebook.AuthorizationClient$Result) $r10;
+
+        if $r11 == null goto label09;
+
+        specialinvoke $r0.<com.facebook.Session: void handleAuthorizationResult(int,com.facebook.AuthorizationClient$Result)>($i1, $r11);
+
+        return 1;
+
+     label06:
+        $r4 := @caughtexception;
+
+(5)     $r7_3 = Phi($r7 #0, $r7_1 #2, $r7_2 #4, $r7_3 #5);
+
+     label07:
+        exitmonitor $r3;
+
+     label08:
+        throw $r4;
+
+     label09:
+        $r12 = $r0.<com.facebook.Session: com.facebook.AuthorizationClient authorizationClient>;
+
+(6)     if $r12 == null goto label11;
+
+        $r12_1 = $r0.<com.facebook.Session: com.facebook.AuthorizationClient authorizationClient>;
+
+        virtualinvoke $r12_1.<com.facebook.AuthorizationClient: boolean onActivityResult(int,int,android.content.Intent)>($i0, $i1, $r2);
+
+        return 1;
+
+     label10:
+(7)     if $i1 != 0 goto label11;
+
+        $r5 = new com.facebook.FacebookOperationCanceledException;
+
+        $r8_1 = $r5;
+
+        specialinvoke $r5.<com.facebook.FacebookOperationCanceledException: void <init>(java.lang.String)>("User canceled operation.");
+
+(8)     $r9_1 = <com.facebook.AuthorizationClient$Result$Code: com.facebook.AuthorizationClient$Result$Code CANCEL>;
+
+     label11:
+        $r9_2 = Phi($r9 #6, $r9 #7, $r9_1 #8);
+
+        $r8_2 = Phi($r8 #6, $r8 #7, $r8_1 #8);
+
+        $r12_2 = Phi($r12 #6, $r12 #7, $r12 #8);
+
+(9)     if $r8_2 != null goto label12;
+
+        $r6 = new com.facebook.FacebookException;
+
+        $r8_3 = $r6;
+
+(10)    specialinvoke $r6.<com.facebook.FacebookException: void <init>(java.lang.String)>("Unexpected call to Session.onActivityResult");
+
+     label12:
+        $r8_4 = Phi($r8_2 #9, $r8_3 #10);
+
+        specialinvoke $r0.<com.facebook.Session: void logAuthorizationComplete(com.facebook.AuthorizationClient$Result$Code,java.util.Map,java.lang.Exception)>($r9_2, null, $r8_4);
+
+        virtualinvoke $r0.<com.facebook.Session: void finishAuthOrReauth(com.facebook.AccessToken,java.lang.Exception)>(null, $r8_4);
+
+        return 1;
+
+        catch java.lang.Throwable from label01 to label03 with label06;
+        catch java.lang.Throwable from label04 to label05 with label06;
+        catch java.lang.Throwable from label07 to label08 with label06;
+    }
+
+    public final void open(com.facebook.AccessToken, com.facebook.Session$StatusCallback)
+    {
+        com.facebook.Session $r0;
+        com.facebook.AccessToken $r1;
+        com.facebook.Session$StatusCallback $r2;
+        java.lang.Object $r3;
+        com.facebook.Session$AuthorizationRequest $r4;
+        java.lang.Throwable $r5;
+        java.lang.UnsupportedOperationException $r6, $r6_1, $r6_2, $r6_3;
+        com.facebook.SessionState $r7, $r8, $r7_1, $r7_2, $r8_1, $r7_3, $r8_2, $r7_4, $r8_3, $r8_4, $r7_5, $r8_5;
+        boolean $z0;
+        com.facebook.TokenCachingStrategy $r9, $r9_1, $r9_2, $r9_3;
+        android.os.Bundle $r10;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.AccessToken;
+
+        $r2 := @parameter1: com.facebook.Session$StatusCallback;
+
+        $r3 = $r0.<com.facebook.Session: java.lang.Object lock>;
+
+(0)     entermonitor $r3;
+
+     label1:
+        $r4 = $r0.<com.facebook.Session: com.facebook.Session$AuthorizationRequest pendingAuthorizationRequest>;
+
+        if $r4 == null goto label4;
+
+        $r6 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r6.<java.lang.UnsupportedOperationException: void <init>(java.lang.String)>("Session: an attempt was made to open a session that has a pending request.");
+
+        throw $r6;
+
+     label2:
+        $r5 := @caughtexception;
+
+        $r7_5 = Phi($r7 #0, $r7_5 #1, $r7_1 #3, $r7_2 #5, $r7_3 #9, $r7_4 #13);
+
+        $r6_3 = Phi($r6 #0, $r6_3 #1, $r6_1 #2, $r6_2 #8);
+
+        $r9_3 = Phi($r9 #0, $r9_3 #1, $r9_1 #11, $r9_2 #13);
+
+(1)     $r8_5 = Phi($r8 #0, $r8_5 #1, $r8_1 #6, $r8_2 #9, $r8_3 #14, $r8_4 #15);
+
+        exitmonitor $r3;
+
+     label3:
+        throw $r5;
+
+     label4:
+        $r7 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $z0 = virtualinvoke $r7.<com.facebook.SessionState: boolean isClosed()>();
+
+        if $z0 == 0 goto label5;
+
+(2)     $r6_1 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r6_1.<java.lang.UnsupportedOperationException: void <init>(java.lang.String)>("Session: an attempt was made to open a previously-closed session.");
+
+        throw $r6_1;
+
+     label5:
+(3)     $r7_1 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r8 = <com.facebook.SessionState: com.facebook.SessionState CREATED>;
+
+(4)     if $r7_1 == $r8 goto label6;
+
+(5)     $r7_2 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+(6)     $r8_1 = <com.facebook.SessionState: com.facebook.SessionState CREATED_TOKEN_LOADED>;
+
+(7)     if $r7_2 == $r8_1 goto label6;
+
+(8)     $r6_2 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r6_2.<java.lang.UnsupportedOperationException: void <init>(java.lang.String)>("Session: an attempt was made to open an already opened session.");
+
+        throw $r6_2;
+
+     label6:
+        $r7_3 = Phi($r7_1 #4, $r7_2 #7);
+
+        $r8_2 = Phi($r8 #4, $r8_1 #7);
+
+(9)     if $r2 == null goto label7;
+
+        virtualinvoke $r0.<com.facebook.Session: void addCallback(com.facebook.Session$StatusCallback)>($r2);
+
+     label7:
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r1;
+
+        $r9 = $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy>;
+
+(10)    if $r9 == null goto label8;
+
+(11)    $r9_1 = $r0.<com.facebook.Session: com.facebook.TokenCachingStrategy tokenCachingStrategy>;
+
+        $r10 = virtualinvoke $r1.<com.facebook.AccessToken: android.os.Bundle toCacheBundle()>();
+
+(12)    virtualinvoke $r9_1.<com.facebook.TokenCachingStrategy: void save(android.os.Bundle)>($r10);
+
+     label8:
+        $r9_2 = Phi($r9 #10, $r9_1 #12);
+
+(13)    $r7_4 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+(14)    $r8_3 = <com.facebook.SessionState: com.facebook.SessionState OPENED>;
+
+        $r0.<com.facebook.Session: com.facebook.SessionState state> = $r8_3;
+
+(15)    $r8_4 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        virtualinvoke $r0.<com.facebook.Session: void postStateChange(com.facebook.SessionState,com.facebook.SessionState,java.lang.Exception)>($r7_4, $r8_4, null);
+
+        exitmonitor $r3;
+
+     label9:
+        specialinvoke $r0.<com.facebook.Session: void autoPublishAsync()>();
+
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label2;
+        catch java.lang.Throwable from label4 to label9 with label2;
+    }
+
+    public final void openForPublish(com.facebook.Session$OpenRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$OpenRequest $r1;
+        com.facebook.internal.SessionAuthorizationType $r2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$OpenRequest;
+
+        $r2 = <com.facebook.internal.SessionAuthorizationType: com.facebook.internal.SessionAuthorizationType PUBLISH>;
+
+        specialinvoke $r0.<com.facebook.Session: void open(com.facebook.Session$OpenRequest,com.facebook.internal.SessionAuthorizationType)>($r1, $r2);
+
+        return;
+    }
+
+    public final void openForRead(com.facebook.Session$OpenRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$OpenRequest $r1;
+        com.facebook.internal.SessionAuthorizationType $r2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$OpenRequest;
+
+        $r2 = <com.facebook.internal.SessionAuthorizationType: com.facebook.internal.SessionAuthorizationType READ>;
+
+        specialinvoke $r0.<com.facebook.Session: void open(com.facebook.Session$OpenRequest,com.facebook.internal.SessionAuthorizationType)>($r1, $r2);
+
+        return;
+    }
+
+    void postStateChange(com.facebook.SessionState, com.facebook.SessionState, java.lang.Exception)
+    {
+        com.facebook.Session $r0, $r7;
+        com.facebook.SessionState $r1, $r2, $r4;
+        java.lang.Exception $r3;
+        com.facebook.Session$4 $r5;
+        android.os.Handler $r6;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3;
+        com.facebook.AccessToken $r8;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.SessionState;
+
+        $r2 := @parameter1: com.facebook.SessionState;
+
+        $r3 := @parameter2: java.lang.Exception;
+
+        if $r1 != $r2 goto label1;
+
+        $r4 = <com.facebook.SessionState: com.facebook.SessionState OPENED_TOKEN_UPDATED>;
+
+        if $r1 == $r4 goto label1;
+
+        if $r3 != null goto label1;
+
+        return;
+
+     label1:
+        $z0 = virtualinvoke $r2.<com.facebook.SessionState: boolean isClosed()>();
+
+        if $z0 == 0 goto label2;
+
+        $r8 = staticinvoke <com.facebook.AccessToken: com.facebook.AccessToken createEmptyToken()>();
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r8;
+
+     label2:
+        $r5 = new com.facebook.Session$4;
+
+        specialinvoke $r5.<com.facebook.Session$4: void <init>(com.facebook.Session,com.facebook.SessionState,java.lang.Exception)>($r0, $r2, $r3);
+
+        $r6 = $r0.<com.facebook.Session: android.os.Handler handler>;
+
+        staticinvoke <com.facebook.Session: void runWithHandlerOrExecutor(android.os.Handler,java.lang.Runnable)>($r6, $r5);
+
+        $r7 = <com.facebook.Session: com.facebook.Session activeSession>;
+
+(0)     if $r0 != $r7 goto label4;
+
+        $z0_1 = virtualinvoke $r1.<com.facebook.SessionState: boolean isOpened()>();
+
+        $z1 = virtualinvoke $r2.<com.facebook.SessionState: boolean isOpened()>();
+
+(1)     if $z0_1 == $z1 goto label4;
+
+        $z0_2 = virtualinvoke $r2.<com.facebook.SessionState: boolean isOpened()>();
+
+        if $z0_2 == 0 goto label3;
+
+        staticinvoke <com.facebook.Session: void postActiveSessionAction(java.lang.String)>("com.facebook.sdk.ACTIVE_SESSION_OPENED");
+
+        return;
+
+     label3:
+(2)     staticinvoke <com.facebook.Session: void postActiveSessionAction(java.lang.String)>("com.facebook.sdk.ACTIVE_SESSION_CLOSED");
+
+     label4:
+        $z0_3 = Phi($z0 #0, $z0_1 #1, $z0_2 #2);
+
+        return;
+    }
+
+    public final void refreshPermissions()
+    {
+        com.facebook.Session $r0;
+        com.facebook.Request $r1;
+        com.facebook.Session$2 $r2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = new com.facebook.Request;
+
+        specialinvoke $r1.<com.facebook.Request: void <init>(com.facebook.Session,java.lang.String)>($r0, "me/permissions");
+
+        $r2 = new com.facebook.Session$2;
+
+        specialinvoke $r2.<com.facebook.Session$2: void <init>(com.facebook.Session)>($r0);
+
+        virtualinvoke $r1.<com.facebook.Request: void setCallback(com.facebook.Request$Callback)>($r2);
+
+        virtualinvoke $r1.<com.facebook.Request: com.facebook.RequestAsyncTask executeAsync()>();
+
+        return;
+    }
+
+    public final void removeCallback(com.facebook.Session$StatusCallback)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$StatusCallback $r1;
+        java.util.List $r2, $r3;
+        java.lang.Throwable $r4;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$StatusCallback;
+
+        $r2 = $r0.<com.facebook.Session: java.util.List callbacks>;
+
+        entermonitor $r2;
+
+     label1:
+        $r3 = $r0.<com.facebook.Session: java.util.List callbacks>;
+
+        interfaceinvoke $r3.<java.util.List: boolean remove(java.lang.Object)>($r1);
+
+        exitmonitor $r2;
+
+     label2:
+        return;
+
+     label3:
+        $r4 := @caughtexception;
+
+        exitmonitor $r2;
+
+     label4:
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public final void requestNewPublishPermissions(com.facebook.Session$NewPermissionsRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$NewPermissionsRequest $r1;
+        com.facebook.internal.SessionAuthorizationType $r2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$NewPermissionsRequest;
+
+        $r2 = <com.facebook.internal.SessionAuthorizationType: com.facebook.internal.SessionAuthorizationType PUBLISH>;
+
+        specialinvoke $r0.<com.facebook.Session: void requestNewPermissions(com.facebook.Session$NewPermissionsRequest,com.facebook.internal.SessionAuthorizationType)>($r1, $r2);
+
+        return;
+    }
+
+    public final void requestNewReadPermissions(com.facebook.Session$NewPermissionsRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$NewPermissionsRequest $r1;
+        com.facebook.internal.SessionAuthorizationType $r2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$NewPermissionsRequest;
+
+        $r2 = <com.facebook.internal.SessionAuthorizationType: com.facebook.internal.SessionAuthorizationType READ>;
+
+        specialinvoke $r0.<com.facebook.Session: void requestNewPermissions(com.facebook.Session$NewPermissionsRequest,com.facebook.internal.SessionAuthorizationType)>($r1, $r2);
+
+        return;
+    }
+
+    void setCurrentTokenRefreshRequest(com.facebook.Session$TokenRefreshRequest)
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$TokenRefreshRequest $r1;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.Session$TokenRefreshRequest;
+
+        $r0.<com.facebook.Session: com.facebook.Session$TokenRefreshRequest currentTokenRefreshRequest> = $r1;
+
+        return;
+    }
+
+    void setLastAttemptedTokenExtendDate(java.util.Date)
+    {
+        com.facebook.Session $r0;
+        java.util.Date $r1;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: java.util.Date;
+
+        $r0.<com.facebook.Session: java.util.Date lastAttemptedTokenExtendDate> = $r1;
+
+        return;
+    }
+
+    void setTokenInfo(com.facebook.AccessToken)
+    {
+        com.facebook.Session $r0;
+        com.facebook.AccessToken $r1;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 := @parameter0: com.facebook.AccessToken;
+
+        $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo> = $r1;
+
+        return;
+    }
+
+    boolean shouldExtendAccessToken()
+    {
+        com.facebook.Session $r0;
+        com.facebook.Session$TokenRefreshRequest $r1;
+        com.facebook.SessionState $r2;
+        java.util.Date $r3, $r4, $r3_1, $r3_2;
+        boolean $z0, $z0_1, $z0_2;
+        com.facebook.AccessToken $r5, $r5_1, $r5_2;
+        com.facebook.AccessTokenSource $r6;
+        long $l0, $l1, $l0_1, $l0_2, $l1_1, $l0_3, $l1_2, $l0_4;
+        byte $b2, $b2_1, $b2_2;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r1 = $r0.<com.facebook.Session: com.facebook.Session$TokenRefreshRequest currentTokenRefreshRequest>;
+
+        if $r1 == null goto label1;
+
+        return 0;
+
+     label1:
+        $r4 = new java.util.Date;
+
+        specialinvoke $r4.<java.util.Date: void <init>()>();
+
+        $r2 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $z0 = virtualinvoke $r2.<com.facebook.SessionState: boolean isOpened()>();
+
+(0)     if $z0 == 0 goto label2;
+
+        $r5 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+        $r6 = virtualinvoke $r5.<com.facebook.AccessToken: com.facebook.AccessTokenSource getSource()>();
+
+        $z0_1 = virtualinvoke $r6.<com.facebook.AccessTokenSource: boolean canExtendToken()>();
+
+(1)     if $z0_1 == 0 goto label2;
+
+        $l0 = virtualinvoke $r4.<java.util.Date: long getTime()>();
+
+        $r3 = $r0.<com.facebook.Session: java.util.Date lastAttemptedTokenExtendDate>;
+
+        $l1 = virtualinvoke $r3.<java.util.Date: long getTime()>();
+
+        $l0_1 = $l0 - $l1;
+
+        $b2 = $l0_1 cmp 3600000L;
+
+(2)     if $b2 <= 0 goto label2;
+
+        $l0_2 = virtualinvoke $r4.<java.util.Date: long getTime()>();
+
+        $r5_1 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+        $r3_1 = virtualinvoke $r5_1.<com.facebook.AccessToken: java.util.Date getLastRefresh()>();
+
+        $l1_1 = virtualinvoke $r3_1.<java.util.Date: long getTime()>();
+
+        $l0_3 = $l0_2 - $l1_1;
+
+        $b2_1 = $l0_3 cmp 86400000L;
+
+(3)     if $b2_1 <= 0 goto label2;
+
+        return 1;
+
+     label2:
+        $b2_2 = Phi($b2 #0, $b2 #1, $b2 #2, $b2_1 #3);
+
+        $l1_2 = Phi($l1 #0, $l1 #1, $l1 #2, $l1_1 #3);
+
+        $l0_4 = Phi($l0 #0, $l0 #1, $l0_1 #2, $l0_3 #3);
+
+        $r3_2 = Phi($r3 #0, $r3 #1, $r3 #2, $r3_1 #3);
+
+        $r5_2 = Phi($r5 #0, $r5 #1, $r5 #2, $r5_1 #3);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2, $z0_1 #3);
+
+        return 0;
+    }
+
+    public java.lang.String toString()
+    {
+        com.facebook.Session $r0;
+        com.facebook.SessionState $r1;
+        com.facebook.AccessToken $r2;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8;
+        java.io.Serializable $r4, $r4_1, $r4_2;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+
+        $r0 := @this: com.facebook.Session;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("{Session");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" state:");
+
+        $r1 = $r0.<com.facebook.Session: com.facebook.SessionState state>;
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3_4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", token:");
+
+        $r2 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+        if $r2 != null goto label3;
+
+(0)     $r4 = "null";
+
+     label1:
+        $r4_1 = Phi($r4 #0, $r4_2 #2);
+
+        $r3_5 = virtualinvoke $r3_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r4_1);
+
+        $r3_6 = virtualinvoke $r3_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", appId:");
+
+        $r5 = $r0.<com.facebook.Session: java.lang.String applicationId>;
+
+        if $r5 != null goto label4;
+
+(1)     $r5_1 = "null";
+
+     label2:
+        $r5_2 = Phi($r5_1 #1, $r5_4 #3);
+
+        $r3_7 = virtualinvoke $r3_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_2);
+
+        $r3_8 = virtualinvoke $r3_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}");
+
+        $r5_3 = virtualinvoke $r3_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r5_3;
+
+     label3:
+        $r4_2 = $r0.<com.facebook.Session: com.facebook.AccessToken tokenInfo>;
+
+(2)     goto label1;
+
+     label4:
+        $r5_4 = $r0.<com.facebook.Session: java.lang.String applicationId>;
+
+(3)     goto label2;
+    }
+}

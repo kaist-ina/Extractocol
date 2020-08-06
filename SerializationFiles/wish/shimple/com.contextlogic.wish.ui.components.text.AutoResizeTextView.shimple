@@ -1,0 +1,541 @@
+public class com.contextlogic.wish.ui.components.text.AutoResizeTextView extends com.contextlogic.wish.ui.components.text.UnifiedFontTextView
+{
+    private static final int NO_LINE_LIMIT;
+    private boolean isChanging;
+    private boolean isStale;
+    private float lineAdditionalVerticalPadding;
+    private float lineSpacingMultiplier;
+    private float maxFontSize;
+    private int maxLines;
+    private float minFontSize;
+
+    public void <init>(android.content.Context)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, 0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        int[] $r3;
+        int $i0, $i0_1;
+        android.content.res.TypedArray $r4;
+        android.content.res.Resources $r5;
+        android.util.DisplayMetrics $r6;
+        float $f0, $f0_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int maxLines> = -1;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float lineSpacingMultiplier> = 1.0F;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float lineAdditionalVerticalPadding> = 0.0F;
+
+        $r3 = newarray (int)[1];
+
+        $r3[0] = 16843091;
+
+        $r4 = virtualinvoke $r1.<android.content.Context: android.content.res.TypedArray obtainStyledAttributes(android.util.AttributeSet,int[])>($r2, $r3);
+
+        $i0_1 = virtualinvoke $r4.<android.content.res.TypedArray: int getInt(int,int)>(0, 2);
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: void setMaxLines(int)>($i0_1);
+
+        virtualinvoke $r4.<android.content.res.TypedArray: void recycle()>();
+
+        $r5 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: android.content.res.Resources getResources()>();
+
+        $r6 = virtualinvoke $r5.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0 = staticinvoke <android.util.TypedValue: float applyDimension(int,float,android.util.DisplayMetrics)>(1, 10.0F, $r6);
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float minFontSize> = $f0;
+
+        $f0_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float getTextSize()>();
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float maxFontSize> = $f0_1;
+
+        return;
+    }
+
+    private void adjustTextSize()
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        float $f0;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isChanging> = 1;
+
+        $i0 = specialinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int getIdealFontSize()>();
+
+        $f0 = (float) $i0;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: void setTextSize(int,float)>(0, $f0);
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isChanging> = 0;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale> = 0;
+
+        return;
+    }
+
+    private android.text.Layout createWorkingLayout(java.lang.String, android.text.TextPaint)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        java.lang.String $r1;
+        android.text.TextPaint $r2;
+        android.text.StaticLayout $r3;
+        android.text.Layout$Alignment $r4;
+        float $f0, $f1;
+        int $i0, $i0_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.text.TextPaint;
+
+        $i0 = specialinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int getAvailableWidth()>();
+
+        if $i0 > 0 goto label1;
+
+        return null;
+
+     label1:
+        $r3 = new android.text.StaticLayout;
+
+        $i0_1 = specialinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int getAvailableWidth()>();
+
+        $r4 = <android.text.Layout$Alignment: android.text.Layout$Alignment ALIGN_NORMAL>;
+
+        $f0 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float lineSpacingMultiplier>;
+
+        $f1 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float lineAdditionalVerticalPadding>;
+
+        specialinvoke $r3.<android.text.StaticLayout: void <init>(java.lang.CharSequence,android.text.TextPaint,int,android.text.Layout$Alignment,float,float,boolean)>($r1, $r2, $i0_1, $r4, $f0, $f1, 0);
+
+        return $r3;
+    }
+
+    private int getAvailableHeight()
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        int $i0, $i1, $i0_1, $i1_1, $i0_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $i0 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int getHeight()>();
+
+        $i1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int getCompoundPaddingBottom()>();
+
+        $i0_1 = $i0 - $i1;
+
+        $i1_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int getCompoundPaddingTop()>();
+
+        $i0_2 = $i0_1 - $i1_1;
+
+        return $i0_2;
+    }
+
+    private int getAvailableWidth()
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        int $i0, $i1, $i0_1, $i1_1, $i0_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $i0 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int getWidth()>();
+
+        $i1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int getCompoundPaddingLeft()>();
+
+        $i0_1 = $i0 - $i1;
+
+        $i1_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int getCompoundPaddingRight()>();
+
+        $i0_2 = $i0_1 - $i1_1;
+
+        return $i0_2;
+    }
+
+    private int getIdealFontSize()
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        boolean $z0;
+        float $f0, $f0_1, $f0_2, $f0_3;
+        int $i0, $i1, $i2, $i3, $i2_1, $i1_1, $i0_1, $i3_1, $i3_2, $i0_2, $i2_2, $i1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $f0 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float minFontSize>;
+
+        $i0 = (int) $f0;
+
+        $f0_1 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float maxFontSize>;
+
+        $i1 = (int) $f0_1;
+
+(0)     $i2 = $i0;
+
+     label1:
+        $f0_2 = Phi($f0_1 #0, $f0_3 #1, $f0_3 #2);
+
+        $i2_1 = Phi($i2 #0, $i2_2 #1, $i2_1 #2);
+
+        $i1_1 = Phi($i1 #0, $i1_1 #1, $i1_2 #2);
+
+        $i0_1 = Phi($i0 #0, $i0_2 #1, $i0_1 #2);
+
+        $i3 = Phi($i3 #0, $i3_2 #1, $i3_2 #2);
+
+        if $i0_1 > $i1_1 goto label3;
+
+        $i3_1 = $i1_1 + $i0_1;
+
+        $i3_2 = $i3_1 / 2;
+
+        $f0_3 = (float) $i3_2;
+
+        $z0 = specialinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean testFontSize(float)>($f0_3);
+
+        if $z0 == 0 goto label2;
+
+        $i0_2 = $i3_2 + 1;
+
+        $i2_2 = $i3_2;
+
+(1)     goto label1;
+
+     label2:
+        $i1_2 = $i3_2 + -1;
+
+(2)     goto label1;
+
+     label3:
+        return $i2_1;
+    }
+
+    private boolean testFontSize(float)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        float $f0;
+        android.text.TextPaint $r1, $r4;
+        java.lang.CharSequence $r2;
+        java.lang.String $r3;
+        android.text.Layout $r5;
+        int $i0, $i1, $i0_1, $i0_2, $i1_1, $i0_3, $i1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $f0 := @parameter0: float;
+
+        $r2 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: java.lang.CharSequence getText()>();
+
+        $r3 = interfaceinvoke $r2.<java.lang.CharSequence: java.lang.String toString()>();
+
+        $r1 = new android.text.TextPaint;
+
+        $r4 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: android.text.TextPaint getPaint()>();
+
+        specialinvoke $r1.<android.text.TextPaint: void <init>(android.graphics.Paint)>($r4);
+
+        virtualinvoke $r1.<android.text.TextPaint: void setTextSize(float)>($f0);
+
+        $r5 = specialinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: android.text.Layout createWorkingLayout(java.lang.String,android.text.TextPaint)>($r3, $r1);
+
+        if $r5 != null goto label1;
+
+        return 1;
+
+     label1:
+        $i0 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int maxLines>;
+
+(0)     if $i0 == -1 goto label2;
+
+        $i0_1 = virtualinvoke $r5.<android.text.Layout: int getLineCount()>();
+
+        $i1 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int maxLines>;
+
+(1)     if $i0_1 <= $i1 goto label2;
+
+        return 0;
+
+     label2:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $i1_1 = Phi($i1 #0, $i1 #1);
+
+        $i0_3 = virtualinvoke $r5.<android.text.Layout: int getHeight()>();
+
+        $i1_2 = specialinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int getAvailableHeight()>();
+
+        if $i0_3 <= $i1_2 goto label3;
+
+        return 0;
+
+     label3:
+        return 1;
+    }
+
+    protected void onDraw(android.graphics.Canvas)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        android.graphics.Canvas $r1;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isChanging>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $z0_1 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale>;
+
+        if $z0_1 == 0 goto label2;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: void adjustTextSize()>();
+
+     label2:
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void onDraw(android.graphics.Canvas)>($r1);
+
+        return;
+    }
+
+    protected void onSizeChanged(int, int, int, int)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        int $i0, $i1, $i2, $i3;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $i3 := @parameter3: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void onSizeChanged(int,int,int,int)>($i0, $i1, $i2, $i3);
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale> = 1;
+
+        return;
+    }
+
+    protected void onTextChanged(java.lang.CharSequence, int, int, int)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        java.lang.CharSequence $r1;
+        int $i0, $i1, $i2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $r1 := @parameter0: java.lang.CharSequence;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 := @parameter3: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void onTextChanged(java.lang.CharSequence,int,int,int)>($r1, $i0, $i1, $i2);
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale> = 1;
+
+        return;
+    }
+
+    public void setMaxLines(int)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        boolean $z0;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void setMaxLines(int)>($i0);
+
+(0)     if $i0 != 0 goto label1;
+
+(1)     $i0_1 = -1;
+
+     label1:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int maxLines> = $i0_2;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale>;
+
+        if $z0 != 0 goto label2;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale> = 1;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: void invalidate()>();
+
+     label2:
+        return;
+    }
+
+    public void setMaxTextSize(int)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        int $i0;
+        float $f0;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $i0 := @parameter0: int;
+
+        $f0 = (float) $i0;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float maxFontSize> = $f0;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale>;
+
+        if $z0 != 0 goto label1;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale> = 1;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: void invalidate()>();
+
+     label1:
+        return;
+    }
+
+    public void setMinTextSize(int)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        int $i0;
+        float $f0;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $i0 := @parameter0: int;
+
+        $f0 = (float) $i0;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: float minFontSize> = $f0;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale>;
+
+        if $z0 != 0 goto label1;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale> = 1;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: void invalidate()>();
+
+     label1:
+        return;
+    }
+
+    public void setSingleLine()
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void setSingleLine()>();
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int maxLines> = 1;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale>;
+
+        if $z0 != 0 goto label1;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale> = 1;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: void invalidate()>();
+
+     label1:
+        return;
+    }
+
+    public void setSingleLine(boolean)
+    {
+        com.contextlogic.wish.ui.components.text.AutoResizeTextView $r0;
+        boolean $z0, $z0_1;
+        byte $b0, $b0_1, $b0_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.text.AutoResizeTextView;
+
+        $z0 := @parameter0: boolean;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void setSingleLine(boolean)>($z0);
+
+        if $z0 == 0 goto label2;
+
+(0)     $b0 = 1;
+
+     label1:
+        $b0_1 = Phi($b0 #0, $b0_2 #1);
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: int maxLines> = $b0_1;
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale>;
+
+        if $z0_1 != 0 goto label3;
+
+        $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: boolean isStale> = 1;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.text.AutoResizeTextView: void invalidate()>();
+
+        return;
+
+     label2:
+        $b0_2 = -1;
+
+(1)     goto label1;
+
+     label3:
+        return;
+    }
+}

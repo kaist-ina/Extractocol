@@ -1,0 +1,675 @@
+public class com.samsung.android.sdk.richnotification.SrnRichNotificationManager extends java.lang.Object
+{
+    private static final int ENABLE_NOTIFICATION;
+    private static final java.lang.String EXTRA_ENABLE_PANEL_NOTI;
+    private static final java.lang.String TAG;
+    private static java.lang.Boolean sHasPermission;
+    private final android.content.Context mContext;
+    private com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler mForwardHandler;
+    private final com.samsung.android.sdk.richnotification.SrnRichNotificationManager$LocalHandler mHandler;
+    private boolean mIsStarted;
+    private final java.util.List mListeners;
+    private com.samsung.android.sdk.richnotification.SrnRichNotificationManager$RichNotificationReceiver mReceiver;
+
+    public void <init>(android.content.Context)
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        android.content.Context $r1, $r4;
+        java.util.ArrayList $r2;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$LocalHandler $r3;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r4 = virtualinvoke $r1.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: android.content.Context mContext> = $r4;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.util.List mListeners> = $r2;
+
+        $r3 = new com.samsung.android.sdk.richnotification.SrnRichNotificationManager$LocalHandler;
+
+        specialinvoke $r3.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager$LocalHandler: void <init>(android.content.Context,com.samsung.android.sdk.richnotification.SrnRichNotificationManager,com.samsung.android.sdk.richnotification.SrnRichNotificationManager$LocalHandler)>($r1, $r0, null);
+
+        $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$LocalHandler mHandler> = $r3;
+
+        return;
+    }
+
+    static java.util.List access$0(com.samsung.android.sdk.richnotification.SrnRichNotificationManager)
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        java.util.List r1;
+
+        $r0 := @parameter0: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        r1 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.util.List mListeners>;
+
+        return r1;
+    }
+
+    static void access$1(android.content.Context, android.content.Intent)
+    {
+        android.content.Context $r0;
+        android.content.Intent $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: android.content.Intent;
+
+        staticinvoke <com.samsung.android.sdk.richnotification.SrnRichNotificationManager: void sendToNotificationService(android.content.Context,android.content.Intent)>($r0, $r1);
+
+        return;
+    }
+
+    static com.samsung.android.sdk.richnotification.SrnRichNotificationManager$LocalHandler access$2(com.samsung.android.sdk.richnotification.SrnRichNotificationManager)
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$LocalHandler r1;
+
+        $r0 := @parameter0: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        r1 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$LocalHandler mHandler>;
+
+        return r1;
+    }
+
+    private void sendRichNotification(com.samsung.android.sdk.richnotification.SrnRichNotification)
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        com.samsung.android.sdk.richnotification.SrnRichNotification $r1, $r2;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler $r3;
+        android.os.Message $r4;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $r1 := @parameter0: com.samsung.android.sdk.richnotification.SrnRichNotification;
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("RichNotification", "sendRichNotification(RichNotification notification)");
+
+        $r2 = new com.samsung.android.sdk.richnotification.SrnRichNotification;
+
+        specialinvoke $r2.<com.samsung.android.sdk.richnotification.SrnRichNotification: void <init>(com.samsung.android.sdk.richnotification.SrnRichNotification)>($r1);
+
+        $r3 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler mForwardHandler>;
+
+        $r4 = virtualinvoke $r3.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler: android.os.Message obtainMessage(int,java.lang.Object)>(0, $r2);
+
+        virtualinvoke $r4.<android.os.Message: void sendToTarget()>();
+
+        return;
+    }
+
+    private static void sendToNotificationService(android.content.Context, android.content.Intent)
+    {
+        android.content.Context $r0;
+        android.content.Intent $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: android.content.Intent;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("notification.sdk.packagename", $r2);
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent setPackage(java.lang.String)>("com.samsung.accessory.goproviders");
+
+        virtualinvoke $r0.<android.content.Context: void sendBroadcast(android.content.Intent)>($r1);
+
+        return;
+    }
+
+    public static void setRouteCondition(android.app.Notification)
+    {
+        android.app.Notification $r0;
+        android.os.Bundle $r1;
+
+        $r0 := @parameter0: android.app.Notification;
+
+        if $r0 == null goto label1;
+
+        $r1 = $r0.<android.app.Notification: android.os.Bundle extras>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putInt(java.lang.String,int)>("[NS]extra_enable_panel_noti", 1);
+
+     label1:
+        return;
+    }
+
+    public void dismiss(java.util.UUID)
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        java.util.UUID $r1;
+        boolean $z0;
+        java.lang.IllegalStateException $r2;
+        java.lang.NullPointerException $r3;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler $r4;
+        android.os.Message $r5;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $r1 := @parameter0: java.util.UUID;
+
+        $z0 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: boolean mIsStarted>;
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("The manager is not started.");
+
+        throw $r2;
+
+     label1:
+        if $r1 != null goto label2;
+
+        $r3 = new java.lang.NullPointerException;
+
+        specialinvoke $r3.<java.lang.NullPointerException: void <init>(java.lang.String)>("uuid is null.");
+
+        throw $r3;
+
+     label2:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("RichNotification", "dismiss");
+
+        $r4 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler mForwardHandler>;
+
+        $r5 = virtualinvoke $r4.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler: android.os.Message obtainMessage(int,java.lang.Object)>(1, $r1);
+
+        virtualinvoke $r5.<android.os.Message: void sendToTarget()>();
+
+        return;
+    }
+
+    public void dismissAll()
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        boolean $z0;
+        java.lang.IllegalStateException $r1;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler $r2;
+        android.os.Message $r3;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $z0 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: boolean mIsStarted>;
+
+        if $z0 != 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("The manager is not started.");
+
+        throw $r1;
+
+     label1:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("RichNotification", "dismissAll");
+
+        $r2 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler mForwardHandler>;
+
+        $r3 = virtualinvoke $r2.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler: android.os.Message obtainMessage(int)>(2);
+
+        virtualinvoke $r3.<android.os.Message: void sendToTarget()>();
+
+        return;
+    }
+
+    public boolean isConnected()
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        android.content.Context $r1;
+        android.content.ContentResolver $r2;
+        int $i0;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $r1 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: android.content.Context mContext>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $i0 = staticinvoke <android.provider.Settings$System: int getInt(android.content.ContentResolver,java.lang.String,int)>($r2, "RICH_NOTIFICATION_AVAILABLE", 0);
+
+        if $i0 != 1 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public java.util.UUID notify(com.samsung.android.sdk.richnotification.SrnRichNotification)
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        com.samsung.android.sdk.richnotification.SrnRichNotification $r1;
+        java.lang.IllegalStateException $r2;
+        java.lang.NullPointerException $r3;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3, $i1_4;
+        java.lang.SecurityException $r4;
+        android.content.pm.PackageManager$NameNotFoundException $r5;
+        com.samsung.android.sdk.richnotification.SrnValidationException $r6;
+        java.lang.IllegalArgumentException $r7;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.lang.Boolean $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        android.content.Context $r9, $r9_1, $r9_2, $r9_3;
+        android.content.pm.PackageManager $r10;
+        java.lang.String $r11, $r14, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5;
+        android.content.pm.PackageInfo $r12;
+        java.lang.String[] $r13, $r13_1, $r13_2, $r13_3;
+        java.util.UUID $r15;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $r1 := @parameter0: com.samsung.android.sdk.richnotification.SrnRichNotification;
+
+        $i1 = 0;
+
+        $z0 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: boolean mIsStarted>;
+
+        if $z0 != 0 goto label01;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("The manager is not started.");
+
+        throw $r2;
+
+     label01:
+        if $r1 != null goto label02;
+
+        $r3 = new java.lang.NullPointerException;
+
+        specialinvoke $r3.<java.lang.NullPointerException: void <init>(java.lang.String)>("notification is null");
+
+        throw $r3;
+
+     label02:
+        $r8 = <com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.lang.Boolean sHasPermission>;
+
+(0)     if $r8 != null goto label08;
+
+        $r8_1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        <com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.lang.Boolean sHasPermission> = $r8_1;
+
+(1)     $r9 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: android.content.Context mContext>;
+
+     label03:
+        $r10 = virtualinvoke $r9.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+     label04:
+(2)     $r9_1 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: android.content.Context mContext>;
+
+     label05:
+        $r11 = virtualinvoke $r9_1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r12 = virtualinvoke $r10.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>($r11, 4096);
+
+     label06:
+(3)     if $r12 == null goto label08;
+
+        $r13 = $r12.<android.content.pm.PackageInfo: java.lang.String[] requestedPermissions>;
+
+(4)     if $r13 == null goto label08;
+
+        $r13_1 = $r12.<android.content.pm.PackageInfo: java.lang.String[] requestedPermissions>;
+
+(5)     $i0 = lengthof $r13_1;
+
+     label07:
+        $z0_1 = Phi($z0 #5, $z0_2 #12);
+
+        $r11_1 = Phi($r11 #5, $r11_2 #12);
+
+        $i1_1 = Phi($i1 #5, $i1_2 #12);
+
+(6)     if $i1_1 < $i0 goto label09;
+
+     label08:
+        $z0_4 = Phi($z0 #0, $z0 #3, $z0 #4, $z0_1 #6, $z0_2 #10, $z0_3 #11);
+
+        $r9_3 = Phi($r9 #0, $r9_1 #3, $r9_1 #4, $r9_1 #6, $r9_1 #10, $r9_2 #11);
+
+        $r13_3 = Phi($r13 #0, $r13 #3, $r13 #4, $r13_1 #6, $r13_1 #10, $r13_2 #11);
+
+        $r11_4 = Phi($r11 #0, $r11 #3, $r11 #4, $r11_1 #6, $r11_2 #10, $r11_3 #11);
+
+        $i1_4 = Phi($i1 #0, $i1 #3, $i1 #4, $i1_1 #6, $i1_1 #10, $i1_3 #11);
+
+        $r8_4 = Phi($r8 #0, $r8_1 #3, $r8_1 #4, $r8_1 #6, $r8_2 #10, $r8_3 #11);
+
+        $r8_5 = <com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.lang.Boolean sHasPermission>;
+
+        $z0_5 = virtualinvoke $r8_5.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0_5 != 0 goto label16;
+
+        $r4 = new java.lang.SecurityException;
+
+        specialinvoke $r4.<java.lang.SecurityException: void <init>(java.lang.String)>("com.samsung.wmanager.ENABLE_NOTIFICATION permission is required");
+
+        throw $r4;
+
+     label09:
+        $r11_2 = $r13_1[$i1_1];
+
+(7)     $r14 = "com.samsung.wmanager.ENABLE_NOTIFICATION";
+
+     label10:
+(8)     $z0_2 = virtualinvoke $r14.<java.lang.String: boolean equals(java.lang.Object)>($r11_2);
+
+     label11:
+        if $z0_2 == 0 goto label15;
+
+     label12:
+(9)     $r8_2 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+     label13:
+        <com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.lang.Boolean sHasPermission> = $r8_2;
+
+(10)    goto label08;
+
+     label14:
+        $r5 := @caughtexception;
+
+        $z0_3 = Phi($z0 #1, $z0_1 #7, $z0_2 #8);
+
+        $r9_2 = Phi($r9 #1, $r9_1 #2);
+
+        $r13_2 = Phi($r13 #1, $r13_1 #7);
+
+        $r11_3 = Phi($r11 #1, $r11_2 #7);
+
+        $i1_3 = Phi($i1 #1, $i1_1 #7);
+
+        $r8_3 = Phi($r8_1 #1, $r8_2 #9);
+
+(11)    goto label08;
+
+     label15:
+        $i1_2 = $i1_1 + 1;
+
+(12)    goto label07;
+
+     label16:
+        virtualinvoke $r1.<com.samsung.android.sdk.richnotification.SrnRichNotification: void validateSelf()>();
+
+        specialinvoke $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: void sendRichNotification(com.samsung.android.sdk.richnotification.SrnRichNotification)>($r1);
+
+        $r15 = virtualinvoke $r1.<com.samsung.android.sdk.richnotification.SrnRichNotification: java.util.UUID getUuid()>();
+
+     label17:
+        return $r15;
+
+     label18:
+        $r6 := @caughtexception;
+
+        $r7 = new java.lang.IllegalArgumentException;
+
+        $r11_5 = virtualinvoke $r6.<com.samsung.android.sdk.richnotification.SrnValidationException: java.lang.String getMessage()>();
+
+        specialinvoke $r7.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r11_5);
+
+        throw $r7;
+
+        catch android.content.pm.PackageManager$NameNotFoundException from label03 to label04 with label14;
+        catch android.content.pm.PackageManager$NameNotFoundException from label05 to label06 with label14;
+        catch android.content.pm.PackageManager$NameNotFoundException from label10 to label11 with label14;
+        catch android.content.pm.PackageManager$NameNotFoundException from label12 to label13 with label14;
+        catch com.samsung.android.sdk.richnotification.SrnValidationException from label16 to label17 with label18;
+    }
+
+    public void registerRichNotificationListener(com.samsung.android.sdk.richnotification.SrnRichNotificationManager$EventListener)
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$EventListener $r1;
+        java.lang.NullPointerException $r2;
+        android.content.Context $r3;
+        android.content.IntentFilter $r4;
+        int $i0;
+        java.util.List $r5, $r5_1;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$RichNotificationReceiver $r6, $r6_1, $r6_2;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $r1 := @parameter0: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$EventListener;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("listener is null.");
+
+        throw $r2;
+
+     label1:
+        $r5 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.util.List mListeners>;
+
+        $i0 = interfaceinvoke $r5.<java.util.List: int size()>();
+
+(0)     if $i0 != 0 goto label2;
+
+        $r6 = new com.samsung.android.sdk.richnotification.SrnRichNotificationManager$RichNotificationReceiver;
+
+        specialinvoke $r6.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager$RichNotificationReceiver: void <init>(com.samsung.android.sdk.richnotification.SrnRichNotificationManager,com.samsung.android.sdk.richnotification.SrnRichNotificationManager$RichNotificationReceiver)>($r0, null);
+
+        $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$RichNotificationReceiver mReceiver> = $r6;
+
+        $r3 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: android.content.Context mContext>;
+
+        $r6_1 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$RichNotificationReceiver mReceiver>;
+
+        $r4 = new android.content.IntentFilter;
+
+        specialinvoke $r4.<android.content.IntentFilter: void <init>(java.lang.String)>("com.samsung.notifications.rich.ACTION_RICH_NOTIFICATION_BACKWARD");
+
+(1)     virtualinvoke $r3.<android.content.Context: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r6_1, $r4);
+
+     label2:
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        $r5_1 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.util.List mListeners>;
+
+        interfaceinvoke $r5_1.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void showErrorToast(java.util.UUID, java.lang.String)
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        java.util.UUID $r1;
+        java.lang.String $r2;
+        boolean $z0;
+        java.lang.IllegalStateException $r3;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler $r4;
+        com.samsung.android.sdk.richnotification.ErrorToast $r5;
+        android.os.Message $r6;
+        java.lang.NullPointerException $r7, $r7_1;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $r1 := @parameter0: java.util.UUID;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $z0 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: boolean mIsStarted>;
+
+        if $z0 != 0 goto label1;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("The manager is not started.");
+
+        throw $r3;
+
+     label1:
+        if $r1 != null goto label2;
+
+        $r7 = new java.lang.NullPointerException;
+
+        specialinvoke $r7.<java.lang.NullPointerException: void <init>(java.lang.String)>("uuid is null.");
+
+        throw $r7;
+
+     label2:
+        if $r2 != null goto label3;
+
+        $r7_1 = new java.lang.NullPointerException;
+
+        specialinvoke $r7_1.<java.lang.NullPointerException: void <init>(java.lang.String)>("errorMessage is null.");
+
+        throw $r7_1;
+
+     label3:
+        $r4 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler mForwardHandler>;
+
+        $r5 = new com.samsung.android.sdk.richnotification.ErrorToast;
+
+        specialinvoke $r5.<com.samsung.android.sdk.richnotification.ErrorToast: void <init>(java.util.UUID,java.lang.String)>($r1, $r2);
+
+        $r6 = virtualinvoke $r4.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler: android.os.Message obtainMessage(int,java.lang.Object)>(3, $r5);
+
+        virtualinvoke $r6.<android.os.Message: void sendToTarget()>();
+
+        return;
+    }
+
+    public void start()
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        boolean $z0;
+        java.lang.IllegalStateException $r1;
+        android.os.HandlerThread $r2;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler $r3;
+        android.content.Context $r4;
+        android.os.Looper $r5, $r6, $r6_1, $r6_2;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $z0 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: boolean mIsStarted>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("The manager is already started.");
+
+        throw $r1;
+
+     label1:
+        $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: boolean mIsStarted> = 1;
+
+        $r2 = new android.os.HandlerThread;
+
+        specialinvoke $r2.<android.os.HandlerThread: void <init>(java.lang.String)>("ForwardThread");
+
+        virtualinvoke $r2.<android.os.HandlerThread: void start()>();
+
+        $r5 = virtualinvoke $r2.<android.os.HandlerThread: android.os.Looper getLooper()>();
+
+        $r6 = $r5;
+
+(0)     if $r5 != null goto label2;
+
+(1)     $r6_1 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+     label2:
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        $r3 = new com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler;
+
+        $r4 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: android.content.Context mContext>;
+
+        specialinvoke $r3.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler: void <init>(android.content.Context,android.os.Looper,com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler)>($r4, $r6_2, null);
+
+        $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler mForwardHandler> = $r3;
+
+        return;
+    }
+
+    public void stop()
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        boolean $z0;
+        java.lang.IllegalStateException $r1;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler $r2;
+        android.os.Looper $r3;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $z0 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: boolean mIsStarted>;
+
+        if $z0 != 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("The manager is not started.");
+
+        throw $r1;
+
+     label1:
+        $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: boolean mIsStarted> = 0;
+
+        $r2 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler mForwardHandler>;
+
+        $r3 = virtualinvoke $r2.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler: android.os.Looper getLooper()>();
+
+        virtualinvoke $r3.<android.os.Looper: void quitSafely()>();
+
+        $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$ForwardHandler mForwardHandler> = null;
+
+        return;
+    }
+
+    public void unregisterRichNotificationListener(com.samsung.android.sdk.richnotification.SrnRichNotificationManager$EventListener)
+    {
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager $r0;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$EventListener $r1;
+        android.content.Context $r2;
+        com.samsung.android.sdk.richnotification.SrnRichNotificationManager$RichNotificationReceiver $r3;
+        java.util.List $r4, $r4_1, $r4_2;
+        int $i0, $i0_1;
+
+        $r0 := @this: com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
+
+        $r1 := @parameter0: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$EventListener;
+
+        $r4 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.util.List mListeners>;
+
+        $i0 = interfaceinvoke $r4.<java.util.List: int size()>();
+
+        if $i0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $r4_1 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.util.List mListeners>;
+
+        interfaceinvoke $r4_1.<java.util.List: boolean remove(java.lang.Object)>($r1);
+
+        $r4_2 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: java.util.List mListeners>;
+
+        $i0_1 = interfaceinvoke $r4_2.<java.util.List: int size()>();
+
+        if $i0_1 != 0 goto label2;
+
+        $r2 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: android.content.Context mContext>;
+
+        $r3 = $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$RichNotificationReceiver mReceiver>;
+
+        virtualinvoke $r2.<android.content.Context: void unregisterReceiver(android.content.BroadcastReceiver)>($r3);
+
+        $r0.<com.samsung.android.sdk.richnotification.SrnRichNotificationManager: com.samsung.android.sdk.richnotification.SrnRichNotificationManager$RichNotificationReceiver mReceiver> = null;
+
+     label2:
+        return;
+    }
+}

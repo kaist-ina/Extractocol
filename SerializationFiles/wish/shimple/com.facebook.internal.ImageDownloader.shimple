@@ -1,0 +1,1042 @@
+public class com.facebook.internal.ImageDownloader extends java.lang.Object
+{
+    private static final int CACHE_READ_QUEUE_MAX_CONCURRENT;
+    private static final int DOWNLOAD_QUEUE_MAX_CONCURRENT;
+    private static com.facebook.internal.WorkQueue cacheReadQueue;
+    private static com.facebook.internal.WorkQueue downloadQueue;
+    private static android.os.Handler handler;
+    private static final java.util.Map pendingRequests;
+
+    static void <clinit>()
+    {
+        java.util.HashMap $r0;
+        com.facebook.internal.WorkQueue $r1, $r1_1;
+
+        $r1 = new com.facebook.internal.WorkQueue;
+
+        specialinvoke $r1.<com.facebook.internal.WorkQueue: void <init>(int)>(8);
+
+        <com.facebook.internal.ImageDownloader: com.facebook.internal.WorkQueue downloadQueue> = $r1;
+
+        $r1_1 = new com.facebook.internal.WorkQueue;
+
+        specialinvoke $r1_1.<com.facebook.internal.WorkQueue: void <init>(int)>(2);
+
+        <com.facebook.internal.ImageDownloader: com.facebook.internal.WorkQueue cacheReadQueue> = $r1_1;
+
+        $r0 = new java.util.HashMap;
+
+        specialinvoke $r0.<java.util.HashMap: void <init>()>();
+
+        <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests> = $r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.facebook.internal.ImageDownloader $r0;
+
+        $r0 := @this: com.facebook.internal.ImageDownloader;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static void access$100(com.facebook.internal.ImageDownloader$RequestKey, android.content.Context, boolean)
+    {
+        com.facebook.internal.ImageDownloader$RequestKey $r0;
+        android.content.Context $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $z0 := @parameter2: boolean;
+
+        staticinvoke <com.facebook.internal.ImageDownloader: void readFromCache(com.facebook.internal.ImageDownloader$RequestKey,android.content.Context,boolean)>($r0, $r1, $z0);
+
+        return;
+    }
+
+    static void access$200(com.facebook.internal.ImageDownloader$RequestKey, android.content.Context)
+    {
+        com.facebook.internal.ImageDownloader$RequestKey $r0;
+        android.content.Context $r1;
+
+        $r0 := @parameter0: com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r1 := @parameter1: android.content.Context;
+
+        staticinvoke <com.facebook.internal.ImageDownloader: void download(com.facebook.internal.ImageDownloader$RequestKey,android.content.Context)>($r0, $r1);
+
+        return;
+    }
+
+    public static boolean cancelRequest(com.facebook.internal.ImageRequest)
+    {
+        com.facebook.internal.ImageRequest $r0;
+        com.facebook.internal.ImageDownloader$RequestKey $r1;
+        java.util.Map $r2, $r7, $r7_1, $r7_2, $r7_3;
+        com.facebook.internal.WorkQueue$WorkItem $r3;
+        java.lang.Throwable $r4;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3;
+        java.net.URI $r5;
+        java.lang.Object $r6, $r6_1, $r6_2;
+        com.facebook.internal.ImageDownloader$DownloaderContext $r8;
+
+        $r0 := @parameter0: com.facebook.internal.ImageRequest;
+
+        $z0 = 0;
+
+        $r1 = new com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r5 = virtualinvoke $r0.<com.facebook.internal.ImageRequest: java.net.URI getImageUri()>();
+
+        $r6 = virtualinvoke $r0.<com.facebook.internal.ImageRequest: java.lang.Object getCallerTag()>();
+
+        specialinvoke $r1.<com.facebook.internal.ImageDownloader$RequestKey: void <init>(java.net.URI,java.lang.Object)>($r5, $r6);
+
+        $r2 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+(0)     entermonitor $r2;
+
+     label1:
+        $r7 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+(1)     $r6_1 = interfaceinvoke $r7.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r8 = (com.facebook.internal.ImageDownloader$DownloaderContext) $r6_1;
+
+(2)     if $r8 == null goto label2;
+
+(3)     $z0_1 = 1;
+
+        $r3 = $r8.<com.facebook.internal.ImageDownloader$DownloaderContext: com.facebook.internal.WorkQueue$WorkItem workItem>;
+
+        $z1 = interfaceinvoke $r3.<com.facebook.internal.WorkQueue$WorkItem: boolean cancel()>();
+
+        if $z1 == 0 goto label4;
+
+(4)     $r7_1 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+(5)     interfaceinvoke $r7_1.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r1);
+
+     label2:
+        $r7_2 = Phi($r7 #2, $r7_1 #5, $r7 #7);
+
+        $z0_2 = Phi($z0 #2, $z0_1 #5, $z0_1 #7);
+
+(6)     exitmonitor $r2;
+
+     label3:
+        return $z0_2;
+
+     label4:
+        $r8.<com.facebook.internal.ImageDownloader$DownloaderContext: boolean isCancelled> = 1;
+
+(7)     goto label2;
+
+     label5:
+        $r4 := @caughtexception;
+
+        $r7_3 = Phi($r7 #0, $r7_1 #4, $r7_2 #6, $r7_3 #8);
+
+        $z0_3 = Phi($z0 #0, $z0_1 #3, $z0_2 #6, $z0_3 #8);
+
+(8)     $r6_2 = Phi($r6 #0, $r6_1 #1, $r6_2 #8);
+
+        exitmonitor $r2;
+
+     label6:
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label3 with label5;
+        catch java.lang.Throwable from label4 to label6 with label5;
+    }
+
+    public static void clearCache(android.content.Context)
+    {
+        android.content.Context $r0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        staticinvoke <com.facebook.internal.ImageResponseCache: void clearCache(android.content.Context)>($r0);
+
+        staticinvoke <com.facebook.internal.UrlRedirectCache: void clearCache(android.content.Context)>($r0);
+
+        return;
+    }
+
+    private static void download(com.facebook.internal.ImageDownloader$RequestKey, android.content.Context)
+    {
+        com.facebook.internal.ImageDownloader$RequestKey $r0, $r6;
+        android.content.Context $r1;
+        java.net.URL $r2;
+        java.lang.StringBuilder $r3;
+        java.io.InputStreamReader $r4;
+        java.io.IOException $r5;
+        com.facebook.FacebookException $r7;
+        java.net.URISyntaxException $r8;
+        java.lang.Throwable $r9;
+        java.net.HttpURLConnection $r10, $r17, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5;
+        java.io.InputStream $r11, $r18, $r11_1, $r11_2, $r18_1, $r18_2, $r11_3, $r11_4, $r18_3, $r11_5, $r18_4, $r11_6, $r18_5, $r11_7, $r18_6;
+        java.lang.Exception $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8;
+        android.graphics.Bitmap $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6;
+        boolean $z0, $z1, $z0_1, $z1_1, $z0_2, $z1_2, $z0_3, $z1_3, $z0_4, $z1_4, $z0_5, $z1_5, $z0_6, $z1_6;
+        java.net.URI $r14, $r20, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5, $r14_6;
+        java.lang.String $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6, $r15_7, $r15_8, $r15_9;
+        java.net.URLConnection $r16;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7, $i0_8, $i0_9, $i0_10;
+        char[] $r19;
+        com.facebook.internal.ImageDownloader$DownloaderContext $r21;
+        com.facebook.internal.ImageRequest $r22;
+        java.lang.Object $r23;
+
+        $r0 := @parameter0: com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r10 = null;
+
+        $r11 = null;
+
+        $r12 = null;
+
+        $r13 = null;
+
+(0)     $z0 = 1;
+
+     label01:
+        $r2 = new java.net.URL;
+
+(1)     $r14 = $r0.<com.facebook.internal.ImageDownloader$RequestKey: java.net.URI uri>;
+
+     label02:
+        $r15 = virtualinvoke $r14.<java.net.URI: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.net.URL: void <init>(java.lang.String)>($r15);
+
+        $r16 = virtualinvoke $r2.<java.net.URL: java.net.URLConnection openConnection()>();
+
+     label03:
+        $r17 = (java.net.HttpURLConnection) $r16;
+
+     label04:
+(2)     $r10_1 = $r17;
+
+     label05:
+        virtualinvoke $r17.<java.net.HttpURLConnection: void setInstanceFollowRedirects(boolean)>(0);
+
+        $i0 = virtualinvoke $r17.<java.net.HttpURLConnection: int getResponseCode()>();
+
+     label06:
+        lookupswitch($i0)
+        {
+            case 200: goto label37;
+            case 301: goto label23;
+            case 302: goto label23;
+            default: goto label07;
+        };
+
+     label07:
+        goto label08;
+
+     label08:
+        $r18 = virtualinvoke $r17.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+     label09:
+(3)     $r11_1 = $r18;
+
+     label10:
+(4)     $r3 = new java.lang.StringBuilder;
+
+     label11:
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+     label12:
+        if $r18 == null goto label46;
+
+     label13:
+        $r4 = new java.io.InputStreamReader;
+
+     label14:
+        specialinvoke $r4.<java.io.InputStreamReader: void <init>(java.io.InputStream)>($r18);
+
+     label15:
+(5)     $r19 = newarray (char)[128];
+
+     label16:
+        $i0_1 = Phi($i0 #5, $i0_3 #8);
+
+(6)     $i0_2 = lengthof $r19;
+
+     label17:
+(7)     $i0_3 = virtualinvoke $r4.<java.io.InputStreamReader: int read(char[],int,int)>($r19, 0, $i0_2);
+
+     label18:
+        if $i0_3 <= 0 goto label41;
+
+     label19:
+        virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(char[],int,int)>($r19, 0, $i0_3);
+
+     label20:
+(8)     goto label16;
+
+     label21:
+        $r5 := @caughtexception;
+
+        $z0_3 = Phi($z0 #1, $z0_1 #10);
+
+        $r13_3 = Phi($r13 #1, $r13_2 #22);
+
+        $r12_3 = Phi($r12 #1, $r12_1 #26);
+
+        $z1_3 = Phi($z1 #1, $z1_1 #17);
+
+        $r11_4 = Phi($r11 #1, $r11_1 #4, $r11_3 #21);
+
+        $i0_7 = Phi($i0 #1, $i0_2 #6, $i0_3 #7, $i0_4 #26, $i0_5 #29);
+
+        $r10_2 = Phi($r10 #1, $r10_1 #2);
+
+        $r15_6 = Phi($r15 #1, $r15_4 #11, $r15_1 #26, $r15_2 #27, $r15_3 #30);
+
+        $r14_3 = Phi($r14 #1, $r14_1 #13);
+
+        $r18_3 = Phi($r18 #1, $r18_2 #20);
+
+        $r12_4 = $r5;
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r11_4);
+
+(9)     staticinvoke <com.facebook.internal.Utility: void disconnectQuietly(java.net.URLConnection)>($r10_2);
+
+     label22:
+        $z0_4 = Phi($z0_3 #9, $z0_2 #19, $z0_5 #32);
+
+        $r13_4 = Phi($r13_3 #9, $r13_1 #19, $r13_5 #32);
+
+        $r12_5 = Phi($r12_4 #9, $r12_2 #19, $r12_7 #32);
+
+        $z1_4 = Phi($z1_3 #9, $z1_2 #19, $z1_5 #32);
+
+        $r11_5 = Phi($r11_4 #9, $r11_2 #19, $r11_6 #32);
+
+        $i0_8 = Phi($i0_7 #9, $i0_6 #19, $i0_9 #32);
+
+        $r10_3 = Phi($r10_2 #9, $r10_1 #19, $r10_4 #32);
+
+        $r15_7 = Phi($r15_6 #9, $r15_5 #19, $r15_8 #32);
+
+        $r14_4 = Phi($r14_3 #9, $r14_2 #19, $r14_5 #32);
+
+        $r18_4 = Phi($r18_3 #9, $r18_1 #19, $r18_5 #32);
+
+        if $z0_4 == 0 goto label51;
+
+        staticinvoke <com.facebook.internal.ImageDownloader: void issueResponse(com.facebook.internal.ImageDownloader$RequestKey,java.lang.Exception,android.graphics.Bitmap,boolean)>($r0, $r12_5, $r13_4, 0);
+
+        return;
+
+     label23:
+(10)    $z0_1 = 0;
+
+     label24:
+(11)    $r15_4 = virtualinvoke $r17.<java.net.HttpURLConnection: java.lang.String getHeaderField(java.lang.String)>("location");
+
+        $z1 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r15_4);
+
+     label25:
+(12)    if $z1 != 0 goto label36;
+
+     label26:
+(13)    $r14_1 = new java.net.URI;
+
+     label27:
+        specialinvoke $r14_1.<java.net.URI: void <init>(java.lang.String)>($r15_4);
+
+     label28:
+        $r20 = $r0.<com.facebook.internal.ImageDownloader$RequestKey: java.net.URI uri>;
+
+     label29:
+        staticinvoke <com.facebook.internal.UrlRedirectCache: void cacheUriRedirect(android.content.Context,java.net.URI,java.net.URI)>($r1, $r20, $r14_1);
+
+        $r21 = staticinvoke <com.facebook.internal.ImageDownloader: com.facebook.internal.ImageDownloader$DownloaderContext removePendingRequest(com.facebook.internal.ImageDownloader$RequestKey)>($r0);
+
+     label30:
+(14)    if $r21 == null goto label36;
+
+     label31:
+(15)    $z1_1 = $r21.<com.facebook.internal.ImageDownloader$DownloaderContext: boolean isCancelled>;
+
+     label32:
+(16)    if $z1_1 != 0 goto label36;
+
+     label33:
+        $r22 = $r21.<com.facebook.internal.ImageDownloader$DownloaderContext: com.facebook.internal.ImageRequest request>;
+
+        $r6 = new com.facebook.internal.ImageDownloader$RequestKey;
+
+     label34:
+(17)    $r23 = $r0.<com.facebook.internal.ImageDownloader$RequestKey: java.lang.Object tag>;
+
+     label35:
+        specialinvoke $r6.<com.facebook.internal.ImageDownloader$RequestKey: void <init>(java.net.URI,java.lang.Object)>($r14_1, $r23);
+
+(18)    staticinvoke <com.facebook.internal.ImageDownloader: void enqueueCacheRead(com.facebook.internal.ImageRequest,com.facebook.internal.ImageDownloader$RequestKey,boolean)>($r22, $r6, 0);
+
+     label36:
+        $z0_2 = Phi($z0_1 #12, $z0_1 #14, $z0_1 #16, $z0_1 #18, $z0 #23, $z0 #28);
+
+        $r13_1 = Phi($r13 #12, $r13 #14, $r13 #16, $r13 #18, $r13_2 #23, $r13 #28);
+
+        $r12_2 = Phi($r12 #12, $r12 #14, $r12 #16, $r12 #18, $r12 #23, $r12_1 #28);
+
+        $z1_2 = Phi($z1 #12, $z1 #14, $z1_1 #16, $z1_1 #18, $z1 #23, $z1 #28);
+
+        $r11_2 = Phi($r11 #12, $r11 #14, $r11 #16, $r11 #18, $r11_3 #23, $r11_1 #28);
+
+        $i0_6 = Phi($i0 #12, $i0 #14, $i0 #16, $i0 #18, $i0 #23, $i0_4 #28);
+
+        $r15_5 = Phi($r15_4 #12, $r15_4 #14, $r15_4 #16, $r15_4 #18, $r15 #23, $r15_2 #28);
+
+        $r14_2 = Phi($r14 #12, $r14_1 #14, $r14_1 #16, $r14_1 #18, $r14 #23, $r14 #28);
+
+        $r18_1 = Phi($r18 #12, $r18 #14, $r18 #16, $r18 #18, $r18_2 #23, $r18 #28);
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r11_2);
+
+        staticinvoke <com.facebook.internal.Utility: void disconnectQuietly(java.net.URLConnection)>($r17);
+
+(19)    goto label22;
+
+     label37:
+(20)    $r18_2 = staticinvoke <com.facebook.internal.ImageResponseCache: java.io.InputStream interceptAndCacheImageStream(android.content.Context,java.net.HttpURLConnection)>($r1, $r17);
+
+     label38:
+(21)    $r11_3 = $r18_2;
+
+     label39:
+(22)    $r13_2 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeStream(java.io.InputStream)>($r18_2);
+
+     label40:
+(23)    goto label36;
+
+     label41:
+(24)    staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r4);
+
+     label42:
+        $i0_4 = Phi($i0_3 #24, $i0_5 #31);
+
+        $r15_1 = Phi($r15 #24, $r15_3 #31);
+
+(25)    $r7 = new com.facebook.FacebookException;
+
+     label43:
+(26)    $r12_1 = $r7;
+
+     label44:
+(27)    $r15_2 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<com.facebook.FacebookException: void <init>(java.lang.String)>($r15_2);
+
+     label45:
+(28)    goto label36;
+
+     label46:
+(29)    $i0_5 = <com.facebook.android.R$string: int com_facebook_image_download_unknown_error>;
+
+     label47:
+(30)    $r15_3 = virtualinvoke $r1.<android.content.Context: java.lang.String getString(int)>($i0_5);
+
+        virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r15_3);
+
+     label48:
+(31)    goto label42;
+
+     label49:
+        $r8 := @caughtexception;
+
+        $z0_5 = Phi($z0 #1, $z0_1 #10);
+
+        $r13_5 = Phi($r13 #1, $r13_2 #22);
+
+        $r12_6 = Phi($r12 #1, $r12_1 #26);
+
+        $z1_5 = Phi($z1 #1, $z1_1 #17);
+
+        $r11_6 = Phi($r11 #1, $r11_1 #4, $r11_3 #21);
+
+        $i0_9 = Phi($i0 #1, $i0_2 #6, $i0_3 #7, $i0_4 #26, $i0_5 #29);
+
+        $r10_4 = Phi($r10 #1, $r10_1 #2);
+
+        $r15_8 = Phi($r15 #1, $r15_4 #11, $r15_1 #26, $r15_2 #27, $r15_3 #30);
+
+        $r14_5 = Phi($r14 #1, $r14_1 #13);
+
+        $r18_5 = Phi($r18 #1, $r18_2 #20);
+
+        $r12_7 = $r8;
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r11_6);
+
+        staticinvoke <com.facebook.internal.Utility: void disconnectQuietly(java.net.URLConnection)>($r10_4);
+
+(32)    goto label22;
+
+     label50:
+        $r9 := @caughtexception;
+
+        $z0_6 = Phi($z0 #0, $z0_1 #10);
+
+        $r13_6 = Phi($r13 #0, $r13_2 #22);
+
+        $r12_8 = Phi($r12 #0, $r12_1 #26);
+
+        $z1_6 = Phi($z1 #0, $z1_1 #15);
+
+        $r11_7 = Phi($r11 #0, $r11_1 #3, $r11_3 #21);
+
+        $i0_10 = Phi($i0 #0, $i0_2 #6, $i0_3 #7, $i0_4 #25, $i0_5 #29);
+
+        $r10_5 = Phi($r10 #0, $r10_1 #2);
+
+        $r15_9 = Phi($r15 #0, $r15_4 #11, $r15_1 #25, $r15_2 #27, $r15_3 #30);
+
+        $r14_6 = Phi($r14 #0, $r14_1 #13);
+
+        $r18_6 = Phi($r18 #0, $r18_2 #20);
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r11_7);
+
+        staticinvoke <com.facebook.internal.Utility: void disconnectQuietly(java.net.URLConnection)>($r10_5);
+
+        throw $r9;
+
+     label51:
+        return;
+
+        catch java.lang.Throwable from label01 to label02 with label50;
+        catch java.io.IOException from label02 to label03 with label21;
+        catch java.net.URISyntaxException from label02 to label03 with label49;
+        catch java.lang.Throwable from label02 to label03 with label50;
+        catch java.lang.Throwable from label03 to label04 with label50;
+        catch java.io.IOException from label05 to label06 with label21;
+        catch java.net.URISyntaxException from label05 to label06 with label49;
+        catch java.lang.Throwable from label05 to label06 with label50;
+        catch java.io.IOException from label08 to label09 with label21;
+        catch java.net.URISyntaxException from label08 to label09 with label49;
+        catch java.lang.Throwable from label08 to label09 with label50;
+        catch java.lang.Throwable from label10 to label11 with label50;
+        catch java.io.IOException from label11 to label12 with label21;
+        catch java.net.URISyntaxException from label11 to label12 with label49;
+        catch java.lang.Throwable from label11 to label12 with label50;
+        catch java.lang.Throwable from label13 to label14 with label50;
+        catch java.io.IOException from label14 to label15 with label21;
+        catch java.net.URISyntaxException from label14 to label15 with label49;
+        catch java.lang.Throwable from label14 to label15 with label50;
+        catch java.io.IOException from label17 to label18 with label21;
+        catch java.net.URISyntaxException from label17 to label18 with label49;
+        catch java.lang.Throwable from label17 to label18 with label50;
+        catch java.io.IOException from label19 to label20 with label21;
+        catch java.net.URISyntaxException from label19 to label20 with label49;
+        catch java.lang.Throwable from label19 to label20 with label50;
+        catch java.io.IOException from label24 to label25 with label21;
+        catch java.net.URISyntaxException from label24 to label25 with label49;
+        catch java.lang.Throwable from label24 to label25 with label50;
+        catch java.lang.Throwable from label26 to label27 with label50;
+        catch java.io.IOException from label27 to label28 with label21;
+        catch java.net.URISyntaxException from label27 to label28 with label49;
+        catch java.lang.Throwable from label27 to label28 with label50;
+        catch java.io.IOException from label29 to label30 with label21;
+        catch java.net.URISyntaxException from label29 to label30 with label49;
+        catch java.lang.Throwable from label29 to label30 with label50;
+        catch java.lang.Throwable from label31 to label32 with label50;
+        catch java.lang.Throwable from label33 to label34 with label50;
+        catch java.io.IOException from label35 to label36 with label21;
+        catch java.net.URISyntaxException from label35 to label36 with label49;
+        catch java.lang.Throwable from label35 to label36 with label50;
+        catch java.io.IOException from label37 to label38 with label21;
+        catch java.net.URISyntaxException from label37 to label38 with label49;
+        catch java.lang.Throwable from label37 to label38 with label50;
+        catch java.io.IOException from label39 to label40 with label21;
+        catch java.net.URISyntaxException from label39 to label40 with label49;
+        catch java.lang.Throwable from label39 to label40 with label50;
+        catch java.io.IOException from label41 to label42 with label21;
+        catch java.net.URISyntaxException from label41 to label42 with label49;
+        catch java.lang.Throwable from label41 to label42 with label50;
+        catch java.lang.Throwable from label42 to label43 with label50;
+        catch java.io.IOException from label44 to label45 with label21;
+        catch java.net.URISyntaxException from label44 to label45 with label49;
+        catch java.lang.Throwable from label44 to label45 with label50;
+        catch java.io.IOException from label47 to label48 with label21;
+        catch java.net.URISyntaxException from label47 to label48 with label49;
+        catch java.lang.Throwable from label47 to label48 with label50;
+    }
+
+    public static void downloadAsync(com.facebook.internal.ImageRequest)
+    {
+        com.facebook.internal.ImageRequest $r0;
+        com.facebook.internal.ImageDownloader$RequestKey $r1;
+        java.util.Map $r2, $r3;
+        com.facebook.internal.WorkQueue$WorkItem $r4;
+        java.lang.Throwable $r5;
+        java.net.URI $r6;
+        java.lang.Object $r7, $r7_1, $r7_2;
+        com.facebook.internal.ImageDownloader$DownloaderContext $r8;
+        boolean $z0;
+
+        $r0 := @parameter0: com.facebook.internal.ImageRequest;
+
+        if $r0 != null goto label1;
+
+        return;
+
+     label1:
+        $r1 = new com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r6 = virtualinvoke $r0.<com.facebook.internal.ImageRequest: java.net.URI getImageUri()>();
+
+        $r7 = virtualinvoke $r0.<com.facebook.internal.ImageRequest: java.lang.Object getCallerTag()>();
+
+        specialinvoke $r1.<com.facebook.internal.ImageDownloader$RequestKey: void <init>(java.net.URI,java.lang.Object)>($r6, $r7);
+
+        $r2 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+(0)     entermonitor $r2;
+
+     label2:
+        $r3 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+(1)     $r7_1 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r8 = (com.facebook.internal.ImageDownloader$DownloaderContext) $r7_1;
+
+        if $r8 == null goto label7;
+
+        $r8.<com.facebook.internal.ImageDownloader$DownloaderContext: com.facebook.internal.ImageRequest request> = $r0;
+
+        $r8.<com.facebook.internal.ImageDownloader$DownloaderContext: boolean isCancelled> = 0;
+
+        $r4 = $r8.<com.facebook.internal.ImageDownloader$DownloaderContext: com.facebook.internal.WorkQueue$WorkItem workItem>;
+
+        interfaceinvoke $r4.<com.facebook.internal.WorkQueue$WorkItem: void moveToFront()>();
+
+     label3:
+        exitmonitor $r2;
+
+     label4:
+        return;
+
+     label5:
+        $r5 := @caughtexception;
+
+(2)     $r7_2 = Phi($r7 #0, $r7_1 #1, $r7_2 #2);
+
+        exitmonitor $r2;
+
+     label6:
+        throw $r5;
+
+     label7:
+        $z0 = virtualinvoke $r0.<com.facebook.internal.ImageRequest: boolean isCachedRedirectAllowed()>();
+
+        staticinvoke <com.facebook.internal.ImageDownloader: void enqueueCacheRead(com.facebook.internal.ImageRequest,com.facebook.internal.ImageDownloader$RequestKey,boolean)>($r0, $r1, $z0);
+
+     label8:
+        goto label3;
+
+        catch java.lang.Throwable from label2 to label4 with label5;
+        catch java.lang.Throwable from label5 to label6 with label5;
+        catch java.lang.Throwable from label7 to label8 with label5;
+    }
+
+    private static void enqueueCacheRead(com.facebook.internal.ImageRequest, com.facebook.internal.ImageDownloader$RequestKey, boolean)
+    {
+        com.facebook.internal.ImageRequest $r0;
+        com.facebook.internal.ImageDownloader$RequestKey $r1;
+        boolean $z0;
+        com.facebook.internal.WorkQueue $r2;
+        com.facebook.internal.ImageDownloader$CacheReadWorkItem $r3;
+        android.content.Context $r4;
+
+        $r0 := @parameter0: com.facebook.internal.ImageRequest;
+
+        $r1 := @parameter1: com.facebook.internal.ImageDownloader$RequestKey;
+
+        $z0 := @parameter2: boolean;
+
+        $r2 = <com.facebook.internal.ImageDownloader: com.facebook.internal.WorkQueue cacheReadQueue>;
+
+        $r3 = new com.facebook.internal.ImageDownloader$CacheReadWorkItem;
+
+        $r4 = virtualinvoke $r0.<com.facebook.internal.ImageRequest: android.content.Context getContext()>();
+
+        specialinvoke $r3.<com.facebook.internal.ImageDownloader$CacheReadWorkItem: void <init>(android.content.Context,com.facebook.internal.ImageDownloader$RequestKey,boolean)>($r4, $r1, $z0);
+
+        staticinvoke <com.facebook.internal.ImageDownloader: void enqueueRequest(com.facebook.internal.ImageRequest,com.facebook.internal.ImageDownloader$RequestKey,com.facebook.internal.WorkQueue,java.lang.Runnable)>($r0, $r1, $r2, $r3);
+
+        return;
+    }
+
+    private static void enqueueDownload(com.facebook.internal.ImageRequest, com.facebook.internal.ImageDownloader$RequestKey)
+    {
+        com.facebook.internal.ImageRequest $r0;
+        com.facebook.internal.ImageDownloader$RequestKey $r1;
+        com.facebook.internal.WorkQueue $r2;
+        com.facebook.internal.ImageDownloader$DownloadImageWorkItem $r3;
+        android.content.Context $r4;
+
+        $r0 := @parameter0: com.facebook.internal.ImageRequest;
+
+        $r1 := @parameter1: com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r2 = <com.facebook.internal.ImageDownloader: com.facebook.internal.WorkQueue downloadQueue>;
+
+        $r3 = new com.facebook.internal.ImageDownloader$DownloadImageWorkItem;
+
+        $r4 = virtualinvoke $r0.<com.facebook.internal.ImageRequest: android.content.Context getContext()>();
+
+        specialinvoke $r3.<com.facebook.internal.ImageDownloader$DownloadImageWorkItem: void <init>(android.content.Context,com.facebook.internal.ImageDownloader$RequestKey)>($r4, $r1);
+
+        staticinvoke <com.facebook.internal.ImageDownloader: void enqueueRequest(com.facebook.internal.ImageRequest,com.facebook.internal.ImageDownloader$RequestKey,com.facebook.internal.WorkQueue,java.lang.Runnable)>($r0, $r1, $r2, $r3);
+
+        return;
+    }
+
+    private static void enqueueRequest(com.facebook.internal.ImageRequest, com.facebook.internal.ImageDownloader$RequestKey, com.facebook.internal.WorkQueue, java.lang.Runnable)
+    {
+        com.facebook.internal.ImageRequest $r0;
+        com.facebook.internal.ImageDownloader$RequestKey $r1;
+        com.facebook.internal.WorkQueue $r2;
+        java.lang.Runnable $r3;
+        java.util.Map $r4, $r6;
+        com.facebook.internal.ImageDownloader$DownloaderContext $r5;
+        java.lang.Throwable $r7;
+        com.facebook.internal.WorkQueue$WorkItem $r8;
+
+        $r0 := @parameter0: com.facebook.internal.ImageRequest;
+
+        $r1 := @parameter1: com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r2 := @parameter2: com.facebook.internal.WorkQueue;
+
+        $r3 := @parameter3: java.lang.Runnable;
+
+        $r4 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+        entermonitor $r4;
+
+     label1:
+        $r5 = new com.facebook.internal.ImageDownloader$DownloaderContext;
+
+        specialinvoke $r5.<com.facebook.internal.ImageDownloader$DownloaderContext: void <init>(com.facebook.internal.ImageDownloader$1)>(null);
+
+        $r5.<com.facebook.internal.ImageDownloader$DownloaderContext: com.facebook.internal.ImageRequest request> = $r0;
+
+        $r6 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+        interfaceinvoke $r6.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r5);
+
+        $r8 = virtualinvoke $r2.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkItem addActiveWorkItem(java.lang.Runnable)>($r3);
+
+        $r5.<com.facebook.internal.ImageDownloader$DownloaderContext: com.facebook.internal.WorkQueue$WorkItem workItem> = $r8;
+
+        exitmonitor $r4;
+
+     label2:
+        return;
+
+     label3:
+        $r7 := @caughtexception;
+
+        exitmonitor $r4;
+
+     label4:
+        throw $r7;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    private static android.os.Handler getHandler()
+    {
+        java.lang.Throwable $r0;
+        android.os.Looper $r1;
+        android.os.Handler $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+(0)     entermonitor class "com/facebook/internal/ImageDownloader";
+
+     label1:
+        $r2 = <com.facebook.internal.ImageDownloader: android.os.Handler handler>;
+
+     label2:
+(1)     if $r2 != null goto label4;
+
+     label3:
+(2)     $r2_1 = new android.os.Handler;
+
+        $r1 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r2_1.<android.os.Handler: void <init>(android.os.Looper)>($r1);
+
+(3)     <com.facebook.internal.ImageDownloader: android.os.Handler handler> = $r2_1;
+
+     label4:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = <com.facebook.internal.ImageDownloader: android.os.Handler handler>;
+
+     label5:
+        exitmonitor class "com/facebook/internal/ImageDownloader";
+
+        return $r2_3;
+
+     label6:
+        $r0 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor class "com/facebook/internal/ImageDownloader";
+
+        throw $r0;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label3 to label5 with label6;
+    }
+
+    private static void issueResponse(com.facebook.internal.ImageDownloader$RequestKey, java.lang.Exception, android.graphics.Bitmap, boolean)
+    {
+        com.facebook.internal.ImageDownloader$RequestKey $r0;
+        java.lang.Exception $r1;
+        android.graphics.Bitmap $r2;
+        boolean $z0, $z1;
+        com.facebook.internal.ImageRequest $r3;
+        com.facebook.internal.ImageDownloader$1 $r4;
+        com.facebook.internal.ImageDownloader$DownloaderContext $r5;
+        com.facebook.internal.ImageRequest$Callback $r6;
+        android.os.Handler $r7;
+
+        $r0 := @parameter0: com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r1 := @parameter1: java.lang.Exception;
+
+        $r2 := @parameter2: android.graphics.Bitmap;
+
+        $z0 := @parameter3: boolean;
+
+        $r5 = staticinvoke <com.facebook.internal.ImageDownloader: com.facebook.internal.ImageDownloader$DownloaderContext removePendingRequest(com.facebook.internal.ImageDownloader$RequestKey)>($r0);
+
+        if $r5 == null goto label1;
+
+        $z1 = $r5.<com.facebook.internal.ImageDownloader$DownloaderContext: boolean isCancelled>;
+
+        if $z1 != 0 goto label1;
+
+        $r3 = $r5.<com.facebook.internal.ImageDownloader$DownloaderContext: com.facebook.internal.ImageRequest request>;
+
+        $r6 = virtualinvoke $r3.<com.facebook.internal.ImageRequest: com.facebook.internal.ImageRequest$Callback getCallback()>();
+
+        if $r6 == null goto label1;
+
+        $r7 = staticinvoke <com.facebook.internal.ImageDownloader: android.os.Handler getHandler()>();
+
+        $r4 = new com.facebook.internal.ImageDownloader$1;
+
+        specialinvoke $r4.<com.facebook.internal.ImageDownloader$1: void <init>(com.facebook.internal.ImageRequest,java.lang.Exception,boolean,android.graphics.Bitmap,com.facebook.internal.ImageRequest$Callback)>($r3, $r1, $z0, $r2, $r6);
+
+        virtualinvoke $r7.<android.os.Handler: boolean post(java.lang.Runnable)>($r4);
+
+     label1:
+        return;
+    }
+
+    public static void prioritizeRequest(com.facebook.internal.ImageRequest)
+    {
+        com.facebook.internal.ImageRequest $r0;
+        com.facebook.internal.ImageDownloader$RequestKey $r1;
+        java.util.Map $r2, $r3;
+        com.facebook.internal.WorkQueue$WorkItem $r4;
+        java.lang.Throwable $r5;
+        java.net.URI $r6;
+        java.lang.Object $r7, $r7_1, $r7_2;
+        com.facebook.internal.ImageDownloader$DownloaderContext $r8;
+
+        $r0 := @parameter0: com.facebook.internal.ImageRequest;
+
+        $r1 = new com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r6 = virtualinvoke $r0.<com.facebook.internal.ImageRequest: java.net.URI getImageUri()>();
+
+        $r7 = virtualinvoke $r0.<com.facebook.internal.ImageRequest: java.lang.Object getCallerTag()>();
+
+        specialinvoke $r1.<com.facebook.internal.ImageDownloader$RequestKey: void <init>(java.net.URI,java.lang.Object)>($r6, $r7);
+
+        $r2 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+(0)     entermonitor $r2;
+
+     label1:
+        $r3 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+(1)     $r7_1 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r8 = (com.facebook.internal.ImageDownloader$DownloaderContext) $r7_1;
+
+        if $r8 == null goto label2;
+
+        $r4 = $r8.<com.facebook.internal.ImageDownloader$DownloaderContext: com.facebook.internal.WorkQueue$WorkItem workItem>;
+
+        interfaceinvoke $r4.<com.facebook.internal.WorkQueue$WorkItem: void moveToFront()>();
+
+     label2:
+        exitmonitor $r2;
+
+     label3:
+        return;
+
+     label4:
+        $r5 := @caughtexception;
+
+(2)     $r7_2 = Phi($r7 #0, $r7_1 #1, $r7_2 #2);
+
+        exitmonitor $r2;
+
+     label5:
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label4 to label5 with label4;
+    }
+
+    private static void readFromCache(com.facebook.internal.ImageDownloader$RequestKey, android.content.Context, boolean)
+    {
+        com.facebook.internal.ImageDownloader$RequestKey $r0;
+        android.content.Context $r1;
+        com.facebook.internal.ImageRequest $r2;
+        boolean $z0, $z1, $z1_1, $z1_2, $z1_3, $z0_1, $z0_2;
+        java.io.InputStream $r3, $r5, $r3_1, $r3_2, $r3_3, $r3_4;
+        java.net.URI $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        android.graphics.Bitmap $r6;
+        com.facebook.internal.ImageDownloader$DownloaderContext $r7;
+
+        $r0 := @parameter0: com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $z0 := @parameter2: boolean;
+
+        $r3 = null;
+
+        $z1 = 0;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r4 = $r0.<com.facebook.internal.ImageDownloader$RequestKey: java.net.URI uri>;
+
+        $r4_1 = staticinvoke <com.facebook.internal.UrlRedirectCache: java.net.URI getRedirectedUri(android.content.Context,java.net.URI)>($r1, $r4);
+
+(1)     if $r4_1 == null goto label1;
+
+        $r5 = staticinvoke <com.facebook.internal.ImageResponseCache: java.io.InputStream getCachedImageStream(java.net.URI,android.content.Context)>($r4_1, $r1);
+
+        $r3_1 = $r5;
+
+        if $r5 == null goto label3;
+
+(2)     $z1_1 = 1;
+
+     label1:
+        $z1_3 = Phi($z1 #0, $z1 #1, $z1_1 #2, $z1_2 #5);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1, $r4_1 #2, $r4_1 #5);
+
+        $r3_2 = Phi($r3 #0, $r3 #1, $r3_1 #2, $r3_1 #5);
+
+(3)     if $z1_3 != 0 goto label2;
+
+        $r4_3 = $r0.<com.facebook.internal.ImageDownloader$RequestKey: java.net.URI uri>;
+
+(4)     $r3_3 = staticinvoke <com.facebook.internal.ImageResponseCache: java.io.InputStream getCachedImageStream(java.net.URI,android.content.Context)>($r4_3, $r1);
+
+     label2:
+        $r4_4 = Phi($r4_2 #3, $r4_3 #4);
+
+        $r3_4 = Phi($r3_2 #3, $r3_3 #4);
+
+        if $r3_4 == null goto label4;
+
+        $r6 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeStream(java.io.InputStream)>($r3_4);
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r3_4);
+
+        staticinvoke <com.facebook.internal.ImageDownloader: void issueResponse(com.facebook.internal.ImageDownloader$RequestKey,java.lang.Exception,android.graphics.Bitmap,boolean)>($r0, null, $r6, $z1_3);
+
+        return;
+
+     label3:
+        $z1_2 = 0;
+
+(5)     goto label1;
+
+     label4:
+        $r7 = staticinvoke <com.facebook.internal.ImageDownloader: com.facebook.internal.ImageDownloader$DownloaderContext removePendingRequest(com.facebook.internal.ImageDownloader$RequestKey)>($r0);
+
+(6)     if $r7 == null goto label5;
+
+        $z0_1 = $r7.<com.facebook.internal.ImageDownloader$DownloaderContext: boolean isCancelled>;
+
+(7)     if $z0_1 != 0 goto label5;
+
+        $r2 = $r7.<com.facebook.internal.ImageDownloader$DownloaderContext: com.facebook.internal.ImageRequest request>;
+
+(8)     staticinvoke <com.facebook.internal.ImageDownloader: void enqueueDownload(com.facebook.internal.ImageRequest,com.facebook.internal.ImageDownloader$RequestKey)>($r2, $r0);
+
+     label5:
+        $z0_2 = Phi($z0 #6, $z0_1 #7, $z0_1 #8);
+
+        return;
+    }
+
+    private static com.facebook.internal.ImageDownloader$DownloaderContext removePendingRequest(com.facebook.internal.ImageDownloader$RequestKey)
+    {
+        com.facebook.internal.ImageDownloader$RequestKey $r0;
+        java.util.Map $r1, $r2;
+        java.lang.Throwable $r3;
+        java.lang.Object $r4;
+        com.facebook.internal.ImageDownloader$DownloaderContext $r5;
+
+        $r0 := @parameter0: com.facebook.internal.ImageDownloader$RequestKey;
+
+        $r1 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+        entermonitor $r1;
+
+     label1:
+        $r2 = <com.facebook.internal.ImageDownloader: java.util.Map pendingRequests>;
+
+        $r4 = interfaceinvoke $r2.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r0);
+
+        $r5 = (com.facebook.internal.ImageDownloader$DownloaderContext) $r4;
+
+        exitmonitor $r1;
+
+     label2:
+        return $r5;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r1;
+
+     label4:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+}

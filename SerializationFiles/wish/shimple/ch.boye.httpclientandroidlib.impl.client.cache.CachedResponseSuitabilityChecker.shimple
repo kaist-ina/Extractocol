@@ -1,0 +1,1307 @@
+class ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker extends java.lang.Object
+{
+    private final float heuristicCoefficient;
+    private final long heuristicDefaultLifetime;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+    private final boolean sharedCache;
+    private final boolean useHeuristicCaching;
+    private final ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy;
+
+    void <init>(ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig $r1;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig;
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: void <init>()>();
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: void <init>(ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy,ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig)>($r2, $r1);
+
+        return;
+    }
+
+    void <init>(ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy, ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy $r1;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3;
+        java.lang.Class $r4;
+        boolean $z0, $z0_1;
+        float $f0;
+        long $l0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r3 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r4 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r4);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r3;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy> = $r1;
+
+        $z0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig: boolean isSharedCache()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean sharedCache> = $z0;
+
+        $z0_1 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig: boolean isHeuristicCachingEnabled()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean useHeuristicCaching> = $z0_1;
+
+        $f0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig: float getHeuristicCoefficient()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: float heuristicCoefficient> = $f0;
+
+        $l0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.cache.CacheConfig: long getHeuristicDefaultLifetime()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: long heuristicDefaultLifetime> = $l0;
+
+        return;
+    }
+
+    private boolean etagValidatorMatches(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r2;
+        int $i0, $i1, $i2, $i3, $i2_1, $i3_1, $i3_2, $i3_3, $i2_2, $i3_4, $i2_3;
+        ch.boye.httpclientandroidlib.HeaderElement $r3;
+        java.lang.String $r4, $r6, $r9, $r6_1, $r6_2;
+        ch.boye.httpclientandroidlib.Header $r5, $r5_1, $r5_2, $r5_3;
+        ch.boye.httpclientandroidlib.Header[] $r7;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r8;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry;
+
+        $r5 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("ETag");
+
+        if $r5 == null goto label6;
+
+(0)     $r6 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+     label1:
+        $r6_1 = Phi($r6 #0, $r6_2 #7);
+
+        $r7 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("If-None-Match");
+
+(1)     if $r7 == null goto label9;
+
+        $i0 = lengthof $r7;
+
+(2)     $i2 = 0;
+
+     label2:
+        $z0 = Phi($z0 #2, $z0_1 #9);
+
+        $i3 = Phi($i3 #2, $i3_2 #9);
+
+        $r5_1 = Phi($r5 #2, $r5_2 #9);
+
+        $i2_1 = Phi($i2 #2, $i2_2 #9);
+
+(3)     if $i2_1 >= $i0 goto label9;
+
+        $r5_2 = $r7[$i2_1];
+
+        $r8 = interfaceinvoke $r5_2.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i1 = lengthof $r8;
+
+(4)     $i3_1 = 0;
+
+     label3:
+        $z0_1 = Phi($z0 #4, $z0_3 #8);
+
+        $i3_2 = Phi($i3_1 #4, $i3_3 #8);
+
+        if $i3_2 >= $i1 goto label8;
+
+        $r3 = $r8[$i3_2];
+
+        $r9 = virtualinvoke $r3.<java.lang.Object: java.lang.String toString()>();
+
+        $r4 = "*";
+
+        $z0_2 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>($r9);
+
+        if $z0_2 == 0 goto label4;
+
+(5)     if $r6_1 != null goto label5;
+
+     label4:
+        $z0_3 = virtualinvoke $r9.<java.lang.String: boolean equals(java.lang.Object)>($r6_1);
+
+(6)     if $z0_3 == 0 goto label7;
+
+     label5:
+        $z0_4 = Phi($z0_2 #5, $z0_3 #6);
+
+        return 1;
+
+     label6:
+        $r6_2 = null;
+
+(7)     goto label1;
+
+     label7:
+        $i3_3 = $i3_2 + 1;
+
+(8)     goto label3;
+
+     label8:
+        $i2_2 = $i2_1 + 1;
+
+(9)     goto label2;
+
+     label9:
+        $z0_5 = Phi($z0 #1, $z0 #3);
+
+        $i3_4 = Phi($i3 #1, $i3 #3);
+
+        $r5_3 = Phi($r5 #1, $r5_1 #3);
+
+        $i2_3 = Phi($i2 #1, $i2_1 #3);
+
+        return 0;
+    }
+
+    private long getMaxStale(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        int $i0, $i1, $i3, $i4, $i3_1, $i4_1, $i4_2, $i4_3, $i3_2;
+        ch.boye.httpclientandroidlib.Header $r2;
+        ch.boye.httpclientandroidlib.HeaderElement $r3;
+        java.lang.NumberFormatException $r4;
+        long $l2, $l6, $l7, $l2_1, $l7_1, $l2_2, $l2_3, $l7_2, $l7_3, $l7_4, $l2_4, $l2_5, $l7_5, $l2_6;
+        ch.boye.httpclientandroidlib.Header[] $r5;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r6;
+        java.lang.String $r7, $r8, $r8_1, $r7_1, $r7_2, $r8_2, $r7_3, $r7_4, $r8_3, $r8_4, $r8_5, $r7_5, $r8_6, $r7_6, $r7_7, $r8_7, $r7_8, $r8_8, $r7_9;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+        byte $b5, $b5_1, $b5_2, $b5_3, $b5_4, $b5_5, $b5_6, $b5_7, $b5_8, $b5_9;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $l2 = -1L;
+
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Cache-Control");
+
+        $i0 = lengthof $r5;
+
+(0)     $i3 = 0;
+
+     label01:
+        $r8 = Phi($r8 #0, $r8_1 #15);
+
+        $r7 = Phi($r7 #0, $r7_1 #15);
+
+        $i3_1 = Phi($i3 #0, $i3_2 #15);
+
+        $l7 = Phi($l7 #0, $l7_1 #15);
+
+        $b5 = Phi($b5 #0, $b5_1 #15);
+
+        $l2_1 = Phi($l2 #0, $l2_2 #15);
+
+        $i4 = Phi($i4 #0, $i4_2 #15);
+
+        $z0 = Phi($z0 #0, $z0_1 #15);
+
+        if $i3_1 >= $i0 goto label11;
+
+        $r2 = $r5[$i3_1];
+
+        $r6 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i1 = lengthof $r6;
+
+(1)     $i4_1 = 0;
+
+     label02:
+        $r8_1 = Phi($r8 #1, $r8_8 #7);
+
+        $r7_1 = Phi($r7 #1, $r7_9 #7);
+
+        $l7_1 = Phi($l7 #1, $l7_5 #7);
+
+        $b5_1 = Phi($b5 #1, $b5_9 #7);
+
+        $l2_2 = Phi($l2_1 #1, $l2_6 #7);
+
+        $i4_2 = Phi($i4_1 #1, $i4_3 #7);
+
+        $z0_1 = Phi($z0 #1, $z0_7 #7);
+
+        if $i4_2 >= $i1 goto label10;
+
+        $r3 = $r6[$i4_2];
+
+        $r7_2 = "max-stale";
+
+        $r8_2 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z0_2 = virtualinvoke $r7_2.<java.lang.String: boolean equals(java.lang.Object)>($r8_2);
+
+(2)     if $z0_2 == 0 goto label04;
+
+        $r7_3 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getValue()>();
+
+(3)     if $r7_3 == null goto label03;
+
+        $r7_4 = "";
+
+        $r8_3 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getValue()>();
+
+        $r8_4 = virtualinvoke $r8_3.<java.lang.String: java.lang.String trim()>();
+
+        $z0_3 = virtualinvoke $r7_4.<java.lang.String: boolean equals(java.lang.Object)>($r8_4);
+
+(4)     if $z0_3 == 0 goto label05;
+
+     label03:
+        $r8_5 = Phi($r8_2 #3, $r8_4 #4);
+
+        $r7_5 = Phi($r7_3 #3, $r7_4 #4);
+
+        $z0_4 = Phi($z0_2 #3, $z0_3 #4);
+
+        $b5_2 = $l2_2 cmp -1L;
+
+(5)     if $b5_2 != 0 goto label05;
+
+(6)     $l2_3 = 9223372036854775807L;
+
+     label04:
+        $r8_8 = Phi($r8_2 #2, $r8_5 #6, $r8_6 #12, $r8_6 #13, $r8_7 #14);
+
+        $r7_9 = Phi($r7_2 #2, $r7_5 #6, $r7_7 #12, $r7_7 #13, $r7_8 #14);
+
+        $l7_5 = Phi($l7_1 #2, $l7_1 #6, $l7_4 #12, $l7_4 #13, $l7_1 #14);
+
+        $b5_9 = Phi($b5_1 #2, $b5_2 #6, $b5_6 #12, $b5_7 #13, $b5_8 #14);
+
+        $l2_6 = Phi($l2_2 #2, $l2_3 #6, $l2_2 #12, $l2_4 #13, $l2_5 #14);
+
+        $z0_7 = Phi($z0_2 #2, $z0_4 #6, $z0_5 #12, $z0_5 #13, $z0_6 #14);
+
+        $i4_3 = $i4_2 + 1;
+
+(7)     goto label02;
+
+     label05:
+        $r8_6 = Phi($r8_4 #4, $r8_5 #5);
+
+        $r7_6 = Phi($r7_4 #4, $r7_5 #5);
+
+        $b5_3 = Phi($b5_1 #4, $b5_2 #5);
+
+        $z0_5 = Phi($z0_3 #4, $z0_4 #5);
+
+(8)     $r7_7 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getValue()>();
+
+        $l6 = staticinvoke <java.lang.Long: long parseLong(java.lang.String)>($r7_7);
+
+     label06:
+        $l7_2 = $l6;
+
+        $b5_4 = $l6 cmp 0L;
+
+(9)     if $b5_4 >= 0 goto label07;
+
+(10)    $l7_3 = 0L;
+
+     label07:
+        $l7_4 = Phi($l7_2 #9, $l7_3 #10);
+
+        $b5_5 = $l2_2 cmp -1L;
+
+(11)    if $b5_5 == 0 goto label08;
+
+        $b5_6 = $l7_4 cmp $l2_2;
+
+(12)    if $b5_6 >= 0 goto label04;
+
+     label08:
+        $b5_7 = Phi($b5_5 #11, $b5_6 #12);
+
+        $l2_4 = $l7_4;
+
+(13)    goto label04;
+
+     label09:
+        $r4 := @caughtexception;
+
+        $r8_7 = Phi($r8_4 #4, $r8_5 #5, $r8_6 #8);
+
+        $r7_8 = Phi($r7_4 #4, $r7_5 #5, $r7_7 #8);
+
+        $b5_8 = Phi($b5_1 #4, $b5_2 #5, $b5_3 #8);
+
+        $z0_6 = Phi($z0_3 #4, $z0_4 #5, $z0_5 #8);
+
+        $l2_5 = 0L;
+
+(14)    goto label04;
+
+     label10:
+        $i3_2 = $i3_1 + 1;
+
+(15)    goto label01;
+
+     label11:
+        return $l2_1;
+
+        catch java.lang.NumberFormatException from label05 to label06 with label09;
+    }
+
+    private boolean hasSupportedEtagValidator(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $z0 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: boolean containsHeader(java.lang.String)>("If-None-Match");
+
+        return $z0;
+    }
+
+    private boolean hasSupportedLastModifiedValidator(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $z0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean hasValidDateField(ch.boye.httpclientandroidlib.HttpRequest,java.lang.String)>($r1, "If-Modified-Since");
+
+        return $z0;
+    }
+
+    private boolean hasUnsupportedConditionalHeaders(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.Header $r2, $r2_1, $r2_2;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("If-Range");
+
+(0)     if $r2 != null goto label1;
+
+        $r2_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("If-Match");
+
+(1)     if $r2_1 != null goto label1;
+
+        $z0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean hasValidDateField(ch.boye.httpclientandroidlib.HttpRequest,java.lang.String)>($r1, "If-Unmodified-Since");
+
+(2)     if $z0 == 0 goto label2;
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1, $r2_1 #2);
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    private boolean hasValidDateField(ch.boye.httpclientandroidlib.HttpRequest, java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        int $i0, $i1, $i1_1, $i1_2;
+        ch.boye.httpclientandroidlib.Header $r2;
+        ch.boye.httpclientandroidlib.impl.cookie.DateParseException $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3;
+        ch.boye.httpclientandroidlib.Header[] $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r4 := @parameter1: java.lang.String;
+
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>($r4);
+
+        $i0 = lengthof $r5;
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #3);
+
+        $r4_1 = Phi($r4 #0, $r4_3 #3);
+
+        if $i1_1 >= $i0 goto label5;
+
+(1)     $r2 = $r5[$i1_1];
+
+     label2:
+(2)     $r4_2 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        staticinvoke <ch.boye.httpclientandroidlib.impl.cookie.DateUtils: java.util.Date parseDate(java.lang.String)>($r4_2);
+
+     label3:
+        return 1;
+
+     label4:
+        $r3 := @caughtexception;
+
+        $r4_3 = Phi($r4_1 #1, $r4_2 #2);
+
+        $i1_2 = $i1_1 + 1;
+
+(3)     goto label1;
+
+     label5:
+        return 0;
+
+        catch ch.boye.httpclientandroidlib.impl.cookie.DateParseException from label2 to label3 with label4;
+    }
+
+    private boolean isFreshEnough(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry, ch.boye.httpclientandroidlib.HttpRequest, java.util.Date)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        java.util.Date $r3;
+        float $f0;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy $r4, $r4_1, $r4_2, $r4_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        long $l0, $l2, $l0_1, $l0_2;
+        byte $b1, $b1_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 := @parameter2: java.util.Date;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+        $z0 = virtualinvoke $r4.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: boolean isResponseFresh(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry,java.util.Date)>($r1, $r3);
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean useHeuristicCaching>;
+
+(0)     if $z0_1 == 0 goto label2;
+
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+        $f0 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: float heuristicCoefficient>;
+
+        $l0 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: long heuristicDefaultLifetime>;
+
+        $z0_2 = virtualinvoke $r4_1.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: boolean isResponseHeuristicallyFresh(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry,java.util.Date,float,long)>($r1, $r3, $f0, $l0);
+
+(1)     if $z0_2 != 0 goto label6;
+
+     label2:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $z0_3 = Phi($z0_1 #0, $z0_2 #1);
+
+        $l0_1 = Phi($l0 #0, $l0 #1);
+
+        $z0_4 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean originInsistsOnFreshness(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)>($r1);
+
+        if $z0_4 == 0 goto label3;
+
+        return 0;
+
+     label3:
+        $l0_2 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: long getMaxStale(ch.boye.httpclientandroidlib.HttpRequest)>($r2);
+
+        $b1 = $l0_2 cmp -1L;
+
+        if $b1 != 0 goto label4;
+
+        return 0;
+
+     label4:
+        $r4_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+        $l2 = virtualinvoke $r4_3.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: long getStalenessSecs(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry,java.util.Date)>($r1, $r3);
+
+        $b1_1 = $l0_2 cmp $l2;
+
+        if $b1_1 <= 0 goto label5;
+
+        return 1;
+
+     label5:
+        return 0;
+
+     label6:
+        return 1;
+    }
+
+    private boolean lastModifiedValidatorMatches(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry, java.util.Date)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r2;
+        java.util.Date $r3, $r7, $r10, $r7_1, $r7_2, $r7_3;
+        int $i0, $i1, $i1_1, $i1_2;
+        ch.boye.httpclientandroidlib.impl.cookie.DateParseException $r4, $r5;
+        ch.boye.httpclientandroidlib.Header $r6, $r6_1, $r6_2;
+        java.lang.String $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6;
+        ch.boye.httpclientandroidlib.Header[] $r9;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry;
+
+        $r3 := @parameter2: java.util.Date;
+
+        $r6 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Last-Modified");
+
+        $r7 = null;
+
+(0)     if $r6 == null goto label02;
+
+     label01:
+        $r8 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+(1)     $r7_1 = staticinvoke <ch.boye.httpclientandroidlib.impl.cookie.DateUtils: java.util.Date parseDate(java.lang.String)>($r8);
+
+     label02:
+        $r8_1 = Phi($r8 #0, $r8 #1, $r8_6 #11);
+
+        $r7_2 = Phi($r7 #0, $r7_1 #1, $r7_3 #11);
+
+        if $r7_2 != null goto label03;
+
+        return 0;
+
+     label03:
+        $r9 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("If-Modified-Since");
+
+        $i0 = lengthof $r9;
+
+(2)     $i1 = 0;
+
+     label04:
+        $r8_2 = Phi($r8_1 #2, $r8_4 #9);
+
+        $i1_1 = Phi($i1 #2, $i1_2 #9);
+
+        $z0 = Phi($z0 #2, $z0_4 #9);
+
+        $r6_1 = Phi($r6 #2, $r6_2 #9);
+
+        if $i1_1 >= $i0 goto label10;
+
+(3)     $r6_2 = $r9[$i1_1];
+
+     label05:
+(4)     $r8_3 = interfaceinvoke $r6_2.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $r10 = staticinvoke <ch.boye.httpclientandroidlib.impl.cookie.DateUtils: java.util.Date parseDate(java.lang.String)>($r8_3);
+
+(5)     $z0_1 = virtualinvoke $r10.<java.util.Date: boolean after(java.util.Date)>($r3);
+
+     label06:
+(6)     if $z0_1 != 0 goto label13;
+
+     label07:
+(7)     $z0_2 = virtualinvoke $r7_2.<java.util.Date: boolean after(java.util.Date)>($r10);
+
+     label08:
+(8)     if $z0_2 != 0 goto label13;
+
+     label09:
+        $r8_4 = Phi($r8_3 #8, $r8_5 #10);
+
+        $z0_4 = Phi($z0_2 #8, $z0_5 #10);
+
+        $i1_2 = $i1_1 + 1;
+
+(9)     goto label04;
+
+     label10:
+        return 1;
+
+     label11:
+        $r4 := @caughtexception;
+
+        $r8_5 = Phi($r8_2 #3, $r8_3 #4);
+
+        $z0_5 = Phi($z0 #3, $z0_1 #5, $z0_2 #7);
+
+(10)    goto label09;
+
+     label12:
+        $r5 := @caughtexception;
+
+        $r8_6 = Phi($r8 #0);
+
+        $r7_3 = Phi($r7 #0, $r7_1 #1);
+
+(11)    goto label02;
+
+     label13:
+        $z0_3 = Phi($z0_1 #6, $z0_2 #8);
+
+        return 0;
+
+        catch ch.boye.httpclientandroidlib.impl.cookie.DateParseException from label01 to label02 with label12;
+        catch ch.boye.httpclientandroidlib.impl.cookie.DateParseException from label05 to label06 with label11;
+        catch ch.boye.httpclientandroidlib.impl.cookie.DateParseException from label07 to label08 with label11;
+    }
+
+    private boolean originInsistsOnFreshness(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r1;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+        $z0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: boolean mustRevalidate(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean sharedCache>;
+
+(0)     if $z0_1 == 0 goto label3;
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+        $z0_2 = virtualinvoke $r2_1.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: boolean proxyRevalidate(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)>($r1);
+
+(1)     if $z0_2 != 0 goto label2;
+
+        $r2_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+        $z0_3 = virtualinvoke $r2_2.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: boolean hasCacheControlDirective(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry,java.lang.String)>($r1, "s-maxage");
+
+(2)     if $z0_3 == 0 goto label3;
+
+     label2:
+        $z0_4 = Phi($z0_2 #1, $z0_3 #2);
+
+        $r2_3 = Phi($r2_1 #1, $r2_2 #2);
+
+        return 1;
+
+     label3:
+        $z0_5 = Phi($z0_1 #0, $z0_3 #2);
+
+        $r2_4 = Phi($r2 #0, $r2_2 #2);
+
+        return 0;
+    }
+
+    public boolean allConditionalsMatch(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry, java.util.Date)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r2;
+        java.util.Date $r3;
+        boolean $z0, $z1, $z2, $z3, $z2_1, $z2_2, $z3_1, $z3_2, $z3_3, $z3_4, $z2_3, $z2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry;
+
+        $r3 := @parameter2: java.util.Date;
+
+        $z0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean hasSupportedEtagValidator(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        $z1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean hasSupportedLastModifiedValidator(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+(0)     if $z0 == 0 goto label3;
+
+        $z2 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean etagValidatorMatches(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)>($r1, $r2);
+
+(1)     if $z2 == 0 goto label3;
+
+(2)     $z2_1 = 1;
+
+     label1:
+        $z2_2 = Phi($z2_1 #2, $z2_4 #6);
+
+(3)     if $z1 == 0 goto label4;
+
+        $z3 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean lastModifiedValidatorMatches(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry,java.util.Date)>($r1, $r2, $r3);
+
+(4)     if $z3 == 0 goto label4;
+
+(5)     $z3_1 = 1;
+
+     label2:
+        $z3_2 = Phi($z3_1 #5, $z3_4 #7);
+
+        if $z0 == 0 goto label5;
+
+        if $z1 == 0 goto label5;
+
+        if $z2_2 == 0 goto label8;
+
+        if $z3_2 != 0 goto label5;
+
+        return 0;
+
+     label3:
+        $z2_3 = Phi($z2 #0, $z2 #1);
+
+        $z2_4 = 0;
+
+(6)     goto label1;
+
+     label4:
+        $z3_3 = Phi($z3 #3, $z3 #4);
+
+        $z3_4 = 0;
+
+(7)     goto label2;
+
+     label5:
+        if $z0 == 0 goto label6;
+
+        if $z2_2 == 0 goto label8;
+
+     label6:
+        if $z1 == 0 goto label7;
+
+        if $z3_2 == 0 goto label8;
+
+     label7:
+        return 1;
+
+     label8:
+        return 0;
+    }
+
+    public boolean canCachedResponseBeUsed(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry, java.util.Date)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r3;
+        java.util.Date $r4;
+        int $i0, $i1, $i2, $i3, $i4, $i2_1, $i3_1, $i3_2, $i4_1, $i4_2, $i4_3, $i4_4, $i4_5, $i4_6, $i4_7, $i3_3, $i2_2;
+        ch.boye.httpclientandroidlib.Header $r5;
+        ch.boye.httpclientandroidlib.HeaderElement $r6;
+        java.lang.NumberFormatException $r7, $r8, $r9;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11, $z0_12;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8, $r10_9, $r10_10, $r10_11, $r10_12, $r10_13, $r10_14;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8, $r11_9, $r11_10, $r11_11, $r11_12;
+        ch.boye.httpclientandroidlib.Header[] $r12;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r13;
+        java.lang.String $r14, $r15, $r14_1, $r15_1, $r14_2, $r15_2, $r14_3, $r15_3, $r14_4, $r15_4, $r14_5, $r14_6, $r14_7, $r14_8, $r14_9, $r14_10, $r15_5, $r14_11, $r14_12, $r14_13, $r14_14, $r14_15, $r14_16, $r15_6, $r14_17, $r14_18, $r14_19, $r14_20, $r14_21;
+        long $l5, $l6, $l8, $l6_1, $l5_1, $l5_2, $l6_2, $l6_3, $l5_3, $l6_4, $l5_4, $l5_5, $l6_5, $l6_6, $l5_6, $l6_7, $l5_7, $l5_8, $l6_8, $l6_9, $l6_10, $l5_9, $l6_11, $l5_10;
+        byte $b7, $b7_1, $b7_2, $b7_3, $b7_4, $b7_5, $b7_6, $b7_7, $b7_8, $b7_9, $b7_10, $b7_11;
+        java.lang.StringBuilder $r16, $r16_1, $r16_2, $r16_3, $r16_4, $r16_5, $r16_6, $r16_7, $r16_8;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry;
+
+        $r4 := @parameter3: java.util.Date;
+
+        $z0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean isFreshEnough(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry,ch.boye.httpclientandroidlib.HttpRequest,java.util.Date)>($r3, $r2, $r4);
+
+        if $z0 != 0 goto label01;
+
+        $r10 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r10.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void trace(java.lang.Object)>("Cache entry was not fresh enough");
+
+        return 0;
+
+     label01:
+        $r11 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+        $z0_1 = virtualinvoke $r11.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: boolean contentLengthHeaderMatchesActualLength(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)>($r3);
+
+        if $z0_1 != 0 goto label02;
+
+        $r10_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r10_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Cache entry Content-Length and header information do not match");
+
+        return 0;
+
+     label02:
+        $z0_2 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean hasUnsupportedConditionalHeaders(ch.boye.httpclientandroidlib.HttpRequest)>($r2);
+
+        if $z0_2 == 0 goto label03;
+
+        $r10_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r10_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Request contained conditional headers we don\'t handle");
+
+        return 0;
+
+     label03:
+        $z0_3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean isConditional(ch.boye.httpclientandroidlib.HttpRequest)>($r2);
+
+(0)     if $z0_3 == 0 goto label04;
+
+        $z0_4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean allConditionalsMatch(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry,java.util.Date)>($r2, $r3, $r4);
+
+(1)     if $z0_4 != 0 goto label04;
+
+        return 0;
+
+     label04:
+        $z0_5 = Phi($z0_3 #0, $z0_4 #1);
+
+        $r12 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Cache-Control");
+
+        $i0 = lengthof $r12;
+
+(2)     $i2 = 0;
+
+     label05:
+        $l6 = Phi($l6 #2, $l6_1 #27);
+
+        $z0_6 = Phi($z0_5 #2, $z0_7 #27);
+
+        $i2_1 = Phi($i2 #2, $i2_2 #27);
+
+        $l5 = Phi($l5 #2, $l5_1 #27);
+
+        $i3 = Phi($i3 #2, $i3_2 #27);
+
+        $r14 = Phi($r14 #2, $r14_1 #27);
+
+        $r15 = Phi($r15 #2, $r15_1 #27);
+
+        $r11_1 = Phi($r11 #2, $r11_2 #27);
+
+        $b7 = Phi($b7 #2, $b7_1 #27);
+
+        $i4 = Phi($i4 #2, $i4_1 #27);
+
+        if $i2_1 >= $i0 goto label37;
+
+        $r5 = $r12[$i2_1];
+
+        $r13 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i1 = lengthof $r13;
+
+(3)     $i3_1 = 0;
+
+     label06:
+        $l6_1 = Phi($l6 #3, $l6_11 #26);
+
+        $z0_7 = Phi($z0_6 #3, $z0_12 #26);
+
+        $l5_1 = Phi($l5 #3, $l5_10 #26);
+
+        $i3_2 = Phi($i3_1 #3, $i3_3 #26);
+
+        $r14_1 = Phi($r14 #3, $r14_21 #26);
+
+        $r15_1 = Phi($r15 #3, $r15_6 #26);
+
+        $r11_2 = Phi($r11_1 #3, $r11_12 #26);
+
+        $b7_1 = Phi($b7 #3, $b7_11 #26);
+
+        $i4_1 = Phi($i4 #3, $i4_7 #26);
+
+        if $i3_2 >= $i1 goto label36;
+
+        $r6 = $r13[$i3_2];
+
+        $r14_2 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $r15_2 = "no-cache";
+
+        $z0_8 = virtualinvoke $r15_2.<java.lang.String: boolean equals(java.lang.Object)>($r14_2);
+
+        if $z0_8 == 0 goto label07;
+
+        $r10_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r10_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void trace(java.lang.Object)>("Response contained NO CACHE directive, cache was not suitable");
+
+        return 0;
+
+     label07:
+        $r14_3 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $r15_3 = "no-store";
+
+        $z0_9 = virtualinvoke $r15_3.<java.lang.String: boolean equals(java.lang.Object)>($r14_3);
+
+        if $z0_9 == 0 goto label08;
+
+        $r10_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r10_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void trace(java.lang.Object)>("Response contained NO STORE directive, cache was not suitable");
+
+        return 0;
+
+     label08:
+        $r14_4 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $r15_4 = "max-age";
+
+        $z0_10 = virtualinvoke $r15_4.<java.lang.String: boolean equals(java.lang.Object)>($r14_4);
+
+(4)     if $z0_10 == 0 goto label16;
+
+     label09:
+(5)     $r14_5 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getValue()>();
+
+(6)     $i4_2 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r14_5);
+
+     label10:
+(7)     $r11_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+     label11:
+(8)     $l5_2 = virtualinvoke $r11_3.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: long getCurrentAgeSecs(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry,java.util.Date)>($r3, $r4);
+
+     label12:
+        $l6_2 = (long) $i4_2;
+
+        $b7_2 = $l5_2 cmp $l6_2;
+
+(9)     if $b7_2 <= 0 goto label16;
+
+(10)    $r10_5 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label13:
+        virtualinvoke $r10_5.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void trace(java.lang.Object)>("Response from cache was NOT suitable due to max age");
+
+     label14:
+        return 0;
+
+     label15:
+        $r7 := @caughtexception;
+
+        $l6_3 = Phi($l6_1 #4, $l6_2 #10);
+
+        $l5_3 = Phi($l5_1 #4, $l5_2 #8);
+
+        $r10_6 = Phi($r10 #4, $r10_5 #10);
+
+        $r14_6 = Phi($r14_4 #4, $r14_5 #5);
+
+        $r11_4 = Phi($r11_2 #4, $r11_3 #7);
+
+        $b7_3 = Phi($b7_1 #4, $b7_2 #10);
+
+        $i4_3 = Phi($i4_1 #4, $i4_2 #6);
+
+        $r10_7 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r16 = new java.lang.StringBuilder;
+
+        specialinvoke $r16.<java.lang.StringBuilder: void <init>()>();
+
+        $r16_1 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Response from cache was malformed");
+
+        $r14_7 = virtualinvoke $r7.<java.lang.NumberFormatException: java.lang.String getMessage()>();
+
+        $r16_2 = virtualinvoke $r16_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14_7);
+
+        $r14_8 = virtualinvoke $r16_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r10_7.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r14_8);
+
+        return 0;
+
+     label16:
+        $l6_4 = Phi($l6_1 #4, $l6_2 #9);
+
+        $l5_4 = Phi($l5_1 #4, $l5_2 #9);
+
+        $r14_9 = Phi($r14_4 #4, $r14_5 #9);
+
+        $r11_5 = Phi($r11_2 #4, $r11_3 #9);
+
+        $b7_4 = Phi($b7_1 #4, $b7_2 #9);
+
+        $i4_4 = Phi($i4_1 #4, $i4_2 #9);
+
+        $r14_10 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $r15_5 = "max-stale";
+
+        $z0_11 = virtualinvoke $r15_5.<java.lang.String: boolean equals(java.lang.Object)>($r14_10);
+
+(11)    if $z0_11 == 0 goto label24;
+
+     label17:
+(12)    $r14_11 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getValue()>();
+
+(13)    $i4_5 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r14_11);
+
+     label18:
+(14)    $r11_6 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+     label19:
+(15)    $l5_5 = virtualinvoke $r11_6.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: long getFreshnessLifetimeSecs(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)>($r3);
+
+     label20:
+        $l6_5 = (long) $i4_5;
+
+        $b7_5 = $l5_5 cmp $l6_5;
+
+(16)    if $b7_5 <= 0 goto label24;
+
+(17)    $r10_8 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label21:
+        virtualinvoke $r10_8.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void trace(java.lang.Object)>("Response from cache was not suitable due to Max stale freshness");
+
+     label22:
+        return 0;
+
+     label23:
+        $r8 := @caughtexception;
+
+        $l6_6 = Phi($l6_4 #11, $l6_5 #17);
+
+        $l5_6 = Phi($l5_4 #11, $l5_5 #15);
+
+        $r10_9 = Phi($r10 #11, $r10_8 #17);
+
+        $r14_12 = Phi($r14_10 #11, $r14_11 #12);
+
+        $r11_7 = Phi($r11_5 #11, $r11_6 #14);
+
+        $b7_6 = Phi($b7_4 #11, $b7_5 #17);
+
+        $i4_6 = Phi($i4_4 #11, $i4_5 #13);
+
+        $r10_10 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r16_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r16_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r16_4 = virtualinvoke $r16_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Response from cache was malformed: ");
+
+        $r14_13 = virtualinvoke $r8.<java.lang.NumberFormatException: java.lang.String getMessage()>();
+
+        $r16_5 = virtualinvoke $r16_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14_13);
+
+        $r14_14 = virtualinvoke $r16_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r10_10.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r14_14);
+
+        return 0;
+
+     label24:
+        $l6_7 = Phi($l6_4 #11, $l6_5 #16);
+
+        $l5_7 = Phi($l5_4 #11, $l5_5 #16);
+
+        $r14_15 = Phi($r14_10 #11, $r14_11 #16);
+
+        $r11_8 = Phi($r11_5 #11, $r11_6 #16);
+
+        $b7_7 = Phi($b7_4 #11, $b7_5 #16);
+
+        $i4_7 = Phi($i4_4 #11, $i4_5 #16);
+
+        $r14_16 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $r15_6 = "min-fresh";
+
+        $z0_12 = virtualinvoke $r15_6.<java.lang.String: boolean equals(java.lang.Object)>($r14_16);
+
+(18)    if $z0_12 == 0 goto label35;
+
+     label25:
+(19)    $r14_17 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getValue()>();
+
+(20)    $l5_8 = staticinvoke <java.lang.Long: long parseLong(java.lang.String)>($r14_17);
+
+     label26:
+        $b7_8 = $l5_8 cmp 0L;
+
+        if $b7_8 >= 0 goto label27;
+
+        return 0;
+
+     label27:
+(21)    $r11_9 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+     label28:
+(22)    $l6_8 = virtualinvoke $r11_9.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: long getCurrentAgeSecs(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry,java.util.Date)>($r3, $r4);
+
+     label29:
+(23)    $r11_10 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy validityStrategy>;
+
+     label30:
+        $l8 = virtualinvoke $r11_10.<ch.boye.httpclientandroidlib.impl.client.cache.CacheValidityPolicy: long getFreshnessLifetimeSecs(ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)>($r3);
+
+     label31:
+        $l6_9 = $l8 - $l6_8;
+
+        $b7_9 = $l6_9 cmp $l5_8;
+
+(24)    if $b7_9 >= 0 goto label35;
+
+(25)    $r10_11 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label32:
+        virtualinvoke $r10_11.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void trace(java.lang.Object)>("Response from cache was not suitable due to min fresh freshness requirement");
+
+     label33:
+        return 0;
+
+     label34:
+        $r9 := @caughtexception;
+
+        $l6_10 = Phi($l6_7 #18, $l6_8 #22, $l6_9 #25);
+
+        $l5_9 = Phi($l5_7 #18, $l5_8 #20);
+
+        $r10_12 = Phi($r10 #18, $r10_11 #25);
+
+        $r14_18 = Phi($r14_16 #18, $r14_17 #19);
+
+        $r11_11 = Phi($r11_8 #18, $r11_9 #21, $r11_10 #23);
+
+        $b7_10 = Phi($b7_7 #18, $b7_8 #21, $b7_9 #25);
+
+        $r10_13 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r16_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r16_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r16_7 = virtualinvoke $r16_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Response from cache was malformed: ");
+
+        $r14_19 = virtualinvoke $r9.<java.lang.NumberFormatException: java.lang.String getMessage()>();
+
+        $r16_8 = virtualinvoke $r16_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14_19);
+
+        $r14_20 = virtualinvoke $r16_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r10_13.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r14_20);
+
+        return 0;
+
+     label35:
+        $l6_11 = Phi($l6_7 #18, $l6_9 #24);
+
+        $l5_10 = Phi($l5_7 #18, $l5_8 #24);
+
+        $r14_21 = Phi($r14_16 #18, $r14_17 #24);
+
+        $r11_12 = Phi($r11_8 #18, $r11_10 #24);
+
+        $b7_11 = Phi($b7_7 #18, $b7_9 #24);
+
+        $i3_3 = $i3_2 + 1;
+
+(26)    goto label06;
+
+     label36:
+        $i2_2 = $i2_1 + 1;
+
+(27)    goto label05;
+
+     label37:
+        $r10_14 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r10_14.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void trace(java.lang.Object)>("Response from cache was suitable");
+
+        return 1;
+
+        catch java.lang.NumberFormatException from label09 to label10 with label15;
+        catch java.lang.NumberFormatException from label11 to label12 with label15;
+        catch java.lang.NumberFormatException from label13 to label14 with label15;
+        catch java.lang.NumberFormatException from label17 to label18 with label23;
+        catch java.lang.NumberFormatException from label19 to label20 with label23;
+        catch java.lang.NumberFormatException from label21 to label22 with label23;
+        catch java.lang.NumberFormatException from label25 to label26 with label34;
+        catch java.lang.NumberFormatException from label28 to label29 with label34;
+        catch java.lang.NumberFormatException from label30 to label31 with label34;
+        catch java.lang.NumberFormatException from label32 to label33 with label34;
+    }
+
+    public boolean isConditional(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $z0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean hasSupportedEtagValidator(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+(0)     if $z0 != 0 goto label1;
+
+        $z0_1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CachedResponseSuitabilityChecker: boolean hasSupportedLastModifiedValidator(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+(1)     if $z0_1 == 0 goto label2;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+}

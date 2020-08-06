@@ -1,0 +1,2031 @@
+public class com.facebook.AppEventsLogger extends java.lang.Object
+{
+    public static final java.lang.String ACTION_APP_EVENTS_FLUSHED;
+    public static final java.lang.String APP_EVENTS_EXTRA_FLUSH_RESULT;
+    public static final java.lang.String APP_EVENTS_EXTRA_NUM_EVENTS_FLUSHED;
+    private static final int APP_SUPPORTS_ATTRIBUTION_ID_RECHECK_PERIOD_IN_SECONDS;
+    private static final int FLUSH_APP_SESSION_INFO_IN_SECONDS;
+    private static final int FLUSH_PERIOD_IN_SECONDS;
+    private static final int NUM_LOG_EVENTS_TO_TRY_TO_FLUSH_AFTER;
+    private static final java.lang.String SOURCE_APPLICATION_HAS_BEEN_SET_BY_THIS_INTENT;
+    private static final java.lang.String TAG;
+    private static android.content.Context applicationContext;
+    private static java.util.concurrent.ScheduledThreadPoolExecutor backgroundExecutor;
+    private static com.facebook.AppEventsLogger$FlushBehavior flushBehavior;
+    private static java.lang.String hashedDeviceAndAppId;
+    private static boolean isOpenedByApplink;
+    private static boolean requestInFlight;
+    private static java.lang.String sourceApplication;
+    private static java.util.Map stateMap;
+    private static java.lang.Object staticLock;
+    private final com.facebook.AppEventsLogger$AccessTokenAppIdPair accessTokenAppId;
+    private final android.content.Context context;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        java.util.concurrent.ConcurrentHashMap $r1;
+        com.facebook.AppEventsLogger$FlushBehavior $r2;
+        java.lang.Object $r3;
+        java.lang.String $r4;
+
+        $r0 = class "com/facebook/AppEventsLogger";
+
+        $r4 = virtualinvoke $r0.<java.lang.Class: java.lang.String getCanonicalName()>();
+
+        <com.facebook.AppEventsLogger: java.lang.String TAG> = $r4;
+
+        $r1 = new java.util.concurrent.ConcurrentHashMap;
+
+        specialinvoke $r1.<java.util.concurrent.ConcurrentHashMap: void <init>()>();
+
+        <com.facebook.AppEventsLogger: java.util.Map stateMap> = $r1;
+
+        $r2 = <com.facebook.AppEventsLogger$FlushBehavior: com.facebook.AppEventsLogger$FlushBehavior AUTO>;
+
+        <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$FlushBehavior flushBehavior> = $r2;
+
+        $r3 = new java.lang.Object;
+
+        specialinvoke $r3.<java.lang.Object: void <init>()>();
+
+        <com.facebook.AppEventsLogger: java.lang.Object staticLock> = $r3;
+
+        return;
+    }
+
+    private void <init>(android.content.Context, java.lang.String, com.facebook.Session)
+    {
+        com.facebook.AppEventsLogger $r0;
+        java.lang.Object $r1;
+        android.content.Context $r2, $r4, $r4_1, $r4_2, $r4_3;
+        java.lang.Throwable $r3;
+        java.lang.String $r5, $r7, $r7_1, $r5_1, $r7_2, $r7_3, $r5_2, $r5_3, $r5_4, $r7_4, $r7_5, $r5_5, $r5_6;
+        com.facebook.Session $r6, $r6_1, $r6_2;
+        boolean $z0;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r8, $r8_1, $r8_2;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r4 := @parameter0: android.content.Context;
+
+        $r5 := @parameter1: java.lang.String;
+
+        $r6 := @parameter2: com.facebook.Session;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r4, "context");
+
+        $r0.<com.facebook.AppEventsLogger: android.content.Context context> = $r4;
+
+(0)     if $r6 != null goto label01;
+
+(1)     $r6_1 = staticinvoke <com.facebook.Session: com.facebook.Session getActiveSession()>();
+
+     label01:
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+(2)     if $r6_2 == null goto label08;
+
+(3)     if $r5 == null goto label02;
+
+        $r7 = virtualinvoke $r6_2.<com.facebook.Session: java.lang.String getApplicationId()>();
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>($r7);
+
+(4)     if $z0 == 0 goto label08;
+
+     label02:
+        $r7_1 = Phi($r7 #3, $r7 #4);
+
+        $r8 = new com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        specialinvoke $r8.<com.facebook.AppEventsLogger$AccessTokenAppIdPair: void <init>(com.facebook.Session)>($r6_2);
+
+(5)     $r0.<com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$AccessTokenAppIdPair accessTokenAppId> = $r8;
+
+     label03:
+        $r8_1 = Phi($r8 #5, $r8_2 #18);
+
+        $r5_1 = Phi($r5 #5, $r5_6 #18);
+
+        $r7_2 = Phi($r7_1 #5, $r7_5 #18);
+
+        $r1 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+(6)     entermonitor $r1;
+
+     label04:
+(7)     $r7_3 = <com.facebook.AppEventsLogger: java.lang.String hashedDeviceAndAppId>;
+
+(8)     if $r7_3 != null goto label05;
+
+(9)     $r5_2 = staticinvoke <com.facebook.internal.Utility: java.lang.String getHashedDeviceAndAppID(android.content.Context,java.lang.String)>($r4, $r5_1);
+
+(10)    <com.facebook.AppEventsLogger: java.lang.String hashedDeviceAndAppId> = $r5_2;
+
+     label05:
+        $r5_3 = Phi($r5_1 #8, $r5_2 #10);
+
+(11)    $r2 = <com.facebook.AppEventsLogger: android.content.Context applicationContext>;
+
+(12)    if $r2 != null goto label06;
+
+(13)    $r4_1 = virtualinvoke $r4.<android.content.Context: android.content.Context getApplicationContext()>();
+
+(14)    <com.facebook.AppEventsLogger: android.content.Context applicationContext> = $r4_1;
+
+     label06:
+        $r4_2 = Phi($r4 #12, $r4_1 #14);
+
+(15)    exitmonitor $r1;
+
+     label07:
+        staticinvoke <com.facebook.AppEventsLogger: void initializeTimersIfNeeded()>();
+
+        return;
+
+     label08:
+        $r7_5 = Phi($r7 #2, $r7 #4);
+
+(16)    if $r5 != null goto label09;
+
+(17)    $r5_5 = staticinvoke <com.facebook.internal.Utility: java.lang.String getMetadataApplicationId(android.content.Context)>($r4);
+
+     label09:
+        $r5_6 = Phi($r5 #16, $r5_5 #17);
+
+        $r8_2 = new com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        specialinvoke $r8_2.<com.facebook.AppEventsLogger$AccessTokenAppIdPair: void <init>(java.lang.String,java.lang.String)>(null, $r5_6);
+
+        $r0.<com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$AccessTokenAppIdPair accessTokenAppId> = $r8_2;
+
+(18)    goto label03;
+
+     label10:
+        $r3 := @caughtexception;
+
+        $r5_4 = Phi($r5_1 #6, $r5_2 #9, $r5_3 #11, $r5_4 #19);
+
+        $r4_3 = Phi($r4 #6, $r4_1 #13, $r4_2 #15, $r4_3 #19);
+
+(19)    $r7_4 = Phi($r7_2 #6, $r7_3 #7, $r7_4 #19);
+
+     label11:
+        exitmonitor $r1;
+
+     label12:
+        throw $r3;
+
+        catch java.lang.Throwable from label04 to label07 with label10;
+        catch java.lang.Throwable from label11 to label12 with label10;
+    }
+
+    static void access$100(com.facebook.AppEventsLogger, long, java.lang.String)
+    {
+        com.facebook.AppEventsLogger $r0;
+        long $l0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger;
+
+        $l0 := @parameter1: long;
+
+        $r1 := @parameter2: java.lang.String;
+
+        specialinvoke $r0.<com.facebook.AppEventsLogger: void logAppSessionResumeEvent(long,java.lang.String)>($l0, $r1);
+
+        return;
+    }
+
+    static android.content.Context access$1000()
+    {
+        android.content.Context r0;
+
+        r0 = <com.facebook.AppEventsLogger: android.content.Context applicationContext>;
+
+        return r0;
+    }
+
+    static java.lang.String access$1300()
+    {
+        java.lang.String r0;
+
+        r0 = <com.facebook.AppEventsLogger: java.lang.String TAG>;
+
+        return r0;
+    }
+
+    static java.util.concurrent.ScheduledThreadPoolExecutor access$1400()
+    {
+        java.util.concurrent.ScheduledThreadPoolExecutor r0;
+
+        r0 = <com.facebook.AppEventsLogger: java.util.concurrent.ScheduledThreadPoolExecutor backgroundExecutor>;
+
+        return r0;
+    }
+
+    static void access$200(com.facebook.AppEventsLogger, long)
+    {
+        com.facebook.AppEventsLogger $r0;
+        long $l0;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger;
+
+        $l0 := @parameter1: long;
+
+        specialinvoke $r0.<com.facebook.AppEventsLogger: void logAppSessionSuspendEvent(long)>($l0);
+
+        return;
+    }
+
+    static void access$300(com.facebook.AppEventsLogger$FlushReason)
+    {
+        com.facebook.AppEventsLogger$FlushReason $r0;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger$FlushReason;
+
+        staticinvoke <com.facebook.AppEventsLogger: void flushAndWait(com.facebook.AppEventsLogger$FlushReason)>($r0);
+
+        return;
+    }
+
+    static java.lang.Object access$400()
+    {
+        java.lang.Object r0;
+
+        r0 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+        return r0;
+    }
+
+    static java.util.Map access$500()
+    {
+        java.util.Map r0;
+
+        r0 = <com.facebook.AppEventsLogger: java.util.Map stateMap>;
+
+        return r0;
+    }
+
+    static com.facebook.AppEventsLogger$SessionEventsState access$600(android.content.Context, com.facebook.AppEventsLogger$AccessTokenAppIdPair)
+    {
+        android.content.Context $r0;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r1;
+        com.facebook.AppEventsLogger$SessionEventsState $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        $r2 = staticinvoke <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$SessionEventsState getSessionEventsState(android.content.Context,com.facebook.AppEventsLogger$AccessTokenAppIdPair)>($r0, $r1);
+
+        return $r2;
+    }
+
+    static void access$700()
+    {
+        staticinvoke <com.facebook.AppEventsLogger: void flushIfNecessary()>();
+
+        return;
+    }
+
+    static void access$900(com.facebook.AppEventsLogger$AccessTokenAppIdPair, com.facebook.Request, com.facebook.Response, com.facebook.AppEventsLogger$SessionEventsState, com.facebook.AppEventsLogger$FlushStatistics)
+    {
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r0;
+        com.facebook.Request $r1;
+        com.facebook.Response $r2;
+        com.facebook.AppEventsLogger$SessionEventsState $r3;
+        com.facebook.AppEventsLogger$FlushStatistics $r4;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        $r1 := @parameter1: com.facebook.Request;
+
+        $r2 := @parameter2: com.facebook.Response;
+
+        $r3 := @parameter3: com.facebook.AppEventsLogger$SessionEventsState;
+
+        $r4 := @parameter4: com.facebook.AppEventsLogger$FlushStatistics;
+
+        staticinvoke <com.facebook.AppEventsLogger: void handleResponse(com.facebook.AppEventsLogger$AccessTokenAppIdPair,com.facebook.Request,com.facebook.Response,com.facebook.AppEventsLogger$SessionEventsState,com.facebook.AppEventsLogger$FlushStatistics)>($r0, $r1, $r2, $r3, $r4);
+
+        return;
+    }
+
+    private static int accumulatePersistedEvents()
+    {
+        android.content.Context $r0, $r0_1, $r0_2;
+        com.facebook.AppEventsLogger$PersistedEvents $r1;
+        int $i0, $i1, $i0_1, $i0_2;
+        java.util.Set $r2;
+        java.util.Iterator $r3;
+        boolean $z0;
+        java.lang.Object $r4;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r5;
+        com.facebook.AppEventsLogger$SessionEventsState $r6;
+        java.util.List $r7;
+
+        $r0 = <com.facebook.AppEventsLogger: android.content.Context applicationContext>;
+
+        $r1 = staticinvoke <com.facebook.AppEventsLogger$PersistedEvents: com.facebook.AppEventsLogger$PersistedEvents readAndClearStore(android.content.Context)>($r0);
+
+        $i0 = 0;
+
+        $r2 = virtualinvoke $r1.<com.facebook.AppEventsLogger$PersistedEvents: java.util.Set keySet()>();
+
+(0)     $r3 = interfaceinvoke $r2.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $r0_1 = Phi($r0 #0, $r0_2 #1);
+
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (com.facebook.AppEventsLogger$AccessTokenAppIdPair) $r4;
+
+        $r0_2 = <com.facebook.AppEventsLogger: android.content.Context applicationContext>;
+
+        $r6 = staticinvoke <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$SessionEventsState getSessionEventsState(android.content.Context,com.facebook.AppEventsLogger$AccessTokenAppIdPair)>($r0_2, $r5);
+
+        $r7 = virtualinvoke $r1.<com.facebook.AppEventsLogger$PersistedEvents: java.util.List getEvents(com.facebook.AppEventsLogger$AccessTokenAppIdPair)>($r5);
+
+        virtualinvoke $r6.<com.facebook.AppEventsLogger$SessionEventsState: void accumulatePersistedEvents(java.util.List)>($r7);
+
+        $i1 = interfaceinvoke $r7.<java.util.List: int size()>();
+
+        $i0_2 = $i0_1 + $i1;
+
+(1)     goto label1;
+
+     label2:
+        return $i0_1;
+    }
+
+    public static void activateApp(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        staticinvoke <com.facebook.Settings: void sdkInitialize(android.content.Context)>($r0);
+
+        $r1 = staticinvoke <com.facebook.internal.Utility: java.lang.String getMetadataApplicationId(android.content.Context)>($r0);
+
+        staticinvoke <com.facebook.AppEventsLogger: void activateApp(android.content.Context,java.lang.String)>($r0, $r1);
+
+        return;
+    }
+
+    public static void activateApp(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.IllegalArgumentException $r1;
+        boolean $z0;
+        com.facebook.AppEventsLogger $r2;
+        java.util.concurrent.ScheduledThreadPoolExecutor $r3;
+        com.facebook.AppEventsLogger$1 $r4;
+        java.lang.Class $r5;
+        java.lang.String $r6, $r8, $r6_1;
+        android.app.Activity $r7;
+        long $l0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r6 := @parameter1: java.lang.String;
+
+        if $r0 == null goto label1;
+
+        if $r6 != null goto label2;
+
+     label1:
+        $r1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Both context and applicationId must be non-null");
+
+        throw $r1;
+
+     label2:
+        $z0 = $r0 instanceof android.app.Activity;
+
+        if $z0 == 0 goto label4;
+
+        $r7 = (android.app.Activity) $r0;
+
+        staticinvoke <com.facebook.AppEventsLogger: void setSourceApplication(android.app.Activity)>($r7);
+
+     label3:
+        staticinvoke <com.facebook.Settings: void publishInstallAsync(android.content.Context,java.lang.String,com.facebook.Request$Callback)>($r0, $r6, null);
+
+        $r2 = new com.facebook.AppEventsLogger;
+
+        specialinvoke $r2.<com.facebook.AppEventsLogger: void <init>(android.content.Context,java.lang.String,com.facebook.Session)>($r0, $r6, null);
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r6_1 = staticinvoke <com.facebook.AppEventsLogger: java.lang.String getSourceApplication()>();
+
+        $r3 = <com.facebook.AppEventsLogger: java.util.concurrent.ScheduledThreadPoolExecutor backgroundExecutor>;
+
+        $r4 = new com.facebook.AppEventsLogger$1;
+
+        specialinvoke $r4.<com.facebook.AppEventsLogger$1: void <init>(com.facebook.AppEventsLogger,long,java.lang.String)>($r2, $l0, $r6_1);
+
+        virtualinvoke $r3.<java.util.concurrent.ScheduledThreadPoolExecutor: void execute(java.lang.Runnable)>($r4);
+
+        return;
+
+     label4:
+        staticinvoke <com.facebook.AppEventsLogger: void resetSourceApplication()>();
+
+        $r5 = class "com/facebook/AppEventsLogger";
+
+        $r8 = virtualinvoke $r5.<java.lang.Class: java.lang.String getName()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r8, "To set source application the context of activateApp must be an instance of Activity");
+
+        goto label3;
+    }
+
+    private static com.facebook.AppEventsLogger$FlushStatistics buildAndExecuteRequests(com.facebook.AppEventsLogger$FlushReason, java.util.Set)
+    {
+        com.facebook.AppEventsLogger$FlushReason $r0;
+        java.util.Set $r1;
+        com.facebook.AppEventsLogger$FlushStatistics $r2;
+        android.content.Context $r3;
+        java.util.ArrayList $r4;
+        com.facebook.LoggingBehavior $r5;
+        java.lang.String $r6, $r14;
+        boolean $z0, $z1, $z0_1, $z0_2;
+        java.util.Iterator $r7, $r7_1;
+        java.lang.Object $r8, $r8_1, $r8_2, $r8_3;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r9;
+        com.facebook.AppEventsLogger$SessionEventsState $r10;
+        com.facebook.Request $r11, $r11_1, $r11_2, $r11_3;
+        int $i0, $i0_1;
+        java.lang.Object[] $r12;
+        java.lang.Integer $r13;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger$FlushReason;
+
+        $r1 := @parameter1: java.util.Set;
+
+        $r2 = new com.facebook.AppEventsLogger$FlushStatistics;
+
+        specialinvoke $r2.<com.facebook.AppEventsLogger$FlushStatistics: void <init>(com.facebook.AppEventsLogger$1)>(null);
+
+        $r3 = <com.facebook.AppEventsLogger: android.content.Context applicationContext>;
+
+        $z0 = staticinvoke <com.facebook.Settings: boolean getLimitEventAndDataUsage(android.content.Context)>($r3);
+
+        $r4 = new java.util.ArrayList;
+
+        specialinvoke $r4.<java.util.ArrayList: void <init>()>();
+
+(0)     $r7 = interfaceinvoke $r1.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $r8 = Phi($r8 #0, $r8_1 #1, $r8_1 #2, $r8_1 #3);
+
+        $r11 = Phi($r11 #0, $r11 #1, $r11_1 #2, $r11_1 #3);
+
+        $z1 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label2;
+
+        $r8_1 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r9 = (com.facebook.AppEventsLogger$AccessTokenAppIdPair) $r8_1;
+
+        $r10 = staticinvoke <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$SessionEventsState getSessionEventsState(com.facebook.AppEventsLogger$AccessTokenAppIdPair)>($r9);
+
+(1)     if $r10 == null goto label1;
+
+        $r11_1 = staticinvoke <com.facebook.AppEventsLogger: com.facebook.Request buildRequestForSession(com.facebook.AppEventsLogger$AccessTokenAppIdPair,com.facebook.AppEventsLogger$SessionEventsState,boolean,com.facebook.AppEventsLogger$FlushStatistics)>($r9, $r10, $z0, $r2);
+
+(2)     if $r11_1 == null goto label1;
+
+        interfaceinvoke $r4.<java.util.List: boolean add(java.lang.Object)>($r11_1);
+
+(3)     goto label1;
+
+     label2:
+        $i0 = interfaceinvoke $r4.<java.util.List: int size()>();
+
+        if $i0 <= 0 goto label4;
+
+        $r5 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior APP_EVENTS>;
+
+        $r6 = <com.facebook.AppEventsLogger: java.lang.String TAG>;
+
+        $r12 = newarray (java.lang.Object)[2];
+
+        $i0_1 = $r2.<com.facebook.AppEventsLogger$FlushStatistics: int numEvents>;
+
+        $r13 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_1);
+
+        $r12[0] = $r13;
+
+        $r14 = virtualinvoke $r0.<com.facebook.AppEventsLogger$FlushReason: java.lang.String toString()>();
+
+        $r12[1] = $r14;
+
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String,java.lang.Object[])>($r5, $r6, "Flushing %d events due to %s.", $r12);
+
+(4)     $r7_1 = interfaceinvoke $r4.<java.util.List: java.util.Iterator iterator()>();
+
+     label3:
+        $r8_2 = Phi($r8 #4, $r8_3 #5);
+
+        $z0_1 = Phi($z0 #4, $z0_2 #5);
+
+        $r11_2 = Phi($r11 #4, $r11_3 #5);
+
+        $z0_2 = interfaceinvoke $r7_1.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_2 == 0 goto label5;
+
+        $r8_3 = interfaceinvoke $r7_1.<java.util.Iterator: java.lang.Object next()>();
+
+        $r11_3 = (com.facebook.Request) $r8_3;
+
+        virtualinvoke $r11_3.<com.facebook.Request: com.facebook.Response executeAndWait()>();
+
+(5)     goto label3;
+
+     label4:
+        return null;
+
+     label5:
+        return $r2;
+    }
+
+    private static com.facebook.Request buildRequestForSession(com.facebook.AppEventsLogger$AccessTokenAppIdPair, com.facebook.AppEventsLogger$SessionEventsState, boolean, com.facebook.AppEventsLogger$FlushStatistics)
+    {
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r0;
+        com.facebook.AppEventsLogger$SessionEventsState $r1;
+        boolean $z0, $z1, $z2;
+        com.facebook.AppEventsLogger$FlushStatistics $r2;
+        java.lang.Object[] $r3;
+        com.facebook.AppEventsLogger$7 $r4;
+        java.lang.String $r5, $r5_1, $r5_2;
+        com.facebook.internal.Utility$FetchedAppSettings $r6;
+        com.facebook.Request $r7;
+        android.os.Bundle $r8, $r9, $r9_1, $r9_2;
+        int $i0, $i1, $i0_1;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        $r1 := @parameter1: com.facebook.AppEventsLogger$SessionEventsState;
+
+        $z0 := @parameter2: boolean;
+
+        $r2 := @parameter3: com.facebook.AppEventsLogger$FlushStatistics;
+
+        $r5 = virtualinvoke $r0.<com.facebook.AppEventsLogger$AccessTokenAppIdPair: java.lang.String getApplicationId()>();
+
+        $r6 = staticinvoke <com.facebook.internal.Utility: com.facebook.internal.Utility$FetchedAppSettings queryAppSettings(java.lang.String,boolean)>($r5, 0);
+
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r3[0] = $r5;
+
+        $r5_1 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s/activities", $r3);
+
+        $r7 = staticinvoke <com.facebook.Request: com.facebook.Request newPostRequest(com.facebook.Session,java.lang.String,com.facebook.model.GraphObject,com.facebook.Request$Callback)>(null, $r5_1, null, null);
+
+        $r8 = virtualinvoke $r7.<com.facebook.Request: android.os.Bundle getParameters()>();
+
+        $r9 = $r8;
+
+(0)     if $r8 != null goto label1;
+
+        $r9_1 = new android.os.Bundle;
+
+(1)     specialinvoke $r9_1.<android.os.Bundle: void <init>()>();
+
+     label1:
+        $r9_2 = Phi($r9 #0, $r9_1 #1);
+
+        $r5_2 = virtualinvoke $r0.<com.facebook.AppEventsLogger$AccessTokenAppIdPair: java.lang.String getAccessToken()>();
+
+        virtualinvoke $r9_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("access_token", $r5_2);
+
+        virtualinvoke $r7.<com.facebook.Request: void setParameters(android.os.Bundle)>($r9_2);
+
+        if $r6 != null goto label2;
+
+        return null;
+
+     label2:
+        $z1 = virtualinvoke $r6.<com.facebook.internal.Utility$FetchedAppSettings: boolean supportsImplicitLogging()>();
+
+        $z2 = virtualinvoke $r6.<com.facebook.internal.Utility$FetchedAppSettings: boolean supportsAttribution()>();
+
+        $i0 = virtualinvoke $r1.<com.facebook.AppEventsLogger$SessionEventsState: int populateRequest(com.facebook.Request,boolean,boolean,boolean)>($r7, $z1, $z2, $z0);
+
+        if $i0 != 0 goto label3;
+
+        return null;
+
+     label3:
+        $i1 = $r2.<com.facebook.AppEventsLogger$FlushStatistics: int numEvents>;
+
+        $i0_1 = $i1 + $i0;
+
+        $r2.<com.facebook.AppEventsLogger$FlushStatistics: int numEvents> = $i0_1;
+
+        $r4 = new com.facebook.AppEventsLogger$7;
+
+        specialinvoke $r4.<com.facebook.AppEventsLogger$7: void <init>(com.facebook.AppEventsLogger$AccessTokenAppIdPair,com.facebook.Request,com.facebook.AppEventsLogger$SessionEventsState,com.facebook.AppEventsLogger$FlushStatistics)>($r0, $r7, $r1, $r2);
+
+        virtualinvoke $r7.<com.facebook.Request: void setCallback(com.facebook.Request$Callback)>($r4);
+
+        return $r7;
+    }
+
+    public static void deactivateApp(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.facebook.internal.Utility: java.lang.String getMetadataApplicationId(android.content.Context)>($r0);
+
+        staticinvoke <com.facebook.AppEventsLogger: void deactivateApp(android.content.Context,java.lang.String)>($r0, $r1);
+
+        return;
+    }
+
+    public static void deactivateApp(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        java.lang.IllegalArgumentException $r2;
+        com.facebook.AppEventsLogger $r3;
+        java.util.concurrent.ScheduledThreadPoolExecutor $r4;
+        com.facebook.AppEventsLogger$2 $r5;
+        long $l0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        if $r0 == null goto label1;
+
+        if $r1 != null goto label2;
+
+     label1:
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Both context and applicationId must be non-null");
+
+        throw $r2;
+
+     label2:
+        staticinvoke <com.facebook.AppEventsLogger: void resetSourceApplication()>();
+
+        $r3 = new com.facebook.AppEventsLogger;
+
+        specialinvoke $r3.<com.facebook.AppEventsLogger: void <init>(android.content.Context,java.lang.String,com.facebook.Session)>($r0, $r1, null);
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r4 = <com.facebook.AppEventsLogger: java.util.concurrent.ScheduledThreadPoolExecutor backgroundExecutor>;
+
+        $r5 = new com.facebook.AppEventsLogger$2;
+
+        specialinvoke $r5.<com.facebook.AppEventsLogger$2: void <init>(com.facebook.AppEventsLogger,long)>($r3, $l0);
+
+        virtualinvoke $r4.<java.util.concurrent.ScheduledThreadPoolExecutor: void execute(java.lang.Runnable)>($r5);
+
+        return;
+    }
+
+    static void eagerFlush()
+    {
+        com.facebook.AppEventsLogger$FlushBehavior $r0, $r2;
+        com.facebook.AppEventsLogger$FlushReason $r1;
+
+        $r2 = staticinvoke <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$FlushBehavior getFlushBehavior()>();
+
+        $r0 = <com.facebook.AppEventsLogger$FlushBehavior: com.facebook.AppEventsLogger$FlushBehavior EXPLICIT_ONLY>;
+
+        if $r2 == $r0 goto label1;
+
+        $r1 = <com.facebook.AppEventsLogger$FlushReason: com.facebook.AppEventsLogger$FlushReason EAGER_FLUSHING_EVENT>;
+
+        staticinvoke <com.facebook.AppEventsLogger: void flush(com.facebook.AppEventsLogger$FlushReason)>($r1);
+
+     label1:
+        return;
+    }
+
+    private static void flush(com.facebook.AppEventsLogger$FlushReason)
+    {
+        com.facebook.AppEventsLogger$FlushReason $r0;
+        com.facebook.AppEventsLogger$6 $r1;
+        java.util.concurrent.Executor $r2;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger$FlushReason;
+
+        $r2 = staticinvoke <com.facebook.Settings: java.util.concurrent.Executor getExecutor()>();
+
+        $r1 = new com.facebook.AppEventsLogger$6;
+
+        specialinvoke $r1.<com.facebook.AppEventsLogger$6: void <init>(com.facebook.AppEventsLogger$FlushReason)>($r0);
+
+        interfaceinvoke $r2.<java.util.concurrent.Executor: void execute(java.lang.Runnable)>($r1);
+
+        return;
+    }
+
+    private static void flushAndWait(com.facebook.AppEventsLogger$FlushReason)
+    {
+        com.facebook.AppEventsLogger$FlushReason $r0;
+        boolean $z0;
+        java.util.HashSet $r1;
+        java.util.Map $r2;
+        android.content.Intent $r3;
+        int $i0;
+        com.facebook.AppEventsLogger$FlushResult $r4;
+        android.content.Context $r5;
+        java.lang.Throwable $r6, $r9;
+        java.lang.Exception $r7;
+        java.lang.String $r8;
+        java.lang.Object $r10, $r10_1;
+        java.util.Set $r11;
+        com.facebook.AppEventsLogger$FlushStatistics $r12, $r12_1, $r12_2, $r12_3;
+        android.support.v4.content.LocalBroadcastManager $r13;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger$FlushReason;
+
+        $r10 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+        entermonitor $r10;
+
+     label01:
+        $z0 = <com.facebook.AppEventsLogger: boolean requestInFlight>;
+
+        if $z0 == 0 goto label03;
+
+        exitmonitor $r10;
+
+     label02:
+        return;
+
+     label03:
+        <com.facebook.AppEventsLogger: boolean requestInFlight> = 1;
+
+        $r1 = new java.util.HashSet;
+
+        $r2 = <com.facebook.AppEventsLogger: java.util.Map stateMap>;
+
+        $r11 = interfaceinvoke $r2.<java.util.Map: java.util.Set keySet()>();
+
+        specialinvoke $r1.<java.util.HashSet: void <init>(java.util.Collection)>($r11);
+
+        exitmonitor $r10;
+
+     label04:
+        staticinvoke <com.facebook.AppEventsLogger: int accumulatePersistedEvents()>();
+
+(0)     $r12 = null;
+
+     label05:
+(1)     $r12_1 = staticinvoke <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$FlushStatistics buildAndExecuteRequests(com.facebook.AppEventsLogger$FlushReason,java.util.Set)>($r0, $r1);
+
+     label06:
+        $r12_2 = Phi($r12_1 #1, $r12_3 #2);
+
+        $r10_1 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+        entermonitor $r10_1;
+
+     label07:
+        <com.facebook.AppEventsLogger: boolean requestInFlight> = 0;
+
+        exitmonitor $r10_1;
+
+     label08:
+        if $r12_2 == null goto label16;
+
+        $r3 = new android.content.Intent;
+
+        specialinvoke $r3.<android.content.Intent: void <init>(java.lang.String)>("com.facebook.sdk.APP_EVENTS_FLUSHED");
+
+        $i0 = $r12_2.<com.facebook.AppEventsLogger$FlushStatistics: int numEvents>;
+
+        virtualinvoke $r3.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("com.facebook.sdk.APP_EVENTS_NUM_EVENTS_FLUSHED", $i0);
+
+        $r4 = $r12_2.<com.facebook.AppEventsLogger$FlushStatistics: com.facebook.AppEventsLogger$FlushResult result>;
+
+        virtualinvoke $r3.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.io.Serializable)>("com.facebook.sdk.APP_EVENTS_FLUSH_RESULT", $r4);
+
+        $r5 = <com.facebook.AppEventsLogger: android.content.Context applicationContext>;
+
+        $r13 = staticinvoke <android.support.v4.content.LocalBroadcastManager: android.support.v4.content.LocalBroadcastManager getInstance(android.content.Context)>($r5);
+
+        virtualinvoke $r13.<android.support.v4.content.LocalBroadcastManager: boolean sendBroadcast(android.content.Intent)>($r3);
+
+        return;
+
+     label09:
+        $r6 := @caughtexception;
+
+     label10:
+        exitmonitor $r10;
+
+     label11:
+        throw $r6;
+
+     label12:
+        $r7 := @caughtexception;
+
+        $r12_3 = Phi($r12 #0, $r12_1 #1);
+
+        $r8 = <com.facebook.AppEventsLogger: java.lang.String TAG>;
+
+        staticinvoke <com.facebook.internal.Utility: void logd(java.lang.String,java.lang.String,java.lang.Throwable)>($r8, "Caught unexpected exception while flushing: ", $r7);
+
+(2)     goto label06;
+
+     label13:
+        $r9 := @caughtexception;
+
+     label14:
+        exitmonitor $r10_1;
+
+     label15:
+        throw $r9;
+
+     label16:
+        return;
+
+        catch java.lang.Throwable from label01 to label02 with label09;
+        catch java.lang.Throwable from label03 to label04 with label09;
+        catch java.lang.Exception from label05 to label06 with label12;
+        catch java.lang.Throwable from label07 to label08 with label13;
+        catch java.lang.Throwable from label10 to label11 with label09;
+        catch java.lang.Throwable from label14 to label15 with label13;
+    }
+
+    private static void flushIfNecessary()
+    {
+        java.lang.Object $r0;
+        com.facebook.AppEventsLogger$FlushBehavior $r1, $r4;
+        com.facebook.AppEventsLogger$FlushReason $r2;
+        java.lang.Throwable $r3;
+        int $i0;
+
+        $r0 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+        entermonitor $r0;
+
+     label1:
+        $r4 = staticinvoke <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$FlushBehavior getFlushBehavior()>();
+
+        $r1 = <com.facebook.AppEventsLogger$FlushBehavior: com.facebook.AppEventsLogger$FlushBehavior EXPLICIT_ONLY>;
+
+        if $r4 == $r1 goto label2;
+
+        $i0 = staticinvoke <com.facebook.AppEventsLogger: int getAccumulatedEventCount()>();
+
+        if $i0 <= 100 goto label2;
+
+        $r2 = <com.facebook.AppEventsLogger$FlushReason: com.facebook.AppEventsLogger$FlushReason EVENT_THRESHOLD>;
+
+        staticinvoke <com.facebook.AppEventsLogger: void flush(com.facebook.AppEventsLogger$FlushReason)>($r2);
+
+     label2:
+        exitmonitor $r0;
+
+     label3:
+        return;
+
+     label4:
+        $r3 := @caughtexception;
+
+        exitmonitor $r0;
+
+     label5:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label4 to label5 with label4;
+    }
+
+    private static int getAccumulatedEventCount()
+    {
+        java.lang.Object $r0, $r5;
+        java.util.Map $r1;
+        java.lang.Throwable $r2;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3;
+        java.util.Collection $r3;
+        java.util.Iterator $r4;
+        boolean $z0;
+        com.facebook.AppEventsLogger$SessionEventsState $r6;
+
+        $r0 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+        entermonitor $r0;
+
+(0)     $i0 = 0;
+
+     label1:
+        $r1 = <com.facebook.AppEventsLogger: java.util.Map stateMap>;
+
+        $r3 = interfaceinvoke $r1.<java.util.Map: java.util.Collection values()>();
+
+(1)     $r4 = interfaceinvoke $r3.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label2:
+        $i0_1 = Phi($i0 #1, $i0_2 #4);
+
+(2)     $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label3;
+
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (com.facebook.AppEventsLogger$SessionEventsState) $r5;
+
+        $i1 = virtualinvoke $r6.<com.facebook.AppEventsLogger$SessionEventsState: int getAccumulatedEventCount()>();
+
+(3)     $i0_2 = $i0_1 + $i1;
+
+(4)     goto label2;
+
+     label3:
+        exitmonitor $r0;
+
+     label4:
+        return $i0_1;
+
+     label5:
+        $r2 := @caughtexception;
+
+(5)     $i0_3 = Phi($i0 #0, $i0_1 #2, $i0_2 #3, $i0_3 #5);
+
+        exitmonitor $r0;
+
+     label6:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label4 with label5;
+        catch java.lang.Throwable from label5 to label6 with label5;
+    }
+
+    public static com.facebook.AppEventsLogger$FlushBehavior getFlushBehavior()
+    {
+        java.lang.Object $r0;
+        java.lang.Throwable $r1;
+        com.facebook.AppEventsLogger$FlushBehavior r2;
+
+        $r0 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+        entermonitor $r0;
+
+     label1:
+        r2 = <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$FlushBehavior flushBehavior>;
+
+        exitmonitor $r0;
+
+     label2:
+        return r2;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+     label4:
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public static boolean getLimitEventUsage(android.content.Context)
+    {
+        android.content.Context $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $z0 = staticinvoke <com.facebook.Settings: boolean getLimitEventAndDataUsage(android.content.Context)>($r0);
+
+        return $z0;
+    }
+
+    private static com.facebook.AppEventsLogger$SessionEventsState getSessionEventsState(android.content.Context, com.facebook.AppEventsLogger$AccessTokenAppIdPair)
+    {
+        android.content.Context $r0;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r1;
+        java.lang.String $r2, $r9;
+        java.util.Map $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6;
+        java.lang.Object $r4, $r7, $r4_1;
+        com.facebook.AppEventsLogger$SessionEventsState $r5, $r8, $r5_1, $r5_2, $r8_1, $r5_3, $r8_2, $r5_4, $r8_3, $r5_5, $r8_4;
+        com.facebook.internal.AttributionIdentifiers $r6, $r6_1, $r6_2;
+        java.lang.Throwable $r10, $r10_1, $r10_2, $r10_3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        $r3 = <com.facebook.AppEventsLogger: java.util.Map stateMap>;
+
+        $r4 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r5 = (com.facebook.AppEventsLogger$SessionEventsState) $r4;
+
+        $r6 = null;
+
+(0)     if $r5 != null goto label01;
+
+(1)     $r6_1 = staticinvoke <com.facebook.internal.AttributionIdentifiers: com.facebook.internal.AttributionIdentifiers getAttributionIdentifiers(android.content.Context)>($r0);
+
+     label01:
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        $r4_1 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+(2)     entermonitor $r4_1;
+
+     label02:
+(3)     $r3_1 = <com.facebook.AppEventsLogger: java.util.Map stateMap>;
+
+        $r7 = interfaceinvoke $r3_1.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+(4)     $r5_1 = (com.facebook.AppEventsLogger$SessionEventsState) $r7;
+
+        $r8 = $r5_1;
+
+(5)     if $r5_1 != null goto label05;
+
+(6)     $r5_2 = new com.facebook.AppEventsLogger$SessionEventsState;
+
+        $r9 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r2 = <com.facebook.AppEventsLogger: java.lang.String hashedDeviceAndAppId>;
+
+(7)     specialinvoke $r5_2.<com.facebook.AppEventsLogger$SessionEventsState: void <init>(com.facebook.internal.AttributionIdentifiers,java.lang.String,java.lang.String)>($r6_2, $r9, $r2);
+
+     label03:
+(8)     $r3_2 = <com.facebook.AppEventsLogger: java.util.Map stateMap>;
+
+        interfaceinvoke $r3_2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r5_2);
+
+     label04:
+(9)     $r8_1 = $r5_2;
+
+     label05:
+        $r3_4 = Phi($r3_1 #5, $r3_2 #9);
+
+        $r5_3 = Phi($r5_1 #5, $r5_2 #9);
+
+        $r8_2 = Phi($r8 #5, $r8_1 #9);
+
+(10)    exitmonitor $r4_1;
+
+     label06:
+        return $r8_2;
+
+     label07:
+        $r10_1 := @caughtexception;
+
+        $r3_5 = Phi($r3 #2, $r3_1 #3, $r3_2 #9, $r3_4 #10, $r3_5 #11, $r3_3 #13, $r3_6 #12);
+
+        $r5_4 = Phi($r5 #2, $r5_1 #4, $r5_2 #6, $r5_3 #10, $r5_4 #11, $r5_5 #12);
+
+        $r10_2 = Phi($r10 #2, $r10_2 #11, $r10_3 #12);
+
+(11)    $r8_3 = Phi($r8 #2, $r8_1 #9, $r8_2 #10, $r8_3 #11, $r8_4 #12);
+
+     label08:
+        $r3_6 = Phi($r3_5 #11, $r3_3 #13);
+
+        $r5_5 = Phi($r5_4 #11, $r5_2 #13);
+
+        $r10_3 = Phi($r10_2 #11, $r10 #13);
+
+        $r8_4 = Phi($r8_3 #11, $r8 #13);
+
+(12)    exitmonitor $r4_1;
+
+     label09:
+        throw $r10_3;
+
+     label10:
+        $r10 := @caughtexception;
+
+        $r3_3 = Phi($r3_1 #7, $r3_2 #8);
+
+(13)    goto label08;
+
+        catch java.lang.Throwable from label02 to label03 with label07;
+        catch java.lang.Throwable from label03 to label04 with label10;
+        catch java.lang.Throwable from label05 to label06 with label07;
+        catch java.lang.Throwable from label07 to label09 with label07;
+    }
+
+    private static com.facebook.AppEventsLogger$SessionEventsState getSessionEventsState(com.facebook.AppEventsLogger$AccessTokenAppIdPair)
+    {
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r0;
+        java.lang.Object $r1, $r4;
+        java.util.Map $r2;
+        java.lang.Throwable $r3;
+        com.facebook.AppEventsLogger$SessionEventsState $r5;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        $r1 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+        entermonitor $r1;
+
+     label1:
+        $r2 = <com.facebook.AppEventsLogger: java.util.Map stateMap>;
+
+        $r4 = interfaceinvoke $r2.<java.util.Map: java.lang.Object get(java.lang.Object)>($r0);
+
+        $r5 = (com.facebook.AppEventsLogger$SessionEventsState) $r4;
+
+        exitmonitor $r1;
+
+     label2:
+        return $r5;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r1;
+
+     label4:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    static java.lang.String getSourceApplication()
+    {
+        boolean $z0;
+        java.lang.String $r0, $r1, $r1_1, $r1_2, $r0_1, $r0_2;
+        java.lang.StringBuilder $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r1 = "Unclassified";
+
+        $z0 = <com.facebook.AppEventsLogger: boolean isOpenedByApplink>;
+
+(0)     if $z0 == 0 goto label1;
+
+(1)     $r1_1 = "Applink";
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $r0 = <com.facebook.AppEventsLogger: java.lang.String sourceApplication>;
+
+        if $r0 == null goto label2;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2_1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1_2);
+
+        $r2_2 = virtualinvoke $r2_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("(");
+
+        $r0_1 = <com.facebook.AppEventsLogger: java.lang.String sourceApplication>;
+
+        $r2_3 = virtualinvoke $r2_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0_1);
+
+        $r2_4 = virtualinvoke $r2_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        $r0_2 = virtualinvoke $r2_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r0_2;
+
+     label2:
+        return $r1_2;
+    }
+
+    private static void handleResponse(com.facebook.AppEventsLogger$AccessTokenAppIdPair, com.facebook.Request, com.facebook.Response, com.facebook.AppEventsLogger$SessionEventsState, com.facebook.AppEventsLogger$FlushStatistics)
+    {
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r0;
+        com.facebook.Request $r1;
+        com.facebook.Response $r2;
+        com.facebook.AppEventsLogger$SessionEventsState $r3;
+        com.facebook.AppEventsLogger$FlushStatistics $r4;
+        org.json.JSONArray $r5;
+        java.lang.String $r6, $r11, $r15, $r18, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r6_1, $r6_2, $r15_1, $r6_3, $r6_4, $r15_2, $r6_5, $r15_3;
+        android.content.Context $r7;
+        com.facebook.AppEventsLogger$FlushResult $r8, $r12, $r19, $r12_1, $r12_2, $r12_3, $r8_1, $r8_2, $r8_3;
+        org.json.JSONException $r9;
+        com.facebook.FacebookRequestError $r10;
+        int $i0;
+        com.facebook.LoggingBehavior $r13, $r13_1, $r13_2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.Object $r14;
+        java.lang.Object[] $r16, $r16_1, $r16_2, $r16_3;
+        com.facebook.model.GraphObject $r17;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        $r1 := @parameter1: com.facebook.Request;
+
+        $r2 := @parameter2: com.facebook.Response;
+
+        $r3 := @parameter3: com.facebook.AppEventsLogger$SessionEventsState;
+
+        $r4 := @parameter4: com.facebook.AppEventsLogger$FlushStatistics;
+
+        $r10 = virtualinvoke $r2.<com.facebook.Response: com.facebook.FacebookRequestError getError()>();
+
+        $r11 = "Success";
+
+        $r12 = <com.facebook.AppEventsLogger$FlushResult: com.facebook.AppEventsLogger$FlushResult SUCCESS>;
+
+(0)     if $r10 == null goto label01;
+
+        $i0 = virtualinvoke $r10.<com.facebook.FacebookRequestError: int getErrorCode()>();
+
+        if $i0 != -1 goto label08;
+
+        $r11_1 = "Failed: No Connectivity";
+
+(1)     $r12_1 = <com.facebook.AppEventsLogger$FlushResult: com.facebook.AppEventsLogger$FlushResult NO_CONNECTIVITY>;
+
+     label01:
+        $r16_1 = Phi($r16 #0, $r16 #1, $r16 #10);
+
+        $r11_5 = Phi($r11 #0, $r11_1 #1, $r11_4 #10);
+
+        $r12_3 = Phi($r12 #0, $r12_1 #1, $r12_2 #10);
+
+        $r13 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior APP_EVENTS>;
+
+        $z0 = staticinvoke <com.facebook.Settings: boolean isLoggingBehaviorEnabled(com.facebook.LoggingBehavior)>($r13);
+
+(2)     if $z0 == 0 goto label05;
+
+        $r14 = virtualinvoke $r1.<com.facebook.Request: java.lang.Object getTag()>();
+
+        $r6 = (java.lang.String) $r14;
+
+(3)     $r5 = new org.json.JSONArray;
+
+     label02:
+        specialinvoke $r5.<org.json.JSONArray: void <init>(java.lang.String)>($r6);
+
+(4)     $r6_1 = virtualinvoke $r5.<org.json.JSONArray: java.lang.String toString(int)>(2);
+
+     label03:
+(5)     $r15 = $r6_1;
+
+     label04:
+        $r6_2 = Phi($r6_1 #5, $r6_4 #11);
+
+        $r15_1 = Phi($r15 #5, $r15_2 #11);
+
+        $r13_1 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior APP_EVENTS>;
+
+        $r6_3 = <com.facebook.AppEventsLogger: java.lang.String TAG>;
+
+        $r16_2 = newarray (java.lang.Object)[3];
+
+        $r17 = virtualinvoke $r1.<com.facebook.Request: com.facebook.model.GraphObject getGraphObject()>();
+
+        $r18 = virtualinvoke $r17.<java.lang.Object: java.lang.String toString()>();
+
+        $r16_2[0] = $r18;
+
+        $r16_2[1] = $r11_5;
+
+        $r16_2[2] = $r15_1;
+
+(6)     staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String,java.lang.Object[])>($r13_1, $r6_3, "Flush completed\nParams: %s\n  Result: %s\n  Events JSON: %s", $r16_2);
+
+     label05:
+        $r6_5 = Phi($r6 #2, $r6_3 #6);
+
+        $r13_2 = Phi($r13 #2, $r13_1 #6);
+
+        $r15_3 = Phi($r15 #2, $r15_1 #6);
+
+        $r16_3 = Phi($r16_1 #2, $r16_2 #6);
+
+        if $r10 == null goto label10;
+
+(7)     $z0_1 = 1;
+
+     label06:
+        $z0_2 = Phi($z0_1 #7, $z0_3 #12);
+
+        virtualinvoke $r3.<com.facebook.AppEventsLogger$SessionEventsState: void clearInFlightAndStats(boolean)>($z0_2);
+
+        $r8 = <com.facebook.AppEventsLogger$FlushResult: com.facebook.AppEventsLogger$FlushResult NO_CONNECTIVITY>;
+
+        if $r12_3 != $r8 goto label07;
+
+        $r7 = <com.facebook.AppEventsLogger: android.content.Context applicationContext>;
+
+        staticinvoke <com.facebook.AppEventsLogger$PersistedEvents: void persistEvents(android.content.Context,com.facebook.AppEventsLogger$AccessTokenAppIdPair,com.facebook.AppEventsLogger$SessionEventsState)>($r7, $r0, $r3);
+
+     label07:
+        $r8_1 = <com.facebook.AppEventsLogger$FlushResult: com.facebook.AppEventsLogger$FlushResult SUCCESS>;
+
+(8)     if $r12_3 == $r8_1 goto label11;
+
+        $r19 = $r4.<com.facebook.AppEventsLogger$FlushStatistics: com.facebook.AppEventsLogger$FlushResult result>;
+
+        $r8_2 = <com.facebook.AppEventsLogger$FlushResult: com.facebook.AppEventsLogger$FlushResult NO_CONNECTIVITY>;
+
+(9)     if $r19 == $r8_2 goto label11;
+
+        $r4.<com.facebook.AppEventsLogger$FlushStatistics: com.facebook.AppEventsLogger$FlushResult result> = $r12_3;
+
+        return;
+
+     label08:
+        $r16 = newarray (java.lang.Object)[2];
+
+        $r11_2 = virtualinvoke $r2.<com.facebook.Response: java.lang.String toString()>();
+
+        $r16[0] = $r11_2;
+
+        $r11_3 = virtualinvoke $r10.<com.facebook.FacebookRequestError: java.lang.String toString()>();
+
+        $r16[1] = $r11_3;
+
+        $r11_4 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("Failed:\n  Response: %s\n  Error %s", $r16);
+
+        $r12_2 = <com.facebook.AppEventsLogger$FlushResult: com.facebook.AppEventsLogger$FlushResult SERVER_ERROR>;
+
+(10)    goto label01;
+
+     label09:
+        $r9 := @caughtexception;
+
+        $r6_4 = Phi($r6 #3, $r6_1 #4);
+
+        $r15_2 = "<Can\'t encode events for debug logging>";
+
+(11)    goto label04;
+
+     label10:
+        $z0_3 = 0;
+
+(12)    goto label06;
+
+     label11:
+        $r8_3 = Phi($r8_1 #8, $r8_2 #9);
+
+        return;
+
+        catch org.json.JSONException from label02 to label03 with label09;
+    }
+
+    private static void initializeTimersIfNeeded()
+    {
+        java.lang.Object $r0;
+        com.facebook.AppEventsLogger$3 $r1;
+        com.facebook.AppEventsLogger$4 $r2;
+        java.lang.Throwable $r3;
+        java.util.concurrent.ScheduledThreadPoolExecutor $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.util.concurrent.TimeUnit $r5, $r5_1;
+
+        $r0 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r4 = <com.facebook.AppEventsLogger: java.util.concurrent.ScheduledThreadPoolExecutor backgroundExecutor>;
+
+        if $r4 == null goto label3;
+
+        exitmonitor $r0;
+
+     label2:
+        return;
+
+     label3:
+(1)     $r4_1 = new java.util.concurrent.ScheduledThreadPoolExecutor;
+
+        specialinvoke $r4_1.<java.util.concurrent.ScheduledThreadPoolExecutor: void <init>(int)>(1);
+
+        <com.facebook.AppEventsLogger: java.util.concurrent.ScheduledThreadPoolExecutor backgroundExecutor> = $r4_1;
+
+        exitmonitor $r0;
+
+     label4:
+        $r1 = new com.facebook.AppEventsLogger$3;
+
+        specialinvoke $r1.<com.facebook.AppEventsLogger$3: void <init>()>();
+
+        $r4_2 = <com.facebook.AppEventsLogger: java.util.concurrent.ScheduledThreadPoolExecutor backgroundExecutor>;
+
+        $r5 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+        virtualinvoke $r4_2.<java.util.concurrent.ScheduledThreadPoolExecutor: java.util.concurrent.ScheduledFuture scheduleAtFixedRate(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)>($r1, 0L, 15L, $r5);
+
+        $r2 = new com.facebook.AppEventsLogger$4;
+
+        specialinvoke $r2.<com.facebook.AppEventsLogger$4: void <init>()>();
+
+        $r4_3 = <com.facebook.AppEventsLogger: java.util.concurrent.ScheduledThreadPoolExecutor backgroundExecutor>;
+
+        $r5_1 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+        virtualinvoke $r4_3.<java.util.concurrent.ScheduledThreadPoolExecutor: java.util.concurrent.ScheduledFuture scheduleAtFixedRate(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)>($r2, 0L, 86400L, $r5_1);
+
+        return;
+
+     label5:
+        $r3 := @caughtexception;
+
+(2)     $r4_4 = Phi($r4 #0, $r4_1 #1, $r4_4 #2);
+
+     label6:
+        exitmonitor $r0;
+
+     label7:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.lang.Throwable from label3 to label4 with label5;
+        catch java.lang.Throwable from label6 to label7 with label5;
+    }
+
+    private void logAppSessionResumeEvent(long, java.lang.String)
+    {
+        com.facebook.AppEventsLogger $r0;
+        long $l0;
+        java.lang.String $r1;
+        android.content.Context $r2;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r3;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = <com.facebook.AppEventsLogger: android.content.Context applicationContext>;
+
+        $r3 = $r0.<com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$AccessTokenAppIdPair accessTokenAppId>;
+
+        staticinvoke <com.facebook.AppEventsLogger$PersistedAppSessionInfo: void onResume(android.content.Context,com.facebook.AppEventsLogger$AccessTokenAppIdPair,com.facebook.AppEventsLogger,long,java.lang.String)>($r2, $r3, $r0, $l0, $r1);
+
+        return;
+    }
+
+    private void logAppSessionSuspendEvent(long)
+    {
+        com.facebook.AppEventsLogger $r0;
+        long $l0;
+        android.content.Context $r1;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r2;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $l0 := @parameter0: long;
+
+        $r1 = <com.facebook.AppEventsLogger: android.content.Context applicationContext>;
+
+        $r2 = $r0.<com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$AccessTokenAppIdPair accessTokenAppId>;
+
+        staticinvoke <com.facebook.AppEventsLogger$PersistedAppSessionInfo: void onSuspend(android.content.Context,com.facebook.AppEventsLogger$AccessTokenAppIdPair,com.facebook.AppEventsLogger,long)>($r1, $r2, $r0, $l0);
+
+        return;
+    }
+
+    private static void logEvent(android.content.Context, com.facebook.AppEventsLogger$AppEvent, com.facebook.AppEventsLogger$AccessTokenAppIdPair)
+    {
+        android.content.Context $r0;
+        com.facebook.AppEventsLogger$AppEvent $r1;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r2;
+        com.facebook.AppEventsLogger$5 $r3;
+        java.util.concurrent.Executor $r4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.AppEventsLogger$AppEvent;
+
+        $r2 := @parameter2: com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        $r4 = staticinvoke <com.facebook.Settings: java.util.concurrent.Executor getExecutor()>();
+
+        $r3 = new com.facebook.AppEventsLogger$5;
+
+        specialinvoke $r3.<com.facebook.AppEventsLogger$5: void <init>(android.content.Context,com.facebook.AppEventsLogger$AccessTokenAppIdPair,com.facebook.AppEventsLogger$AppEvent)>($r0, $r2, $r1);
+
+        interfaceinvoke $r4.<java.util.concurrent.Executor: void execute(java.lang.Runnable)>($r3);
+
+        return;
+    }
+
+    private void logEvent(java.lang.String, java.lang.Double, android.os.Bundle, boolean)
+    {
+        com.facebook.AppEventsLogger $r0;
+        java.lang.String $r1;
+        java.lang.Double $r2;
+        android.os.Bundle $r3;
+        boolean $z0;
+        com.facebook.AppEventsLogger$AppEvent $r4;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r5;
+        android.content.Context $r6, $r6_1;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.Double;
+
+        $r3 := @parameter2: android.os.Bundle;
+
+        $z0 := @parameter3: boolean;
+
+        $r4 = new com.facebook.AppEventsLogger$AppEvent;
+
+        $r6 = $r0.<com.facebook.AppEventsLogger: android.content.Context context>;
+
+        specialinvoke $r4.<com.facebook.AppEventsLogger$AppEvent: void <init>(android.content.Context,java.lang.String,java.lang.Double,android.os.Bundle,boolean)>($r6, $r1, $r2, $r3, $z0);
+
+        $r6_1 = $r0.<com.facebook.AppEventsLogger: android.content.Context context>;
+
+        $r5 = $r0.<com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$AccessTokenAppIdPair accessTokenAppId>;
+
+        staticinvoke <com.facebook.AppEventsLogger: void logEvent(android.content.Context,com.facebook.AppEventsLogger$AppEvent,com.facebook.AppEventsLogger$AccessTokenAppIdPair)>($r6_1, $r4, $r5);
+
+        return;
+    }
+
+    public static com.facebook.AppEventsLogger newLogger(android.content.Context)
+    {
+        android.content.Context $r0;
+        com.facebook.AppEventsLogger $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = new com.facebook.AppEventsLogger;
+
+        specialinvoke $r1.<com.facebook.AppEventsLogger: void <init>(android.content.Context,java.lang.String,com.facebook.Session)>($r0, null, null);
+
+        return $r1;
+    }
+
+    public static com.facebook.AppEventsLogger newLogger(android.content.Context, com.facebook.Session)
+    {
+        android.content.Context $r0;
+        com.facebook.Session $r1;
+        com.facebook.AppEventsLogger $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.Session;
+
+        $r2 = new com.facebook.AppEventsLogger;
+
+        specialinvoke $r2.<com.facebook.AppEventsLogger: void <init>(android.content.Context,java.lang.String,com.facebook.Session)>($r0, null, $r1);
+
+        return $r2;
+    }
+
+    public static com.facebook.AppEventsLogger newLogger(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        com.facebook.AppEventsLogger $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = new com.facebook.AppEventsLogger;
+
+        specialinvoke $r2.<com.facebook.AppEventsLogger: void <init>(android.content.Context,java.lang.String,com.facebook.Session)>($r0, $r1, null);
+
+        return $r2;
+    }
+
+    public static com.facebook.AppEventsLogger newLogger(android.content.Context, java.lang.String, com.facebook.Session)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        com.facebook.Session $r2;
+        com.facebook.AppEventsLogger $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: com.facebook.Session;
+
+        $r3 = new com.facebook.AppEventsLogger;
+
+        specialinvoke $r3.<com.facebook.AppEventsLogger: void <init>(android.content.Context,java.lang.String,com.facebook.Session)>($r0, $r1, $r2);
+
+        return $r3;
+    }
+
+    private static void notifyDeveloperError(java.lang.String)
+    {
+        java.lang.String $r0;
+        com.facebook.LoggingBehavior $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior DEVELOPER_ERRORS>;
+
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String)>($r1, "AppEvents", $r0);
+
+        return;
+    }
+
+    public static void onContextStop()
+    {
+        android.content.Context $r0;
+        java.util.Map $r1;
+
+        $r0 = <com.facebook.AppEventsLogger: android.content.Context applicationContext>;
+
+        $r1 = <com.facebook.AppEventsLogger: java.util.Map stateMap>;
+
+        staticinvoke <com.facebook.AppEventsLogger$PersistedEvents: void persistEvents(android.content.Context,java.util.Map)>($r0, $r1);
+
+        return;
+    }
+
+    static void resetSourceApplication()
+    {
+        <com.facebook.AppEventsLogger: java.lang.String sourceApplication> = null;
+
+        <com.facebook.AppEventsLogger: boolean isOpenedByApplink> = 0;
+
+        return;
+    }
+
+    public static void setFlushBehavior(com.facebook.AppEventsLogger$FlushBehavior)
+    {
+        com.facebook.AppEventsLogger$FlushBehavior $r0;
+        java.lang.Object $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @parameter0: com.facebook.AppEventsLogger$FlushBehavior;
+
+        $r1 = <com.facebook.AppEventsLogger: java.lang.Object staticLock>;
+
+        entermonitor $r1;
+
+     label1:
+        <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$FlushBehavior flushBehavior> = $r0;
+
+        exitmonitor $r1;
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r1;
+
+     label4:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public static void setLimitEventUsage(android.content.Context, boolean)
+    {
+        android.content.Context $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $z0 := @parameter1: boolean;
+
+        staticinvoke <com.facebook.Settings: void setLimitEventAndDataUsage(android.content.Context,boolean)>($r0, $z0);
+
+        return;
+    }
+
+    private static void setSourceApplication(android.app.Activity)
+    {
+        android.app.Activity $r0;
+        android.content.ComponentName $r1;
+        java.lang.String $r2, $r3, $r2_1, $r2_2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.content.Intent $r4;
+        android.os.Bundle $r5, $r5_1;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $r1 = virtualinvoke $r0.<android.app.Activity: android.content.ComponentName getCallingActivity()>();
+
+(0)     if $r1 == null goto label2;
+
+        $r2 = virtualinvoke $r1.<android.content.ComponentName: java.lang.String getPackageName()>();
+
+        $r3 = virtualinvoke $r0.<android.app.Activity: java.lang.String getPackageName()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 == 0 goto label1;
+
+        staticinvoke <com.facebook.AppEventsLogger: void resetSourceApplication()>();
+
+        return;
+
+     label1:
+(1)     <com.facebook.AppEventsLogger: java.lang.String sourceApplication> = $r2;
+
+     label2:
+        $z0_1 = Phi($z0 #0, $z0 #1);
+
+        $r2_1 = Phi($r2 #0, $r2 #1);
+
+        $r4 = virtualinvoke $r0.<android.app.Activity: android.content.Intent getIntent()>();
+
+(2)     if $r4 == null goto label3;
+
+        $z0_2 = virtualinvoke $r4.<android.content.Intent: boolean getBooleanExtra(java.lang.String,boolean)>("_fbSourceApplicationHasBeenSet", 0);
+
+(3)     if $z0_2 == 0 goto label4;
+
+     label3:
+        $z0_3 = Phi($z0_1 #2, $z0_2 #3);
+
+        staticinvoke <com.facebook.AppEventsLogger: void resetSourceApplication()>();
+
+        return;
+
+     label4:
+        $r5 = staticinvoke <bolts.AppLinks: android.os.Bundle getAppLinkData(android.content.Intent)>($r4);
+
+        if $r5 != null goto label5;
+
+        staticinvoke <com.facebook.AppEventsLogger: void resetSourceApplication()>();
+
+        return;
+
+     label5:
+        <com.facebook.AppEventsLogger: boolean isOpenedByApplink> = 1;
+
+        $r5_1 = virtualinvoke $r5.<android.os.Bundle: android.os.Bundle getBundle(java.lang.String)>("referer_app_link");
+
+        if $r5_1 != null goto label6;
+
+        <com.facebook.AppEventsLogger: java.lang.String sourceApplication> = null;
+
+        return;
+
+     label6:
+        $r2_2 = virtualinvoke $r5_1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("package");
+
+        <com.facebook.AppEventsLogger: java.lang.String sourceApplication> = $r2_2;
+
+        virtualinvoke $r4.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("_fbSourceApplicationHasBeenSet", 1);
+
+        return;
+    }
+
+    static void setSourceApplication(java.lang.String, boolean)
+    {
+        java.lang.String $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 := @parameter1: boolean;
+
+        <com.facebook.AppEventsLogger: java.lang.String sourceApplication> = $r0;
+
+        <com.facebook.AppEventsLogger: boolean isOpenedByApplink> = $z0;
+
+        return;
+    }
+
+    public void flush()
+    {
+        com.facebook.AppEventsLogger $r0;
+        com.facebook.AppEventsLogger$FlushReason $r1;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 = <com.facebook.AppEventsLogger$FlushReason: com.facebook.AppEventsLogger$FlushReason EXPLICIT>;
+
+        staticinvoke <com.facebook.AppEventsLogger: void flush(com.facebook.AppEventsLogger$FlushReason)>($r1);
+
+        return;
+    }
+
+    public java.lang.String getApplicationId()
+    {
+        com.facebook.AppEventsLogger $r0;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 = $r0.<com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$AccessTokenAppIdPair accessTokenAppId>;
+
+        $r2 = virtualinvoke $r1.<com.facebook.AppEventsLogger$AccessTokenAppIdPair: java.lang.String getApplicationId()>();
+
+        return $r2;
+    }
+
+    boolean isValidForSession(com.facebook.Session)
+    {
+        com.facebook.AppEventsLogger $r0;
+        com.facebook.Session $r1;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r2, $r3;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 := @parameter0: com.facebook.Session;
+
+        $r2 = new com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        specialinvoke $r2.<com.facebook.AppEventsLogger$AccessTokenAppIdPair: void <init>(com.facebook.Session)>($r1);
+
+        $r3 = $r0.<com.facebook.AppEventsLogger: com.facebook.AppEventsLogger$AccessTokenAppIdPair accessTokenAppId>;
+
+        $z0 = virtualinvoke $r3.<com.facebook.AppEventsLogger$AccessTokenAppIdPair: boolean equals(java.lang.Object)>($r2);
+
+        return $z0;
+    }
+
+    public void logEvent(java.lang.String)
+    {
+        com.facebook.AppEventsLogger $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 := @parameter0: java.lang.String;
+
+        virtualinvoke $r0.<com.facebook.AppEventsLogger: void logEvent(java.lang.String,android.os.Bundle)>($r1, null);
+
+        return;
+    }
+
+    public void logEvent(java.lang.String, double)
+    {
+        com.facebook.AppEventsLogger $r0;
+        java.lang.String $r1;
+        double $d0;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $d0 := @parameter1: double;
+
+        virtualinvoke $r0.<com.facebook.AppEventsLogger: void logEvent(java.lang.String,double,android.os.Bundle)>($r1, $d0, null);
+
+        return;
+    }
+
+    public void logEvent(java.lang.String, double, android.os.Bundle)
+    {
+        com.facebook.AppEventsLogger $r0;
+        java.lang.String $r1;
+        double $d0;
+        android.os.Bundle $r2;
+        java.lang.Double $r3;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $d0 := @parameter1: double;
+
+        $r2 := @parameter2: android.os.Bundle;
+
+        $r3 = staticinvoke <java.lang.Double: java.lang.Double valueOf(double)>($d0);
+
+        specialinvoke $r0.<com.facebook.AppEventsLogger: void logEvent(java.lang.String,java.lang.Double,android.os.Bundle,boolean)>($r1, $r3, $r2, 0);
+
+        return;
+    }
+
+    public void logEvent(java.lang.String, android.os.Bundle)
+    {
+        com.facebook.AppEventsLogger $r0;
+        java.lang.String $r1;
+        android.os.Bundle $r2;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        specialinvoke $r0.<com.facebook.AppEventsLogger: void logEvent(java.lang.String,java.lang.Double,android.os.Bundle,boolean)>($r1, null, $r2, 0);
+
+        return;
+    }
+
+    public void logPurchase(java.math.BigDecimal, java.util.Currency)
+    {
+        com.facebook.AppEventsLogger $r0;
+        java.math.BigDecimal $r1;
+        java.util.Currency $r2;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 := @parameter0: java.math.BigDecimal;
+
+        $r2 := @parameter1: java.util.Currency;
+
+        virtualinvoke $r0.<com.facebook.AppEventsLogger: void logPurchase(java.math.BigDecimal,java.util.Currency,android.os.Bundle)>($r1, $r2, null);
+
+        return;
+    }
+
+    public void logPurchase(java.math.BigDecimal, java.util.Currency, android.os.Bundle)
+    {
+        com.facebook.AppEventsLogger $r0;
+        java.math.BigDecimal $r1;
+        java.util.Currency $r2;
+        android.os.Bundle $r3, $r3_1, $r3_2;
+        java.lang.String $r4;
+        double $d0;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 := @parameter0: java.math.BigDecimal;
+
+        $r2 := @parameter1: java.util.Currency;
+
+        $r3 := @parameter2: android.os.Bundle;
+
+        if $r1 != null goto label1;
+
+        staticinvoke <com.facebook.AppEventsLogger: void notifyDeveloperError(java.lang.String)>("purchaseAmount cannot be null");
+
+        return;
+
+     label1:
+        if $r2 != null goto label2;
+
+        staticinvoke <com.facebook.AppEventsLogger: void notifyDeveloperError(java.lang.String)>("currency cannot be null");
+
+        return;
+
+     label2:
+(0)     if $r3 != null goto label3;
+
+        $r3_1 = new android.os.Bundle;
+
+(1)     specialinvoke $r3_1.<android.os.Bundle: void <init>()>();
+
+     label3:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $r4 = virtualinvoke $r2.<java.util.Currency: java.lang.String getCurrencyCode()>();
+
+        virtualinvoke $r3_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("fb_currency", $r4);
+
+        $d0 = virtualinvoke $r1.<java.math.BigDecimal: double doubleValue()>();
+
+        virtualinvoke $r0.<com.facebook.AppEventsLogger: void logEvent(java.lang.String,double,android.os.Bundle)>("fb_mobile_purchase", $d0, $r3_2);
+
+        staticinvoke <com.facebook.AppEventsLogger: void eagerFlush()>();
+
+        return;
+    }
+
+    public void logSdkEvent(java.lang.String, java.lang.Double, android.os.Bundle)
+    {
+        com.facebook.AppEventsLogger $r0;
+        java.lang.String $r1;
+        java.lang.Double $r2;
+        android.os.Bundle $r3;
+
+        $r0 := @this: com.facebook.AppEventsLogger;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.Double;
+
+        $r3 := @parameter2: android.os.Bundle;
+
+        specialinvoke $r0.<com.facebook.AppEventsLogger: void logEvent(java.lang.String,java.lang.Double,android.os.Bundle,boolean)>($r1, $r2, $r3, 1);
+
+        return;
+    }
+}

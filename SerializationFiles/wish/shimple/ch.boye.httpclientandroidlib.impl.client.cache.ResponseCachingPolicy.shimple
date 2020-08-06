@@ -1,0 +1,880 @@
+class ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy extends java.lang.Object
+{
+    private static final java.util.Set cacheableStatuses;
+    private static final java.util.Set uncacheableStatuses;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+    private final long maxObjectSizeBytes;
+    private final boolean sharedCache;
+
+    static void <clinit>()
+    {
+        java.util.HashSet $r0, $r0_1;
+        java.lang.Integer[] $r1, $r1_1;
+        java.lang.Integer $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+        java.util.List $r3, $r3_1;
+
+        $r0 = new java.util.HashSet;
+
+        $r1 = newarray (java.lang.Integer)[5];
+
+        $r2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(200);
+
+        $r1[0] = $r2;
+
+        $r2_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(203);
+
+        $r1[1] = $r2_1;
+
+        $r2_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(300);
+
+        $r1[2] = $r2_2;
+
+        $r2_3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(301);
+
+        $r1[3] = $r2_3;
+
+        $r2_4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(410);
+
+        $r1[4] = $r2_4;
+
+        $r3 = staticinvoke <java.util.Arrays: java.util.List asList(java.lang.Object[])>($r1);
+
+        specialinvoke $r0.<java.util.HashSet: void <init>(java.util.Collection)>($r3);
+
+        <ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: java.util.Set cacheableStatuses> = $r0;
+
+        $r0_1 = new java.util.HashSet;
+
+        $r1_1 = newarray (java.lang.Integer)[2];
+
+        $r2_5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(206);
+
+        $r1_1[0] = $r2_5;
+
+        $r2_6 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(303);
+
+        $r1_1[1] = $r2_6;
+
+        $r3_1 = staticinvoke <java.util.Arrays: java.util.List asList(java.lang.Object[])>($r1_1);
+
+        specialinvoke $r0_1.<java.util.HashSet: void <init>(java.util.Collection)>($r3_1);
+
+        <ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: java.util.Set uncacheableStatuses> = $r0_1;
+
+        return;
+    }
+
+    public void <init>(long, boolean)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy $r0;
+        long $l0;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r1;
+        java.lang.Class $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy;
+
+        $l0 := @parameter0: long;
+
+        $z0 := @parameter1: boolean;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r2 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r2);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: long maxObjectSizeBytes> = $l0;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean sharedCache> = $z0;
+
+        return;
+    }
+
+    private boolean expiresHeaderLessOrEqualToDateHeaderAndNoCacheControl(ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        ch.boye.httpclientandroidlib.impl.cookie.DateParseException $r2;
+        ch.boye.httpclientandroidlib.Header $r3, $r4, $r3_1;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3;
+        java.util.Date $r6, $r7;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Cache-Control");
+
+        if $r3 == null goto label1;
+
+        return 0;
+
+     label1:
+        $r3_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Expires");
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Date");
+
+(0)     if $r3_1 == null goto label8;
+
+(1)     if $r4 == null goto label8;
+
+     label2:
+        $r5 = interfaceinvoke $r3_1.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $r6 = staticinvoke <ch.boye.httpclientandroidlib.impl.cookie.DateUtils: java.util.Date parseDate(java.lang.String)>($r5);
+
+(2)     $r5_1 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $r7 = staticinvoke <ch.boye.httpclientandroidlib.impl.cookie.DateUtils: java.util.Date parseDate(java.lang.String)>($r5_1);
+
+        $z0 = virtualinvoke $r6.<java.util.Date: boolean equals(java.lang.Object)>($r7);
+
+     label3:
+(3)     if $z0 != 0 goto label6;
+
+     label4:
+(4)     $z0_1 = virtualinvoke $r6.<java.util.Date: boolean before(java.util.Date)>($r7);
+
+     label5:
+(5)     if $z0_1 == 0 goto label8;
+
+     label6:
+        $z0_2 = Phi($z0 #3, $z0_1 #5);
+
+        return 1;
+
+     label7:
+        $r2 := @caughtexception;
+
+        $r5_2 = Phi($r5 #1, $r5_1 #2);
+
+(6)     $z0_3 = Phi($z0 #1, $z0_1 #4);
+
+     label8:
+        $r5_3 = Phi($r5 #0, $r5 #1, $r5_1 #5, $r5_2 #6);
+
+        $z0_4 = Phi($z0 #0, $z0 #1, $z0_1 #5, $z0_3 #6);
+
+        return 0;
+
+        catch ch.boye.httpclientandroidlib.impl.cookie.DateParseException from label2 to label3 with label7;
+        catch ch.boye.httpclientandroidlib.impl.cookie.DateParseException from label4 to label5 with label7;
+    }
+
+    private boolean from1_0Origin(ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        int $i0;
+        ch.boye.httpclientandroidlib.HeaderElement $r2;
+        ch.boye.httpclientandroidlib.HttpVersion $r3;
+        ch.boye.httpclientandroidlib.Header $r4;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r5;
+        java.lang.String $r6, $r6_1;
+        java.lang.String[] $r7;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r8;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Via");
+
+        if $r4 == null goto label2;
+
+        $r5 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i0 = lengthof $r5;
+
+        if 0 >= $i0 goto label2;
+
+        $r2 = $r5[0];
+
+        $r6 = virtualinvoke $r2.<java.lang.Object: java.lang.String toString()>();
+
+        $r7 = virtualinvoke $r6.<java.lang.String: java.lang.String[] split(java.lang.String)>("\\s");
+
+        $r6_1 = $r7[0];
+
+        $z0 = virtualinvoke $r6_1.<java.lang.String: boolean contains(java.lang.CharSequence)>("/");
+
+        if $z0 == 0 goto label1;
+
+        $z0_1 = virtualinvoke $r6_1.<java.lang.String: boolean equals(java.lang.Object)>("HTTP/1.0");
+
+        return $z0_1;
+
+     label1:
+        $z0_2 = virtualinvoke $r6_1.<java.lang.String: boolean equals(java.lang.Object)>("1.0");
+
+        return $z0_2;
+
+     label2:
+        $r3 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_0>;
+
+        $r8 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.ProtocolVersion getProtocolVersion()>();
+
+        $z0_3 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.HttpVersion: boolean equals(java.lang.Object)>($r8);
+
+        return $z0_3;
+    }
+
+    private boolean requestProtocolGreaterThanAccepted(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.HttpVersion $r2;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r3;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.ProtocolVersion getProtocolVersion()>();
+
+        $r2 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_1>;
+
+        $i0 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.ProtocolVersion: int compareToVersion(ch.boye.httpclientandroidlib.ProtocolVersion)>($r2);
+
+        if $i0 <= 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private boolean unknownStatusCode(int)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy $r0;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy;
+
+        $i0 := @parameter0: int;
+
+        if $i0 < 100 goto label1;
+
+        if $i0 > 101 goto label1;
+
+        return 0;
+
+     label1:
+        if $i0 < 200 goto label2;
+
+        if $i0 <= 206 goto label6;
+
+     label2:
+        if $i0 < 300 goto label3;
+
+        if $i0 <= 307 goto label6;
+
+     label3:
+        if $i0 < 400 goto label4;
+
+        if $i0 <= 417 goto label6;
+
+     label4:
+        if $i0 < 500 goto label5;
+
+        if $i0 <= 505 goto label6;
+
+     label5:
+        return 1;
+
+     label6:
+        return 0;
+    }
+
+    protected boolean hasCacheControlParameterFrom(ch.boye.httpclientandroidlib.HttpMessage, java.lang.String[])
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy $r0;
+        ch.boye.httpclientandroidlib.HttpMessage $r1;
+        java.lang.String[] $r2;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i3_1, $i4_1, $i5_1, $i4_2, $i5_2, $i5_3, $i5_4, $i4_3, $i3_2;
+        ch.boye.httpclientandroidlib.Header $r3;
+        ch.boye.httpclientandroidlib.HeaderElement $r4;
+        java.lang.String $r5, $r8;
+        ch.boye.httpclientandroidlib.Header[] $r6;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r7;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpMessage;
+
+        $r2 := @parameter1: java.lang.String[];
+
+        $r6 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpMessage: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Cache-Control");
+
+        $i0 = lengthof $r6;
+
+(0)     $i3 = 0;
+
+     label1:
+        $i5 = Phi($i5 #0, $i5_1 #5);
+
+        $i4 = Phi($i4 #0, $i4_2 #5);
+
+        $i3_1 = Phi($i3 #0, $i3_2 #5);
+
+        if $i3_1 >= $i0 goto label7;
+
+        $r3 = $r6[$i3_1];
+
+        $r7 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i1 = lengthof $r7;
+
+(1)     $i4_1 = 0;
+
+     label2:
+        $i5_1 = Phi($i5 #1, $i5_3 #4);
+
+        $i4_2 = Phi($i4_1 #1, $i4_3 #4);
+
+        if $i4_2 >= $i1 goto label6;
+
+        $r4 = $r7[$i4_2];
+
+        $i2 = lengthof $r2;
+
+(2)     $i5_2 = 0;
+
+     label3:
+        $i5_3 = Phi($i5_2 #2, $i5_4 #3);
+
+        if $i5_3 >= $i2 goto label5;
+
+        $r5 = $r2[$i5_3];
+
+        $r8 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r8);
+
+        if $z0 == 0 goto label4;
+
+        return 1;
+
+     label4:
+        $i5_4 = $i5_3 + 1;
+
+(3)     goto label3;
+
+     label5:
+        $i4_3 = $i4_2 + 1;
+
+(4)     goto label2;
+
+     label6:
+        $i3_2 = $i3_1 + 1;
+
+(5)     goto label1;
+
+     label7:
+        return 0;
+    }
+
+    protected boolean isExplicitlyCacheable(ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        java.lang.String[] $r2;
+        ch.boye.httpclientandroidlib.Header $r3;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Expires");
+
+        if $r3 == null goto label1;
+
+        return 1;
+
+     label1:
+        $r2 = newarray (java.lang.String)[5];
+
+        $r2[0] = "max-age";
+
+        $r2[1] = "s-maxage";
+
+        $r2[2] = "must-revalidate";
+
+        $r2[3] = "proxy-revalidate";
+
+        $r2[4] = "public";
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean hasCacheControlParameterFrom(ch.boye.httpclientandroidlib.HttpMessage,java.lang.String[])>($r1, $r2);
+
+        return $z0;
+    }
+
+    protected boolean isExplicitlyNonCacheable(ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        int $i0, $i1, $i2, $i3, $i2_1, $i3_1, $i3_2, $i3_3, $i2_2;
+        ch.boye.httpclientandroidlib.Header $r2;
+        ch.boye.httpclientandroidlib.HeaderElement $r3;
+        ch.boye.httpclientandroidlib.Header[] $r4;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r5;
+        java.lang.String $r6, $r7, $r7_1, $r6_1, $r6_2, $r7_2, $r6_3, $r7_3, $r6_4, $r7_4, $r7_5, $r6_5, $r7_6, $r6_6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Cache-Control");
+
+        $i0 = lengthof $r4;
+
+(0)     $i2 = 0;
+
+     label1:
+        $i2_1 = Phi($i2 #0, $i2_2 #7);
+
+        $z0 = Phi($z0 #0, $z0_1 #7);
+
+        $i3 = Phi($i3 #0, $i3_2 #7);
+
+        $r7 = Phi($r7 #0, $r7_1 #7);
+
+        $r6 = Phi($r6 #0, $r6_1 #7);
+
+        if $i2_1 >= $i0 goto label6;
+
+        $r2 = $r4[$i2_1];
+
+        $r5 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i1 = lengthof $r5;
+
+(1)     $i3_1 = 0;
+
+     label2:
+        $z0_1 = Phi($z0 #1, $z0_6 #6);
+
+        $i3_2 = Phi($i3_1 #1, $i3_3 #6);
+
+        $r7_1 = Phi($r7 #1, $r7_5 #6);
+
+        $r6_1 = Phi($r6 #1, $r6_5 #6);
+
+        if $i3_2 >= $i1 goto label5;
+
+        $r3 = $r5[$i3_2];
+
+        $r6_2 = "no-store";
+
+        $r7_2 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z0_2 = virtualinvoke $r6_2.<java.lang.String: boolean equals(java.lang.Object)>($r7_2);
+
+(2)     if $z0_2 != 0 goto label3;
+
+        $r6_3 = "no-cache";
+
+        $r7_3 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z0_3 = virtualinvoke $r6_3.<java.lang.String: boolean equals(java.lang.Object)>($r7_3);
+
+(3)     if $z0_3 != 0 goto label3;
+
+        $z0_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean sharedCache>;
+
+(4)     if $z0_4 == 0 goto label4;
+
+        $r6_4 = "private";
+
+        $r7_4 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z0_5 = virtualinvoke $r6_4.<java.lang.String: boolean equals(java.lang.Object)>($r7_4);
+
+(5)     if $z0_5 == 0 goto label4;
+
+     label3:
+        $z0_7 = Phi($z0_2 #2, $z0_3 #3, $z0_5 #5);
+
+        $r7_6 = Phi($r7_2 #2, $r7_3 #3, $r7_4 #5);
+
+        $r6_6 = Phi($r6_2 #2, $r6_3 #3, $r6_4 #5);
+
+        return 1;
+
+     label4:
+        $z0_6 = Phi($z0_4 #4, $z0_5 #5);
+
+        $r7_5 = Phi($r7_3 #4, $r7_4 #5);
+
+        $r6_5 = Phi($r6_3 #4, $r6_4 #5);
+
+        $i3_3 = $i3_2 + 1;
+
+(6)     goto label2;
+
+     label5:
+        $i2_2 = $i2_1 + 1;
+
+(7)     goto label1;
+
+     label6:
+        return 0;
+    }
+
+    public boolean isResponseCacheable(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.HttpResponse $r2;
+        int $i0;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3, $r3_1;
+        java.lang.String[] $r4, $r4_1;
+        ch.boye.httpclientandroidlib.RequestLine $r5, $r5_1, $r5_2;
+        java.lang.String $r6, $r6_1, $r6_2;
+        ch.boye.httpclientandroidlib.Header[] $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $z0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean requestProtocolGreaterThanAccepted(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Response was not cacheable.");
+
+        return 0;
+
+     label1:
+        $r4 = newarray (java.lang.String)[1];
+
+        $r4[0] = "no-store";
+
+        $z0_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean hasCacheControlParameterFrom(ch.boye.httpclientandroidlib.HttpMessage,java.lang.String[])>($r1, $r4);
+
+(0)     if $z0_1 != 0 goto label5;
+
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r6 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getUri()>();
+
+        $z0_2 = virtualinvoke $r6.<java.lang.String: boolean contains(java.lang.CharSequence)>("?");
+
+(1)     if $z0_2 == 0 goto label3;
+
+        $z0_3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean isExplicitlyCacheable(ch.boye.httpclientandroidlib.HttpResponse)>($r2);
+
+(2)     if $z0_3 == 0 goto label2;
+
+        $z0_4 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean from1_0Origin(ch.boye.httpclientandroidlib.HttpResponse)>($r2);
+
+(3)     if $z0_4 == 0 goto label3;
+
+     label2:
+        $z0_5 = Phi($z0_3 #2, $z0_4 #3);
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Response was not cacheable.");
+
+        return 0;
+
+     label3:
+        $z0_6 = Phi($z0_2 #1, $z0_4 #3);
+
+        $z0_7 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean expiresHeaderLessOrEqualToDateHeaderAndNoCacheControl(ch.boye.httpclientandroidlib.HttpResponse)>($r2);
+
+(4)     if $z0_7 != 0 goto label5;
+
+        $z0_8 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean sharedCache>;
+
+        if $z0_8 == 0 goto label4;
+
+        $r7 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Authorization");
+
+        if $r7 == null goto label4;
+
+        $i0 = lengthof $r7;
+
+        if $i0 <= 0 goto label4;
+
+        $r4_1 = newarray (java.lang.String)[3];
+
+        $r4_1[0] = "s-maxage";
+
+        $r4_1[1] = "must-revalidate";
+
+        $r4_1[2] = "public";
+
+        $z0_9 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean hasCacheControlParameterFrom(ch.boye.httpclientandroidlib.HttpMessage,java.lang.String[])>($r2, $r4_1);
+
+        return $z0_9;
+
+     label4:
+        $r5_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r6_1 = interfaceinvoke $r5_1.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getMethod()>();
+
+        $z0_10 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean isResponseCacheable(java.lang.String,ch.boye.httpclientandroidlib.HttpResponse)>($r6_1, $r2);
+
+        return $z0_10;
+
+     label5:
+        $r5_2 = Phi($r5 #0, $r5 #4);
+
+        $z0_11 = Phi($z0_1 #0, $z0_7 #4);
+
+        $r6_2 = Phi($r6 #0, $r6 #4);
+
+        return 0;
+    }
+
+    public boolean isResponseCacheable(java.lang.String, ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r2;
+        long $l0, $l3;
+        byte $b1;
+        ch.boye.httpclientandroidlib.HeaderElement $r3;
+        ch.boye.httpclientandroidlib.impl.cookie.DateParseException $r4;
+        java.lang.String $r5, $r6, $r5_1, $r5_2, $r5_3, $r5_4, $r6_1, $r5_5, $r6_2, $r5_6, $r6_3, $r5_7;
+        boolean $z0, $z1, $z1_1, $z0_1, $z0_2, $z1_2, $z1_3, $z1_4, $z1_5, $z1_6, $z0_3, $z0_4, $z1_7, $z1_8;
+        ch.boye.httpclientandroidlib.StatusLine $r7;
+        int $i2, $i4, $i5, $i6, $i2_1, $i2_2, $i2_3, $i2_4, $i2_5, $i2_6, $i4_1, $i6_1, $i6_2, $i6_3, $i4_2;
+        java.util.Set $r8, $r8_1, $r8_2;
+        java.lang.Integer $r9, $r9_1, $r9_2;
+        ch.boye.httpclientandroidlib.Header $r10, $r10_1, $r10_2, $r10_3;
+        ch.boye.httpclientandroidlib.Header[] $r11, $r11_1, $r11_2, $r11_3;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r12;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy;
+
+        $r5 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $z0 = 0;
+
+        $r6 = "GET";
+
+        $z1 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r5);
+
+        if $z1 != 0 goto label01;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Response was not cacheable.");
+
+        return 0;
+
+     label01:
+        $r7 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i2 = interfaceinvoke $r7.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+        $r8 = <ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: java.util.Set cacheableStatuses>;
+
+        $r9 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2);
+
+        $z1_1 = interfaceinvoke $r8.<java.util.Set: boolean contains(java.lang.Object)>($r9);
+
+        if $z1_1 == 0 goto label03;
+
+(0)     $z0_1 = 1;
+
+     label02:
+        $r8_1 = Phi($r8 #0, $r8_2 #3);
+
+        $z0_2 = Phi($z0_1 #0, $z0 #3);
+
+        $z1_2 = Phi($z1_1 #0, $z1_8 #3);
+
+        $r9_1 = Phi($r9 #0, $r9_2 #3);
+
+        $r10 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Content-Length");
+
+(1)     if $r10 == null goto label05;
+
+        $r5_1 = interfaceinvoke $r10.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $i2_1 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r5_1);
+
+        $l0 = (long) $i2_1;
+
+        $l3 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: long maxObjectSizeBytes>;
+
+        $b1 = $l0 cmp $l3;
+
+(2)     if $b1 <= 0 goto label05;
+
+        return 0;
+
+     label03:
+        $r8_2 = <ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: java.util.Set uncacheableStatuses>;
+
+        $r9_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2);
+
+        $z1_7 = interfaceinvoke $r8_2.<java.util.Set: boolean contains(java.lang.Object)>($r9_2);
+
+        if $z1_7 == 0 goto label04;
+
+        return 0;
+
+     label04:
+        $z1_8 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean unknownStatusCode(int)>($i2);
+
+(3)     if $z1_8 == 0 goto label02;
+
+        return 0;
+
+     label05:
+        $r5_2 = Phi($r5 #1, $r5_1 #2);
+
+        $i2_2 = Phi($i2 #1, $i2_1 #2);
+
+        $r11 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Age");
+
+        $i2_3 = lengthof $r11;
+
+        if $i2_3 <= 1 goto label06;
+
+        return 0;
+
+     label06:
+        $r11_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Expires");
+
+        $i2_4 = lengthof $r11_1;
+
+        if $i2_4 <= 1 goto label07;
+
+        return 0;
+
+     label07:
+        $r11_2 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Date");
+
+        $i2_5 = lengthof $r11_2;
+
+        if $i2_5 == 1 goto label08;
+
+        return 0;
+
+     label08:
+(4)     $r10_1 = $r11_2[0];
+
+     label09:
+(5)     $r5_3 = interfaceinvoke $r10_1.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        staticinvoke <ch.boye.httpclientandroidlib.impl.cookie.DateUtils: java.util.Date parseDate(java.lang.String)>($r5_3);
+
+     label10:
+        $r11_3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Vary");
+
+        $i2_6 = lengthof $r11_3;
+
+(6)     $i4 = 0;
+
+     label11:
+        $r5_4 = Phi($r5_3 #6, $r5_5 #9);
+
+        $r10_2 = Phi($r10_1 #6, $r10_3 #9);
+
+        $z1_3 = Phi($z1_2 #6, $z1_4 #9);
+
+        $r6_1 = Phi($r6 #6, $r6_2 #9);
+
+        $i4_1 = Phi($i4 #6, $i4_2 #9);
+
+        $i6 = Phi($i6 #6, $i6_2 #9);
+
+        if $i4_1 >= $i2_6 goto label16;
+
+        $r10_3 = $r11_3[$i4_1];
+
+        $r12 = interfaceinvoke $r10_3.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+        $i5 = lengthof $r12;
+
+(7)     $i6_1 = 0;
+
+     label12:
+        $r5_5 = Phi($r5_4 #7, $r5_6 #8);
+
+        $z1_4 = Phi($z1_3 #7, $z1_5 #8);
+
+        $r6_2 = Phi($r6_1 #7, $r6_3 #8);
+
+        $i6_2 = Phi($i6_1 #7, $i6_3 #8);
+
+        if $i6_2 >= $i5 goto label15;
+
+        $r3 = $r12[$i6_2];
+
+        $r5_6 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $r6_3 = "*";
+
+        $z1_5 = virtualinvoke $r6_3.<java.lang.String: boolean equals(java.lang.Object)>($r5_6);
+
+        if $z1_5 == 0 goto label14;
+
+        return 0;
+
+     label13:
+        $r4 := @caughtexception;
+
+        $r5_7 = Phi($r5_2 #4, $r5_3 #5);
+
+        return 0;
+
+     label14:
+        $i6_3 = $i6_2 + 1;
+
+(8)     goto label12;
+
+     label15:
+        $i4_2 = $i4_1 + 1;
+
+(9)     goto label11;
+
+     label16:
+        $z1_6 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean isExplicitlyNonCacheable(ch.boye.httpclientandroidlib.HttpResponse)>($r1);
+
+        if $z1_6 == 0 goto label17;
+
+        return 0;
+
+     label17:
+(10)    if $z0_2 != 0 goto label18;
+
+        $z0_3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.ResponseCachingPolicy: boolean isExplicitlyCacheable(ch.boye.httpclientandroidlib.HttpResponse)>($r1);
+
+(11)    if $z0_3 == 0 goto label19;
+
+     label18:
+        $z0_4 = Phi($z0_2 #10, $z0_3 #11);
+
+        return 1;
+
+     label19:
+        return 0;
+
+        catch ch.boye.httpclientandroidlib.impl.cookie.DateParseException from label09 to label10 with label13;
+    }
+}

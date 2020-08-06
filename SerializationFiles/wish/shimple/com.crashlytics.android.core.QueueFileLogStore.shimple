@@ -1,0 +1,386 @@
+class com.crashlytics.android.core.QueueFileLogStore extends java.lang.Object implements com.crashlytics.android.core.FileLogStore
+{
+    private io.fabric.sdk.android.services.common.QueueFile logFile;
+    private final int maxLogSize;
+    private final java.io.File workingFile;
+
+    public void <init>(java.io.File, int)
+    {
+        com.crashlytics.android.core.QueueFileLogStore $r0;
+        java.io.File $r1;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.QueueFileLogStore;
+
+        $r1 := @parameter0: java.io.File;
+
+        $i0 := @parameter1: int;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.crashlytics.android.core.QueueFileLogStore: java.io.File workingFile> = $r1;
+
+        $r0.<com.crashlytics.android.core.QueueFileLogStore: int maxLogSize> = $i0;
+
+        return;
+    }
+
+    private void doWriteToLog(long, java.lang.String)
+    {
+        com.crashlytics.android.core.QueueFileLogStore $r0;
+        long $l0;
+        java.util.Locale $r1;
+        java.lang.Object[] $r2;
+        java.io.IOException $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9, $r4_10;
+        io.fabric.sdk.android.services.common.QueueFile $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7;
+        int $i1, $i2, $i1_1, $i2_1, $i1_2, $i2_2, $i1_3, $i2_3, $i1_4, $i1_5, $i2_4, $i2_5, $i1_6, $i2_6, $i1_7;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        java.lang.Long $r7;
+        byte[] $r8;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r9;
+
+        $r0 := @this: com.crashlytics.android.core.QueueFileLogStore;
+
+        $l0 := @parameter0: long;
+
+        $r4 := @parameter1: java.lang.String;
+
+        $r5 = $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile>;
+
+        if $r5 != null goto label01;
+
+        return;
+
+     label01:
+(0)     if $r4 != null goto label02;
+
+(1)     $r4_1 = "null";
+
+     label02:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $i1 = $r0.<com.crashlytics.android.core.QueueFileLogStore: int maxLogSize>;
+
+(2)     $i1_1 = $i1 / 4;
+
+     label03:
+        $i2 = virtualinvoke $r4_2.<java.lang.String: int length()>();
+
+     label04:
+(3)     if $i2 <= $i1_1 goto label08;
+
+        $r6 = new java.lang.StringBuilder;
+
+     label05:
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+(4)     $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("...");
+
+(5)     $i2_1 = virtualinvoke $r4_2.<java.lang.String: int length()>();
+
+     label06:
+(6)     $i1_2 = $i2_1 - $i1_1;
+
+     label07:
+(7)     $r4_3 = virtualinvoke $r4_2.<java.lang.String: java.lang.String substring(int)>($i1_2);
+
+(8)     $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4_3);
+
+(9)     $r4_4 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label08:
+        $r6_3 = Phi($r6 #3, $r6_2 #9);
+
+        $i2_2 = Phi($i2 #3, $i2_1 #9);
+
+        $r4_5 = Phi($r4_2 #3, $r4_4 #9);
+
+        $i1_3 = Phi($i1_1 #3, $i1_2 #9);
+
+(10)    $r4_6 = virtualinvoke $r4_5.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>("\r", " ");
+
+(11)    $r4_7 = virtualinvoke $r4_6.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>("\n", " ");
+
+     label09:
+        $r1 = <java.util.Locale: java.util.Locale US>;
+
+        $r2 = newarray (java.lang.Object)[2];
+
+     label10:
+        $r7 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+     label11:
+        $r2[0] = $r7;
+
+        $r2[1] = $r4_7;
+
+     label12:
+(12)    $r4_8 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r1, "%d %s%n", $r2);
+
+        $r8 = virtualinvoke $r4_8.<java.lang.String: byte[] getBytes(java.lang.String)>("UTF-8");
+
+     label13:
+(13)    $r5_1 = $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile>;
+
+     label14:
+(14)    virtualinvoke $r5_1.<io.fabric.sdk.android.services.common.QueueFile: void add(byte[])>($r8);
+
+     label15:
+        $i2_3 = Phi($i2_2 #14, $i2_4 #21);
+
+        $r5_2 = Phi($r5_1 #14, $r5_5 #21);
+
+        $i1_4 = Phi($i1_3 #14, $i1_5 #21);
+
+(15)    $r5_3 = $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile>;
+
+     label16:
+        $z0 = virtualinvoke $r5_3.<io.fabric.sdk.android.services.common.QueueFile: boolean isEmpty()>();
+
+     label17:
+(16)    if $z0 != 0 goto label23;
+
+(17)    $r5_4 = $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile>;
+
+     label18:
+(18)    $i1_5 = virtualinvoke $r5_4.<io.fabric.sdk.android.services.common.QueueFile: int usedBytes()>();
+
+     label19:
+        $i2_4 = $r0.<com.crashlytics.android.core.QueueFileLogStore: int maxLogSize>;
+
+(19)    if $i1_5 <= $i2_4 goto label23;
+
+(20)    $r5_5 = $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile>;
+
+     label20:
+        virtualinvoke $r5_5.<io.fabric.sdk.android.services.common.QueueFile: void remove()>();
+
+     label21:
+(21)    goto label15;
+
+     label22:
+        $r3 := @caughtexception;
+
+        $r6_4 = Phi($r6 #2, $r6_1 #4, $r6_2 #8, $r6_3 #10);
+
+        $i2_5 = Phi($i2 #2, $i2_1 #5, $i2_2 #10, $i2_3 #15, $i2_4 #20);
+
+        $r5_6 = Phi($r5 #2, $r5_1 #13, $r5_3 #15, $r5_4 #17, $r5_5 #20);
+
+        $r4_9 = Phi($r4_2 #2, $r4_3 #7, $r4_4 #9, $r4_6 #10, $r4_7 #11, $r4_8 #12);
+
+        $i1_6 = Phi($i1_1 #2, $i1_2 #6, $i1_3 #10, $i1_4 #15, $i1_5 #18);
+
+        $r9 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(22)    interfaceinvoke $r9.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "There was a problem writing to the Crashlytics log.", $r3);
+
+     label23:
+        $r6_5 = Phi($r6_3 #16, $r6_3 #19, $r6_4 #22);
+
+        $i2_6 = Phi($i2_3 #16, $i2_4 #19, $i2_5 #22);
+
+        $r5_7 = Phi($r5_3 #16, $r5_4 #19, $r5_6 #22);
+
+        $r4_10 = Phi($r4_8 #16, $r4_8 #19, $r4_9 #22);
+
+        $i1_7 = Phi($i1_4 #16, $i1_5 #19, $i1_6 #22);
+
+        return;
+
+        catch java.io.IOException from label03 to label04 with label22;
+        catch java.io.IOException from label05 to label06 with label22;
+        catch java.io.IOException from label07 to label08 with label22;
+        catch java.io.IOException from label08 to label09 with label22;
+        catch java.io.IOException from label10 to label11 with label22;
+        catch java.io.IOException from label12 to label13 with label22;
+        catch java.io.IOException from label14 to label15 with label22;
+        catch java.io.IOException from label16 to label17 with label22;
+        catch java.io.IOException from label18 to label19 with label22;
+        catch java.io.IOException from label20 to label21 with label22;
+    }
+
+    private void openLogFile()
+    {
+        com.crashlytics.android.core.QueueFileLogStore $r0;
+        java.io.IOException $r1;
+        io.fabric.sdk.android.services.common.QueueFile $r2, $r2_1, $r2_2;
+        java.io.File $r3, $r3_1, $r3_2;
+        io.fabric.sdk.android.Logger $r4;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2, $r5_3;
+        java.lang.String $r6;
+
+        $r0 := @this: com.crashlytics.android.core.QueueFileLogStore;
+
+        $r2 = $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile>;
+
+(0)     if $r2 != null goto label4;
+
+        $r2_1 = new io.fabric.sdk.android.services.common.QueueFile;
+
+        $r3 = $r0.<com.crashlytics.android.core.QueueFileLogStore: java.io.File workingFile>;
+
+     label1:
+        specialinvoke $r2_1.<io.fabric.sdk.android.services.common.QueueFile: void <init>(java.io.File)>($r3);
+
+     label2:
+        $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile> = $r2_1;
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        $r4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Could not open log file: ");
+
+        $r3_1 = $r0.<com.crashlytics.android.core.QueueFileLogStore: java.io.File workingFile>;
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3_1);
+
+        $r6 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     interfaceinvoke $r4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", $r6, $r1);
+
+     label4:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        $r5_3 = Phi($r5 #0, $r5_2 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public void closeLogFile()
+    {
+        com.crashlytics.android.core.QueueFileLogStore $r0;
+        io.fabric.sdk.android.services.common.QueueFile $r1;
+
+        $r0 := @this: com.crashlytics.android.core.QueueFileLogStore;
+
+        $r1 = $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile>;
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r1, "There was a problem closing the Crashlytics log file.");
+
+        $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile> = null;
+
+        return;
+    }
+
+    public void deleteLogFile()
+    {
+        com.crashlytics.android.core.QueueFileLogStore $r0;
+        java.io.File $r1;
+
+        $r0 := @this: com.crashlytics.android.core.QueueFileLogStore;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.QueueFileLogStore: void closeLogFile()>();
+
+        $r1 = $r0.<com.crashlytics.android.core.QueueFileLogStore: java.io.File workingFile>;
+
+        virtualinvoke $r1.<java.io.File: boolean delete()>();
+
+        return;
+    }
+
+    public com.crashlytics.android.core.ByteString getLogAsByteString()
+    {
+        com.crashlytics.android.core.QueueFileLogStore $r0;
+        java.io.File $r1;
+        int[] $r2;
+        byte[] $r3;
+        com.crashlytics.android.core.QueueFileLogStore$1 $r4;
+        java.io.IOException $r5;
+        boolean $z0;
+        io.fabric.sdk.android.services.common.QueueFile $r6, $r6_1, $r6_2;
+        int $i0, $i0_1;
+        com.crashlytics.android.core.ByteString $r7;
+        io.fabric.sdk.android.Logger $r8;
+
+        $r0 := @this: com.crashlytics.android.core.QueueFileLogStore;
+
+        $r1 = $r0.<com.crashlytics.android.core.QueueFileLogStore: java.io.File workingFile>;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label1;
+
+        return null;
+
+     label1:
+        specialinvoke $r0.<com.crashlytics.android.core.QueueFileLogStore: void openLogFile()>();
+
+        $r6 = $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile>;
+
+        if $r6 == null goto label5;
+
+        $r2 = newarray (int)[1];
+
+        $r2[0] = 0;
+
+        $r6_1 = $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile>;
+
+        $i0 = virtualinvoke $r6_1.<io.fabric.sdk.android.services.common.QueueFile: int usedBytes()>();
+
+        $r3 = newarray (byte)[$i0];
+
+        $r6_2 = $r0.<com.crashlytics.android.core.QueueFileLogStore: io.fabric.sdk.android.services.common.QueueFile logFile>;
+
+        $r4 = new com.crashlytics.android.core.QueueFileLogStore$1;
+
+     label2:
+        specialinvoke $r4.<com.crashlytics.android.core.QueueFileLogStore$1: void <init>(com.crashlytics.android.core.QueueFileLogStore,byte[],int[])>($r0, $r3, $r2);
+
+        virtualinvoke $r6_2.<io.fabric.sdk.android.services.common.QueueFile: void forEach(io.fabric.sdk.android.services.common.QueueFile$ElementReader)>($r4);
+
+     label3:
+        $i0_1 = $r2[0];
+
+        $r7 = staticinvoke <com.crashlytics.android.core.ByteString: com.crashlytics.android.core.ByteString copyFrom(byte[],int,int)>($r3, 0, $i0_1);
+
+        return $r7;
+
+     label4:
+        $r5 := @caughtexception;
+
+        $r8 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r8.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "A problem occurred while reading the Crashlytics log file.", $r5);
+
+        goto label3;
+
+     label5:
+        return null;
+
+        catch java.io.IOException from label2 to label3 with label4;
+    }
+
+    public void writeToLog(long, java.lang.String)
+    {
+        com.crashlytics.android.core.QueueFileLogStore $r0;
+        long $l0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.crashlytics.android.core.QueueFileLogStore;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.lang.String;
+
+        specialinvoke $r0.<com.crashlytics.android.core.QueueFileLogStore: void openLogFile()>();
+
+        specialinvoke $r0.<com.crashlytics.android.core.QueueFileLogStore: void doWriteToLog(long,java.lang.String)>($l0, $r1);
+
+        return;
+    }
+}

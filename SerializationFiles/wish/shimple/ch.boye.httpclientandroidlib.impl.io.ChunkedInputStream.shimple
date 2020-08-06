@@ -1,0 +1,585 @@
+public class ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream extends java.io.InputStream
+{
+    private static final int BUFFER_SIZE;
+    private static final int CHUNK_CRLF;
+    private static final int CHUNK_DATA;
+    private static final int CHUNK_LEN;
+    private final ch.boye.httpclientandroidlib.util.CharArrayBuffer buffer;
+    private int chunkSize;
+    private boolean closed;
+    private boolean eof;
+    private ch.boye.httpclientandroidlib.Header[] footers;
+    private final ch.boye.httpclientandroidlib.io.SessionInputBuffer in;
+    private int pos;
+    private int state;
+
+    public void <init>(ch.boye.httpclientandroidlib.io.SessionInputBuffer)
+    {
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        ch.boye.httpclientandroidlib.Header[] $r2;
+        java.lang.IllegalArgumentException $r3;
+        ch.boye.httpclientandroidlib.util.CharArrayBuffer $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+        specialinvoke $r0.<java.io.InputStream: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean eof> = 0;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean closed> = 0;
+
+        $r2 = newarray (ch.boye.httpclientandroidlib.Header)[0];
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.Header[] footers> = $r2;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Session input buffer may not be null");
+
+        throw $r3;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.io.SessionInputBuffer in> = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos> = 0;
+
+        $r4 = new ch.boye.httpclientandroidlib.util.CharArrayBuffer;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void <init>(int)>(16);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.util.CharArrayBuffer buffer> = $r4;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int state> = 1;
+
+        return;
+    }
+
+    private int getChunkSize() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r0;
+        java.lang.IllegalStateException $r1;
+        java.lang.NumberFormatException $r2;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4, $i1_1, $i1_2, $i0_5, $i0_6;
+        ch.boye.httpclientandroidlib.util.CharArrayBuffer $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8, $r3_9;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r4, $r4_1, $r4_2;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.MalformedChunkCodingException $r5, $r5_1;
+        java.lang.String $r6;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        $i0 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int state>;
+
+(0)     lookupswitch($i0)
+        {
+            case 1: goto label06;
+            case 2: goto label02;
+            case 3: goto label03;
+            default: goto label01;
+        };
+
+     label01:
+        goto label02;
+
+     label02:
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Inconsistent codec state");
+
+        throw $r1;
+
+     label03:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.util.CharArrayBuffer buffer>;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void clear()>();
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.io.SessionInputBuffer in>;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.util.CharArrayBuffer buffer>;
+
+        $i0_1 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.io.SessionInputBuffer: int readLine(ch.boye.httpclientandroidlib.util.CharArrayBuffer)>($r3_1);
+
+        if $i0_1 != -1 goto label04;
+
+        return 0;
+
+     label04:
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.util.CharArrayBuffer buffer>;
+
+        $z0 = virtualinvoke $r3_2.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: boolean isEmpty()>();
+
+        if $z0 != 0 goto label05;
+
+        $r5 = new ch.boye.httpclientandroidlib.MalformedChunkCodingException;
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.MalformedChunkCodingException: void <init>(java.lang.String)>("Unexpected content at the end of chunk");
+
+        throw $r5;
+
+     label05:
+(1)     $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int state> = 1;
+
+     label06:
+        $r4_1 = Phi($r4 #0, $r4 #1);
+
+        $r3_3 = Phi($r3 #0, $r3_2 #1);
+
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $r3_4 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.util.CharArrayBuffer buffer>;
+
+        virtualinvoke $r3_4.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void clear()>();
+
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.io.SessionInputBuffer in>;
+
+        $r3_5 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.util.CharArrayBuffer buffer>;
+
+        $i0_3 = interfaceinvoke $r4_2.<ch.boye.httpclientandroidlib.io.SessionInputBuffer: int readLine(ch.boye.httpclientandroidlib.util.CharArrayBuffer)>($r3_5);
+
+        if $i0_3 == -1 goto label11;
+
+        $r3_6 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.util.CharArrayBuffer buffer>;
+
+        $i0_4 = virtualinvoke $r3_6.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: int indexOf(int)>(59);
+
+        $i1 = $i0_4;
+
+(2)     if $i0_4 >= 0 goto label07;
+
+        $r3_7 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.util.CharArrayBuffer buffer>;
+
+(3)     $i1_1 = virtualinvoke $r3_7.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: int length()>();
+
+     label07:
+        $i1_2 = Phi($i1 #2, $i1_1 #3);
+
+        $r3_8 = Phi($r3_6 #2, $r3_7 #3);
+
+(4)     $r3_9 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.util.CharArrayBuffer buffer>;
+
+     label08:
+        $r6 = virtualinvoke $r3_9.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: java.lang.String substringTrimmed(int,int)>(0, $i1_2);
+
+(5)     $i0_5 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String,int)>($r6, 16);
+
+     label09:
+        return $i0_5;
+
+     label10:
+        $r2 := @caughtexception;
+
+        $i0_6 = Phi($i0_4 #4, $i0_5 #5);
+
+        $r5_1 = new ch.boye.httpclientandroidlib.MalformedChunkCodingException;
+
+        specialinvoke $r5_1.<ch.boye.httpclientandroidlib.MalformedChunkCodingException: void <init>(java.lang.String)>("Bad chunk header");
+
+        throw $r5_1;
+
+     label11:
+        return 0;
+
+        catch java.lang.NumberFormatException from label08 to label09 with label10;
+    }
+
+    private void nextChunk() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r0;
+        ch.boye.httpclientandroidlib.MalformedChunkCodingException $r1;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        $i0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int getChunkSize()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int chunkSize> = $i0;
+
+        $i0_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int chunkSize>;
+
+        if $i0_1 >= 0 goto label1;
+
+        $r1 = new ch.boye.httpclientandroidlib.MalformedChunkCodingException;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.MalformedChunkCodingException: void <init>(java.lang.String)>("Negative chunk size");
+
+        throw $r1;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int state> = 2;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos> = 0;
+
+        $i0_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int chunkSize>;
+
+        if $i0_2 != 0 goto label2;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean eof> = 1;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: void parseTrailerHeaders()>();
+
+     label2:
+        return;
+    }
+
+    private void parseTrailerHeaders() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        ch.boye.httpclientandroidlib.HttpException $r2;
+        ch.boye.httpclientandroidlib.MalformedChunkCodingException $r3;
+        ch.boye.httpclientandroidlib.Header[] $r4;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2;
+        java.lang.String $r6, $r6_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.io.SessionInputBuffer in>;
+
+     label1:
+        $r4 = staticinvoke <ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.Header[] parseHeaders(ch.boye.httpclientandroidlib.io.SessionInputBuffer,int,int,ch.boye.httpclientandroidlib.message.LineParser)>($r1, -1, -1, null);
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.Header[] footers> = $r4;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = new ch.boye.httpclientandroidlib.MalformedChunkCodingException;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Invalid footer: ");
+
+        $r6 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.HttpException: java.lang.String getMessage()>();
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6_1 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.MalformedChunkCodingException: void <init>(java.lang.String)>($r6_1);
+
+        virtualinvoke $r3.<java.io.IOException: java.lang.Throwable initCause(java.lang.Throwable)>($r2);
+
+        throw $r3;
+
+        catch ch.boye.httpclientandroidlib.HttpException from label1 to label2 with label3;
+    }
+
+    public int available() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r0;
+        boolean $z0;
+        int $i0, $i1, $i2, $i0_1, $i1_1;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1, $r1_1;
+        ch.boye.httpclientandroidlib.io.BufferInfo $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.io.SessionInputBuffer in>;
+
+        $z0 = $r1 instanceof ch.boye.httpclientandroidlib.io.BufferInfo;
+
+        if $z0 == 0 goto label1;
+
+        $r1_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.io.SessionInputBuffer in>;
+
+        $r2 = (ch.boye.httpclientandroidlib.io.BufferInfo) $r1_1;
+
+        $i1 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.io.BufferInfo: int length()>();
+
+        $i0 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int chunkSize>;
+
+        $i2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos>;
+
+        $i0_1 = $i0 - $i2;
+
+        $i1_1 = staticinvoke <java.lang.Math: int min(int,int)>($i1, $i0_1);
+
+        return $i1_1;
+
+     label1:
+        return 0;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r0;
+        byte[] $r1;
+        java.lang.Throwable $r2;
+        int $i0;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean closed>;
+
+(0)     if $z0 != 0 goto label8;
+
+     label1:
+(1)     $z0_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean eof>;
+
+     label2:
+        if $z0_1 != 0 goto label6;
+
+     label3:
+        $r1 = newarray (byte)[2048];
+
+     label4:
+        $i0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int read(byte[])>($r1);
+
+     label5:
+        if $i0 >= 0 goto label4;
+
+     label6:
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean eof> = 1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean closed> = 1;
+
+        return;
+
+     label7:
+        $r2 := @caughtexception;
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean eof> = 1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean closed> = 1;
+
+        throw $r2;
+
+     label8:
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label3 to label5 with label7;
+    }
+
+    public ch.boye.httpclientandroidlib.Header[] getFooters()
+    {
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r0;
+        java.lang.Object $r1;
+        ch.boye.httpclientandroidlib.Header[] $r2, $r2_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.Header[] footers>;
+
+        $r1 = virtualinvoke $r2.<java.lang.Object: java.lang.Object clone()>();
+
+        $r2_1 = (ch.boye.httpclientandroidlib.Header[]) $r1;
+
+        return $r2_1;
+    }
+
+    public int read() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r0;
+        java.io.IOException $r1;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r2;
+        int $i0, $i1, $i2, $i1_1, $i0_1, $i0_2, $i0_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean closed>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new java.io.IOException;
+
+        specialinvoke $r1.<java.io.IOException: void <init>(java.lang.String)>("Attempted read from closed stream.");
+
+        throw $r1;
+
+     label1:
+        $z0_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean eof>;
+
+        if $z0_1 == 0 goto label2;
+
+        return -1;
+
+     label2:
+        $i1 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int state>;
+
+(0)     if $i1 == 2 goto label3;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: void nextChunk()>();
+
+        $z0_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean eof>;
+
+(1)     if $z0_2 == 0 goto label3;
+
+        return -1;
+
+     label3:
+        $z0_3 = Phi($z0_1 #0, $z0_2 #1);
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.io.SessionInputBuffer in>;
+
+        $i1_1 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.io.SessionInputBuffer: int read()>();
+
+(2)     if $i1_1 == -1 goto label4;
+
+        $i0 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos>;
+
+        $i0_1 = $i0 + 1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos> = $i0_1;
+
+        $i2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos>;
+
+        $i0_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int chunkSize>;
+
+(3)     if $i2 < $i0_2 goto label4;
+
+(4)     $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int state> = 3;
+
+     label4:
+        $i0_3 = Phi($i0 #2, $i0_2 #3, $i0_2 #4);
+
+        return $i1_1;
+    }
+
+    public int read(byte[]) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r0;
+        byte[] $r1;
+        int $i0, $i0_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 = lengthof $r1;
+
+        $i0_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int read(byte[],int,int)>($r1, 0, $i0);
+
+        return $i0_1;
+    }
+
+    public int read(byte[], int, int) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r0;
+        byte[] $r1;
+        java.io.IOException $r2;
+        int $i0, $i1, $i2, $i3, $i0_1, $i0_2, $i2_1, $i1_1, $i2_2, $i2_3, $i2_4, $i0_3, $i1_2, $i1_3;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r3;
+        ch.boye.httpclientandroidlib.TruncatedChunkException $r4;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        java.lang.String $r6;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean closed>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new java.io.IOException;
+
+        specialinvoke $r2.<java.io.IOException: void <init>(java.lang.String)>("Attempted read from closed stream.");
+
+        throw $r2;
+
+     label1:
+        $z0_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean eof>;
+
+        if $z0_1 == 0 goto label2;
+
+        return -1;
+
+     label2:
+        $i0 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int state>;
+
+(0)     if $i0 == 2 goto label3;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: void nextChunk()>();
+
+        $z0_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean eof>;
+
+(1)     if $z0_2 == 0 goto label3;
+
+        return -1;
+
+     label3:
+        $z0_3 = Phi($z0_1 #0, $z0_2 #1);
+
+        $i3 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int chunkSize>;
+
+        $i0_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos>;
+
+        $i0_2 = $i3 - $i0_1;
+
+        $i2_1 = staticinvoke <java.lang.Math: int min(int,int)>($i2, $i0_2);
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: ch.boye.httpclientandroidlib.io.SessionInputBuffer in>;
+
+        $i1_1 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.io.SessionInputBuffer: int read(byte[],int,int)>($r1, $i1, $i2_1);
+
+        if $i1_1 == -1 goto label4;
+
+        $i2_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos>;
+
+        $i2_3 = $i2_2 + $i1_1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos> = $i2_3;
+
+        $i2_4 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos>;
+
+        $i0_3 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int chunkSize>;
+
+        if $i2_4 < $i0_3 goto label5;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int state> = 3;
+
+        return $i1_1;
+
+     label4:
+        $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: boolean eof> = 1;
+
+        $r4 = new ch.boye.httpclientandroidlib.TruncatedChunkException;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Truncated chunk ( expected size: ");
+
+        $i1_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int chunkSize>;
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1_2);
+
+        $r5_3 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("; actual size: ");
+
+        $i1_3 = $r0.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: int pos>;
+
+        $r5_4 = virtualinvoke $r5_3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1_3);
+
+        $r5_5 = virtualinvoke $r5_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        $r6 = virtualinvoke $r5_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.TruncatedChunkException: void <init>(java.lang.String)>($r6);
+
+        throw $r4;
+
+     label5:
+        return $i1_1;
+    }
+}

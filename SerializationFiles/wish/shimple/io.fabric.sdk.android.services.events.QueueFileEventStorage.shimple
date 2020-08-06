@@ -1,0 +1,457 @@
+public class io.fabric.sdk.android.services.events.QueueFileEventStorage extends java.lang.Object implements io.fabric.sdk.android.services.events.EventsStorage
+{
+    private final android.content.Context context;
+    private io.fabric.sdk.android.services.common.QueueFile queueFile;
+    private java.io.File targetDirectory;
+    private final java.lang.String targetDirectoryName;
+    private final java.io.File workingDirectory;
+    private final java.io.File workingFile;
+
+    public void <init>(android.content.Context, java.io.File, java.lang.String, java.lang.String) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        android.content.Context $r1;
+        java.lang.String $r2, $r3;
+        java.io.File $r4, $r6, $r4_1, $r4_2;
+        io.fabric.sdk.android.services.common.QueueFile $r5;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r4 := @parameter1: java.io.File;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: java.lang.String;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: android.content.Context context> = $r1;
+
+        $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File workingDirectory> = $r4;
+
+        $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.lang.String targetDirectoryName> = $r3;
+
+        $r6 = new java.io.File;
+
+        $r4_1 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File workingDirectory>;
+
+        specialinvoke $r6.<java.io.File: void <init>(java.io.File,java.lang.String)>($r4_1, $r2);
+
+        $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File workingFile> = $r6;
+
+        $r5 = new io.fabric.sdk.android.services.common.QueueFile;
+
+        $r4_2 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File workingFile>;
+
+        specialinvoke $r5.<io.fabric.sdk.android.services.common.QueueFile: void <init>(java.io.File)>($r4_2);
+
+        $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: io.fabric.sdk.android.services.common.QueueFile queueFile> = $r5;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: void createTargetDirectory()>();
+
+        return;
+    }
+
+    private void createTargetDirectory()
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        java.io.File $r1, $r3, $r1_1, $r1_2, $r1_3;
+        java.lang.String $r2;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 = new java.io.File;
+
+        $r3 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File workingDirectory>;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.lang.String targetDirectoryName>;
+
+        specialinvoke $r1.<java.io.File: void <init>(java.io.File,java.lang.String)>($r3, $r2);
+
+        $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File targetDirectory> = $r1;
+
+        $r1_1 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File targetDirectory>;
+
+        $z0 = virtualinvoke $r1_1.<java.io.File: boolean exists()>();
+
+(0)     if $z0 != 0 goto label1;
+
+        $r1_2 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File targetDirectory>;
+
+(1)     virtualinvoke $r1_2.<java.io.File: boolean mkdirs()>();
+
+     label1:
+        $r1_3 = Phi($r1_1 #0, $r1_2 #1);
+
+        return;
+    }
+
+    private void move(java.io.File, java.io.File) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        java.io.File $r1, $r2;
+        java.io.FileInputStream $r3, $r7, $r7_1, $r7_2;
+        byte[] $r4;
+        java.io.OutputStream $r5, $r6, $r6_1, $r6_2, $r6_3;
+        java.lang.Throwable $r8, $r8_1, $r8_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 := @parameter0: java.io.File;
+
+        $r2 := @parameter1: java.io.File;
+
+        $r6 = null;
+
+        $r7 = null;
+
+     label1:
+        $r3 = new java.io.FileInputStream;
+
+(0)     specialinvoke $r3.<java.io.FileInputStream: void <init>(java.io.File)>($r1);
+
+     label2:
+        $r5 = virtualinvoke $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.OutputStream getMoveOutputStream(java.io.File)>($r2);
+
+     label3:
+(1)     $r6_1 = $r5;
+
+     label4:
+        $r4 = newarray (byte)[1024];
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void copyStream(java.io.InputStream,java.io.OutputStream,byte[])>($r3, $r5, $r4);
+
+     label5:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r3, "Failed to close file input stream");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r5, "Failed to close output stream");
+
+        virtualinvoke $r1.<java.io.File: boolean delete()>();
+
+        return;
+
+     label6:
+(2)     $r8_1 := @caughtexception;
+
+     label7:
+        $r7_2 = Phi($r7 #2, $r7_1 #3);
+
+        $r8_2 = Phi($r8_1 #2, $r8 #3);
+
+        $r6_3 = Phi($r6 #2, $r6_2 #3);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r7_2, "Failed to close file input stream");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r6_3, "Failed to close output stream");
+
+        virtualinvoke $r1.<java.io.File: boolean delete()>();
+
+        throw $r8_2;
+
+     label8:
+        $r8 := @caughtexception;
+
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        $r7_1 = $r3;
+
+(3)     goto label7;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label2 to label3 with label8;
+        catch java.lang.Throwable from label4 to label5 with label8;
+    }
+
+    public void add(byte[]) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        byte[] $r1;
+        io.fabric.sdk.android.services.common.QueueFile $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 := @parameter0: byte[];
+
+        $r2 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: io.fabric.sdk.android.services.common.QueueFile queueFile>;
+
+        virtualinvoke $r2.<io.fabric.sdk.android.services.common.QueueFile: void add(byte[])>($r1);
+
+        return;
+    }
+
+    public boolean canWorkingFileStore(int, int)
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        int $i0, $i1;
+        io.fabric.sdk.android.services.common.QueueFile $r1;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: io.fabric.sdk.android.services.common.QueueFile queueFile>;
+
+        $z0 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.QueueFile: boolean hasSpaceFor(int,int)>($i0, $i1);
+
+        return $z0;
+    }
+
+    public void deleteFilesInRollOverDirectory(java.util.List)
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        java.util.List $r1;
+        android.content.Context $r2;
+        java.lang.Object[] $r3;
+        java.util.Iterator $r4;
+        boolean $z0;
+        java.lang.Object $r5;
+        java.io.File $r6;
+        java.lang.String $r7, $r7_1, $r7_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 := @parameter0: java.util.List;
+
+(0)     $r4 = interfaceinvoke $r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $r7 = Phi($r7 #0, $r7_2 #1);
+
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (java.io.File) $r5;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: android.content.Context context>;
+
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r7_1 = virtualinvoke $r6.<java.io.File: java.lang.String getName()>();
+
+        $r3[0] = $r7_1;
+
+        $r7_2 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("deleting sent analytics file %s", $r3);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlled(android.content.Context,java.lang.String)>($r2, $r7_2);
+
+        virtualinvoke $r6.<java.io.File: boolean delete()>();
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    public void deleteWorkingFile()
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        io.fabric.sdk.android.services.common.QueueFile $r1;
+        java.io.File $r2;
+        java.io.IOException $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: io.fabric.sdk.android.services.common.QueueFile queueFile>;
+
+     label1:
+        virtualinvoke $r1.<io.fabric.sdk.android.services.common.QueueFile: void close()>();
+
+     label2:
+        $r2 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File workingFile>;
+
+        virtualinvoke $r2.<java.io.File: boolean delete()>();
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        goto label2;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public java.util.List getAllFilesInRollOverDirectory()
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        java.io.File $r1;
+        java.io.File[] $r2;
+        java.util.List $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File targetDirectory>;
+
+        $r2 = virtualinvoke $r1.<java.io.File: java.io.File[] listFiles()>();
+
+        $r3 = staticinvoke <java.util.Arrays: java.util.List asList(java.lang.Object[])>($r2);
+
+        return $r3;
+    }
+
+    public java.util.List getBatchOfFilesToSend(int)
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        int $i0, $i1, $i2, $i3, $i2_1, $i2_2;
+        java.util.ArrayList $r1;
+        java.io.File $r2, $r2_1, $r2_2;
+        java.io.File[] $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $i0 := @parameter0: int;
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $r2 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File targetDirectory>;
+
+        $r3 = virtualinvoke $r2.<java.io.File: java.io.File[] listFiles()>();
+
+        $i1 = lengthof $r3;
+
+(0)     $i2 = 0;
+
+     label1:
+        $i2_1 = Phi($i2 #0, $i2_2 #1);
+
+        $r2_1 = Phi($r2 #0, $r2_2 #1);
+
+        if $i2_1 >= $i1 goto label3;
+
+        $r2_2 = $r3[$i2_1];
+
+        interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r2_2);
+
+        $i3 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        if $i3 < $i0 goto label2;
+
+        return $r1;
+
+     label2:
+        $i2_2 = $i2_1 + 1;
+
+(1)     goto label1;
+
+     label3:
+        return $r1;
+    }
+
+    public java.io.OutputStream getMoveOutputStream(java.io.File) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        java.io.File $r1;
+        java.io.FileOutputStream $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 := @parameter0: java.io.File;
+
+        $r2 = new java.io.FileOutputStream;
+
+        specialinvoke $r2.<java.io.FileOutputStream: void <init>(java.io.File)>($r1);
+
+        return $r2;
+    }
+
+    public java.io.File getRollOverDirectory()
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        java.io.File r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        r1 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File targetDirectory>;
+
+        return r1;
+    }
+
+    public java.io.File getWorkingDirectory()
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        java.io.File r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        r1 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File workingDirectory>;
+
+        return r1;
+    }
+
+    public int getWorkingFileUsedSizeInBytes()
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        io.fabric.sdk.android.services.common.QueueFile $r1;
+        int $i0;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: io.fabric.sdk.android.services.common.QueueFile queueFile>;
+
+        $i0 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.QueueFile: int usedBytes()>();
+
+        return $i0;
+    }
+
+    public boolean isWorkingFileEmpty()
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        io.fabric.sdk.android.services.common.QueueFile $r1;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: io.fabric.sdk.android.services.common.QueueFile queueFile>;
+
+        $z0 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.QueueFile: boolean isEmpty()>();
+
+        return $z0;
+    }
+
+    public void rollOver(java.lang.String) throws java.io.IOException
+    {
+        io.fabric.sdk.android.services.events.QueueFileEventStorage $r0;
+        java.lang.String $r1;
+        java.io.File $r2, $r3, $r5, $r2_1;
+        io.fabric.sdk.android.services.common.QueueFile $r4, $r4_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.QueueFileEventStorage;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r4 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: io.fabric.sdk.android.services.common.QueueFile queueFile>;
+
+        virtualinvoke $r4.<io.fabric.sdk.android.services.common.QueueFile: void close()>();
+
+        $r2 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File workingFile>;
+
+        $r3 = new java.io.File;
+
+        $r5 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File targetDirectory>;
+
+        specialinvoke $r3.<java.io.File: void <init>(java.io.File,java.lang.String)>($r5, $r1);
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: void move(java.io.File,java.io.File)>($r2, $r3);
+
+        $r4_1 = new io.fabric.sdk.android.services.common.QueueFile;
+
+        $r2_1 = $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: java.io.File workingFile>;
+
+        specialinvoke $r4_1.<io.fabric.sdk.android.services.common.QueueFile: void <init>(java.io.File)>($r2_1);
+
+        $r0.<io.fabric.sdk.android.services.events.QueueFileEventStorage: io.fabric.sdk.android.services.common.QueueFile queueFile> = $r4_1;
+
+        return;
+    }
+}

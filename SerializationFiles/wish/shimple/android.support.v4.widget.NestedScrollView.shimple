@@ -1,0 +1,4718 @@
+public class android.support.v4.widget.NestedScrollView extends android.widget.FrameLayout implements android.support.v4.view.NestedScrollingChild, android.support.v4.view.NestedScrollingParent
+{
+    private static final android.support.v4.widget.NestedScrollView$AccessibilityDelegate ACCESSIBILITY_DELEGATE;
+    static final int ANIMATED_SCROLL_GAP;
+    private static final int INVALID_POINTER;
+    static final float MAX_SCROLL_FACTOR;
+    private static final int[] SCROLLVIEW_STYLEABLE;
+    private static final java.lang.String TAG;
+    private int mActivePointerId;
+    private final android.support.v4.view.NestedScrollingChildHelper mChildHelper;
+    private android.view.View mChildToScrollTo;
+    private android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom;
+    private android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop;
+    private boolean mFillViewport;
+    private boolean mIsBeingDragged;
+    private boolean mIsLaidOut;
+    private boolean mIsLayoutDirty;
+    private int mLastMotionY;
+    private long mLastScroll;
+    private int mMaximumVelocity;
+    private int mMinimumVelocity;
+    private int mNestedYOffset;
+    private final android.support.v4.view.NestedScrollingParentHelper mParentHelper;
+    private android.support.v4.widget.NestedScrollView$SavedState mSavedState;
+    private final int[] mScrollConsumed;
+    private final int[] mScrollOffset;
+    private android.support.v4.widget.ScrollerCompat mScroller;
+    private boolean mSmoothScrollingEnabled;
+    private final android.graphics.Rect mTempRect;
+    private int mTouchSlop;
+    private android.view.VelocityTracker mVelocityTracker;
+    private float mVerticalScrollFactor;
+
+    static void <clinit>()
+    {
+        android.support.v4.widget.NestedScrollView$AccessibilityDelegate $r0;
+        int[] $r1;
+
+        $r0 = new android.support.v4.widget.NestedScrollView$AccessibilityDelegate;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView$AccessibilityDelegate: void <init>()>();
+
+        <android.support.v4.widget.NestedScrollView: android.support.v4.widget.NestedScrollView$AccessibilityDelegate ACCESSIBILITY_DELEGATE> = $r0;
+
+        $r1 = newarray (int)[1];
+
+        $r1[0] = 16843130;
+
+        <android.support.v4.widget.NestedScrollView: int[] SCROLLVIEW_STYLEABLE> = $r1;
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, 0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        int $i0;
+        android.graphics.Rect $r3;
+        android.support.v4.view.NestedScrollingParentHelper $r4;
+        android.support.v4.view.NestedScrollingChildHelper $r5;
+        android.support.v4.widget.NestedScrollView$AccessibilityDelegate $r6;
+        int[] $r7, $r7_1, $r7_2;
+        android.content.res.TypedArray $r8;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<android.widget.FrameLayout: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        $r3 = new android.graphics.Rect;
+
+        specialinvoke $r3.<android.graphics.Rect: void <init>()>();
+
+        $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect> = $r3;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsLayoutDirty> = 1;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsLaidOut> = 0;
+
+        $r0.<android.support.v4.widget.NestedScrollView: android.view.View mChildToScrollTo> = null;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged> = 0;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mSmoothScrollingEnabled> = 1;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId> = -1;
+
+        $r7 = newarray (int)[2];
+
+        $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollOffset> = $r7;
+
+        $r7_1 = newarray (int)[2];
+
+        $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollConsumed> = $r7_1;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void initScrollView()>();
+
+        $r7_2 = <android.support.v4.widget.NestedScrollView: int[] SCROLLVIEW_STYLEABLE>;
+
+        $r8 = virtualinvoke $r1.<android.content.Context: android.content.res.TypedArray obtainStyledAttributes(android.util.AttributeSet,int[],int,int)>($r2, $r7_2, $i0, 0);
+
+        $z0 = virtualinvoke $r8.<android.content.res.TypedArray: boolean getBoolean(int,boolean)>(0, 0);
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void setFillViewport(boolean)>($z0);
+
+        virtualinvoke $r8.<android.content.res.TypedArray: void recycle()>();
+
+        $r4 = new android.support.v4.view.NestedScrollingParentHelper;
+
+        specialinvoke $r4.<android.support.v4.view.NestedScrollingParentHelper: void <init>(android.view.ViewGroup)>($r0);
+
+        $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingParentHelper mParentHelper> = $r4;
+
+        $r5 = new android.support.v4.view.NestedScrollingChildHelper;
+
+        specialinvoke $r5.<android.support.v4.view.NestedScrollingChildHelper: void <init>(android.view.View)>($r0);
+
+        $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingChildHelper mChildHelper> = $r5;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void setNestedScrollingEnabled(boolean)>(1);
+
+        $r6 = <android.support.v4.widget.NestedScrollView: android.support.v4.widget.NestedScrollView$AccessibilityDelegate ACCESSIBILITY_DELEGATE>;
+
+        staticinvoke <android.support.v4.view.ViewCompat: void setAccessibilityDelegate(android.view.View,android.support.v4.view.AccessibilityDelegateCompat)>($r0, $r6);
+
+        return;
+    }
+
+    static int access$000(android.support.v4.widget.NestedScrollView)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0;
+
+        $r0 := @parameter0: android.support.v4.widget.NestedScrollView;
+
+        $i0 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollRange()>();
+
+        return $i0;
+    }
+
+    private boolean canScroll()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        int $i0, $i1, $i2, $i0_1, $i2_1, $i0_2, $i2_2, $i0_3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+(0)     if $r1 == null goto label1;
+
+        $i0 = virtualinvoke $r1.<android.view.View: int getHeight()>();
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingTop()>();
+
+        $i0_1 = $i2 + $i0;
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i0_2 = $i0_1 + $i2_1;
+
+(1)     if $i1 >= $i0_2 goto label1;
+
+        return 1;
+
+     label1:
+        $i2_2 = Phi($i2 #0, $i2_1 #1);
+
+        $i0_3 = Phi($i0 #0, $i0_2 #1);
+
+        return 0;
+    }
+
+    private static int clamp(int, int, int)
+    {
+        int $i0, $i1, $i2, $i3, $i3_1, $i3_2;
+
+        $i3 := @parameter0: int;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        if $i0 >= $i1 goto label1;
+
+        if $i3 >= 0 goto label2;
+
+     label1:
+        return 0;
+
+     label2:
+        $i2 = $i0 + $i3;
+
+(0)     if $i2 <= $i1 goto label3;
+
+(1)     $i3_1 = $i1 - $i0;
+
+     label3:
+        $i3_2 = Phi($i3 #0, $i3_1 #1);
+
+        return $i3_2;
+    }
+
+    private void doScrollY(int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        if $i0 == 0 goto label2;
+
+        $z0 = $r0.<android.support.v4.widget.NestedScrollView: boolean mSmoothScrollingEnabled>;
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void smoothScrollBy(int,int)>(0, $i0);
+
+        return;
+
+     label1:
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollBy(int,int)>(0, $i0);
+
+     label2:
+        return;
+    }
+
+    private void endDrag()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.support.v4.widget.EdgeEffectCompat $r1, $r1_1, $r1_2, $r1_3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged> = 0;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void recycleVelocityTracker()>();
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+        virtualinvoke $r1_1.<android.support.v4.widget.EdgeEffectCompat: boolean onRelease()>();
+
+        $r1_2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom>;
+
+(1)     virtualinvoke $r1_2.<android.support.v4.widget.EdgeEffectCompat: boolean onRelease()>();
+
+     label1:
+        $r1_3 = Phi($r1 #0, $r1_2 #1);
+
+        return;
+    }
+
+    private void ensureGlows()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0;
+        android.support.v4.widget.EdgeEffectCompat $r1, $r1_1, $r1_2, $r1_3;
+        android.content.Context $r2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 = staticinvoke <android.support.v4.view.ViewCompat: int getOverScrollMode(android.view.View)>($r0);
+
+        if $i0 == 2 goto label1;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+(0)     if $r1 != null goto label2;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.content.Context getContext()>();
+
+        $r1_1 = new android.support.v4.widget.EdgeEffectCompat;
+
+        specialinvoke $r1_1.<android.support.v4.widget.EdgeEffectCompat: void <init>(android.content.Context)>($r2);
+
+        $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop> = $r1_1;
+
+        $r1_2 = new android.support.v4.widget.EdgeEffectCompat;
+
+        specialinvoke $r1_2.<android.support.v4.widget.EdgeEffectCompat: void <init>(android.content.Context)>($r2);
+
+        $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom> = $r1_2;
+
+        return;
+
+     label1:
+        $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop> = null;
+
+(1)     $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom> = null;
+
+     label2:
+        $r1_3 = Phi($r1 #0, $r1 #1);
+
+        return;
+    }
+
+    private android.view.View findFocusableViewInBounds(boolean, int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        boolean $z0, $z1, $z2, $z3, $z1_1, $z2_1, $z2_2, $z1_2, $z3_1, $z3_2, $z3_3, $z1_3, $z2_3, $z2_4, $z1_4, $z3_4;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i3_1, $i4_1, $i4_2, $i4_3, $i4_4, $i4_5, $i4_6, $i3_2;
+        java.util.ArrayList $r1;
+        android.view.View $r2, $r4, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+        java.lang.Object $r3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $z0 := @parameter0: boolean;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: java.util.ArrayList getFocusables(int)>(2);
+
+        $r2 = null;
+
+        $z1 = 0;
+
+        $i2 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+(0)     $i3 = 0;
+
+     label01:
+        $i4 = Phi($i4 #0, $i4_6 #5);
+
+        $r2_1 = Phi($r2 #0, $r2_6 #5);
+
+        $i3_1 = Phi($i3 #0, $i3_2 #5);
+
+        $z2 = Phi($z2 #0, $z2_4 #5);
+
+        $z1_1 = Phi($z1 #0, $z1_4 #5);
+
+        $z3 = Phi($z3 #0, $z3_4 #5);
+
+        if $i3_1 >= $i2 goto label12;
+
+        $r3 = interfaceinvoke $r1.<java.util.List: java.lang.Object get(int)>($i3_1);
+
+        $r4 = (android.view.View) $r3;
+
+        $i4_1 = virtualinvoke $r4.<android.view.View: int getTop()>();
+
+        $i5 = virtualinvoke $r4.<android.view.View: int getBottom()>();
+
+(1)     if $i0 >= $i5 goto label03;
+
+(2)     if $i4_1 >= $i1 goto label03;
+
+        if $i0 >= $i4_1 goto label04;
+
+        if $i5 >= $i1 goto label04;
+
+(3)     $z2_1 = 1;
+
+     label02:
+        $z2_2 = Phi($z2_1 #3, $z2_3 #6);
+
+        if $r2_1 != null goto label05;
+
+        $r2_2 = $r4;
+
+(4)     $z1_2 = $z2_2;
+
+     label03:
+        $i4_6 = Phi($i4_1 #1, $i4_1 #2, $i4_1 #4, $i4_5 #11, $i4_5 #12, $i4_5 #13, $i4_5 #15, $i4_5 #16, $i4_5 #17);
+
+        $r2_6 = Phi($r2_1 #1, $r2_1 #2, $r2_2 #4, $r2_1 #11, $r2_1 #12, $r2_3 #13, $r2_4 #15, $r2_1 #16, $r2_5 #17);
+
+        $z2_4 = Phi($z2 #1, $z2 #2, $z2_2 #4, $z2_2 #11, $z2_2 #12, $z2_2 #13, $z2_2 #15, $z2_2 #16, $z2_2 #17);
+
+        $z1_4 = Phi($z1_1 #1, $z1_1 #2, $z1_2 #4, $z1_1 #11, $z1_1 #12, $z1_1 #13, $z1_3 #15, $z1_1 #16, $z1_1 #17);
+
+        $z3_4 = Phi($z3 #1, $z3 #2, $z3 #4, $z3_3 #11, $z3_3 #12, $z3_3 #13, $z3_3 #15, $z3_3 #16, $z3_3 #17);
+
+        $i3_2 = $i3_1 + 1;
+
+(5)     goto label01;
+
+     label04:
+        $z2_3 = 0;
+
+(6)     goto label02;
+
+     label05:
+        if $z0 == 0 goto label06;
+
+        $i6 = virtualinvoke $r2_1.<android.view.View: int getTop()>();
+
+(7)     if $i4_1 < $i6 goto label07;
+
+     label06:
+(8)     if $z0 != 0 goto label09;
+
+        $i4_2 = virtualinvoke $r2_1.<android.view.View: int getBottom()>();
+
+(9)     if $i5 <= $i4_2 goto label09;
+
+     label07:
+        $i4_4 = Phi($i4_1 #7, $i4_2 #9);
+
+(10)    $z3_2 = 1;
+
+     label08:
+        $i4_5 = Phi($i4_4 #10, $i4_3 #14);
+
+        $z3_3 = Phi($z3_2 #10, $z3_1 #14);
+
+        if $z1_1 == 0 goto label10;
+
+(11)    if $z2_2 == 0 goto label03;
+
+(12)    if $z3_3 == 0 goto label03;
+
+        $r2_3 = $r4;
+
+(13)    goto label03;
+
+     label09:
+        $i4_3 = Phi($i4_1 #8, $i4_2 #9);
+
+        $z3_1 = 0;
+
+(14)    goto label08;
+
+     label10:
+        if $z2_2 == 0 goto label11;
+
+        $r2_4 = $r4;
+
+        $z1_3 = 1;
+
+(15)    goto label03;
+
+     label11:
+(16)    if $z3_3 == 0 goto label03;
+
+        $r2_5 = $r4;
+
+(17)    goto label03;
+
+     label12:
+        return $r2_1;
+    }
+
+    private void flingWithNestedDispatch(int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2;
+        boolean $z0, $z1, $z0_1, $z0_2;
+        float $f0, $f0_1, $f0_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        if $i1 > 0 goto label1;
+
+        if $i0 <= 0 goto label4;
+
+     label1:
+        $i2 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollRange()>();
+
+        if $i1 < $i2 goto label2;
+
+        if $i0 >= 0 goto label4;
+
+     label2:
+(0)     $z0 = 1;
+
+     label3:
+        $z0_1 = Phi($z0 #0, $z0_2 #3);
+
+        $f0 = (float) $i0;
+
+        $z1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean dispatchNestedPreFling(float,float)>(0.0F, $f0);
+
+(1)     if $z1 != 0 goto label5;
+
+        $f0_1 = (float) $i0;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean dispatchNestedFling(float,float,boolean)>(0.0F, $f0_1, $z0_1);
+
+(2)     if $z0_1 == 0 goto label5;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void fling(int)>($i0);
+
+        return;
+
+     label4:
+        $z0_2 = 0;
+
+(3)     goto label3;
+
+     label5:
+        $f0_2 = Phi($f0 #1, $f0_1 #2);
+
+        return;
+    }
+
+    private int getScrollRange()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i0_1, $i1_1, $i2_1, $i1_2, $i0_2, $i0_3;
+        android.view.View $r1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i0 <= 0 goto label1;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i0_1 = virtualinvoke $r1.<android.view.View: int getHeight()>();
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i1_1 = $i1 - $i2;
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingTop()>();
+
+        $i1_2 = $i1_1 - $i2_1;
+
+        $i0_2 = $i0_1 - $i1_2;
+
+        $i0_3 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i0_2);
+
+        return $i0_3;
+
+     label1:
+        return 0;
+    }
+
+    private float getVerticalScrollFactorCompat()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        byte $b0;
+        android.util.TypedValue $r1;
+        java.lang.IllegalStateException $r2;
+        float $f0, $f0_1, $f0_2, $f0_3;
+        android.content.Context $r3;
+        android.content.res.Resources$Theme $r4;
+        boolean $z0;
+        android.content.res.Resources $r5;
+        android.util.DisplayMetrics $r6;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $f0 = $r0.<android.support.v4.widget.NestedScrollView: float mVerticalScrollFactor>;
+
+        $b0 = $f0 cmpl 0.0F;
+
+(0)     if $b0 != 0 goto label2;
+
+        $r1 = new android.util.TypedValue;
+
+        specialinvoke $r1.<android.util.TypedValue: void <init>()>();
+
+        $r3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.content.Context getContext()>();
+
+        $r4 = virtualinvoke $r3.<android.content.Context: android.content.res.Resources$Theme getTheme()>();
+
+        $z0 = virtualinvoke $r4.<android.content.res.Resources$Theme: boolean resolveAttribute(int,android.util.TypedValue,boolean)>(16842829, $r1, 1);
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Expected theme to define listPreferredItemHeight.");
+
+        throw $r2;
+
+     label1:
+        $r5 = virtualinvoke $r3.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r6 = virtualinvoke $r5.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0_1 = virtualinvoke $r1.<android.util.TypedValue: float getDimension(android.util.DisplayMetrics)>($r6);
+
+(1)     $r0.<android.support.v4.widget.NestedScrollView: float mVerticalScrollFactor> = $f0_1;
+
+     label2:
+        $f0_2 = Phi($f0 #0, $f0_1 #1);
+
+        $f0_3 = $r0.<android.support.v4.widget.NestedScrollView: float mVerticalScrollFactor>;
+
+        return $f0_3;
+    }
+
+    private boolean inChild(int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3, $i2_1, $i3_1, $i3_2, $i2_2, $i1_1, $i1_2, $i2_3, $i1_3, $i3_3;
+        android.view.View $r1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+(0)     if $i2 <= 0 goto label1;
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i3 = virtualinvoke $r1.<android.view.View: int getTop()>();
+
+        $i3_1 = $i3 - $i2_1;
+
+(1)     if $i1 < $i3_1 goto label1;
+
+        $i3_2 = virtualinvoke $r1.<android.view.View: int getBottom()>();
+
+        $i2_2 = $i3_2 - $i2_1;
+
+(2)     if $i1 >= $i2_2 goto label1;
+
+        $i1_1 = virtualinvoke $r1.<android.view.View: int getLeft()>();
+
+(3)     if $i0 < $i1_1 goto label1;
+
+        $i1_2 = virtualinvoke $r1.<android.view.View: int getRight()>();
+
+(4)     if $i0 >= $i1_2 goto label1;
+
+        return 1;
+
+     label1:
+        $i2_3 = Phi($i2 #0, $i2_1 #1, $i2_2 #2, $i2_2 #3, $i2_2 #4);
+
+        $i1_3 = Phi($i1 #0, $i1 #1, $i1 #2, $i1_1 #3, $i1_2 #4);
+
+        $i3_3 = Phi($i3 #0, $i3_1 #1, $i3_2 #2, $i3_2 #3, $i3_2 #4);
+
+        return 0;
+    }
+
+    private void initOrResetVelocityTracker()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.VelocityTracker $r1, $r1_1, $r1_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+        if $r1 != null goto label1;
+
+        $r1_1 = staticinvoke <android.view.VelocityTracker: android.view.VelocityTracker obtain()>();
+
+        $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker> = $r1_1;
+
+        return;
+
+     label1:
+        $r1_2 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+        virtualinvoke $r1_2.<android.view.VelocityTracker: void clear()>();
+
+        return;
+    }
+
+    private void initScrollView()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.support.v4.widget.ScrollerCompat $r1;
+        android.content.Context $r2, $r2_1;
+        android.view.ViewConfiguration $r3;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 = new android.support.v4.widget.ScrollerCompat;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.content.Context getContext()>();
+
+        specialinvoke $r1.<android.support.v4.widget.ScrollerCompat: void <init>(android.content.Context,android.view.animation.Interpolator)>($r2, null);
+
+        $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller> = $r1;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void setFocusable(boolean)>(1);
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void setDescendantFocusability(int)>(262144);
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void setWillNotDraw(boolean)>(0);
+
+        $r2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.content.Context getContext()>();
+
+        $r3 = staticinvoke <android.view.ViewConfiguration: android.view.ViewConfiguration get(android.content.Context)>($r2_1);
+
+        $i0 = virtualinvoke $r3.<android.view.ViewConfiguration: int getScaledTouchSlop()>();
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mTouchSlop> = $i0;
+
+        $i0_1 = virtualinvoke $r3.<android.view.ViewConfiguration: int getScaledMinimumFlingVelocity()>();
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mMinimumVelocity> = $i0_1;
+
+        $i0_2 = virtualinvoke $r3.<android.view.ViewConfiguration: int getScaledMaximumFlingVelocity()>();
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mMaximumVelocity> = $i0_2;
+
+        return;
+    }
+
+    private void initVelocityTrackerIfNotExists()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.VelocityTracker $r1, $r1_1, $r1_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+(0)     if $r1 != null goto label1;
+
+        $r1_1 = staticinvoke <android.view.VelocityTracker: android.view.VelocityTracker obtain()>();
+
+(1)     $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker> = $r1_1;
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    private boolean isOffScreen(android.view.View)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        int $i0;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean isWithinDeltaOfScreen(android.view.View,int,int)>($r1, 0, $i0);
+
+        if $z0 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private static boolean isViewDescendantOf(android.view.View, android.view.View)
+    {
+        android.view.View $r0, $r1, $r1_1, $r1_2;
+        android.view.ViewParent $r2;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r0 := @parameter1: android.view.View;
+
+        if $r1 != $r0 goto label1;
+
+        return 1;
+
+     label1:
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewParent getParent()>();
+
+        $z0 = $r2 instanceof android.view.ViewGroup;
+
+(0)     if $z0 == 0 goto label2;
+
+        $r1_1 = (android.view.View) $r2;
+
+        $z0_1 = staticinvoke <android.support.v4.widget.NestedScrollView: boolean isViewDescendantOf(android.view.View,android.view.View)>($r1_1, $r0);
+
+(1)     if $z0_1 != 0 goto label3;
+
+     label2:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return 0;
+
+     label3:
+        return 1;
+    }
+
+    private boolean isWithinDeltaOfScreen(android.view.View, int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        int $i0, $i1, $i2, $i3, $i2_1, $i2_2, $i0_1, $i2_3, $i1_1, $i1_2, $i0_2, $i2_4;
+        android.graphics.Rect $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        virtualinvoke $r1.<android.view.View: void getDrawingRect(android.graphics.Rect)>($r2);
+
+        $r2_1 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void offsetDescendantRectToMyCoords(android.view.View,android.graphics.Rect)>($r1, $r2_1);
+
+        $r2_2 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2 = $r2_2.<android.graphics.Rect: int bottom>;
+
+        $i2_1 = $i2 + $i0;
+
+        $i3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+(0)     if $i2_1 < $i3 goto label1;
+
+        $r2_3 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2_2 = $r2_3.<android.graphics.Rect: int top>;
+
+        $i0_1 = $i2_2 - $i0;
+
+        $i2_3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i1_1 = $i2_3 + $i1;
+
+(1)     if $i0_1 > $i1_1 goto label1;
+
+        return 1;
+
+     label1:
+        $i1_2 = Phi($i1 #0, $i1_1 #1);
+
+        $r2_4 = Phi($r2_2 #0, $r2_3 #1);
+
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $i2_4 = Phi($i2_1 #0, $i2_3 #1);
+
+        return 0;
+    }
+
+    private void onSecondaryPointerUp(android.view.MotionEvent)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.MotionEvent $r1;
+        int $i0, $i1, $i2, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5;
+        byte $b3, $b3_1, $b3_2, $b3_3;
+        float $f0;
+        android.view.VelocityTracker $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $i0 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+        $i0_1 = $i0 & 65280;
+
+        $i1 = $i0_1 >> 8;
+
+        $i2 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $i1);
+
+        $i0_2 = $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId>;
+
+(0)     if $i2 != $i0_2 goto label3;
+
+        if $i1 != 0 goto label2;
+
+(1)     $b3 = 1;
+
+     label1:
+        $b3_1 = Phi($b3 #1, $b3_2 #3);
+
+        $f0 = staticinvoke <android.support.v4.view.MotionEventCompat: float getY(android.view.MotionEvent,int)>($r1, $b3_1);
+
+        $i0_3 = (int) $f0;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY> = $i0_3;
+
+        $i0_4 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $b3_1);
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId> = $i0_4;
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+(2)     if $r2 == null goto label3;
+
+        $r2_1 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+        virtualinvoke $r2_1.<android.view.VelocityTracker: void clear()>();
+
+        return;
+
+     label2:
+        $b3_2 = 0;
+
+(3)     goto label1;
+
+     label3:
+        $i0_5 = Phi($i0_2 #0, $i0_4 #2);
+
+        $r2_2 = Phi($r2 #0, $r2 #2);
+
+        $b3_3 = Phi($b3 #0, $b3_1 #2);
+
+        return;
+    }
+
+    private void recycleVelocityTracker()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.VelocityTracker $r1, $r1_1, $r1_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+        virtualinvoke $r1_1.<android.view.VelocityTracker: void recycle()>();
+
+(1)     $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker> = null;
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    private boolean scrollAndFocus(int, int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i3_1, $i2_1, $i2_2, $i2_3, $i2_4;
+        boolean $z0, $z1, $z1_1, $z0_1, $z0_2, $z1_2;
+        android.view.View $r1, $r2, $r2_1, $r2_2, $r1_1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i2 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $z0 = 1;
+
+        $i3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i3_1 = $i4 + $i3;
+
+        if $i0 != 33 goto label4;
+
+(0)     $z1 = 1;
+
+     label1:
+        $z1_1 = Phi($z1 #0, $z1_2 #4);
+
+        $r1 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View findFocusableViewInBounds(boolean,int,int)>($z1_1, $i2, $i1);
+
+        $r2 = $r1;
+
+(1)     if $r1 != null goto label2;
+
+(2)     $r2_1 = $r0;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #2);
+
+        if $i2 < $i4 goto label5;
+
+        if $i1 > $i3_1 goto label5;
+
+(3)     $z0_1 = 0;
+
+     label3:
+        $i2_1 = Phi($i2 #3, $i2_3 #6);
+
+        $z0_2 = Phi($z0_1 #3, $z0 #6);
+
+        $r1_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View findFocus()>();
+
+        if $r2_2 == $r1_1 goto label8;
+
+        virtualinvoke $r2_2.<android.view.View: boolean requestFocus(int)>($i0);
+
+        return $z0_2;
+
+     label4:
+        $z1_2 = 0;
+
+(4)     goto label1;
+
+     label5:
+        if $z1_1 == 0 goto label7;
+
+(5)     $i2_2 = $i2 - $i4;
+
+     label6:
+        $i2_3 = Phi($i2_2 #5, $i2_4 #7);
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void doScrollY(int)>($i2_3);
+
+(6)     goto label3;
+
+     label7:
+        $i2_4 = $i1 - $i3_1;
+
+(7)     goto label6;
+
+     label8:
+        return $z0_2;
+    }
+
+    private void scrollToChild(android.view.View)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        int $i0;
+        android.graphics.Rect $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        virtualinvoke $r1.<android.view.View: void getDrawingRect(android.graphics.Rect)>($r2);
+
+        $r2_1 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void offsetDescendantRectToMyCoords(android.view.View,android.graphics.Rect)>($r1, $r2_1);
+
+        $r2_2 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int computeScrollDeltaToGetChildRectOnScreen(android.graphics.Rect)>($r2_2);
+
+        if $i0 == 0 goto label1;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollBy(int,int)>(0, $i0);
+
+     label1:
+        return;
+    }
+
+    private boolean scrollToChildRect(android.graphics.Rect, boolean)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.graphics.Rect $r1;
+        boolean $z0, $z1, $z1_1, $z1_2;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.graphics.Rect;
+
+        $z0 := @parameter1: boolean;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int computeScrollDeltaToGetChildRectOnScreen(android.graphics.Rect)>($r1);
+
+        if $i0 == 0 goto label2;
+
+(0)     $z1 = 1;
+
+     label1:
+        $z1_1 = Phi($z1 #0, $z1_2 #1);
+
+        if $z1_1 == 0 goto label4;
+
+        if $z0 == 0 goto label3;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollBy(int,int)>(0, $i0);
+
+        return $z1_1;
+
+     label2:
+        $z1_2 = 0;
+
+(1)     goto label1;
+
+     label3:
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void smoothScrollBy(int,int)>(0, $i0);
+
+     label4:
+        return $z1_1;
+    }
+
+    public void addView(android.view.View)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        java.lang.IllegalStateException $r2;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i0 <= 0 goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("ScrollView can host only one direct child");
+
+        throw $r2;
+
+     label1:
+        specialinvoke $r0.<android.widget.FrameLayout: void addView(android.view.View)>($r1);
+
+        return;
+    }
+
+    public void addView(android.view.View, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        int $i0, $i1;
+        java.lang.IllegalStateException $r2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i1 <= 0 goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("ScrollView can host only one direct child");
+
+        throw $r2;
+
+     label1:
+        specialinvoke $r0.<android.widget.FrameLayout: void addView(android.view.View,int)>($r1, $i0);
+
+        return;
+    }
+
+    public void addView(android.view.View, int, android.view.ViewGroup$LayoutParams)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        int $i0, $i1;
+        android.view.ViewGroup$LayoutParams $r2;
+        java.lang.IllegalStateException $r3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: android.view.ViewGroup$LayoutParams;
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i1 <= 0 goto label1;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("ScrollView can host only one direct child");
+
+        throw $r3;
+
+     label1:
+        specialinvoke $r0.<android.widget.FrameLayout: void addView(android.view.View,int,android.view.ViewGroup$LayoutParams)>($r1, $i0, $r2);
+
+        return;
+    }
+
+    public void addView(android.view.View, android.view.ViewGroup$LayoutParams)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        java.lang.IllegalStateException $r3;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 := @parameter1: android.view.ViewGroup$LayoutParams;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i0 <= 0 goto label1;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("ScrollView can host only one direct child");
+
+        throw $r3;
+
+     label1:
+        specialinvoke $r0.<android.widget.FrameLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r1, $r2);
+
+        return;
+    }
+
+    public boolean arrowScroll(int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i1_1, $i1_2, $i2_1, $i0_1, $i0_2, $i0_3, $i2_2, $i2_3, $i3_1, $i2_4, $i5_1, $i3_2, $i4_1, $i2_5, $i0_4, $i0_5, $i0_6, $i3_3, $i3_4, $i3_5, $i4_2, $i5_2, $i4_3, $i5_3, $i4_4, $i5_4, $i2_6;
+        android.view.View $r1, $r2, $r2_1, $r2_2, $r1_1, $r1_2, $r1_3, $r1_4;
+        android.view.FocusFinder $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        android.graphics.Rect $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View findFocus()>();
+
+        $r2 = $r1;
+
+(0)     if $r1 != $r0 goto label1;
+
+(1)     $r2_1 = null;
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        $r3 = staticinvoke <android.view.FocusFinder: android.view.FocusFinder getInstance()>();
+
+        $r1_1 = virtualinvoke $r3.<android.view.FocusFinder: android.view.View findNextFocus(android.view.ViewGroup,android.view.View,int)>($r0, $r2_2, $i0);
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getMaxScrollAmount()>();
+
+(2)     if $r1_1 == null goto label4;
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean isWithinDeltaOfScreen(android.view.View,int,int)>($r1_1, $i1, $i2);
+
+(3)     if $z0 == 0 goto label4;
+
+        $r4 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        virtualinvoke $r1_1.<android.view.View: void getDrawingRect(android.graphics.Rect)>($r4);
+
+        $r4_1 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void offsetDescendantRectToMyCoords(android.view.View,android.graphics.Rect)>($r1_1, $r4_1);
+
+        $r4_2 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i1_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int computeScrollDeltaToGetChildRectOnScreen(android.graphics.Rect)>($r4_2);
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void doScrollY(int)>($i1_1);
+
+(4)     virtualinvoke $r1_1.<android.view.View: boolean requestFocus(int)>($i0);
+
+     label2:
+        $i5 = Phi($i5 #4, $i5_1 #13);
+
+        $i1_2 = Phi($i1_1 #4, $i1 #13);
+
+        $r4_3 = Phi($r4_2 #4, $r4 #13);
+
+        $z0_1 = Phi($z0 #4, $z0_5 #13);
+
+        $i3 = Phi($i3 #4, $i3_2 #13);
+
+        $i4 = Phi($i4 #4, $i4_1 #13);
+
+        $i2_1 = Phi($i2 #4, $i2_5 #13);
+
+        $r1_2 = Phi($r1_1 #4, $r1_3 #13);
+
+        $i0_1 = Phi($i0 #4, $i0_5 #13);
+
+(5)     if $r2_2 == null goto label3;
+
+        $z0_2 = virtualinvoke $r2_2.<android.view.View: boolean isFocused()>();
+
+(6)     if $z0_2 == 0 goto label3;
+
+        $z0_3 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean isOffScreen(android.view.View)>($r2_2);
+
+(7)     if $z0_3 == 0 goto label3;
+
+        $i0_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getDescendantFocusability()>();
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void setDescendantFocusability(int)>(131072);
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean requestFocus()>();
+
+(8)     virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void setDescendantFocusability(int)>($i0_2);
+
+     label3:
+        $z0_4 = Phi($z0_1 #5, $z0_2 #6, $z0_3 #7, $z0_3 #8);
+
+        $i0_3 = Phi($i0_1 #5, $i0_1 #6, $i0_1 #7, $i0_2 #8);
+
+        return 1;
+
+     label4:
+        $z0_5 = Phi($z0 #2, $z0 #3);
+
+        $i2_2 = Phi($i2 #2, $i2 #3);
+
+        $i2_3 = $i1;
+
+(9)     if $i0 != 33 goto label7;
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+(10)    if $i3_1 >= $i1 goto label7;
+
+(11)    $i2_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+     label5:
+        $i5_1 = Phi($i5 #11, $i5 #14, $i5 #15, $i5_4 #16, $i5_4 #17);
+
+        $i3_2 = Phi($i3_1 #11, $i3_3 #14, $i3_4 #15, $i3_5 #16, $i3_5 #17);
+
+        $i4_1 = Phi($i4 #11, $i4 #14, $i4 #15, $i4_4 #16, $i4_4 #17);
+
+        $i2_5 = Phi($i2_4 #11, $i2_3 #14, $i2_3 #15, $i2_3 #16, $i2_6 #17);
+
+        $r1_3 = Phi($r1_1 #11, $r1_1 #14, $r1_1 #15, $r1_4 #16, $r1_4 #17);
+
+        if $i2_5 == 0 goto label9;
+
+        if $i0 != 130 goto label8;
+
+(12)    $i0_4 = $i2_5;
+
+     label6:
+        $i0_5 = Phi($i0_4 #12, $i0_6 #18);
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void doScrollY(int)>($i0_5);
+
+(13)    goto label2;
+
+     label7:
+        $i3_3 = Phi($i3 #9, $i3_1 #10);
+
+(14)    if $i0 != 130 goto label5;
+
+        $i3_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+(15)    if $i3_4 <= 0 goto label5;
+
+        $r1_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i3_5 = virtualinvoke $r1_4.<android.view.View: int getBottom()>();
+
+        $i4_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i5_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i4_3 = $i4_2 + $i5_2;
+
+        $i5_3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i4_4 = $i4_3 - $i5_3;
+
+        $i5_4 = $i3_5 - $i4_4;
+
+(16)    if $i5_4 >= $i1 goto label5;
+
+        $i2_6 = $i3_5 - $i4_4;
+
+(17)    goto label5;
+
+     label8:
+        $i0_6 = neg $i2_5;
+
+(18)    goto label6;
+
+     label9:
+        return 0;
+    }
+
+    public void computeScroll()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3;
+        android.support.v4.widget.ScrollerCompat $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i2_1, $i5_1, $i0_1, $i0_2, $i2_2, $i5_2, $i0_3;
+        android.support.v4.widget.EdgeEffectCompat $r2, $r2_1, $r2_2;
+        float $f0, $f0_1, $f0_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $z0 = 1;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $z1 = virtualinvoke $r1.<android.support.v4.widget.ScrollerCompat: boolean computeScrollOffset()>();
+
+(0)     if $z1 == 0 goto label5;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollX()>();
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $r1_1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $i2 = virtualinvoke $r1_1.<android.support.v4.widget.ScrollerCompat: int getCurrX()>();
+
+        $r1_2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $i3 = virtualinvoke $r1_2.<android.support.v4.widget.ScrollerCompat: int getCurrY()>();
+
+        if $i0 != $i2 goto label1;
+
+(1)     if $i1 == $i3 goto label5;
+
+     label1:
+        $i4 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollRange()>();
+
+        $i5 = staticinvoke <android.support.v4.view.ViewCompat: int getOverScrollMode(android.view.View)>($r0);
+
+(2)     if $i5 == 0 goto label2;
+
+        if $i5 != 1 goto label3;
+
+(3)     if $i4 <= 0 goto label3;
+
+     label2:
+        $z0_2 = Phi($z0 #2, $z0 #3, $z0_1 #5);
+
+        $i2_1 = $i2 - $i0;
+
+        $i5_1 = $i3 - $i1;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean overScrollByCompat(int,int,int,int,int,int,int,int,boolean)>($i2_1, $i5_1, $i0, $i1, 0, $i4, 0, 0, 0);
+
+(4)     if $z0_2 == 0 goto label5;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void ensureGlows()>();
+
+        if $i3 > 0 goto label4;
+
+        if $i1 <= 0 goto label4;
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+        $r1_3 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $f0 = virtualinvoke $r1_3.<android.support.v4.widget.ScrollerCompat: float getCurrVelocity()>();
+
+        $i0_1 = (int) $f0;
+
+        virtualinvoke $r2.<android.support.v4.widget.EdgeEffectCompat: boolean onAbsorb(int)>($i0_1);
+
+        return;
+
+     label3:
+        $z0_1 = 0;
+
+(5)     goto label2;
+
+     label4:
+(6)     if $i3 < $i4 goto label5;
+
+(7)     if $i1 >= $i4 goto label5;
+
+        $r2_1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom>;
+
+        $r1_4 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $f0_1 = virtualinvoke $r1_4.<android.support.v4.widget.ScrollerCompat: float getCurrVelocity()>();
+
+        $i0_2 = (int) $f0_1;
+
+(8)     virtualinvoke $r2_1.<android.support.v4.widget.EdgeEffectCompat: boolean onAbsorb(int)>($i0_2);
+
+     label5:
+        $r2_2 = Phi($r2 #0, $r2 #1, $r2 #4, $r2 #6, $r2 #7, $r2_1 #8);
+
+        $f0_2 = Phi($f0 #0, $f0 #1, $f0 #4, $f0 #6, $f0 #7, $f0_1 #8);
+
+        $r1_5 = Phi($r1 #0, $r1_2 #1, $r1_2 #4, $r1_2 #6, $r1_2 #7, $r1_4 #8);
+
+        $i2_2 = Phi($i2 #0, $i2 #1, $i2_1 #4, $i2_1 #6, $i2_1 #7, $i2_1 #8);
+
+        $i5_2 = Phi($i5 #0, $i5 #1, $i5_1 #4, $i5_1 #6, $i5_1 #7, $i5_1 #8);
+
+        $i0_3 = Phi($i0 #0, $i0 #1, $i0 #4, $i0 #6, $i0 #7, $i0_2 #8);
+
+        $z0_3 = Phi($z0 #0, $z0 #1, $z0_2 #4, $z0_2 #6, $z0_2 #7, $z0_2 #8);
+
+        return;
+    }
+
+    protected int computeScrollDeltaToGetChildRectOnScreen(android.graphics.Rect)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.graphics.Rect $r1;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i0_1, $i3_1, $i3_2, $i2_1, $i5_1, $i0_2, $i0_3, $i4_1, $i4_2, $i4_3, $i1_1, $i3_3, $i3_4, $i1_2, $i1_3, $i0_4, $i0_5, $i3_5, $i3_6, $i4_4, $i4_5, $i4_6, $i4_7, $i3_7, $i0_6, $i0_7, $i3_8, $i0_8, $i3_9, $i3_10, $i0_9, $i0_10, $i0_11, $i0_12, $i4_8;
+        android.view.View $r2, $r2_1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.graphics.Rect;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i3 = $i2;
+
+        $i0_1 = $i2 + $i1;
+
+        $i4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getVerticalFadingEdgeLength()>();
+
+        $i5 = $r1.<android.graphics.Rect: int top>;
+
+(0)     if $i5 <= 0 goto label2;
+
+(1)     $i3_1 = $i2 + $i4;
+
+     label2:
+        $i3_2 = Phi($i3 #0, $i3_1 #1);
+
+        $i2_1 = $r1.<android.graphics.Rect: int bottom>;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i5_1 = virtualinvoke $r2.<android.view.View: int getHeight()>();
+
+(2)     if $i2_1 >= $i5_1 goto label3;
+
+(3)     $i0_2 = $i0_1 - $i4;
+
+     label3:
+        $i0_3 = Phi($i0_1 #2, $i0_2 #3);
+
+        $i4_1 = $r1.<android.graphics.Rect: int bottom>;
+
+(4)     if $i4_1 <= $i0_3 goto label6;
+
+        $i4_2 = $r1.<android.graphics.Rect: int top>;
+
+(5)     if $i4_2 <= $i3_2 goto label6;
+
+        $i4_3 = virtualinvoke $r1.<android.graphics.Rect: int height()>();
+
+        if $i4_3 <= $i1 goto label5;
+
+        $i1_1 = $r1.<android.graphics.Rect: int top>;
+
+(6)     $i3_3 = $i1_1 - $i3_2;
+
+     label4:
+        $i3_4 = Phi($i3_3 #6, $i3_6 #7);
+
+        $i1_2 = Phi($i1_1 #6, $i1 #7);
+
+        $r2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i1_3 = virtualinvoke $r2_1.<android.view.View: int getBottom()>();
+
+        $i0_4 = $i1_3 - $i0_3;
+
+        $i0_5 = staticinvoke <java.lang.Math: int min(int,int)>($i3_4, $i0_4);
+
+        return $i0_5;
+
+     label5:
+        $i3_5 = $r1.<android.graphics.Rect: int bottom>;
+
+        $i3_6 = $i3_5 - $i0_3;
+
+(7)     goto label4;
+
+     label6:
+        $i4_4 = Phi($i4_1 #4, $i4_2 #5);
+
+        $i4_5 = $r1.<android.graphics.Rect: int top>;
+
+(8)     if $i4_5 >= $i3_2 goto label9;
+
+        $i4_6 = $r1.<android.graphics.Rect: int bottom>;
+
+(9)     if $i4_6 >= $i0_3 goto label9;
+
+        $i4_7 = virtualinvoke $r1.<android.graphics.Rect: int height()>();
+
+        if $i4_7 <= $i1 goto label8;
+
+        $i3_7 = $r1.<android.graphics.Rect: int bottom>;
+
+        $i0_6 = $i0_3 - $i3_7;
+
+(10)    $i0_7 = 0 - $i0_6;
+
+     label7:
+        $i3_8 = Phi($i3_7 #10, $i3_2 #11);
+
+        $i0_8 = Phi($i0_7 #10, $i0_12 #11);
+
+        $i3_9 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i3_10 = neg $i3_9;
+
+        $i0_9 = staticinvoke <java.lang.Math: int max(int,int)>($i0_8, $i3_10);
+
+        return $i0_9;
+
+     label8:
+        $i0_10 = $r1.<android.graphics.Rect: int top>;
+
+        $i0_11 = $i3_2 - $i0_10;
+
+        $i0_12 = 0 - $i0_11;
+
+(11)    goto label7;
+
+     label9:
+        $i4_8 = Phi($i4_5 #8, $i4_6 #9);
+
+        return 0;
+    }
+
+    protected int computeVerticalScrollOffset()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i0_1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 = specialinvoke $r0.<android.widget.FrameLayout: int computeVerticalScrollOffset()>();
+
+        $i0_1 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i0);
+
+        return $i0_1;
+    }
+
+    protected int computeVerticalScrollRange()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i1_1, $i2_1, $i2_2, $i0_1, $i1_2, $i2_3, $i2_4, $i0_2, $i1_3, $i0_3, $i0_4, $i1_4;
+        android.view.View $r1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i1_1 = $i1 - $i2;
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingTop()>();
+
+        $i2_2 = $i1_1 - $i2_1;
+
+        if $i0 != 0 goto label1;
+
+        return $i2_2;
+
+     label1:
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i0_1 = virtualinvoke $r1.<android.view.View: int getBottom()>();
+
+        $i1_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i2_3 = $i0_1 - $i2_2;
+
+        $i2_4 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i2_3);
+
+        if $i1_2 >= 0 goto label2;
+
+        $i0_2 = $i0_1 - $i1_2;
+
+        return $i0_2;
+
+     label2:
+(0)     if $i1_2 <= $i2_4 goto label3;
+
+        $i1_3 = $i1_2 - $i2_4;
+
+(1)     $i0_3 = $i0_1 + $i1_3;
+
+     label3:
+        $i0_4 = Phi($i0_1 #0, $i0_3 #1);
+
+        $i1_4 = Phi($i1_2 #0, $i1_3 #1);
+
+        return $i0_4;
+    }
+
+    public boolean dispatchKeyEvent(android.view.KeyEvent)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.KeyEvent $r1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.KeyEvent;
+
+        $z0 = specialinvoke $r0.<android.widget.FrameLayout: boolean dispatchKeyEvent(android.view.KeyEvent)>($r1);
+
+(0)     if $z0 != 0 goto label1;
+
+        $z0_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean executeKeyEvent(android.view.KeyEvent)>($r1);
+
+(1)     if $z0_1 == 0 goto label2;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public boolean dispatchNestedFling(float, float, boolean)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        float $f0, $f1;
+        android.support.v4.view.NestedScrollingChildHelper $r1;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $z0 := @parameter2: boolean;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingChildHelper mChildHelper>;
+
+        $z0_1 = virtualinvoke $r1.<android.support.v4.view.NestedScrollingChildHelper: boolean dispatchNestedFling(float,float,boolean)>($f0, $f1, $z0);
+
+        return $z0_1;
+    }
+
+    public boolean dispatchNestedPreFling(float, float)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        float $f0, $f1;
+        android.support.v4.view.NestedScrollingChildHelper $r1;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingChildHelper mChildHelper>;
+
+        $z0 = virtualinvoke $r1.<android.support.v4.view.NestedScrollingChildHelper: boolean dispatchNestedPreFling(float,float)>($f0, $f1);
+
+        return $z0;
+    }
+
+    public boolean dispatchNestedPreScroll(int, int, int[], int[])
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1;
+        int[] $r1, $r2;
+        android.support.v4.view.NestedScrollingChildHelper $r3;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: int[];
+
+        $r2 := @parameter3: int[];
+
+        $r3 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingChildHelper mChildHelper>;
+
+        $z0 = virtualinvoke $r3.<android.support.v4.view.NestedScrollingChildHelper: boolean dispatchNestedPreScroll(int,int,int[],int[])>($i0, $i1, $r1, $r2);
+
+        return $z0;
+    }
+
+    public boolean dispatchNestedScroll(int, int, int, int, int[])
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3;
+        int[] $r1;
+        android.support.v4.view.NestedScrollingChildHelper $r2;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $i3 := @parameter3: int;
+
+        $r1 := @parameter4: int[];
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingChildHelper mChildHelper>;
+
+        $z0 = virtualinvoke $r2.<android.support.v4.view.NestedScrollingChildHelper: boolean dispatchNestedScroll(int,int,int,int,int[])>($i0, $i1, $i2, $i3, $r1);
+
+        return $z0;
+    }
+
+    public void draw(android.graphics.Canvas)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.graphics.Canvas $r1;
+        android.support.v4.widget.EdgeEffectCompat $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6, $r2_7, $r2_8;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i2_1, $i3_1, $i2_2, $i3_2, $i3_3, $i3_4, $i3_5, $i1_1, $i2_3, $i1_2, $i2_4, $i3_6, $i2_5, $i3_7, $i2_6, $i3_8, $i4_1, $i4_2, $i0_1, $i0_2, $i4_3, $i3_9, $i1_3, $i2_7, $i0_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        float $f0, $f1, $f0_1, $f1_1, $f0_2, $f1_2, $f0_3, $f0_4, $f1_3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        specialinvoke $r0.<android.widget.FrameLayout: void draw(android.graphics.Canvas)>($r1);
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+(0)     if $r2 == null goto label4;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $r2_1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+        $z0 = virtualinvoke $r2_1.<android.support.v4.widget.EdgeEffectCompat: boolean isFinished()>();
+
+(1)     if $z0 != 0 goto label2;
+
+        $i1 = virtualinvoke $r1.<android.graphics.Canvas: int save()>();
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getWidth()>();
+
+        $i3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingLeft()>();
+
+        $i2_1 = $i2 - $i3;
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingRight()>();
+
+        $i2_2 = $i2_1 - $i3_1;
+
+        $i3_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingLeft()>();
+
+        $f0 = (float) $i3_2;
+
+        $i3_3 = staticinvoke <java.lang.Math: int min(int,int)>(0, $i0);
+
+        $f1 = (float) $i3_3;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void translate(float,float)>($f0, $f1);
+
+        $r2_2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+        $i3_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        virtualinvoke $r2_2.<android.support.v4.widget.EdgeEffectCompat: void setSize(int,int)>($i2_2, $i3_4);
+
+        $r2_3 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+        $z0_1 = virtualinvoke $r2_3.<android.support.v4.widget.EdgeEffectCompat: boolean draw(android.graphics.Canvas)>($r1);
+
+        if $z0_1 == 0 goto label1;
+
+        staticinvoke <android.support.v4.view.ViewCompat: void postInvalidateOnAnimation(android.view.View)>($r0);
+
+     label1:
+(2)     virtualinvoke $r1.<android.graphics.Canvas: void restoreToCount(int)>($i1);
+
+     label2:
+        $f0_1 = Phi($f0 #1, $f0 #2);
+
+        $f1_1 = Phi($f1 #1, $f1 #2);
+
+        $i3_5 = Phi($i3 #1, $i3_4 #2);
+
+        $i1_1 = Phi($i1 #1, $i1 #2);
+
+        $i2_3 = Phi($i2 #1, $i2_2 #2);
+
+        $z0_2 = Phi($z0 #1, $z0_1 #2);
+
+        $r2_4 = Phi($r2_1 #1, $r2_3 #2);
+
+        $r2_5 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom>;
+
+        $z0_3 = virtualinvoke $r2_5.<android.support.v4.widget.EdgeEffectCompat: boolean isFinished()>();
+
+(3)     if $z0_3 != 0 goto label4;
+
+        $i1_2 = virtualinvoke $r1.<android.graphics.Canvas: int save()>();
+
+        $i2_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getWidth()>();
+
+        $i3_6 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingLeft()>();
+
+        $i2_5 = $i2_4 - $i3_6;
+
+        $i3_7 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingRight()>();
+
+        $i2_6 = $i2_5 - $i3_7;
+
+        $i3_8 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i4 = neg $i2_6;
+
+        $i5 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingLeft()>();
+
+        $i4_1 = $i4 + $i5;
+
+        $f0_2 = (float) $i4_1;
+
+        $i4_2 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollRange()>();
+
+        $i0_1 = staticinvoke <java.lang.Math: int max(int,int)>($i4_2, $i0);
+
+        $i0_2 = $i0_1 + $i3_8;
+
+        $f1_2 = (float) $i0_2;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void translate(float,float)>($f0_2, $f1_2);
+
+        $f0_3 = (float) $i2_6;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void rotate(float,float,float)>(180.0F, $f0_3, 0.0F);
+
+        $r2_6 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom>;
+
+        virtualinvoke $r2_6.<android.support.v4.widget.EdgeEffectCompat: void setSize(int,int)>($i2_6, $i3_8);
+
+        $r2_7 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom>;
+
+        $z0_4 = virtualinvoke $r2_7.<android.support.v4.widget.EdgeEffectCompat: boolean draw(android.graphics.Canvas)>($r1);
+
+        if $z0_4 == 0 goto label3;
+
+        staticinvoke <android.support.v4.view.ViewCompat: void postInvalidateOnAnimation(android.view.View)>($r0);
+
+     label3:
+(4)     virtualinvoke $r1.<android.graphics.Canvas: void restoreToCount(int)>($i1_2);
+
+     label4:
+        $f0_4 = Phi($f0 #0, $f0_1 #3, $f0_3 #4);
+
+        $f1_3 = Phi($f1 #0, $f1_1 #3, $f1_2 #4);
+
+        $i4_3 = Phi($i4 #0, $i4 #3, $i4_2 #4);
+
+        $i3_9 = Phi($i3 #0, $i3_5 #3, $i3_8 #4);
+
+        $i1_3 = Phi($i1 #0, $i1_1 #3, $i1_2 #4);
+
+        $i2_7 = Phi($i2 #0, $i2_3 #3, $i2_6 #4);
+
+        $i0_3 = Phi($i0 #0, $i0 #3, $i0_2 #4);
+
+        $z0_5 = Phi($z0 #0, $z0_3 #3, $z0_4 #4);
+
+        $r2_8 = Phi($r2 #0, $r2_5 #3, $r2_7 #4);
+
+        return;
+    }
+
+    public boolean executeKeyEvent(android.view.KeyEvent)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.KeyEvent $r1;
+        android.graphics.Rect $r2;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4;
+        android.view.View $r3, $r4, $r4_1, $r4_2, $r3_1, $r3_2, $r4_3;
+        android.view.FocusFinder $r5;
+        short $s1, $s1_1, $s1_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.KeyEvent;
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        virtualinvoke $r2.<android.graphics.Rect: void setEmpty()>();
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean canScroll()>();
+
+        if $z0 != 0 goto label02;
+
+        $z0_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean isFocused()>();
+
+(0)     if $z0_1 == 0 goto label11;
+
+        $i0 = virtualinvoke $r1.<android.view.KeyEvent: int getKeyCode()>();
+
+(1)     if $i0 == 4 goto label11;
+
+        $r3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View findFocus()>();
+
+        $r4 = $r3;
+
+(2)     if $r3 != $r0 goto label01;
+
+(3)     $r4_1 = null;
+
+     label01:
+        $r4_2 = Phi($r4 #2, $r4_1 #3);
+
+        $r5 = staticinvoke <android.view.FocusFinder: android.view.FocusFinder getInstance()>();
+
+        $r3_1 = virtualinvoke $r5.<android.view.FocusFinder: android.view.View findNextFocus(android.view.ViewGroup,android.view.View,int)>($r0, $r4_2, 130);
+
+(4)     if $r3_1 == null goto label11;
+
+(5)     if $r3_1 == $r0 goto label11;
+
+        $z0_2 = virtualinvoke $r3_1.<android.view.View: boolean requestFocus(int)>(130);
+
+(6)     if $z0_2 == 0 goto label11;
+
+        return 1;
+
+     label02:
+        $i0_2 = virtualinvoke $r1.<android.view.KeyEvent: int getAction()>();
+
+(7)     if $i0_2 != 0 goto label03;
+
+        $i0_3 = virtualinvoke $r1.<android.view.KeyEvent: int getKeyCode()>();
+
+(8)     lookupswitch($i0_3)
+        {
+            case 19: goto label04;
+            case 20: goto label06;
+            case 62: goto label08;
+            default: goto label03;
+        };
+
+     label03:
+        $i0_4 = Phi($i0_2 #7, $i0_3 #8);
+
+        return 0;
+
+     label04:
+        $z0_4 = virtualinvoke $r1.<android.view.KeyEvent: boolean isAltPressed()>();
+
+        if $z0_4 != 0 goto label05;
+
+        $z0_5 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean arrowScroll(int)>(33);
+
+        return $z0_5;
+
+     label05:
+        $z0_6 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean fullScroll(int)>(33);
+
+        return $z0_6;
+
+     label06:
+        $z0_7 = virtualinvoke $r1.<android.view.KeyEvent: boolean isAltPressed()>();
+
+        if $z0_7 != 0 goto label07;
+
+        $z0_8 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean arrowScroll(int)>(130);
+
+        return $z0_8;
+
+     label07:
+        $z0_9 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean fullScroll(int)>(130);
+
+        return $z0_9;
+
+     label08:
+        $z0_10 = virtualinvoke $r1.<android.view.KeyEvent: boolean isShiftPressed()>();
+
+        if $z0_10 == 0 goto label10;
+
+(9)     $s1 = 33;
+
+     label09:
+        $s1_1 = Phi($s1 #9, $s1_2 #10);
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean pageScroll(int)>($s1_1);
+
+        return 0;
+
+     label10:
+        $s1_2 = 130;
+
+(10)    goto label09;
+
+     label11:
+        $r3_2 = Phi($r3 #0, $r3 #1, $r3_1 #4, $r3_1 #5, $r3_1 #6);
+
+        $z0_3 = Phi($z0_1 #0, $z0_1 #1, $z0_1 #4, $z0_1 #5, $z0_2 #6);
+
+        $i0_1 = Phi($i0 #0, $i0 #1, $i0 #4, $i0 #5, $i0 #6);
+
+        $r4_3 = Phi($r4 #0, $r4 #1, $r4_2 #4, $r4_2 #5, $r4_2 #6);
+
+        return 0;
+    }
+
+    public void fling(int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i1_1, $i1_2, $i2_1, $i1_3, $i2_2, $i4_1, $i4_2, $i3_1, $i3_2, $i4_3, $i2_3, $i1_4;
+        android.view.View $r1;
+        android.support.v4.widget.ScrollerCompat $r2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+(0)     if $i1 <= 0 goto label1;
+
+        $i1_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i1_2 = $i1_1 - $i2;
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingTop()>();
+
+        $i3 = $i1_2 - $i2_1;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i4 = virtualinvoke $r1.<android.view.View: int getHeight()>();
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $i1_3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollX()>();
+
+        $i2_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i4_1 = $i4 - $i3;
+
+        $i4_2 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i4_1);
+
+        $i3_1 = $i3 / 2;
+
+        virtualinvoke $r2.<android.support.v4.widget.ScrollerCompat: void fling(int,int,int,int,int,int,int,int,int,int)>($i1_3, $i2_2, 0, $i0, 0, 0, 0, $i4_2, 0, $i3_1);
+
+(1)     staticinvoke <android.support.v4.view.ViewCompat: void postInvalidateOnAnimation(android.view.View)>($r0);
+
+     label1:
+        $i3_2 = Phi($i3 #0, $i3_1 #1);
+
+        $i4_3 = Phi($i4 #0, $i4_2 #1);
+
+        $i2_3 = Phi($i2 #0, $i2_2 #1);
+
+        $i1_4 = Phi($i1 #0, $i1_3 #1);
+
+        return;
+    }
+
+    public boolean fullScroll(int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3, $i2_1, $i2_2, $i2_3, $i2_4, $i1_1, $i1_2, $i2_5, $i1_3, $i2_6;
+        android.graphics.Rect $r1, $r3, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5, $r1_6;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.view.View $r2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        if $i0 != 130 goto label3;
+
+(0)     $z0 = 1;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0_3 #4);
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $r1.<android.graphics.Rect: int top> = 0;
+
+        $r1_1 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $r1_1.<android.graphics.Rect: int bottom> = $i1;
+
+(1)     if $z0_1 == 0 goto label2;
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+(2)     if $i2 <= 0 goto label2;
+
+        $i2_1 = $i2 + -1;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>($i2_1);
+
+        $r1_2 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2_2 = virtualinvoke $r2.<android.view.View: int getBottom()>();
+
+        $i3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i2_3 = $i2_2 + $i3;
+
+        $r1_2.<android.graphics.Rect: int bottom> = $i2_3;
+
+        $r3 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $r1_3 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2_4 = $r1_3.<android.graphics.Rect: int bottom>;
+
+        $i1_1 = $i2_4 - $i1;
+
+(3)     $r3.<android.graphics.Rect: int top> = $i1_1;
+
+     label2:
+        $r1_4 = Phi($r1_1 #1, $r1_1 #2, $r1_3 #3);
+
+        $i1_2 = Phi($i1 #1, $i1 #2, $i1_1 #3);
+
+        $i2_5 = Phi($i2 #1, $i2 #2, $i2_4 #3);
+
+        $r1_5 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i1_3 = $r1_5.<android.graphics.Rect: int top>;
+
+        $r1_6 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2_6 = $r1_6.<android.graphics.Rect: int bottom>;
+
+        $z0_2 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean scrollAndFocus(int,int,int)>($i0, $i1_3, $i2_6);
+
+        return $z0_2;
+
+     label3:
+        $z0_3 = 0;
+
+(4)     goto label1;
+    }
+
+    protected float getBottomFadingEdgeStrength()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        float $f0, $f1, $f0_1;
+        int $i0, $i1, $i2, $i3, $i0_1, $i1_1, $i2_1, $i2_2, $i1_2;
+        android.view.View $r1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i0 != 0 goto label1;
+
+        return 0.0F;
+
+     label1:
+        $i0_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getVerticalFadingEdgeLength()>();
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i1_1 = $i1 - $i2;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i2_1 = virtualinvoke $r1.<android.view.View: int getBottom()>();
+
+        $i3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i2_2 = $i2_1 - $i3;
+
+        $i1_2 = $i2_2 - $i1_1;
+
+        if $i1_2 >= $i0_1 goto label2;
+
+        $f1 = (float) $i1_2;
+
+        $f0 = (float) $i0_1;
+
+        $f0_1 = $f1 / $f0;
+
+        return $f0_1;
+
+     label2:
+        return 1.0F;
+    }
+
+    public int getMaxScrollAmount()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i0_1;
+        float $f0, $f0_1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $f0 = (float) $i0;
+
+        $f0_1 = 0.5F * $f0;
+
+        $i0_1 = (int) $f0_1;
+
+        return $i0_1;
+    }
+
+    public int getNestedScrollAxes()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.support.v4.view.NestedScrollingParentHelper $r1;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingParentHelper mParentHelper>;
+
+        $i0 = virtualinvoke $r1.<android.support.v4.view.NestedScrollingParentHelper: int getNestedScrollAxes()>();
+
+        return $i0;
+    }
+
+    protected float getTopFadingEdgeStrength()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        float $f0, $f1, $f0_1;
+        int $i0, $i1, $i0_1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i0 != 0 goto label1;
+
+        return 0.0F;
+
+     label1:
+        $i0_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getVerticalFadingEdgeLength()>();
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        if $i1 >= $i0_1 goto label2;
+
+        $f0 = (float) $i1;
+
+        $f1 = (float) $i0_1;
+
+        $f0_1 = $f0 / $f1;
+
+        return $f0_1;
+
+     label2:
+        return 1.0F;
+    }
+
+    public boolean hasNestedScrollingParent()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.support.v4.view.NestedScrollingChildHelper $r1;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingChildHelper mChildHelper>;
+
+        $z0 = virtualinvoke $r1.<android.support.v4.view.NestedScrollingChildHelper: boolean hasNestedScrollingParent()>();
+
+        return $z0;
+    }
+
+    public boolean isFillViewport()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        boolean z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        z0 = $r0.<android.support.v4.widget.NestedScrollView: boolean mFillViewport>;
+
+        return z0;
+    }
+
+    public boolean isNestedScrollingEnabled()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.support.v4.view.NestedScrollingChildHelper $r1;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingChildHelper mChildHelper>;
+
+        $z0 = virtualinvoke $r1.<android.support.v4.view.NestedScrollingChildHelper: boolean isNestedScrollingEnabled()>();
+
+        return $z0;
+    }
+
+    public boolean isSmoothScrollingEnabled()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        boolean z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        z0 = $r0.<android.support.v4.widget.NestedScrollView: boolean mSmoothScrollingEnabled>;
+
+        return z0;
+    }
+
+    protected void measureChild(android.view.View, int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        int $i0, $i1, $i2, $i1_1, $i1_2, $i2_1, $i0_1, $i1_3;
+        android.view.ViewGroup$LayoutParams $r2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $i1_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingLeft()>();
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingRight()>();
+
+        $i1_2 = $i1_1 + $i2;
+
+        $i2_1 = $r2.<android.view.ViewGroup$LayoutParams: int width>;
+
+        $i0_1 = staticinvoke <android.support.v4.widget.NestedScrollView: int getChildMeasureSpec(int,int,int)>($i0, $i1_2, $i2_1);
+
+        $i1_3 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>(0, 0);
+
+        virtualinvoke $r1.<android.view.View: void measure(int,int)>($i0_1, $i1_3);
+
+        return;
+    }
+
+    protected void measureChildWithMargins(android.view.View, int, int, int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        int $i0, $i1, $i2, $i3, $i2_1, $i3_1, $i2_2, $i3_2, $i2_3, $i3_3, $i2_4, $i1_1, $i2_5, $i0_1, $i1_2, $i2_6, $i1_3, $i1_4;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.view.ViewGroup$MarginLayoutParams $r3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 := @parameter3: int;
+
+        $i3 := @parameter4: int;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.view.ViewGroup$MarginLayoutParams) $r2;
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingLeft()>();
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingRight()>();
+
+        $i2_2 = $i2_1 + $i3_1;
+
+        $i3_2 = $r3.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+        $i2_3 = $i2_2 + $i3_2;
+
+        $i3_3 = $r3.<android.view.ViewGroup$MarginLayoutParams: int rightMargin>;
+
+        $i2_4 = $i2_3 + $i3_3;
+
+        $i1_1 = $i2_4 + $i1;
+
+        $i2_5 = $r3.<android.view.ViewGroup$LayoutParams: int width>;
+
+        $i0_1 = staticinvoke <android.support.v4.widget.NestedScrollView: int getChildMeasureSpec(int,int,int)>($i0, $i1_1, $i2_5);
+
+        $i1_2 = $r3.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+        $i2_6 = $r3.<android.view.ViewGroup$MarginLayoutParams: int bottomMargin>;
+
+        $i1_3 = $i1_2 + $i2_6;
+
+        $i1_4 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i1_3, 0);
+
+        virtualinvoke $r1.<android.view.View: void measure(int,int)>($i0_1, $i1_4);
+
+        return;
+    }
+
+    public void onAttachedToWindow()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsLaidOut> = 0;
+
+        return;
+    }
+
+    public boolean onGenericMotionEvent(android.view.MotionEvent)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.MotionEvent $r1;
+        boolean $z0;
+        byte $b0;
+        int $i1, $i2, $i3, $i1_1, $i1_2, $i1_3, $i2_1, $i2_2, $i2_3, $i1_4, $i2_4, $i1_5, $i2_5;
+        float $f0, $f1, $f0_1, $f0_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $i1 = staticinvoke <android.support.v4.view.MotionEventCompat: int getSource(android.view.MotionEvent)>($r1);
+
+        $i1_1 = $i1 & 2;
+
+(0)     if $i1_1 == 0 goto label2;
+
+        $i1_2 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+        lookupswitch($i1_2)
+        {
+            case 8: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+(1)     goto label2;
+
+     label2:
+        $f0_2 = Phi($f0 #0, $f0 #1, $f0 #2, $f0 #3, $f0_1 #5);
+
+        $i1_5 = Phi($i1_1 #0, $i1_2 #1, $i1_2 #2, $i1_2 #3, $i1_3 #5);
+
+        $i2_5 = Phi($i2 #0, $i2 #1, $i2 #2, $i2 #3, $i2_3 #5);
+
+        return 0;
+
+     label3:
+        $z0 = $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged>;
+
+(2)     if $z0 != 0 goto label2;
+
+        $f0 = staticinvoke <android.support.v4.view.MotionEventCompat: float getAxisValue(android.view.MotionEvent,int)>($r1, 9);
+
+        $b0 = $f0 cmpl 0.0F;
+
+(3)     if $b0 == 0 goto label2;
+
+        $f1 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: float getVerticalScrollFactorCompat()>();
+
+        $f0_1 = $f1 * $f0;
+
+        $i2 = (int) $f0_1;
+
+        $i1_3 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollRange()>();
+
+        $i3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i2_1 = $i3 - $i2;
+
+        if $i2_1 >= 0 goto label5;
+
+(4)     $i2_2 = 0;
+
+     label4:
+        $i2_3 = Phi($i2_2 #4, $i2_1 #6, $i2_4 #7);
+
+(5)     if $i2_3 == $i3 goto label2;
+
+        $i1_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollX()>();
+
+        specialinvoke $r0.<android.widget.FrameLayout: void scrollTo(int,int)>($i1_4, $i2_3);
+
+        return 1;
+
+     label5:
+(6)     if $i2_1 <= $i1_3 goto label4;
+
+        $i2_4 = $i1_3;
+
+(7)     goto label4;
+    }
+
+    public boolean onInterceptTouchEvent(android.view.MotionEvent)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.MotionEvent $r1;
+        int $i0, $i1, $i2, $i1_1, $i1_2, $i0_1, $i1_3, $i0_2, $i1_4, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7, $i1_5, $i0_8, $i1_6;
+        android.support.v4.widget.ScrollerCompat $r2;
+        boolean $z0, $z1, $z1_1, $z1_2, $z1_3, $z1_4, $z0_1, $z0_2, $z1_5, $z1_6, $z0_3, $z0_4;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        java.lang.String $r4;
+        float $f0, $f0_1, $f0_2, $f0_3;
+        android.view.VelocityTracker $r5, $r5_1, $r5_2;
+        android.view.ViewParent $r6;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $z0 = 1;
+
+        $i1 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+(0)     if $i1 != 2 goto label01;
+
+        $z1 = $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged>;
+
+(1)     if $z1 == 0 goto label01;
+
+        return 1;
+
+     label01:
+        $z1_1 = Phi($z1 #0, $z1 #1);
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+(2)     if $i0 != 0 goto label02;
+
+        $z1_2 = staticinvoke <android.support.v4.view.ViewCompat: boolean canScrollVertically(android.view.View,int)>($r0, 1);
+
+(3)     if $z1_2 != 0 goto label02;
+
+        return 0;
+
+     label02:
+        $z1_3 = Phi($z1_1 #2, $z1_2 #3);
+
+        $i1_1 = $i1 & 255;
+
+(4)     lookupswitch($i1_1)
+        {
+            case 0: goto label07;
+            case 1: goto label11;
+            case 2: goto label05;
+            case 3: goto label11;
+            case 4: goto label04;
+            case 5: goto label04;
+            case 6: goto label12;
+            default: goto label03;
+        };
+
+     label03:
+(5)     goto label04;
+
+     label04:
+        $z1_4 = Phi($z1_3 #4, $z1_3 #5, $z1_3 #6, $z1_3 #7, $z1_3 #8, $z1_3 #9, $z1_3 #10, $z1_3 #11, $z1_5 #12, $z1_6 #14, $z1_3 #16, $z1_3 #17);
+
+        $r3 = Phi($r3 #4, $r3 #5, $r3 #6, $r3_4 #7, $r3 #8, $r3 #9, $r3 #10, $r3 #11, $r3 #12, $r3 #14, $r3 #16, $r3 #17);
+
+        $r5 = Phi($r5 #4, $r5 #5, $r5 #6, $r5 #7, $r5 #8, $r5 #9, $r5_1 #10, $r5_1 #11, $r5 #12, $r5_2 #14, $r5 #16, $r5 #17);
+
+        $f0 = Phi($f0 #4, $f0 #5, $f0 #6, $f0 #7, $f0_1 #8, $f0_1 #9, $f0_1 #10, $f0_1 #11, $f0_3 #12, $f0_3 #14, $f0 #16, $f0 #17);
+
+        $i1_2 = Phi($i1_1 #4, $i1_1 #5, $i1_3 #6, $i1_3 #7, $i1_4 #8, $i1_4 #9, $i1_4 #10, $i1_4 #11, $i1_5 #12, $i1_6 #14, $i1_1 #16, $i1_1 #17);
+
+        $z0_1 = Phi($z0 #4, $z0 #5, $z0 #6, $z0 #7, $z0 #8, $z0 #9, $z0 #10, $z0 #11, $z0 #12, $z0_3 #14, $z0 #16, $z0 #17);
+
+        $i0_1 = Phi($i0 #4, $i0 #5, $i0 #6, $i0_2 #7, $i0_5 #8, $i0_7 #9, $i0_7 #10, $i0_7 #11, $i0_8 #12, $i0_8 #14, $i0 #16, $i0 #17);
+
+        $z0_2 = $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged>;
+
+        return $z0_2;
+
+     label05:
+        $i1_3 = $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId>;
+
+(6)     if $i1_3 == -1 goto label04;
+
+        $i0_2 = staticinvoke <android.support.v4.view.MotionEventCompat: int findPointerIndex(android.view.MotionEvent,int)>($r1, $i1_3);
+
+        if $i0_2 != -1 goto label06;
+
+        $r3_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r3_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Invalid pointerId=");
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1_3);
+
+        $r3_4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" in onInterceptTouchEvent");
+
+        $r4 = virtualinvoke $r3_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("NestedScrollView", $r4);
+
+(7)     goto label04;
+
+     label06:
+        $f0_1 = staticinvoke <android.support.v4.view.MotionEventCompat: float getY(android.view.MotionEvent,int)>($r1, $i0_2);
+
+        $i1_4 = (int) $f0_1;
+
+        $i0_3 = $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY>;
+
+        $i0_4 = $i1_4 - $i0_3;
+
+        $i2 = staticinvoke <java.lang.Math: int abs(int)>($i0_4);
+
+        $i0_5 = $r0.<android.support.v4.widget.NestedScrollView: int mTouchSlop>;
+
+(8)     if $i2 <= $i0_5 goto label04;
+
+        $i0_6 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getNestedScrollAxes()>();
+
+        $i0_7 = $i0_6 & 2;
+
+(9)     if $i0_7 != 0 goto label04;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged> = 1;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY> = $i1_4;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void initVelocityTrackerIfNotExists()>();
+
+        $r5_1 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+        virtualinvoke $r5_1.<android.view.VelocityTracker: void addMovement(android.view.MotionEvent)>($r1);
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mNestedYOffset> = 0;
+
+        $r6 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.ViewParent getParent()>();
+
+(10)    if $r6 == null goto label04;
+
+        interfaceinvoke $r6.<android.view.ViewParent: void requestDisallowInterceptTouchEvent(boolean)>(1);
+
+(11)    goto label04;
+
+     label07:
+        $f0_2 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $i1_5 = (int) $f0_2;
+
+        $f0_3 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $i0_8 = (int) $f0_3;
+
+        $z1_5 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean inChild(int,int)>($i0_8, $i1_5);
+
+        if $z1_5 != 0 goto label08;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged> = 0;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void recycleVelocityTracker()>();
+
+(12)    goto label04;
+
+     label08:
+        $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY> = $i1_5;
+
+        $i1_6 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, 0);
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId> = $i1_6;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void initOrResetVelocityTracker()>();
+
+        $r5_2 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+        virtualinvoke $r5_2.<android.view.VelocityTracker: void addMovement(android.view.MotionEvent)>($r1);
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $z1_6 = virtualinvoke $r2.<android.support.v4.widget.ScrollerCompat: boolean isFinished()>();
+
+(13)    if $z1_6 != 0 goto label10;
+
+     label09:
+        $z0_3 = Phi($z0 #13, $z0_4 #15);
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged> = $z0_3;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean startNestedScroll(int)>(2);
+
+(14)    goto label04;
+
+     label10:
+        $z0_4 = 0;
+
+(15)    goto label09;
+
+     label11:
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged> = 0;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId> = -1;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void recycleVelocityTracker()>();
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void stopNestedScroll()>();
+
+(16)    goto label04;
+
+     label12:
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void onSecondaryPointerUp(android.view.MotionEvent)>($r1);
+
+(17)    goto label04;
+    }
+
+    protected void onLayout(boolean, int, int, int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3, $i1_1, $i3_1, $i1_2, $i3_2, $i1_3, $i1_4, $i1_5, $i2_1, $i3_3, $i2_2, $i3_4, $i2_3, $i1_6, $i1_7, $i2_4, $i2_5, $i1_8, $i1_9, $i1_10, $i2_6, $i1_11, $i3_5, $i1_12, $i2_7;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.view.View $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5, $r1_6;
+        android.support.v4.widget.NestedScrollView$SavedState $r2, $r2_1, $r2_2, $r2_3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $z0 := @parameter0: boolean;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $i3 := @parameter3: int;
+
+        $i0 := @parameter4: int;
+
+        specialinvoke $r0.<android.widget.FrameLayout: void onLayout(boolean,int,int,int,int)>($z0, $i1, $i2, $i3, $i0);
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsLayoutDirty> = 0;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.view.View mChildToScrollTo>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<android.support.v4.widget.NestedScrollView: android.view.View mChildToScrollTo>;
+
+        $z0_1 = staticinvoke <android.support.v4.widget.NestedScrollView: boolean isViewDescendantOf(android.view.View,android.view.View)>($r1_1, $r0);
+
+(1)     if $z0_1 == 0 goto label1;
+
+        $r1_2 = $r0.<android.support.v4.widget.NestedScrollView: android.view.View mChildToScrollTo>;
+
+(2)     specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollToChild(android.view.View)>($r1_2);
+
+     label1:
+        $r1_3 = Phi($r1 #0, $r1_1 #1, $r1_2 #2);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2);
+
+        $r0.<android.support.v4.widget.NestedScrollView: android.view.View mChildToScrollTo> = null;
+
+        $z0_3 = $r0.<android.support.v4.widget.NestedScrollView: boolean mIsLaidOut>;
+
+(3)     if $z0_3 != 0 goto label4;
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.NestedScrollView$SavedState mSavedState>;
+
+(4)     if $r2 == null goto label2;
+
+        $i1_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollX()>();
+
+        $r2_1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.NestedScrollView$SavedState mSavedState>;
+
+        $i3_1 = $r2_1.<android.support.v4.widget.NestedScrollView$SavedState: int scrollPosition>;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollTo(int,int)>($i1_1, $i3_1);
+
+(5)     $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.NestedScrollView$SavedState mSavedState> = null;
+
+     label2:
+        $i1_2 = Phi($i1 #4, $i1_1 #5);
+
+        $r2_2 = Phi($r2 #4, $r2_1 #5);
+
+        $i3_2 = Phi($i3 #4, $i3_1 #5);
+
+        $i1_3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i1_3 <= 0 goto label5;
+
+        $r1_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+(6)     $i1_4 = virtualinvoke $r1_4.<android.view.View: int getMeasuredHeight()>();
+
+     label3:
+        $r1_5 = Phi($r1_4 #6, $r1_3 #8);
+
+        $i1_5 = Phi($i1_4 #6, $i1_10 #8);
+
+        $i2_1 = $i0 - $i2;
+
+        $i3_3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i2_2 = $i2_1 - $i3_3;
+
+        $i3_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingTop()>();
+
+        $i2_3 = $i2_2 - $i3_4;
+
+        $i1_6 = $i1_5 - $i2_3;
+
+        $i1_7 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i1_6);
+
+        $i2_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        if $i2_4 <= $i1_7 goto label6;
+
+        $i2_5 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollX()>();
+
+(7)     virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollTo(int,int)>($i2_5, $i1_7);
+
+     label4:
+        $r1_6 = Phi($r1_3 #3, $r1_5 #7, $r1_5 #9, $r1_5 #10);
+
+        $i2_6 = Phi($i2 #3, $i2_5 #7, $i2_4 #9, $i2_4 #10);
+
+        $i1_11 = Phi($i1 #3, $i1_7 #7, $i1_8 #9, $i1_9 #10);
+
+        $r2_3 = Phi($r2 #3, $r2_2 #7, $r2_2 #9, $r2_2 #10);
+
+        $i3_5 = Phi($i3 #3, $i3_4 #7, $i3_4 #9, $i3_4 #10);
+
+        $i1_12 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollX()>();
+
+        $i2_7 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollTo(int,int)>($i1_12, $i2_7);
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsLaidOut> = 1;
+
+        return;
+
+     label5:
+        $i1_10 = 0;
+
+(8)     goto label3;
+
+     label6:
+        $i1_8 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+(9)     if $i1_8 >= 0 goto label4;
+
+        $i1_9 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollX()>();
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollTo(int,int)>($i1_9, 0);
+
+(10)    goto label4;
+    }
+
+    protected void onMeasure(int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        boolean $z0;
+        int $i0, $i1, $i2, $i3, $i1_1, $i1_2, $i1_3, $i2_1, $i2_2, $i3_1, $i0_1, $i2_3, $i1_4, $i2_4, $i1_5, $i1_6, $i2_5, $i0_2, $i3_2, $i1_7;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.widget.FrameLayout$LayoutParams $r3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        specialinvoke $r0.<android.widget.FrameLayout: void onMeasure(int,int)>($i0, $i1);
+
+        $z0 = $r0.<android.support.v4.widget.NestedScrollView: boolean mFillViewport>;
+
+        if $z0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $i1_1 = staticinvoke <android.view.View$MeasureSpec: int getMode(int)>($i1);
+
+(0)     if $i1_1 == 0 goto label2;
+
+        $i1_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+(1)     if $i1_2 <= 0 goto label2;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i1_3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getMeasuredHeight()>();
+
+        $i2 = virtualinvoke $r1.<android.view.View: int getMeasuredHeight()>();
+
+(2)     if $i2 >= $i1_3 goto label2;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.widget.FrameLayout$LayoutParams) $r2;
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingLeft()>();
+
+        $i3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingRight()>();
+
+        $i2_2 = $i2_1 + $i3;
+
+        $i3_1 = $r3.<android.view.ViewGroup$LayoutParams: int width>;
+
+        $i0_1 = staticinvoke <android.support.v4.widget.NestedScrollView: int getChildMeasureSpec(int,int,int)>($i0, $i2_2, $i3_1);
+
+        $i2_3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingTop()>();
+
+        $i1_4 = $i1_3 - $i2_3;
+
+        $i2_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i1_5 = $i1_4 - $i2_4;
+
+        $i1_6 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i1_5, 1073741824);
+
+(3)     virtualinvoke $r1.<android.view.View: void measure(int,int)>($i0_1, $i1_6);
+
+     label2:
+        $i2_5 = Phi($i2 #0, $i2 #1, $i2 #2, $i2_4 #3);
+
+        $i0_2 = Phi($i0 #0, $i0 #1, $i0 #2, $i0_1 #3);
+
+        $i3_2 = Phi($i3 #0, $i3 #1, $i3 #2, $i3_1 #3);
+
+        $i1_7 = Phi($i1_1 #0, $i1_2 #1, $i1_3 #2, $i1_6 #3);
+
+        return;
+    }
+
+    public boolean onNestedFling(android.view.View, float, float, boolean)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        float $f0, $f1;
+        boolean $z0;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $f0 := @parameter1: float;
+
+        $f1 := @parameter2: float;
+
+        $z0 := @parameter3: boolean;
+
+        if $z0 != 0 goto label1;
+
+        $i0 = (int) $f1;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void flingWithNestedDispatch(int)>($i0);
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean onNestedPreFling(android.view.View, float, float)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        float $f0, $f1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $f0 := @parameter1: float;
+
+        $f1 := @parameter2: float;
+
+        return 0;
+    }
+
+    public void onNestedPreScroll(android.view.View, int, int, int[])
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        int $i0, $i1;
+        int[] $r2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 := @parameter3: int[];
+
+        return;
+    }
+
+    public void onNestedScroll(android.view.View, int, int, int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        int $i0, $i1, $i2, $i3, $i2_1, $i3_1, $i2_2, $i3_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i2 := @parameter1: int;
+
+        $i3 := @parameter2: int;
+
+        $i0 := @parameter3: int;
+
+        $i1 := @parameter4: int;
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollBy(int,int)>(0, $i1);
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i2_2 = $i3_1 - $i2_1;
+
+        $i3_2 = $i1 - $i2_2;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean dispatchNestedScroll(int,int,int,int,int[])>(0, $i2_2, 0, $i3_2, null);
+
+        return;
+    }
+
+    public void onNestedScrollAccepted(android.view.View, android.view.View, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1, $r2;
+        int $i0;
+        android.support.v4.view.NestedScrollingParentHelper $r3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 := @parameter1: android.view.View;
+
+        $i0 := @parameter2: int;
+
+        $r3 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingParentHelper mParentHelper>;
+
+        virtualinvoke $r3.<android.support.v4.view.NestedScrollingParentHelper: void onNestedScrollAccepted(android.view.View,android.view.View,int)>($r1, $r2, $i0);
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean startNestedScroll(int)>(2);
+
+        return;
+    }
+
+    protected void onOverScrolled(int, int, boolean, boolean)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1;
+        boolean $z0, $z1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $z0 := @parameter2: boolean;
+
+        $z1 := @parameter3: boolean;
+
+        specialinvoke $r0.<android.widget.FrameLayout: void scrollTo(int,int)>($i0, $i1);
+
+        return;
+    }
+
+    protected boolean onRequestFocusInDescendants(int, android.graphics.Rect)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.graphics.Rect $r1;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        android.view.FocusFinder $r2, $r2_1, $r2_2;
+        android.view.View $r3, $r3_1, $r3_2;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.graphics.Rect;
+
+        if $i0 != 2 goto label3;
+
+(0)     $i0_1 = 130;
+
+     label1:
+        $i0_2 = Phi($i0_1 #0, $i0 #2, $i0_3 #3);
+
+        if $r1 != null goto label4;
+
+        $r2 = staticinvoke <android.view.FocusFinder: android.view.FocusFinder getInstance()>();
+
+(1)     $r3 = virtualinvoke $r2.<android.view.FocusFinder: android.view.View findNextFocus(android.view.ViewGroup,android.view.View,int)>($r0, null, $i0_2);
+
+     label2:
+        $r3_1 = Phi($r3 #1, $r3_2 #4);
+
+        $r2_1 = Phi($r2 #1, $r2_2 #4);
+
+        if $r3_1 != null goto label5;
+
+        return 0;
+
+     label3:
+(2)     if $i0 != 1 goto label1;
+
+        $i0_3 = 33;
+
+(3)     goto label1;
+
+     label4:
+        $r2_2 = staticinvoke <android.view.FocusFinder: android.view.FocusFinder getInstance()>();
+
+        $r3_2 = virtualinvoke $r2_2.<android.view.FocusFinder: android.view.View findNextFocusFromRect(android.view.ViewGroup,android.graphics.Rect,int)>($r0, $r1, $i0_2);
+
+(4)     goto label2;
+
+     label5:
+        $z0 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean isOffScreen(android.view.View)>($r3_1);
+
+        if $z0 != 0 goto label6;
+
+        $z0_1 = virtualinvoke $r3_1.<android.view.View: boolean requestFocus(int,android.graphics.Rect)>($i0_2, $r1);
+
+        return $z0_1;
+
+     label6:
+        return 0;
+    }
+
+    protected void onRestoreInstanceState(android.os.Parcelable)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.os.Parcelable $r1, $r1_1;
+        android.support.v4.widget.NestedScrollView$SavedState $r2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.os.Parcelable;
+
+        $r2 = (android.support.v4.widget.NestedScrollView$SavedState) $r1;
+
+        $r1_1 = virtualinvoke $r2.<android.support.v4.widget.NestedScrollView$SavedState: android.os.Parcelable getSuperState()>();
+
+        specialinvoke $r0.<android.widget.FrameLayout: void onRestoreInstanceState(android.os.Parcelable)>($r1_1);
+
+        $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.NestedScrollView$SavedState mSavedState> = $r2;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void requestLayout()>();
+
+        return;
+    }
+
+    protected android.os.Parcelable onSaveInstanceState()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.support.v4.widget.NestedScrollView$SavedState $r1;
+        android.os.Parcelable $r2;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r2 = specialinvoke $r0.<android.widget.FrameLayout: android.os.Parcelable onSaveInstanceState()>();
+
+        $r1 = new android.support.v4.widget.NestedScrollView$SavedState;
+
+        specialinvoke $r1.<android.support.v4.widget.NestedScrollView$SavedState: void <init>(android.os.Parcelable)>($r2);
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $r1.<android.support.v4.widget.NestedScrollView$SavedState: int scrollPosition> = $i0;
+
+        return $r1;
+    }
+
+    protected void onSizeChanged(int, int, int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3, $i3_1, $i3_2;
+        android.view.View $r1;
+        boolean $z0;
+        android.graphics.Rect $r2, $r2_1, $r2_2, $r2_3;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i3 := @parameter0: int;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 := @parameter3: int;
+
+        specialinvoke $r0.<android.widget.FrameLayout: void onSizeChanged(int,int,int,int)>($i3, $i0, $i1, $i2);
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View findFocus()>();
+
+(0)     if $r1 == null goto label2;
+
+        if $r0 != $r1 goto label1;
+
+        return;
+
+     label1:
+        $z0 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean isWithinDeltaOfScreen(android.view.View,int,int)>($r1, 0, $i2);
+
+(1)     if $z0 == 0 goto label2;
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        virtualinvoke $r1.<android.view.View: void getDrawingRect(android.graphics.Rect)>($r2);
+
+        $r2_1 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void offsetDescendantRectToMyCoords(android.view.View,android.graphics.Rect)>($r1, $r2_1);
+
+        $r2_2 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int computeScrollDeltaToGetChildRectOnScreen(android.graphics.Rect)>($r2_2);
+
+(2)     specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void doScrollY(int)>($i3_1);
+
+     label2:
+        $r2_3 = Phi($r2 #0, $r2 #1, $r2_2 #2);
+
+        $i3_2 = Phi($i3 #0, $i3 #1, $i3_1 #2);
+
+        return;
+    }
+
+    public boolean onStartNestedScroll(android.view.View, android.view.View, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1, $r2;
+        int $i0, $i0_1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 := @parameter1: android.view.View;
+
+        $i0 := @parameter2: int;
+
+        $i0_1 = $i0 & 2;
+
+        if $i0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public void onStopNestedScroll(android.view.View)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void stopNestedScroll()>();
+
+        return;
+    }
+
+    public boolean onTouchEvent(android.view.MotionEvent)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.MotionEvent $r1, $r2;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i2_1, $i1_1, $i1_2, $i1_3, $i1_4, $i1_5, $i1_6, $i1_7, $i3_1, $i2_2, $i2_3, $i4_1, $i2_4, $i4_2, $i4_3, $i0_1, $i4_4, $i2_5, $i4_5, $i0_2, $i4_6, $i0_3, $i4_7, $i2_6, $i4_8, $i2_7, $i2_8, $i4_9, $i0_4, $i4_10, $i3_2, $i4_11, $i3_3, $i0_5, $i0_6, $i0_7, $i0_8, $i1_8, $i2_9, $i1_9, $i1_10, $i1_11, $i2_10, $i1_12, $i4_12, $i2_11, $i1_13, $i2_12, $i1_14, $i2_13, $i1_15, $i1_16, $i1_17, $i1_18, $i2_14, $i3_4, $i1_19, $i1_20, $i1_21, $i1_22, $i2_15, $i1_23, $i1_24, $i1_25, $i1_26;
+        float $f0, $f1, $f2, $f0_1, $f0_2, $f0_3, $f0_4, $f0_5, $f0_6, $f0_7, $f1_1, $f0_8, $f1_2, $f2_1, $f1_3, $f0_9, $f1_4, $f2_2, $f0_10, $f1_5, $f0_11, $f1_6, $f2_3, $f1_7, $f1_8, $f0_12, $f0_13, $f0_14, $f0_15;
+        android.view.VelocityTracker $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6;
+        android.support.v4.widget.ScrollerCompat $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11, $z1_1, $z1_2, $z1_3, $z1_4, $z0_12, $z0_13, $z0_14, $z0_15, $z0_16, $z0_17, $z0_18, $z0_19;
+        android.view.ViewParent $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        java.lang.String $r7;
+        int[] $r8, $r9, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8, $r8_9, $r8_10;
+        android.support.v4.widget.EdgeEffectCompat $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8, $r10_9, $r10_10, $r10_11;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void initVelocityTrackerIfNotExists()>();
+
+        $r2 = staticinvoke <android.view.MotionEvent: android.view.MotionEvent obtain(android.view.MotionEvent)>($r1);
+
+        $i1 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionMasked(android.view.MotionEvent)>($r1);
+
+        if $i1 != 0 goto label01;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mNestedYOffset> = 0;
+
+     label01:
+        $i2 = $r0.<android.support.v4.widget.NestedScrollView: int mNestedYOffset>;
+
+        $f0 = (float) $i2;
+
+        virtualinvoke $r2.<android.view.MotionEvent: void offsetLocation(float,float)>(0.0F, $f0);
+
+(0)     lookupswitch($i1)
+        {
+            case 0: goto label05;
+            case 1: goto label25;
+            case 2: goto label11;
+            case 3: goto label27;
+            case 4: goto label03;
+            case 5: goto label28;
+            case 6: goto label29;
+            default: goto label02;
+        };
+
+     label02:
+(1)     goto label03;
+
+     label03:
+        $r3 = Phi($r3 #0, $r3 #1, $r3 #10, $r3 #12, $r3 #18, $r3_5 #23, $r3_5 #26, $r3_5 #29, $r3_5 #31, $r3_5 #32, $r3 #36, $r3_6 #39, $r3 #40, $r3 #41, $r3 #42, $r3 #43, $r3 #44);
+
+        $r10 = Phi($r10 #0, $r10 #1, $r10 #10, $r10 #12, $r10 #18, $r10 #23, $r10 #26, $r10_5 #29, $r10_7 #31, $r10_8 #32, $r10 #36, $r10 #39, $r10 #40, $r10 #41, $r10 #42, $r10 #43, $r10 #44);
+
+        $f0_1 = Phi($f0 #0, $f0 #1, $f0_2 #10, $f0 #12, $f0_5 #18, $f0_6 #23, $f0_5 #26, $f0_9 #29, $f0_9 #31, $f0_9 #32, $f0 #36, $f0_13 #39, $f0 #40, $f0 #41, $f0 #42, $f0_14 #43, $f0_15 #44);
+
+        $r4 = Phi($r4 #0, $r4 #1, $r4_4 #10, $r4 #12, $r4 #18, $r4 #23, $r4 #26, $r4 #29, $r4 #31, $r4 #32, $r4 #36, $r4 #39, $r4 #40, $r4 #41, $r4 #42, $r4 #43, $r4 #44);
+
+        $z0 = Phi($z0 #0, $z0 #1, $z0_4 #10, $z0 #12, $z0_8 #18, $z0_11 #23, $z0_11 #26, $z0_13 #29, $z0_15 #31, $z0_16 #32, $z0_18 #36, $z0_18 #39, $z0_19 #40, $z0_19 #41, $z0_19 #42, $z0 #43, $z0 #44);
+
+        $r6 = Phi($r6 #0, $r6 #1, $r6 #10, $r6_4 #12, $r6 #18, $r6 #23, $r6 #26, $r6 #29, $r6 #31, $r6 #32, $r6 #36, $r6 #39, $r6 #40, $r6 #41, $r6 #42, $r6 #43, $r6 #44);
+
+        $r8 = Phi($r8 #0, $r8 #1, $r8 #10, $r8 #12, $r8_5 #18, $r8_10 #23, $r8_7 #26, $r8_7 #29, $r8_7 #31, $r8_7 #32, $r8 #36, $r8 #39, $r8 #40, $r8 #41, $r8 #42, $r8 #43, $r8 #44);
+
+        $f1 = Phi($f1 #0, $f1 #1, $f1 #10, $f1 #12, $f1 #18, $f1 #23, $f1 #26, $f1_4 #29, $f1_4 #31, $f1_4 #32, $f1 #36, $f1 #39, $f1 #40, $f1 #41, $f1 #42, $f1 #43, $f1 #44);
+
+        $f2 = Phi($f2 #0, $f2 #1, $f2 #10, $f2 #12, $f2 #18, $f2 #23, $f2 #26, $f2_2 #29, $f2_2 #31, $f2_2 #32, $f2 #36, $f2 #39, $f2 #40, $f2 #41, $f2 #42, $f2 #43, $f2 #44);
+
+        $i2_1 = Phi($i2 #0, $i2 #1, $i2 #10, $i2 #12, $i2_8 #18, $i2_10 #23, $i2_8 #26, $i2_12 #29, $i2_12 #31, $i2_12 #32, $i2 #36, $i2_14 #39, $i2 #40, $i2 #41, $i2 #42, $i2_15 #43, $i2 #44);
+
+        $i3 = Phi($i3 #0, $i3 #1, $i3 #10, $i3 #12, $i3_1 #18, $i3_3 #23, $i3_3 #26, $i3_3 #29, $i3_3 #31, $i3_3 #32, $i3 #36, $i3_4 #39, $i3 #40, $i3 #41, $i3 #42, $i3 #43, $i3 #44);
+
+        $i4 = Phi($i4 #0, $i4 #1, $i4 #10, $i4 #12, $i4_9 #18, $i4_11 #23, $i4_11 #26, $i4_12 #29, $i4_12 #31, $i4_12 #32, $i4 #36, $i4 #39, $i4 #40, $i4 #41, $i4 #42, $i4 #43, $i4 #44);
+
+        $i1_1 = Phi($i1 #0, $i1 #1, $i1_4 #10, $i1_7 #12, $i1_6 #18, $i1_12 #23, $i1_6 #26, $i1_14 #29, $i1_14 #31, $i1_14 #32, $i1 #36, $i1_20 #39, $i1 #40, $i1_21 #41, $i1_21 #42, $i1_23 #43, $i1_26 #44);
+
+        $z1 = Phi($z1 #0, $z1 #1, $z1 #10, $z1 #12, $z1 #18, $z1_4 #23, $z1_4 #26, $z1_4 #29, $z1_4 #31, $z1_4 #32, $z1 #36, $z1 #39, $z1 #40, $z1 #41, $z1 #42, $z1 #43, $z1 #44);
+
+        $i0 = Phi($i0 #0, $i0 #1, $i0 #10, $i0 #12, $i0_4 #18, $i0_8 #23, $i0_8 #26, $i0_8 #29, $i0_8 #31, $i0_8 #32, $i0 #36, $i0 #39, $i0 #40, $i0 #41, $i0 #42, $i0 #43, $i0 #44);
+
+        $r5 = Phi($r5 #0, $r5 #1, $r5_2 #10, $r5 #12, $r5_4 #18, $r5_4 #23, $r5_4 #26, $r5_4 #29, $r5_4 #31, $r5_4 #32, $r5 #36, $r5 #39, $r5 #40, $r5 #41, $r5 #42, $r5 #43, $r5 #44);
+
+        $r3_1 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+(2)     if $r3_1 == null goto label04;
+
+        $r3_2 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+(3)     virtualinvoke $r3_2.<android.view.VelocityTracker: void addMovement(android.view.MotionEvent)>($r2);
+
+     label04:
+        $r3_3 = Phi($r3_1 #2, $r3_2 #3);
+
+        virtualinvoke $r2.<android.view.MotionEvent: void recycle()>();
+
+        return 1;
+
+     label05:
+        $i1_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i1_2 != 0 goto label06;
+
+        return 0;
+
+     label06:
+        $r4_1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $z0_1 = virtualinvoke $r4_1.<android.support.v4.widget.ScrollerCompat: boolean isFinished()>();
+
+        if $z0_1 != 0 goto label10;
+
+(4)     $z0_2 = 1;
+
+     label07:
+        $z0_3 = Phi($z0_2 #4, $z0_5 #11);
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged> = $z0_3;
+
+(5)     if $z0_3 == 0 goto label08;
+
+        $r5_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.ViewParent getParent()>();
+
+(6)     if $r5_1 == null goto label08;
+
+(7)     interfaceinvoke $r5_1.<android.view.ViewParent: void requestDisallowInterceptTouchEvent(boolean)>(1);
+
+     label08:
+        $r5_2 = Phi($r5 #5, $r5_1 #6, $r5_1 #7);
+
+        $r4_2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $z0_4 = virtualinvoke $r4_2.<android.support.v4.widget.ScrollerCompat: boolean isFinished()>();
+
+(8)     if $z0_4 != 0 goto label09;
+
+        $r4_3 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+(9)     virtualinvoke $r4_3.<android.support.v4.widget.ScrollerCompat: void abortAnimation()>();
+
+     label09:
+        $r4_4 = Phi($r4_2 #8, $r4_3 #9);
+
+        $f0_2 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $i1_3 = (int) $f0_2;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY> = $i1_3;
+
+        $i1_4 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, 0);
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId> = $i1_4;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean startNestedScroll(int)>(2);
+
+(10)    goto label03;
+
+     label10:
+        $z0_5 = 0;
+
+(11)    goto label07;
+
+     label11:
+        $i1_5 = $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId>;
+
+        $i1_6 = staticinvoke <android.support.v4.view.MotionEventCompat: int findPointerIndex(android.view.MotionEvent,int)>($r1, $i1_5);
+
+        if $i1_6 != -1 goto label12;
+
+        $r6_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Invalid pointerId=");
+
+        $i1_7 = $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId>;
+
+        $r6_3 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1_7);
+
+        $r6_4 = virtualinvoke $r6_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" in onTouchEvent");
+
+        $r7 = virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("NestedScrollView", $r7);
+
+(12)    goto label03;
+
+     label12:
+        $f0_3 = staticinvoke <android.support.v4.view.MotionEventCompat: float getY(android.view.MotionEvent,int)>($r1, $i1_6);
+
+        $i3_1 = (int) $f0_3;
+
+        $i2_2 = $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY>;
+
+        $i2_3 = $i2_2 - $i3_1;
+
+        $r8_1 = $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollConsumed>;
+
+        $r9 = $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollOffset>;
+
+        $z0_6 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean dispatchNestedPreScroll(int,int,int[],int[])>(0, $i2_3, $r8_1, $r9);
+
+(13)    if $z0_6 == 0 goto label13;
+
+        $r8_2 = $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollConsumed>;
+
+        $i4_1 = $r8_2[1];
+
+        $i2_4 = $i2_3 - $i4_1;
+
+        $r8_3 = $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollOffset>;
+
+        $i4_2 = $r8_3[1];
+
+        $f0_4 = (float) $i4_2;
+
+        virtualinvoke $r2.<android.view.MotionEvent: void offsetLocation(float,float)>(0.0F, $f0_4);
+
+        $i4_3 = $r0.<android.support.v4.widget.NestedScrollView: int mNestedYOffset>;
+
+        $r8_4 = $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollOffset>;
+
+        $i0_1 = $r8_4[1];
+
+        $i4_4 = $i4_3 + $i0_1;
+
+(14)    $r0.<android.support.v4.widget.NestedScrollView: int mNestedYOffset> = $i4_4;
+
+     label13:
+        $f0_5 = Phi($f0_3 #13, $f0_4 #14);
+
+        $r8_5 = Phi($r8_1 #13, $r8_4 #14);
+
+        $i2_5 = Phi($i2_3 #13, $i2_4 #14);
+
+        $i4_5 = Phi($i4 #13, $i4_4 #14);
+
+        $i0_2 = Phi($i0 #13, $i0_1 #14);
+
+        $z0_7 = $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged>;
+
+(15)    if $z0_7 != 0 goto label15;
+
+        $i4_6 = staticinvoke <java.lang.Math: int abs(int)>($i2_5);
+
+        $i0_3 = $r0.<android.support.v4.widget.NestedScrollView: int mTouchSlop>;
+
+(16)    if $i4_6 <= $i0_3 goto label15;
+
+        $r5_3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.ViewParent getParent()>();
+
+        if $r5_3 == null goto label14;
+
+        interfaceinvoke $r5_3.<android.view.ViewParent: void requestDisallowInterceptTouchEvent(boolean)>(1);
+
+     label14:
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged> = 1;
+
+        if $i2_5 <= 0 goto label19;
+
+        $i4_7 = $r0.<android.support.v4.widget.NestedScrollView: int mTouchSlop>;
+
+(17)    $i2_6 = $i2_5 - $i4_7;
+
+     label15:
+        $i2_8 = Phi($i2_5 #15, $i2_5 #16, $i2_6 #17, $i2_7 #24);
+
+        $i4_9 = Phi($i4_5 #15, $i4_6 #16, $i4_7 #17, $i4_8 #24);
+
+        $i0_4 = Phi($i0_2 #15, $i0_3 #16, $i0_3 #17, $i0_3 #24);
+
+        $r5_4 = Phi($r5 #15, $r5 #16, $r5_3 #17, $r5_3 #24);
+
+        $z0_8 = $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged>;
+
+(18)    if $z0_8 == 0 goto label03;
+
+        $r8_6 = $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollOffset>;
+
+        $i4_10 = $r8_6[1];
+
+        $i3_2 = $i3_1 - $i4_10;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY> = $i3_2;
+
+        $i4_11 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i3_3 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollRange()>();
+
+        $i0_5 = staticinvoke <android.support.v4.view.ViewCompat: int getOverScrollMode(android.view.View)>($r0);
+
+        if $i0_5 == 0 goto label16;
+
+        if $i0_5 != 1 goto label20;
+
+        if $i3_3 <= 0 goto label20;
+
+     label16:
+(19)    $z0_10 = 1;
+
+     label17:
+        $z0_11 = Phi($z0_10 #19, $z0_9 #25);
+
+        $i0_6 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $z1_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean overScrollByCompat(int,int,int,int,int,int,int,int,boolean)>(0, $i2_8, 0, $i0_6, 0, $i3_3, 0, 0, 1);
+
+(20)    if $z1_1 == 0 goto label18;
+
+        $z1_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean hasNestedScrollingParent()>();
+
+(21)    if $z1_2 != 0 goto label18;
+
+        $r3_4 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+(22)    virtualinvoke $r3_4.<android.view.VelocityTracker: void clear()>();
+
+     label18:
+        $r3_5 = Phi($r3 #20, $r3 #21, $r3_4 #22);
+
+        $z1_3 = Phi($z1_1 #20, $z1_2 #21, $z1_2 #22);
+
+        $i0_7 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i0_8 = $i0_7 - $i4_11;
+
+        $i5 = $i2_8 - $i0_8;
+
+        $r8_7 = $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollOffset>;
+
+        $z1_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean dispatchNestedScroll(int,int,int,int,int[])>(0, $i0_8, 0, $i5, $r8_7);
+
+        if $z1_4 == 0 goto label21;
+
+        $i1_8 = $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY>;
+
+        $r8_8 = $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollOffset>;
+
+        $i2_9 = $r8_8[1];
+
+        $i1_9 = $i1_8 - $i2_9;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY> = $i1_9;
+
+        $r8_9 = $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollOffset>;
+
+        $i1_10 = $r8_9[1];
+
+        $f0_6 = (float) $i1_10;
+
+        virtualinvoke $r2.<android.view.MotionEvent: void offsetLocation(float,float)>(0.0F, $f0_6);
+
+        $i1_11 = $r0.<android.support.v4.widget.NestedScrollView: int mNestedYOffset>;
+
+        $r8_10 = $r0.<android.support.v4.widget.NestedScrollView: int[] mScrollOffset>;
+
+        $i2_10 = $r8_10[1];
+
+        $i1_12 = $i1_11 + $i2_10;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mNestedYOffset> = $i1_12;
+
+(23)    goto label03;
+
+     label19:
+        $i4_8 = $r0.<android.support.v4.widget.NestedScrollView: int mTouchSlop>;
+
+        $i2_7 = $i2_5 + $i4_8;
+
+(24)    goto label15;
+
+     label20:
+        $z0_9 = 0;
+
+(25)    goto label17;
+
+     label21:
+(26)    if $z0_11 == 0 goto label03;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void ensureGlows()>();
+
+        $i4_12 = $i4_11 + $i2_8;
+
+        if $i4_12 >= 0 goto label24;
+
+        $r10_1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+        $f0_7 = (float) $i2_8;
+
+        $i2_11 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $f1_1 = (float) $i2_11;
+
+        $f0_8 = $f0_7 / $f1_1;
+
+        $f1_2 = staticinvoke <android.support.v4.view.MotionEventCompat: float getX(android.view.MotionEvent,int)>($r1, $i1_6);
+
+        $i1_13 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getWidth()>();
+
+        $f2_1 = (float) $i1_13;
+
+        $f1_3 = $f1_2 / $f2_1;
+
+        virtualinvoke $r10_1.<android.support.v4.widget.EdgeEffectCompat: boolean onPull(float,float)>($f0_8, $f1_3);
+
+        $r10_2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom>;
+
+        $z0_12 = virtualinvoke $r10_2.<android.support.v4.widget.EdgeEffectCompat: boolean isFinished()>();
+
+(27)    if $z0_12 != 0 goto label22;
+
+        $r10_3 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom>;
+
+(28)    virtualinvoke $r10_3.<android.support.v4.widget.EdgeEffectCompat: boolean onRelease()>();
+
+     label22:
+        $r10_4 = Phi($r10_2 #27, $r10_3 #28, $r10 #33, $r10_10 #34, $r10_11 #35);
+
+        $f0_9 = Phi($f0_8 #27, $f0_8 #28, $f0_5 #33, $f0_11 #34, $f0_11 #35);
+
+        $z0_13 = Phi($z0_12 #27, $z0_12 #28, $z0_11 #33, $z0_17 #34, $z0_17 #35);
+
+        $f1_4 = Phi($f1_3 #27, $f1_3 #28, $f1 #33, $f1_8 #34, $f1_8 #35);
+
+        $f2_2 = Phi($f2_1 #27, $f2_1 #28, $f2 #33, $f2_3 #34, $f2_3 #35);
+
+        $i2_12 = Phi($i2_11 #27, $i2_11 #28, $i2_8 #33, $i2_13 #34, $i2_13 #35);
+
+        $i1_14 = Phi($i1_13 #27, $i1_13 #28, $i1_6 #33, $i1_15 #34, $i1_15 #35);
+
+        $r10_5 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+(29)    if $r10_5 == null goto label03;
+
+        $r10_6 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+        $z0_14 = virtualinvoke $r10_6.<android.support.v4.widget.EdgeEffectCompat: boolean isFinished()>();
+
+(30)    if $z0_14 == 0 goto label23;
+
+        $r10_7 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom>;
+
+        $z0_15 = virtualinvoke $r10_7.<android.support.v4.widget.EdgeEffectCompat: boolean isFinished()>();
+
+(31)    if $z0_15 != 0 goto label03;
+
+     label23:
+        $r10_8 = Phi($r10_6 #30, $r10_7 #31);
+
+        $z0_16 = Phi($z0_14 #30, $z0_15 #31);
+
+        staticinvoke <android.support.v4.view.ViewCompat: void postInvalidateOnAnimation(android.view.View)>($r0);
+
+(32)    goto label03;
+
+     label24:
+(33)    if $i4_12 <= $i3_3 goto label22;
+
+        $r10_9 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowBottom>;
+
+        $f0_10 = (float) $i2_8;
+
+        $i2_13 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $f1_5 = (float) $i2_13;
+
+        $f0_11 = $f0_10 / $f1_5;
+
+        $f1_6 = staticinvoke <android.support.v4.view.MotionEventCompat: float getX(android.view.MotionEvent,int)>($r1, $i1_6);
+
+        $i1_15 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getWidth()>();
+
+        $f2_3 = (float) $i1_15;
+
+        $f1_7 = $f1_6 / $f2_3;
+
+        $f1_8 = 1.0F - $f1_7;
+
+        virtualinvoke $r10_9.<android.support.v4.widget.EdgeEffectCompat: boolean onPull(float,float)>($f0_11, $f1_8);
+
+        $r10_10 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+        $z0_17 = virtualinvoke $r10_10.<android.support.v4.widget.EdgeEffectCompat: boolean isFinished()>();
+
+(34)    if $z0_17 != 0 goto label22;
+
+        $r10_11 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.EdgeEffectCompat mEdgeGlowTop>;
+
+        virtualinvoke $r10_11.<android.support.v4.widget.EdgeEffectCompat: boolean onRelease()>();
+
+(35)    goto label22;
+
+     label25:
+        $z0_18 = $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged>;
+
+(36)    if $z0_18 == 0 goto label03;
+
+        $r3_6 = $r0.<android.support.v4.widget.NestedScrollView: android.view.VelocityTracker mVelocityTracker>;
+
+        $i1_16 = $r0.<android.support.v4.widget.NestedScrollView: int mMaximumVelocity>;
+
+        $f0_12 = (float) $i1_16;
+
+        virtualinvoke $r3_6.<android.view.VelocityTracker: void computeCurrentVelocity(int,float)>(1000, $f0_12);
+
+        $i1_17 = $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId>;
+
+        $f0_13 = staticinvoke <android.support.v4.view.VelocityTrackerCompat: float getYVelocity(android.view.VelocityTracker,int)>($r3_6, $i1_17);
+
+        $i1_18 = (int) $f0_13;
+
+        $i2_14 = staticinvoke <java.lang.Math: int abs(int)>($i1_18);
+
+        $i3_4 = $r0.<android.support.v4.widget.NestedScrollView: int mMinimumVelocity>;
+
+(37)    if $i2_14 <= $i3_4 goto label26;
+
+        $i1_19 = neg $i1_18;
+
+(38)    specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void flingWithNestedDispatch(int)>($i1_19);
+
+     label26:
+        $i1_20 = Phi($i1_18 #37, $i1_19 #38);
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId> = -1;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void endDrag()>();
+
+(39)    goto label03;
+
+     label27:
+        $z0_19 = $r0.<android.support.v4.widget.NestedScrollView: boolean mIsBeingDragged>;
+
+(40)    if $z0_19 == 0 goto label03;
+
+        $i1_21 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+(41)    if $i1_21 <= 0 goto label03;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId> = -1;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void endDrag()>();
+
+(42)    goto label03;
+
+     label28:
+        $i1_22 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionIndex(android.view.MotionEvent)>($r1);
+
+        $f0_14 = staticinvoke <android.support.v4.view.MotionEventCompat: float getY(android.view.MotionEvent,int)>($r1, $i1_22);
+
+        $i2_15 = (int) $f0_14;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY> = $i2_15;
+
+        $i1_23 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $i1_22);
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId> = $i1_23;
+
+(43)    goto label03;
+
+     label29:
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void onSecondaryPointerUp(android.view.MotionEvent)>($r1);
+
+        $i1_24 = $r0.<android.support.v4.widget.NestedScrollView: int mActivePointerId>;
+
+        $i1_25 = staticinvoke <android.support.v4.view.MotionEventCompat: int findPointerIndex(android.view.MotionEvent,int)>($r1, $i1_24);
+
+        $f0_15 = staticinvoke <android.support.v4.view.MotionEventCompat: float getY(android.view.MotionEvent,int)>($r1, $i1_25);
+
+        $i1_26 = (int) $f0_15;
+
+        $r0.<android.support.v4.widget.NestedScrollView: int mLastMotionY> = $i1_26;
+
+(44)    goto label03;
+    }
+
+    boolean overScrollByCompat(int, int, int, int, int, int, int, int, boolean)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i9, $i10, $i9_1, $i10_1, $i0_1, $i6_1, $i6_2, $i1_1, $i7_1, $i7_2, $i2_1, $i3_1, $i4_1, $i5_1, $i0_2, $i0_3, $i1_2, $i1_3, $i1_4, $i0_4;
+        boolean $z0, $z1, $z1_1, $z0_1, $z0_2, $z1_2, $z1_3, $z1_4, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z1_5, $z1_6, $z1_7, $z1_8, $z0_9, $z0_10, $z1_9;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $i3 := @parameter3: int;
+
+        $i4 := @parameter4: int;
+
+        $i5 := @parameter5: int;
+
+        $i6 := @parameter6: int;
+
+        $i7 := @parameter7: int;
+
+        $z0 := @parameter8: boolean;
+
+        $i8 = staticinvoke <android.support.v4.view.ViewCompat: int getOverScrollMode(android.view.View)>($r0);
+
+        $i9 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int computeHorizontalScrollRange()>();
+
+        $i10 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int computeHorizontalScrollExtent()>();
+
+        if $i9 <= $i10 goto label12;
+
+(0)     $z1 = 1;
+
+     label01:
+        $z1_1 = Phi($z1 #0, $z1_9 #10);
+
+        $i9_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int computeVerticalScrollRange()>();
+
+        $i10_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int computeVerticalScrollExtent()>();
+
+        if $i9_1 <= $i10_1 goto label13;
+
+(1)     $z0_1 = 1;
+
+     label02:
+        $z0_2 = Phi($z0_1 #1, $z0_10 #11);
+
+        if $i8 == 0 goto label03;
+
+        if $i8 != 1 goto label14;
+
+        if $z1_1 == 0 goto label14;
+
+     label03:
+(2)     $z1_3 = 1;
+
+     label04:
+        $z1_4 = Phi($z1_3 #2, $z1_2 #12);
+
+        if $i8 == 0 goto label05;
+
+        if $i8 != 1 goto label15;
+
+        if $z0_2 == 0 goto label15;
+
+     label05:
+(3)     $z0_4 = 1;
+
+     label06:
+        $z0_5 = Phi($z0_4 #3, $z0_3 #13);
+
+        $i0_1 = $i2 + $i0;
+
+(4)     if $z1_4 != 0 goto label07;
+
+(5)     $i6_1 = 0;
+
+     label07:
+        $i6_2 = Phi($i6 #4, $i6_1 #5);
+
+        $i1_1 = $i3 + $i1;
+
+(6)     if $z0_5 != 0 goto label08;
+
+(7)     $i7_1 = 0;
+
+     label08:
+        $i7_2 = Phi($i7 #6, $i7_1 #7);
+
+        $i2_1 = neg $i6_2;
+
+        $i3_1 = $i6_2 + $i4;
+
+        $i4_1 = neg $i7_2;
+
+        $i5_1 = $i7_2 + $i5;
+
+        $z0_6 = 0;
+
+        if $i0_1 <= $i3_1 goto label16;
+
+        $i0_2 = $i3_1;
+
+(8)     $z0_7 = 1;
+
+     label09:
+        $i0_3 = Phi($i0_2 #8, $i0_1 #14, $i0_4 #15);
+
+        $z0_8 = Phi($z0_7 #8, $z0_6 #14, $z0_9 #15);
+
+        $z1_5 = 0;
+
+        if $i1_1 <= $i5_1 goto label17;
+
+        $i1_2 = $i5_1;
+
+(9)     $z1_6 = 1;
+
+     label10:
+        $z1_7 = Phi($z1_6 #9, $z1_5 #16, $z1_8 #17);
+
+        $i1_3 = Phi($i1_2 #9, $i1_1 #16, $i1_4 #17);
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void onOverScrolled(int,int,boolean,boolean)>($i0_3, $i1_3, $z0_8, $z1_7);
+
+        if $z0_8 != 0 goto label11;
+
+        if $z1_7 == 0 goto label18;
+
+     label11:
+        return 1;
+
+     label12:
+        $z1_9 = 0;
+
+(10)    goto label01;
+
+     label13:
+        $z0_10 = 0;
+
+(11)    goto label02;
+
+     label14:
+        $z1_2 = 0;
+
+(12)    goto label04;
+
+     label15:
+        $z0_3 = 0;
+
+(13)    goto label06;
+
+     label16:
+(14)    if $i0_1 >= $i2_1 goto label09;
+
+        $i0_4 = $i2_1;
+
+        $z0_9 = 1;
+
+(15)    goto label09;
+
+     label17:
+(16)    if $i1_1 >= $i4_1 goto label10;
+
+        $i1_4 = $i4_1;
+
+        $z1_8 = 1;
+
+(17)    goto label10;
+
+     label18:
+        return 0;
+    }
+
+    public boolean pageScroll(int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3, $i2_1, $i2_2, $i2_3, $i2_4, $i2_5, $i2_6, $i2_7, $i2_8, $i2_9, $i1_1, $i1_2, $i2_10, $i2_11, $i2_12, $i2_13;
+        android.graphics.Rect $r1, $r3, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5, $r1_6, $r1_7, $r1_8, $r1_9;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.view.View $r2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        if $i0 != 130 goto label3;
+
+(0)     $z0 = 1;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0_3 #4);
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        if $z0_1 == 0 goto label4;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i2_1 = $i2 + $i1;
+
+        $r1.<android.graphics.Rect: int top> = $i2_1;
+
+        $i2_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+(1)     if $i2_2 <= 0 goto label2;
+
+        $i2_3 = $i2_2 + -1;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>($i2_3);
+
+        $r1_1 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2_4 = $r1_1.<android.graphics.Rect: int top>;
+
+        $i2_5 = $i2_4 + $i1;
+
+        $i3 = virtualinvoke $r2.<android.view.View: int getBottom()>();
+
+(2)     if $i2_5 <= $i3 goto label2;
+
+        $r1_2 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2_6 = virtualinvoke $r2.<android.view.View: int getBottom()>();
+
+        $i2_7 = $i2_6 - $i1;
+
+(3)     $r1_2.<android.graphics.Rect: int top> = $i2_7;
+
+     label2:
+        $i2_8 = Phi($i2_2 #1, $i2_5 #2, $i2_7 #3, $i2_13 #5, $i2_13 #6);
+
+        $r1_3 = Phi($r1 #1, $r1_1 #2, $r1_2 #3, $r1_8 #5, $r1_9 #6);
+
+        $r3 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $r1_4 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2_9 = $r1_4.<android.graphics.Rect: int top>;
+
+        $i1_1 = $i2_9 + $i1;
+
+        $r3.<android.graphics.Rect: int bottom> = $i1_1;
+
+        $r1_5 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i1_2 = $r1_5.<android.graphics.Rect: int top>;
+
+        $r1_6 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2_10 = $r1_6.<android.graphics.Rect: int bottom>;
+
+        $z0_2 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean scrollAndFocus(int,int,int)>($i0, $i1_2, $i2_10);
+
+        return $z0_2;
+
+     label3:
+        $z0_3 = 0;
+
+(4)     goto label1;
+
+     label4:
+        $r1_7 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2_11 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i2_12 = $i2_11 - $i1;
+
+        $r1_7.<android.graphics.Rect: int top> = $i2_12;
+
+        $r1_8 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $i2_13 = $r1_8.<android.graphics.Rect: int top>;
+
+(5)     if $i2_13 >= 0 goto label2;
+
+        $r1_9 = $r0.<android.support.v4.widget.NestedScrollView: android.graphics.Rect mTempRect>;
+
+        $r1_9.<android.graphics.Rect: int top> = 0;
+
+(6)     goto label2;
+    }
+
+    public void requestChildFocus(android.view.View, android.view.View)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1, $r2;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 := @parameter1: android.view.View;
+
+        $z0 = $r0.<android.support.v4.widget.NestedScrollView: boolean mIsLayoutDirty>;
+
+        if $z0 != 0 goto label2;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollToChild(android.view.View)>($r2);
+
+     label1:
+        specialinvoke $r0.<android.widget.FrameLayout: void requestChildFocus(android.view.View,android.view.View)>($r1, $r2);
+
+        return;
+
+     label2:
+        $r0.<android.support.v4.widget.NestedScrollView: android.view.View mChildToScrollTo> = $r2;
+
+        goto label1;
+    }
+
+    public boolean requestChildRectangleOnScreen(android.view.View, android.graphics.Rect, boolean)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.view.View $r1;
+        android.graphics.Rect $r2;
+        boolean $z0, $z0_1;
+        int $i0, $i1, $i2, $i0_1, $i1_1, $i1_2;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 := @parameter1: android.graphics.Rect;
+
+        $z0 := @parameter2: boolean;
+
+        $i0 = virtualinvoke $r1.<android.view.View: int getLeft()>();
+
+        $i1 = virtualinvoke $r1.<android.view.View: int getScrollX()>();
+
+        $i0_1 = $i0 - $i1;
+
+        $i1_1 = virtualinvoke $r1.<android.view.View: int getTop()>();
+
+        $i2 = virtualinvoke $r1.<android.view.View: int getScrollY()>();
+
+        $i1_2 = $i1_1 - $i2;
+
+        virtualinvoke $r2.<android.graphics.Rect: void offset(int,int)>($i0_1, $i1_2);
+
+        $z0_1 = specialinvoke $r0.<android.support.v4.widget.NestedScrollView: boolean scrollToChildRect(android.graphics.Rect,boolean)>($r2, $z0);
+
+        return $z0_1;
+    }
+
+    public void requestDisallowInterceptTouchEvent(boolean)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $z0 := @parameter0: boolean;
+
+        if $z0 == 0 goto label1;
+
+        specialinvoke $r0.<android.support.v4.widget.NestedScrollView: void recycleVelocityTracker()>();
+
+     label1:
+        specialinvoke $r0.<android.widget.FrameLayout: void requestDisallowInterceptTouchEvent(boolean)>($z0);
+
+        return;
+    }
+
+    public void requestLayout()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mIsLayoutDirty> = 1;
+
+        specialinvoke $r0.<android.widget.FrameLayout: void requestLayout()>();
+
+        return;
+    }
+
+    public void scrollTo(int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i3, $i2_1, $i2_2, $i3_1, $i2_3, $i3_2, $i0_1, $i2_4, $i3_3, $i2_5, $i3_4, $i2_6, $i3_5, $i1_1, $i2_7, $i2_8, $i2_9, $i3_6, $i1_2, $i0_2, $i2_10;
+        android.view.View $r1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+(0)     if $i2 <= 0 goto label2;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getWidth()>();
+
+        $i3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingRight()>();
+
+        $i2_2 = $i2_1 - $i3;
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingLeft()>();
+
+        $i2_3 = $i2_2 - $i3_1;
+
+        $i3_2 = virtualinvoke $r1.<android.view.View: int getWidth()>();
+
+        $i0_1 = staticinvoke <android.support.v4.widget.NestedScrollView: int clamp(int,int,int)>($i0, $i2_3, $i3_2);
+
+        $i2_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i3_3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i2_5 = $i2_4 - $i3_3;
+
+        $i3_4 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingTop()>();
+
+        $i2_6 = $i2_5 - $i3_4;
+
+        $i3_5 = virtualinvoke $r1.<android.view.View: int getHeight()>();
+
+        $i1_1 = staticinvoke <android.support.v4.widget.NestedScrollView: int clamp(int,int,int)>($i1, $i2_6, $i3_5);
+
+        $i2_7 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollX()>();
+
+(1)     if $i0_1 != $i2_7 goto label1;
+
+        $i2_8 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+(2)     if $i1_1 == $i2_8 goto label2;
+
+     label1:
+        $i2_9 = Phi($i2_7 #1, $i2_8 #2);
+
+(3)     specialinvoke $r0.<android.widget.FrameLayout: void scrollTo(int,int)>($i0_1, $i1_1);
+
+     label2:
+        $i3_6 = Phi($i3 #0, $i3_5 #2, $i3_5 #3);
+
+        $i1_2 = Phi($i1 #0, $i1_1 #2, $i1_1 #3);
+
+        $i0_2 = Phi($i0 #0, $i0_1 #2, $i0_1 #3);
+
+        $i2_10 = Phi($i2 #0, $i2_8 #2, $i2_9 #3);
+
+        return;
+    }
+
+    public void setFillViewport(boolean)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        boolean $z0, $z1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = $r0.<android.support.v4.widget.NestedScrollView: boolean mFillViewport>;
+
+        if $z0 == $z1 goto label1;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mFillViewport> = $z0;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void requestLayout()>();
+
+     label1:
+        return;
+    }
+
+    public void setNestedScrollingEnabled(boolean)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        boolean $z0;
+        android.support.v4.view.NestedScrollingChildHelper $r1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingChildHelper mChildHelper>;
+
+        virtualinvoke $r1.<android.support.v4.view.NestedScrollingChildHelper: void setNestedScrollingEnabled(boolean)>($z0);
+
+        return;
+    }
+
+    public void setSmoothScrollingEnabled(boolean)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<android.support.v4.widget.NestedScrollView: boolean mSmoothScrollingEnabled> = $z0;
+
+        return;
+    }
+
+    public boolean shouldDelayChildPressedState()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        return 1;
+    }
+
+    public final void smoothScrollBy(int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        byte $b0;
+        int $i1, $i2, $i3, $i1_1, $i3_1, $i1_2, $i3_2, $i1_3, $i3_3, $i1_4, $i3_4, $i1_5, $i2_1, $i2_2, $i2_3, $i2_4, $i3_5, $i3_6, $i1_6, $i2_5;
+        long $l4, $l5, $l4_1, $l4_2;
+        android.view.View $r1;
+        android.support.v4.widget.ScrollerCompat $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i1 := @parameter0: int;
+
+        $i2 := @parameter1: int;
+
+        $i3 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getChildCount()>();
+
+        if $i3 != 0 goto label1;
+
+        return;
+
+     label1:
+        $l4 = staticinvoke <android.view.animation.AnimationUtils: long currentAnimationTimeMillis()>();
+
+        $l5 = $r0.<android.support.v4.widget.NestedScrollView: long mLastScroll>;
+
+        $l4_1 = $l4 - $l5;
+
+        $b0 = $l4_1 cmp 250L;
+
+        if $b0 <= 0 goto label3;
+
+        $i1_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getHeight()>();
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingBottom()>();
+
+        $i1_2 = $i1_1 - $i3_1;
+
+        $i3_2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getPaddingTop()>();
+
+        $i1_3 = $i1_2 - $i3_2;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: android.view.View getChildAt(int)>(0);
+
+        $i3_3 = virtualinvoke $r1.<android.view.View: int getHeight()>();
+
+        $i1_4 = $i3_3 - $i1_3;
+
+        $i3_4 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i1_4);
+
+        $i1_5 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i2_1 = $i1_5 + $i2;
+
+        $i2_2 = staticinvoke <java.lang.Math: int min(int,int)>($i2_1, $i3_4);
+
+        $i2_3 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i2_2);
+
+        $i2_4 = $i2_3 - $i1_5;
+
+        $r2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $i3_5 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollX()>();
+
+        virtualinvoke $r2.<android.support.v4.widget.ScrollerCompat: void startScroll(int,int,int,int)>($i3_5, $i1_5, 0, $i2_4);
+
+(0)     staticinvoke <android.support.v4.view.ViewCompat: void postInvalidateOnAnimation(android.view.View)>($r0);
+
+     label2:
+        $i3_6 = Phi($i3_5 #0, $i3 #3);
+
+        $i1_6 = Phi($i1_5 #0, $i1 #3);
+
+        $r2_1 = Phi($r2 #0, $r2_4 #3);
+
+        $i2_5 = Phi($i2_4 #0, $i2 #3);
+
+        $l4_2 = staticinvoke <android.view.animation.AnimationUtils: long currentAnimationTimeMillis()>();
+
+        $r0.<android.support.v4.widget.NestedScrollView: long mLastScroll> = $l4_2;
+
+        return;
+
+     label3:
+        $r2_2 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+        $z0 = virtualinvoke $r2_2.<android.support.v4.widget.ScrollerCompat: boolean isFinished()>();
+
+(1)     if $z0 != 0 goto label4;
+
+        $r2_3 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.widget.ScrollerCompat mScroller>;
+
+(2)     virtualinvoke $r2_3.<android.support.v4.widget.ScrollerCompat: void abortAnimation()>();
+
+     label4:
+        $r2_4 = Phi($r2_2 #1, $r2_3 #2);
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void scrollBy(int,int)>($i1, $i2);
+
+(3)     goto label2;
+    }
+
+    public final void smoothScrollTo(int, int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0, $i1, $i2, $i0_1, $i2_1, $i1_1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollX()>();
+
+        $i0_1 = $i0 - $i2;
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: int getScrollY()>();
+
+        $i1_1 = $i1 - $i2_1;
+
+        virtualinvoke $r0.<android.support.v4.widget.NestedScrollView: void smoothScrollBy(int,int)>($i0_1, $i1_1);
+
+        return;
+    }
+
+    public boolean startNestedScroll(int)
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        int $i0;
+        android.support.v4.view.NestedScrollingChildHelper $r1;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingChildHelper mChildHelper>;
+
+        $z0 = virtualinvoke $r1.<android.support.v4.view.NestedScrollingChildHelper: boolean startNestedScroll(int)>($i0);
+
+        return $z0;
+    }
+
+    public void stopNestedScroll()
+    {
+        android.support.v4.widget.NestedScrollView $r0;
+        android.support.v4.view.NestedScrollingChildHelper $r1;
+
+        $r0 := @this: android.support.v4.widget.NestedScrollView;
+
+        $r1 = $r0.<android.support.v4.widget.NestedScrollView: android.support.v4.view.NestedScrollingChildHelper mChildHelper>;
+
+        virtualinvoke $r1.<android.support.v4.view.NestedScrollingChildHelper: void stopNestedScroll()>();
+
+        return;
+    }
+}

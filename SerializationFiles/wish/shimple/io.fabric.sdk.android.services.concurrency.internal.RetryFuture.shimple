@@ -1,0 +1,228 @@
+class io.fabric.sdk.android.services.concurrency.internal.RetryFuture extends io.fabric.sdk.android.services.concurrency.internal.AbstractFuture implements java.lang.Runnable
+{
+    private final io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor executor;
+    io.fabric.sdk.android.services.concurrency.internal.RetryState retryState;
+    private final java.util.concurrent.atomic.AtomicReference runner;
+    private final java.util.concurrent.Callable task;
+
+    void <init>(java.util.concurrent.Callable, io.fabric.sdk.android.services.concurrency.internal.RetryState, io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor)
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryFuture $r0;
+        java.util.concurrent.Callable $r1;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r2;
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r3;
+        java.util.concurrent.atomic.AtomicReference $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryFuture;
+
+        $r1 := @parameter0: java.util.concurrent.Callable;
+
+        $r2 := @parameter1: io.fabric.sdk.android.services.concurrency.internal.RetryState;
+
+        $r3 := @parameter2: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.AbstractFuture: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: java.util.concurrent.Callable task> = $r1;
+
+        $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState> = $r2;
+
+        $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor executor> = $r3;
+
+        $r4 = new java.util.concurrent.atomic.AtomicReference;
+
+        specialinvoke $r4.<java.util.concurrent.atomic.AtomicReference: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: java.util.concurrent.atomic.AtomicReference runner> = $r4;
+
+        return;
+    }
+
+    private io.fabric.sdk.android.services.concurrency.internal.Backoff getBackoff()
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryFuture $r0;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r1;
+        io.fabric.sdk.android.services.concurrency.internal.Backoff $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryFuture;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState>;
+
+        $r2 = virtualinvoke $r1.<io.fabric.sdk.android.services.concurrency.internal.RetryState: io.fabric.sdk.android.services.concurrency.internal.Backoff getBackoff()>();
+
+        return $r2;
+    }
+
+    private int getRetryCount()
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryFuture $r0;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r1;
+        int $i0;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryFuture;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState>;
+
+        $i0 = virtualinvoke $r1.<io.fabric.sdk.android.services.concurrency.internal.RetryState: int getRetryCount()>();
+
+        return $i0;
+    }
+
+    private io.fabric.sdk.android.services.concurrency.internal.RetryPolicy getRetryPolicy()
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryFuture $r0;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r1;
+        io.fabric.sdk.android.services.concurrency.internal.RetryPolicy $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryFuture;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState>;
+
+        $r2 = virtualinvoke $r1.<io.fabric.sdk.android.services.concurrency.internal.RetryState: io.fabric.sdk.android.services.concurrency.internal.RetryPolicy getRetryPolicy()>();
+
+        return $r2;
+    }
+
+    protected void interruptTask()
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryFuture $r0;
+        java.util.concurrent.atomic.AtomicReference $r1;
+        java.lang.Object $r2;
+        java.lang.Thread $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryFuture;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: java.util.concurrent.atomic.AtomicReference runner>;
+
+        $r2 = virtualinvoke $r1.<java.util.concurrent.atomic.AtomicReference: java.lang.Object getAndSet(java.lang.Object)>(null);
+
+        $r3 = (java.lang.Thread) $r2;
+
+        if $r3 == null goto label1;
+
+        virtualinvoke $r3.<java.lang.Thread: void interrupt()>();
+
+     label1:
+        return;
+    }
+
+    public void run()
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryFuture $r0;
+        java.util.concurrent.Callable $r1;
+        java.lang.Throwable $r2, $r5;
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r3;
+        java.util.concurrent.TimeUnit $r4;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.util.concurrent.atomic.AtomicReference $r6, $r6_1, $r6_2, $r6_3;
+        java.lang.Thread $r7;
+        java.lang.Object $r8;
+        io.fabric.sdk.android.services.concurrency.internal.RetryPolicy $r9;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        io.fabric.sdk.android.services.concurrency.internal.Backoff $r10;
+        long $l1;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r11, $r11_1, $r11_2, $r11_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryFuture;
+
+        $z0 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: boolean isDone()>();
+
+        if $z0 != 0 goto label11;
+
+        $r6 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: java.util.concurrent.atomic.AtomicReference runner>;
+
+        $r7 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        $z0_1 = virtualinvoke $r6.<java.util.concurrent.atomic.AtomicReference: boolean compareAndSet(java.lang.Object,java.lang.Object)>(null, $r7);
+
+        if $z0_1 != 0 goto label01;
+
+        return;
+
+     label01:
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: java.util.concurrent.Callable task>;
+
+        $r8 = interfaceinvoke $r1.<java.util.concurrent.Callable: java.lang.Object call()>();
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: boolean set(java.lang.Object)>($r8);
+
+     label02:
+        $r6_1 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: java.util.concurrent.atomic.AtomicReference runner>;
+
+        virtualinvoke $r6_1.<java.util.concurrent.atomic.AtomicReference: java.lang.Object getAndSet(java.lang.Object)>(null);
+
+        return;
+
+     label03:
+(0)     $r2 := @caughtexception;
+
+     label04:
+        $r9 = specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: io.fabric.sdk.android.services.concurrency.internal.RetryPolicy getRetryPolicy()>();
+
+        $i0 = specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: int getRetryCount()>();
+
+(1)     $z0_2 = interfaceinvoke $r9.<io.fabric.sdk.android.services.concurrency.internal.RetryPolicy: boolean shouldRetry(int,java.lang.Throwable)>($i0, $r2);
+
+     label05:
+        if $z0_2 == 0 goto label08;
+
+     label06:
+        $r10 = specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: io.fabric.sdk.android.services.concurrency.internal.Backoff getBackoff()>();
+
+(2)     $i0_1 = specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: int getRetryCount()>();
+
+        $l1 = interfaceinvoke $r10.<io.fabric.sdk.android.services.concurrency.internal.Backoff: long getDelayMillis(int)>($i0_1);
+
+        $r11 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState>;
+
+(3)     $r11_1 = virtualinvoke $r11.<io.fabric.sdk.android.services.concurrency.internal.RetryState: io.fabric.sdk.android.services.concurrency.internal.RetryState nextRetryState()>();
+
+        $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState> = $r11_1;
+
+        $r3 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor executor>;
+
+        $r4 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit MILLISECONDS>;
+
+(4)     virtualinvoke $r3.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: java.util.concurrent.ScheduledFuture schedule(java.lang.Runnable,long,java.util.concurrent.TimeUnit)>($r0, $l1, $r4);
+
+     label07:
+        $r11_2 = Phi($r11_1 #4, $r11 #5);
+
+        $i0_2 = Phi($i0_1 #4, $i0 #5);
+
+        $r6_2 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: java.util.concurrent.atomic.AtomicReference runner>;
+
+        virtualinvoke $r6_2.<java.util.concurrent.atomic.AtomicReference: java.lang.Object getAndSet(java.lang.Object)>(null);
+
+        return;
+
+     label08:
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: boolean setException(java.lang.Throwable)>($r2);
+
+     label09:
+(5)     goto label07;
+
+     label10:
+        $r5 := @caughtexception;
+
+        $r11_3 = Phi($r11 #0, $r11_1 #3);
+
+        $z0_3 = Phi($z0_1 #0, $z0_2 #1);
+
+        $i0_3 = Phi($i0 #0, $i0_1 #2);
+
+        $r6_3 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: java.util.concurrent.atomic.AtomicReference runner>;
+
+        virtualinvoke $r6_3.<java.util.concurrent.atomic.AtomicReference: java.lang.Object getAndSet(java.lang.Object)>(null);
+
+        throw $r5;
+
+     label11:
+        return;
+
+        catch java.lang.Throwable from label01 to label02 with label03;
+        catch java.lang.Throwable from label04 to label05 with label10;
+        catch java.lang.Throwable from label06 to label07 with label10;
+        catch java.lang.Throwable from label08 to label09 with label10;
+    }
+}

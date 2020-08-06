@@ -1,0 +1,789 @@
+public class com.devicecollector.collectors.LocalCollector extends java.lang.Object
+{
+    private static final java.lang.String KOUNT_KEY;
+    private static final java.lang.String KOUNT_PREF_FILE;
+    private android.content.Context context;
+    private com.devicecollector.DataCollection dataCollection;
+
+    public void <init>(android.app.Activity, com.devicecollector.DataCollection)
+    {
+        com.devicecollector.collectors.LocalCollector $r0;
+        android.app.Activity $r1;
+        com.devicecollector.DataCollection $r2;
+        android.content.Context $r3;
+
+        $r0 := @this: com.devicecollector.collectors.LocalCollector;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: com.devicecollector.DataCollection;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.devicecollector.collectors.LocalCollector: com.devicecollector.DataCollection dataCollection> = $r2;
+
+        $r3 = virtualinvoke $r1.<android.app.Activity: android.content.Context getApplicationContext()>();
+
+        $r0.<com.devicecollector.collectors.LocalCollector: android.content.Context context> = $r3;
+
+        return;
+    }
+
+    private java.lang.String getPersistedDeviceCookies()
+    {
+        com.devicecollector.collectors.LocalCollector $r0;
+        android.content.Context $r1;
+        android.content.SharedPreferences $r2;
+        java.lang.String $r3;
+
+        $r0 := @this: com.devicecollector.collectors.LocalCollector;
+
+        $r1 = $r0.<com.devicecollector.collectors.LocalCollector: android.content.Context context>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("k_prefs", 0);
+
+        if $r2 == null goto label1;
+
+        $r3 = interfaceinvoke $r2.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("lic", null);
+
+        return $r3;
+
+     label1:
+        return null;
+    }
+
+    private java.util.HashMap getProxyPeircingInfo()
+    {
+        com.devicecollector.collectors.LocalCollector $r0;
+        java.util.HashMap $r1;
+        java.lang.StringBuffer $r2;
+        byte $b0;
+        java.net.SocketException $r3;
+        java.lang.SecurityException $r4;
+        int $i1, $i2, $i1_1, $i1_2, $i2_1, $i2_2, $i2_3, $i1_3, $i2_4, $i1_4, $i2_5, $i1_5, $i2_6;
+        java.util.Enumeration $r5;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        java.lang.Object $r6;
+        java.net.NetworkInterface $r7;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8;
+        java.lang.String $r9, $r13, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8;
+        byte[] $r10;
+        java.lang.Object[] $r11;
+        java.lang.Byte $r12;
+        com.devicecollector.DataCollection $r14, $r14_1, $r14_2;
+        com.devicecollector.collectors.CollectorEnum $r15, $r15_1, $r15_2;
+        com.devicecollector.collectors.SoftErrorCode $r16, $r16_1, $r16_2;
+
+        $r0 := @this: com.devicecollector.collectors.LocalCollector;
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+        $i1 = <android.os.Build$VERSION: int SDK_INT>;
+
+(0)     if $i1 <= 8 goto label21;
+
+(1)     staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("PROXY_PEIRCE", "[LocalCollector]Newer API...");
+
+     label01:
+(2)     $r5 = staticinvoke <java.net.NetworkInterface: java.util.Enumeration getNetworkInterfaces()>();
+
+     label02:
+        $z0 = Phi($z0 #2, $z0_2 #6, $z0_3 #15, $z0_3 #21);
+
+        $r9 = Phi($r9 #2, $r9 #6, $r9_2 #15, $r9_5 #21);
+
+        $i1_1 = Phi($i1 #2, $i1_1 #6, $i1_1 #15, $i1_2 #21);
+
+        $i2 = Phi($i2 #2, $i2 #6, $i2 #15, $i2_2 #21);
+
+        $r8 = Phi($r8 #2, $r8 #6, $r8_5 #15, $r8_5 #21);
+
+(3)     $z0_1 = interfaceinvoke $r5.<java.util.Enumeration: boolean hasMoreElements()>();
+
+     label03:
+(4)     if $z0_1 == 0 goto label21;
+
+     label04:
+        $r6 = interfaceinvoke $r5.<java.util.Enumeration: java.lang.Object nextElement()>();
+
+     label05:
+        $r7 = (java.net.NetworkInterface) $r6;
+
+     label06:
+(5)     $z0_2 = virtualinvoke $r7.<java.net.NetworkInterface: boolean isUp()>();
+
+     label07:
+(6)     if $z0_2 == 0 goto label02;
+
+(7)     $r8_1 = new java.lang.StringBuilder;
+
+     label08:
+        specialinvoke $r8_1.<java.lang.StringBuilder: void <init>()>();
+
+(8)     $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[LocalCollector]NETWORK:");
+
+(9)     $r9_1 = virtualinvoke $r7.<java.net.NetworkInterface: java.lang.String getName()>();
+
+(10)    $r8_3 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9_1);
+
+(11)    $r8_4 = virtualinvoke $r8_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(":");
+
+(12)    $z0_3 = virtualinvoke $r7.<java.net.NetworkInterface: boolean isVirtual()>();
+
+(13)    $r8_5 = virtualinvoke $r8_4.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0_3);
+
+(14)    $r9_2 = virtualinvoke $r8_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("NETWORK", $r9_2);
+
+        $r10 = virtualinvoke $r7.<java.net.NetworkInterface: byte[] getHardwareAddress()>();
+
+     label09:
+(15)    if $r10 == null goto label02;
+
+        $r2 = new java.lang.StringBuffer;
+
+     label10:
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+     label11:
+        $i1_2 = lengthof $r10;
+
+(16)    $i2_1 = 0;
+
+     label12:
+        $r9_3 = Phi($r9_2 #16, $r9_4 #19);
+
+        $i2_2 = Phi($i2_1 #16, $i2_3 #19);
+
+(17)    if $i2_2 >= $i1_2 goto label17;
+
+        $b0 = $r10[$i2_2];
+
+        $r11 = newarray (java.lang.Object)[1];
+
+     label13:
+        $r12 = staticinvoke <java.lang.Byte: java.lang.Byte valueOf(byte)>($b0);
+
+     label14:
+        $r11[0] = $r12;
+
+     label15:
+(18)    $r9_4 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%02X", $r11);
+
+        virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r9_4);
+
+     label16:
+        $i2_3 = $i2_2 + 1;
+
+(19)    goto label12;
+
+     label17:
+(20)    $r9_5 = virtualinvoke $r7.<java.net.NetworkInterface: java.lang.String getName()>();
+
+        $r13 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r9_5, $r13);
+
+     label18:
+(21)    goto label02;
+
+     label19:
+        $r3 := @caughtexception;
+
+        $z0_4 = Phi($z0 #1, $z0_1 #3, $z0_2 #5, $z0_3 #12);
+
+        $r9_6 = Phi($r9 #1, $r9_1 #9, $r9_2 #14, $r9_4 #18, $r9_3 #17, $r9_5 #20);
+
+        $i1_3 = Phi($i1 #1, $i1_1 #3, $i1_2 #17);
+
+        $i2_4 = Phi($i2 #1, $i2_2 #17);
+
+        $r8_6 = Phi($r8 #1, $r8_1 #7, $r8_2 #8, $r8_3 #10, $r8_4 #11, $r8_5 #13);
+
+        $r14 = $r0.<com.devicecollector.collectors.LocalCollector: com.devicecollector.DataCollection dataCollection>;
+
+        $r15 = <com.devicecollector.collectors.CollectorEnum: com.devicecollector.collectors.CollectorEnum MAC_ADDRESS>;
+
+        $r16 = <com.devicecollector.collectors.SoftErrorCode: com.devicecollector.collectors.SoftErrorCode SERVICE_UNAVAILABLE>;
+
+        virtualinvoke $r14.<com.devicecollector.DataCollection: void addError(com.devicecollector.collectors.CollectorEnum,com.devicecollector.collectors.SoftErrorCode)>($r15, $r16);
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("network_mac", "[LocalCollector]Bad socket connection, skipping");
+
+        return $r1;
+
+     label20:
+        $r4 := @caughtexception;
+
+        $z0_5 = Phi($z0 #1, $z0_1 #3, $z0_2 #5, $z0_3 #12);
+
+        $r9_7 = Phi($r9 #1, $r9_1 #9, $r9_2 #14, $r9_4 #18, $r9_3 #17, $r9_5 #20);
+
+        $i1_4 = Phi($i1 #1, $i1_1 #3, $i1_2 #17);
+
+        $i2_5 = Phi($i2 #1, $i2_2 #17);
+
+        $r8_7 = Phi($r8 #1, $r8_1 #7, $r8_2 #8, $r8_3 #10, $r8_4 #11, $r8_5 #13);
+
+        $r14_1 = $r0.<com.devicecollector.collectors.LocalCollector: com.devicecollector.DataCollection dataCollection>;
+
+        $r15_1 = <com.devicecollector.collectors.CollectorEnum: com.devicecollector.collectors.CollectorEnum MAC_ADDRESS>;
+
+        $r16_1 = <com.devicecollector.collectors.SoftErrorCode: com.devicecollector.collectors.SoftErrorCode PERMISSION_DENIED>;
+
+        virtualinvoke $r14_1.<com.devicecollector.DataCollection: void addError(com.devicecollector.collectors.CollectorEnum,com.devicecollector.collectors.SoftErrorCode)>($r15_1, $r16_1);
+
+(22)    staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("network_mac", "[LocalCollector]Permission Denied, skipping");
+
+     label21:
+        $r16_2 = Phi($r16 #0, $r16 #4, $r16_1 #22);
+
+        $z0_6 = Phi($z0 #0, $z0_1 #4, $z0_5 #22);
+
+        $r15_2 = Phi($r15 #0, $r15 #4, $r15_1 #22);
+
+        $r9_8 = Phi($r9 #0, $r9 #4, $r9_7 #22);
+
+        $r14_2 = Phi($r14 #0, $r14 #4, $r14_1 #22);
+
+        $i1_5 = Phi($i1 #0, $i1_1 #4, $i1_4 #22);
+
+        $i2_6 = Phi($i2 #0, $i2 #4, $i2_5 #22);
+
+        $r8_8 = Phi($r8 #0, $r8 #4, $r8_7 #22);
+
+        return $r1;
+
+        catch java.net.SocketException from label01 to label03 with label19;
+        catch java.lang.SecurityException from label01 to label03 with label20;
+        catch java.net.SocketException from label04 to label05 with label19;
+        catch java.lang.SecurityException from label04 to label05 with label20;
+        catch java.net.SocketException from label06 to label07 with label19;
+        catch java.lang.SecurityException from label06 to label07 with label20;
+        catch java.net.SocketException from label08 to label09 with label19;
+        catch java.lang.SecurityException from label08 to label09 with label20;
+        catch java.net.SocketException from label10 to label11 with label19;
+        catch java.lang.SecurityException from label10 to label11 with label20;
+        catch java.net.SocketException from label13 to label14 with label19;
+        catch java.lang.SecurityException from label13 to label14 with label20;
+        catch java.net.SocketException from label15 to label16 with label19;
+        catch java.lang.SecurityException from label15 to label16 with label20;
+        catch java.net.SocketException from label17 to label18 with label19;
+        catch java.lang.SecurityException from label17 to label18 with label20;
+    }
+
+    private java.util.HashMap getWifiMacInfo()
+    {
+        com.devicecollector.collectors.LocalCollector $r0;
+        java.util.HashMap $r1;
+        android.content.Context $r2;
+        java.lang.SecurityException $r3;
+        java.lang.Object $r4;
+        android.net.wifi.WifiManager $r5;
+        android.net.wifi.WifiInfo $r6;
+        java.lang.String $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+
+        $r0 := @this: com.devicecollector.collectors.LocalCollector;
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+(0)     $r2 = $r0.<com.devicecollector.collectors.LocalCollector: android.content.Context context>;
+
+     label01:
+        $r4 = virtualinvoke $r2.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("wifi");
+
+     label02:
+        $r5 = (android.net.wifi.WifiManager) $r4;
+
+     label03:
+        $r6 = virtualinvoke $r5.<android.net.wifi.WifiManager: android.net.wifi.WifiInfo getConnectionInfo()>();
+
+     label04:
+(1)     if $r6 == null goto label09;
+
+     label05:
+        $r7 = virtualinvoke $r6.<android.net.wifi.WifiInfo: java.lang.String getMacAddress()>();
+
+     label06:
+(2)     if $r7 == null goto label09;
+
+     label07:
+(3)     $r7_1 = virtualinvoke $r6.<android.net.wifi.WifiInfo: java.lang.String getMacAddress()>();
+
+(4)     $r7_2 = virtualinvoke $r7_1.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>(":", "");
+
+        virtualinvoke $r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>("wifi_mac", $r7_2);
+
+     label08:
+        return $r1;
+
+     label09:
+        $r7_3 = Phi($r7 #1, $r7 #2);
+
+(5)     staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("wifi_mac", "[LocalCollector]WIFI not enabled, skipping");
+
+     label10:
+        return $r1;
+
+     label11:
+        $r3 := @caughtexception;
+
+        $r7_4 = Phi($r7 #0, $r7_1 #3, $r7_2 #4, $r7_3 #5);
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("wifi_mac", "[LocalCollector]WIFI PERMISSION DENIED");
+
+        return $r1;
+
+        catch java.lang.SecurityException from label01 to label02 with label11;
+        catch java.lang.SecurityException from label03 to label04 with label11;
+        catch java.lang.SecurityException from label05 to label06 with label11;
+        catch java.lang.SecurityException from label07 to label08 with label11;
+        catch java.lang.SecurityException from label09 to label10 with label11;
+    }
+
+    private void saveDeviceCookies(java.lang.String)
+    {
+        com.devicecollector.collectors.LocalCollector $r0;
+        java.lang.String $r1;
+        android.content.Context $r2;
+        android.content.SharedPreferences $r3;
+        android.content.SharedPreferences$Editor $r4;
+
+        $r0 := @this: com.devicecollector.collectors.LocalCollector;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<com.devicecollector.collectors.LocalCollector: android.content.Context context>;
+
+        $r3 = virtualinvoke $r2.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("k_prefs", 0);
+
+        $r4 = interfaceinvoke $r3.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        interfaceinvoke $r4.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("lic", $r1);
+
+        interfaceinvoke $r4.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        return;
+    }
+
+    public void collectDeviceId()
+    {
+        com.devicecollector.collectors.LocalCollector $r0;
+        java.util.HashMap $r1;
+        android.content.Context $r2;
+        com.devicecollector.collectors.CollectorEnum $r3;
+        com.devicecollector.collectors.SoftErrorCode $r4;
+        java.lang.IndexOutOfBoundsException $r5;
+        java.lang.String $r6, $r8, $r10, $r12, $r10_1, $r8_1, $r8_2, $r10_2, $r8_3, $r8_4, $r8_5, $r8_6, $r10_3, $r8_7, $r8_8, $r10_4, $r12_1, $r8_9, $r8_10, $r10_5, $r12_2, $r8_11, $r10_6, $r8_12, $r8_13, $r8_14, $r10_7, $r10_8, $r8_15, $r10_9, $r8_16, $r10_10, $r10_11, $r10_12, $r10_13, $r10_14, $r8_17, $r10_15;
+        android.content.ContentResolver $r7;
+        java.lang.StringBuilder $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r9_11, $r9_12, $r9_13, $r9_14, $r9_15, $r9_16, $r9_17;
+        com.devicecollector.collectors.LocalCollector$DeviceIDType $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8, $r11_9, $r11_10, $r11_11, $r11_12, $r11_13, $r11_14, $r11_15;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i1_1, $i0_4, $i1_2, $i0_5, $i1_3, $i0_6, $i0_7, $i0_8;
+        boolean $z0;
+        java.util.UUID $r13;
+        com.devicecollector.DataCollection $r14, $r14_1, $r14_2, $r14_3;
+        com.devicecollector.DataCollection$PostElement $r15, $r15_1, $r15_2;
+
+        $r0 := @this: com.devicecollector.collectors.LocalCollector;
+
+        $r6 = specialinvoke $r0.<com.devicecollector.collectors.LocalCollector: java.lang.String getPersistedDeviceCookies()>();
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+        $r2 = $r0.<com.devicecollector.collectors.LocalCollector: android.content.Context context>;
+
+        $r7 = virtualinvoke $r2.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r8 = staticinvoke <android.provider.Settings$Secure: java.lang.String getString(android.content.ContentResolver,java.lang.String)>($r7, "android_id");
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>()>();
+
+        $r9_1 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("ANDROID_ID:");
+
+        $r9_2 = virtualinvoke $r9_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r10 = virtualinvoke $r9_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("LocalCollector", $r10);
+
+        $r11 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType ANDROID_ID>;
+
+        $r10_1 = virtualinvoke $r11.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+        $r9_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r9_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_1 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType ANDROID_ID>;
+
+        $r12 = virtualinvoke $r11_1.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+        $r9_4 = virtualinvoke $r9_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+        $r9_5 = virtualinvoke $r9_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r8_1 = virtualinvoke $r9_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r8_2 = staticinvoke <com.devicecollector.util.HashUtils: java.lang.String convertToSha256Hash(java.lang.String)>($r8_1);
+
+        virtualinvoke $r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r10_1, $r8_2);
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+(0)     if $i0 <= 8 goto label01;
+
+        $r11_2 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType ANDROID_SERIAL>;
+
+        $r10_2 = virtualinvoke $r11_2.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+        $r9_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r9_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_3 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType ANDROID_SERIAL>;
+
+        $r8_3 = virtualinvoke $r11_3.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+        $r9_7 = virtualinvoke $r9_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_3);
+
+        $r8_4 = <android.os.Build: java.lang.String SERIAL>;
+
+        $r9_8 = virtualinvoke $r9_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_4);
+
+        $r8_5 = virtualinvoke $r9_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r8_6 = staticinvoke <com.devicecollector.util.HashUtils: java.lang.String convertToSha256Hash(java.lang.String)>($r8_5);
+
+(1)     virtualinvoke $r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r10_2, $r8_6);
+
+     label01:
+        $r10_3 = Phi($r10_1 #0, $r10_2 #1);
+
+        $r11_4 = Phi($r11_1 #0, $r11_3 #1);
+
+        $r8_7 = Phi($r8_2 #0, $r8_6 #1);
+
+        $r9_9 = Phi($r9_5 #0, $r9_8 #1);
+
+        $r8_8 = virtualinvoke $r0.<com.devicecollector.collectors.LocalCollector: java.lang.String getMacArray()>();
+
+(2)     if $r8_8 == null goto label02;
+
+        $r11_5 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType MAC_HASH>;
+
+        $r10_4 = virtualinvoke $r11_5.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+        $r9_10 = new java.lang.StringBuilder;
+
+        specialinvoke $r9_10.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_6 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType MAC_HASH>;
+
+        $r12_1 = virtualinvoke $r11_6.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+        $r9_11 = virtualinvoke $r9_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12_1);
+
+        $r9_12 = virtualinvoke $r9_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_8);
+
+        $r8_9 = virtualinvoke $r9_12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r8_10 = staticinvoke <com.devicecollector.util.HashUtils: java.lang.String convertToSha256Hash(java.lang.String)>($r8_9);
+
+(3)     virtualinvoke $r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r10_4, $r8_10);
+
+     label02:
+        $r10_5 = Phi($r10_3 #2, $r10_4 #3);
+
+        $r12_2 = Phi($r12 #2, $r12_1 #3);
+
+        $r11_7 = Phi($r11_4 #2, $r11_6 #3);
+
+        $r8_11 = Phi($r8_8 #2, $r8_10 #3);
+
+        $r9_13 = Phi($r9_9 #2, $r9_12 #3);
+
+        $r10_6 = null;
+
+(4)     if $r6 == null goto label08;
+
+        $r11_8 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType UID>;
+
+        $r8_12 = virtualinvoke $r11_8.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean contains(java.lang.CharSequence)>($r8_12);
+
+(5)     if $z0 == 0 goto label08;
+
+(6)     $r11_9 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType UID>;
+
+     label03:
+(7)     $r8_13 = virtualinvoke $r11_9.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+(8)     $i0_1 = virtualinvoke $r6.<java.lang.String: int indexOf(java.lang.String)>($r8_13);
+
+     label04:
+(9)     $r11_10 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType UID>;
+
+     label05:
+(10)    $r8_14 = virtualinvoke $r11_10.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+        $i1 = virtualinvoke $r8_14.<java.lang.String: int length()>();
+
+     label06:
+        $i0_2 = $i0_1 + $i1;
+
+(11)    $i0_3 = $i0_2 + 3;
+
+     label07:
+(12)    $i1_1 = virtualinvoke $r6.<java.lang.String: int indexOf(int,int)>(34, $i0_3);
+
+(13)    $r10_7 = virtualinvoke $r6.<java.lang.String: java.lang.String substring(int,int)>($i0_3, $i1_1);
+
+     label08:
+        $i0_5 = Phi($i0 #4, $i0 #5, $i0_3 #13, $i0_4 #19);
+
+        $r10_9 = Phi($r10_6 #4, $r10_6 #5, $r10_7 #13, $r10_8 #19);
+
+        $r11_12 = Phi($r11_7 #4, $r11_8 #5, $r11_10 #13, $r11_11 #19);
+
+        $r8_16 = Phi($r8_11 #4, $r8_12 #5, $r8_14 #13, $r8_15 #19);
+
+        $i1_3 = Phi($i1 #4, $i1 #5, $i1_1 #13, $i1_2 #19);
+
+(14)    if $r10_9 != null goto label09;
+
+        $r9_14 = new java.lang.StringBuilder;
+
+        specialinvoke $r9_14.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_13 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType UID>;
+
+        $r10_10 = virtualinvoke $r11_13.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+        $r9_15 = virtualinvoke $r9_14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10_10);
+
+        $r13 = staticinvoke <java.util.UUID: java.util.UUID randomUUID()>();
+
+        $r10_11 = virtualinvoke $r13.<java.util.UUID: java.lang.String toString()>();
+
+        $r9_16 = virtualinvoke $r9_15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10_11);
+
+        $r10_12 = virtualinvoke $r9_16.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(15)    $r10_13 = staticinvoke <com.devicecollector.util.HashUtils: java.lang.String convertToSha256Hash(java.lang.String)>($r10_12);
+
+     label09:
+        $r10_14 = Phi($r10_9 #14, $r10_13 #15);
+
+        $r11_14 = Phi($r11_12 #14, $r11_13 #15);
+
+        $r9_17 = Phi($r9_13 #14, $r9_16 #15);
+
+        $r11_15 = <com.devicecollector.collectors.LocalCollector$DeviceIDType: com.devicecollector.collectors.LocalCollector$DeviceIDType UID>;
+
+        $r8_17 = virtualinvoke $r11_15.<com.devicecollector.collectors.LocalCollector$DeviceIDType: java.lang.String name()>();
+
+        virtualinvoke $r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r8_17, $r10_14);
+
+        $i0_6 = virtualinvoke $r1.<java.util.HashMap: int size()>();
+
+        if $i0_6 != 0 goto label10;
+
+        $r14 = $r0.<com.devicecollector.collectors.LocalCollector: com.devicecollector.DataCollection dataCollection>;
+
+        $r3 = <com.devicecollector.collectors.CollectorEnum: com.devicecollector.collectors.CollectorEnum DEVICE_COOKIE>;
+
+        $r4 = <com.devicecollector.collectors.SoftErrorCode: com.devicecollector.collectors.SoftErrorCode UNEXPECTED>;
+
+        virtualinvoke $r14.<com.devicecollector.DataCollection: void addError(com.devicecollector.collectors.CollectorEnum,com.devicecollector.collectors.SoftErrorCode)>($r3, $r4);
+
+        return;
+
+     label10:
+        $r10_15 = staticinvoke <com.devicecollector.util.JSONUtils: java.lang.String JSONifyMap(java.util.Map)>($r1);
+
+        $r14_1 = $r0.<com.devicecollector.collectors.LocalCollector: com.devicecollector.DataCollection dataCollection>;
+
+        $r15 = <com.devicecollector.DataCollection$PostElement: com.devicecollector.DataCollection$PostElement DEVICE_COOKIE>;
+
+        virtualinvoke $r14_1.<com.devicecollector.DataCollection: void addMobileData(com.devicecollector.DataCollection$PostElement,java.lang.String)>($r15, $r10_15);
+
+(16)    if $r6 == null goto label11;
+
+        $i0_7 = virtualinvoke $r6.<java.lang.String: int length()>();
+
+(17)    if $i0_7 <= 0 goto label11;
+
+        $r14_2 = $r0.<com.devicecollector.collectors.LocalCollector: com.devicecollector.DataCollection dataCollection>;
+
+        $r15_1 = <com.devicecollector.DataCollection$PostElement: com.devicecollector.DataCollection$PostElement OLD_DEVICE_COOKIE>;
+
+(18)    virtualinvoke $r14_2.<com.devicecollector.DataCollection: void addMobileData(com.devicecollector.DataCollection$PostElement,java.lang.String)>($r15_1, $r6);
+
+     label11:
+        $r14_3 = Phi($r14_1 #16, $r14_1 #17, $r14_2 #18);
+
+        $i0_8 = Phi($i0_6 #16, $i0_7 #17, $i0_7 #18);
+
+        $r15_2 = Phi($r15 #16, $r15 #17, $r15_1 #18);
+
+        specialinvoke $r0.<com.devicecollector.collectors.LocalCollector: void saveDeviceCookies(java.lang.String)>($r10_15);
+
+        return;
+
+     label12:
+        $r5 := @caughtexception;
+
+        $i0_4 = Phi($i0 #6, $i0_1 #8, $i0_3 #11);
+
+        $r10_8 = Phi($r10_6 #6, $r10_7 #13);
+
+        $r11_11 = Phi($r11_9 #6, $r11_10 #9);
+
+        $r8_15 = Phi($r8_12 #6, $r8_13 #7, $r8_14 #10);
+
+        $i1_2 = Phi($i1 #6, $i1_1 #12);
+
+(19)    goto label08;
+
+        catch java.lang.IndexOutOfBoundsException from label03 to label04 with label12;
+        catch java.lang.IndexOutOfBoundsException from label05 to label06 with label12;
+        catch java.lang.IndexOutOfBoundsException from label07 to label08 with label12;
+    }
+
+    public void collectOptionalInfo()
+    {
+        com.devicecollector.collectors.LocalCollector $r0;
+        com.devicecollector.DataCollection $r1;
+        com.devicecollector.DataCollection$PostElement $r2;
+        java.lang.String $r3;
+
+        $r0 := @this: com.devicecollector.collectors.LocalCollector;
+
+        $r1 = $r0.<com.devicecollector.collectors.LocalCollector: com.devicecollector.DataCollection dataCollection>;
+
+        $r2 = <com.devicecollector.DataCollection$PostElement: com.devicecollector.DataCollection$PostElement OS_VERSION>;
+
+        $r3 = <android.os.Build$VERSION: java.lang.String RELEASE>;
+
+        virtualinvoke $r1.<com.devicecollector.DataCollection: void addMobileData(com.devicecollector.DataCollection$PostElement,java.lang.String)>($r2, $r3);
+
+        return;
+    }
+
+    public void collectRequiredInfo()
+    {
+        com.devicecollector.collectors.LocalCollector $r0;
+        java.lang.String $r1;
+        com.devicecollector.DataCollection $r2, $r2_1, $r2_2;
+        com.devicecollector.DataCollection$PostElement $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.devicecollector.collectors.LocalCollector;
+
+        $r2 = $r0.<com.devicecollector.collectors.LocalCollector: com.devicecollector.DataCollection dataCollection>;
+
+        $r3 = <com.devicecollector.DataCollection$PostElement: com.devicecollector.DataCollection$PostElement SDK_TYPE>;
+
+        virtualinvoke $r2.<com.devicecollector.DataCollection: void addMobileData(com.devicecollector.DataCollection$PostElement,java.lang.String)>($r3, "A");
+
+        $r2_1 = $r0.<com.devicecollector.collectors.LocalCollector: com.devicecollector.DataCollection dataCollection>;
+
+        $r3_1 = <com.devicecollector.DataCollection$PostElement: com.devicecollector.DataCollection$PostElement SDK_VERSION>;
+
+        virtualinvoke $r2_1.<com.devicecollector.DataCollection: void addMobileData(com.devicecollector.DataCollection$PostElement,java.lang.String)>($r3_1, "2.5");
+
+        $r2_2 = $r0.<com.devicecollector.collectors.LocalCollector: com.devicecollector.DataCollection dataCollection>;
+
+        $r3_2 = <com.devicecollector.DataCollection$PostElement: com.devicecollector.DataCollection$PostElement MOBILE_MODEL>;
+
+        $r1 = <android.os.Build: java.lang.String FINGERPRINT>;
+
+        virtualinvoke $r2_2.<com.devicecollector.DataCollection: void addMobileData(com.devicecollector.DataCollection$PostElement,java.lang.String)>($r3_2, $r1);
+
+        return;
+    }
+
+    public java.lang.String getMacArray()
+    {
+        com.devicecollector.collectors.LocalCollector $r0;
+        java.util.TreeSet $r1;
+        java.lang.StringBuilder $r2, $r9, $r9_1, $r9_2, $r9_3;
+        java.util.HashMap $r3, $r4;
+        java.util.Collection $r5;
+        int $i0;
+        java.util.Iterator $r6;
+        boolean $z0;
+        java.lang.Object $r7;
+        java.lang.String $r8, $r8_1, $r8_2, $r8_3;
+
+        $r0 := @this: com.devicecollector.collectors.LocalCollector;
+
+        $r3 = specialinvoke $r0.<com.devicecollector.collectors.LocalCollector: java.util.HashMap getWifiMacInfo()>();
+
+        $r4 = specialinvoke $r0.<com.devicecollector.collectors.LocalCollector: java.util.HashMap getProxyPeircingInfo()>();
+
+        virtualinvoke $r3.<java.util.HashMap: void putAll(java.util.Map)>($r4);
+
+        $r1 = new java.util.TreeSet;
+
+        $r5 = virtualinvoke $r3.<java.util.HashMap: java.util.Collection values()>();
+
+        specialinvoke $r1.<java.util.TreeSet: void <init>(java.util.Collection)>($r5);
+
+        $i0 = interfaceinvoke $r1.<java.util.SortedSet: int size()>();
+
+        if $i0 <= 0 goto label3;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("{");
+
+(0)     $r6 = interfaceinvoke $r1.<java.util.SortedSet: java.util.Iterator iterator()>();
+
+     label1:
+        $r8 = Phi($r8 #0, $r8_2 #1);
+
+        $r9 = Phi($r9 #0, $r9_3 #1);
+
+        $z0 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r7 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r8_1 = (java.lang.String) $r7;
+
+        $r9_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r9_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r9_2 = virtualinvoke $r9_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_1);
+
+        $r9_3 = virtualinvoke $r9_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $r8_2 = virtualinvoke $r9_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_2);
+
+(1)     goto label1;
+
+     label2:
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}");
+
+        $r8_3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r8_3;
+
+     label3:
+        return null;
+    }
+}

@@ -1,0 +1,2031 @@
+final class com.crashlytics.android.core.CodedOutputStream extends java.lang.Object implements java.io.Flushable
+{
+    public static final int DEFAULT_BUFFER_SIZE;
+    public static final int LITTLE_ENDIAN_32_SIZE;
+    public static final int LITTLE_ENDIAN_64_SIZE;
+    private final byte[] buffer;
+    private final int limit;
+    private final java.io.OutputStream output;
+    private int position;
+
+    private void <init>(java.io.OutputStream, byte[])
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        java.io.OutputStream $r1;
+        byte[] $r2;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r1 := @parameter0: java.io.OutputStream;
+
+        $r2 := @parameter1: byte[];
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: java.io.OutputStream output> = $r1;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer> = $r2;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int position> = 0;
+
+        $i0 = lengthof $r2;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int limit> = $i0;
+
+        return;
+    }
+
+    private void <init>(byte[], int, int)
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        byte[] $r1;
+        int $i0, $i1, $i1_1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $i1 := @parameter1: int;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: java.io.OutputStream output> = null;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer> = $r1;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int position> = $i1;
+
+        $i1_1 = $i1 + $i0;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int limit> = $i1_1;
+
+        return;
+    }
+
+    public static int computeBoolSize(int, boolean)
+    {
+        boolean $z0;
+        int $i0, $i1, $i0_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $z0 := @parameter1: boolean;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeBoolSizeNoTag(boolean)>($z0);
+
+        $i0_2 = $i0_1 + $i1;
+
+        return $i0_2;
+    }
+
+    public static int computeBoolSizeNoTag(boolean)
+    {
+        boolean $z0;
+
+        $z0 := @parameter0: boolean;
+
+        return 1;
+    }
+
+    public static int computeBytesSize(int, com.crashlytics.android.core.ByteString)
+    {
+        com.crashlytics.android.core.ByteString $r0;
+        int $i0, $i1, $i0_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $r0 := @parameter1: com.crashlytics.android.core.ByteString;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeBytesSizeNoTag(com.crashlytics.android.core.ByteString)>($r0);
+
+        $i0_2 = $i0_1 + $i1;
+
+        return $i0_2;
+    }
+
+    public static int computeBytesSizeNoTag(com.crashlytics.android.core.ByteString)
+    {
+        com.crashlytics.android.core.ByteString $r0;
+        int $i0, $i1, $i0_1, $i0_2;
+
+        $r0 := @parameter0: com.crashlytics.android.core.ByteString;
+
+        $i0 = virtualinvoke $r0.<com.crashlytics.android.core.ByteString: int size()>();
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeRawVarint32Size(int)>($i0);
+
+        $i1 = virtualinvoke $r0.<com.crashlytics.android.core.ByteString: int size()>();
+
+        $i0_2 = $i0_1 + $i1;
+
+        return $i0_2;
+    }
+
+    public static int computeDoubleSize(int, double)
+    {
+        double $d0;
+        int $i0, $i1, $i0_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $d0 := @parameter1: double;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeDoubleSizeNoTag(double)>($d0);
+
+        $i0_2 = $i0_1 + $i1;
+
+        return $i0_2;
+    }
+
+    public static int computeDoubleSizeNoTag(double)
+    {
+        double $d0;
+
+        $d0 := @parameter0: double;
+
+        return 8;
+    }
+
+    public static int computeEnumSize(int, int)
+    {
+        int $i0, $i1, $i0_1, $i1_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeEnumSizeNoTag(int)>($i1);
+
+        $i0_2 = $i0_1 + $i1_1;
+
+        return $i0_2;
+    }
+
+    public static int computeEnumSizeNoTag(int)
+    {
+        int $i0, $i0_1;
+
+        $i0 := @parameter0: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeInt32SizeNoTag(int)>($i0);
+
+        return $i0_1;
+    }
+
+    public static int computeFixed32Size(int, int)
+    {
+        int $i0, $i1, $i0_1, $i1_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeFixed32SizeNoTag(int)>($i1);
+
+        $i0_2 = $i0_1 + $i1_1;
+
+        return $i0_2;
+    }
+
+    public static int computeFixed32SizeNoTag(int)
+    {
+        int $i0;
+
+        $i0 := @parameter0: int;
+
+        return 4;
+    }
+
+    public static int computeFixed64Size(int, long)
+    {
+        long $l0;
+        int $i1, $i2, $i1_1, $i1_2;
+
+        $i1 := @parameter0: int;
+
+        $l0 := @parameter1: long;
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i1);
+
+        $i2 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeFixed64SizeNoTag(long)>($l0);
+
+        $i1_2 = $i1_1 + $i2;
+
+        return $i1_2;
+    }
+
+    public static int computeFixed64SizeNoTag(long)
+    {
+        long $l0;
+
+        $l0 := @parameter0: long;
+
+        return 8;
+    }
+
+    public static int computeFloatSize(int, float)
+    {
+        float $f0;
+        int $i0, $i1, $i0_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $f0 := @parameter1: float;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeFloatSizeNoTag(float)>($f0);
+
+        $i0_2 = $i0_1 + $i1;
+
+        return $i0_2;
+    }
+
+    public static int computeFloatSizeNoTag(float)
+    {
+        float $f0;
+
+        $f0 := @parameter0: float;
+
+        return 4;
+    }
+
+    public static int computeInt32Size(int, int)
+    {
+        int $i0, $i1, $i0_1, $i1_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeInt32SizeNoTag(int)>($i1);
+
+        $i0_2 = $i0_1 + $i1_1;
+
+        return $i0_2;
+    }
+
+    public static int computeInt32SizeNoTag(int)
+    {
+        int $i0, $i0_1;
+
+        $i0 := @parameter0: int;
+
+        if $i0 < 0 goto label1;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeRawVarint32Size(int)>($i0);
+
+        return $i0_1;
+
+     label1:
+        return 10;
+    }
+
+    public static int computeInt64Size(int, long)
+    {
+        long $l0;
+        int $i1, $i2, $i1_1, $i1_2;
+
+        $i1 := @parameter0: int;
+
+        $l0 := @parameter1: long;
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i1);
+
+        $i2 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeInt64SizeNoTag(long)>($l0);
+
+        $i1_2 = $i1_1 + $i2;
+
+        return $i1_2;
+    }
+
+    public static int computeInt64SizeNoTag(long)
+    {
+        long $l0;
+        int $i1;
+
+        $l0 := @parameter0: long;
+
+        $i1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeRawVarint64Size(long)>($l0);
+
+        return $i1;
+    }
+
+    static int computePreferredBufferSize(int)
+    {
+        int $i0;
+
+        $i0 := @parameter0: int;
+
+        if $i0 <= 4096 goto label1;
+
+        return 4096;
+
+     label1:
+        return $i0;
+    }
+
+    public static int computeRawMessageSetExtensionSize(int, com.crashlytics.android.core.ByteString)
+    {
+        com.crashlytics.android.core.ByteString $r0;
+        int $i0, $i1, $i1_1, $i0_1, $i0_2, $i1_2, $i0_3;
+
+        $i0 := @parameter0: int;
+
+        $r0 := @parameter1: com.crashlytics.android.core.ByteString;
+
+        $i1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>(1);
+
+        $i1_1 = $i1 * 2;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeUInt32Size(int,int)>(2, $i0);
+
+        $i0_2 = $i1_1 + $i0_1;
+
+        $i1_2 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeBytesSize(int,com.crashlytics.android.core.ByteString)>(3, $r0);
+
+        $i0_3 = $i0_2 + $i1_2;
+
+        return $i0_3;
+    }
+
+    public static int computeRawVarint32Size(int)
+    {
+        int $i0, $i1, $i1_1, $i1_2, $i0_1;
+
+        $i0 := @parameter0: int;
+
+        $i1 = $i0 & -128;
+
+        if $i1 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        $i1_1 = $i0 & -16384;
+
+        if $i1_1 != 0 goto label2;
+
+        return 2;
+
+     label2:
+        $i1_2 = -2097152 & $i0;
+
+        if $i1_2 != 0 goto label3;
+
+        return 3;
+
+     label3:
+        $i0_1 = -268435456 & $i0;
+
+        if $i0_1 != 0 goto label4;
+
+        return 4;
+
+     label4:
+        return 5;
+    }
+
+    public static int computeRawVarint64Size(long)
+    {
+        long $l0, $l1, $l1_1, $l1_2, $l1_3, $l1_4, $l1_5, $l1_6, $l1_7, $l0_1;
+        byte $b2, $b2_1, $b2_2, $b2_3, $b2_4, $b2_5, $b2_6, $b2_7, $b2_8;
+
+        $l0 := @parameter0: long;
+
+        $l1 = -128L & $l0;
+
+        $b2 = $l1 cmp 0L;
+
+        if $b2 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        $l1_1 = -16384L & $l0;
+
+        $b2_1 = $l1_1 cmp 0L;
+
+        if $b2_1 != 0 goto label2;
+
+        return 2;
+
+     label2:
+        $l1_2 = -2097152L & $l0;
+
+        $b2_2 = $l1_2 cmp 0L;
+
+        if $b2_2 != 0 goto label3;
+
+        return 3;
+
+     label3:
+        $l1_3 = -268435456L & $l0;
+
+        $b2_3 = $l1_3 cmp 0L;
+
+        if $b2_3 != 0 goto label4;
+
+        return 4;
+
+     label4:
+        $l1_4 = -34359738368L & $l0;
+
+        $b2_4 = $l1_4 cmp 0L;
+
+        if $b2_4 != 0 goto label5;
+
+        return 5;
+
+     label5:
+        $l1_5 = -4398046511104L & $l0;
+
+        $b2_5 = $l1_5 cmp 0L;
+
+        if $b2_5 != 0 goto label6;
+
+        return 6;
+
+     label6:
+        $l1_6 = -562949953421312L & $l0;
+
+        $b2_6 = $l1_6 cmp 0L;
+
+        if $b2_6 != 0 goto label7;
+
+        return 7;
+
+     label7:
+        $l1_7 = -72057594037927936L & $l0;
+
+        $b2_7 = $l1_7 cmp 0L;
+
+        if $b2_7 != 0 goto label8;
+
+        return 8;
+
+     label8:
+        $l0_1 = -9223372036854775808L & $l0;
+
+        $b2_8 = $l0_1 cmp 0L;
+
+        if $b2_8 != 0 goto label9;
+
+        return 9;
+
+     label9:
+        return 10;
+    }
+
+    public static int computeSFixed32Size(int, int)
+    {
+        int $i0, $i1, $i0_1, $i1_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeSFixed32SizeNoTag(int)>($i1);
+
+        $i0_2 = $i0_1 + $i1_1;
+
+        return $i0_2;
+    }
+
+    public static int computeSFixed32SizeNoTag(int)
+    {
+        int $i0;
+
+        $i0 := @parameter0: int;
+
+        return 4;
+    }
+
+    public static int computeSFixed64Size(int, long)
+    {
+        long $l0;
+        int $i1, $i2, $i1_1, $i1_2;
+
+        $i1 := @parameter0: int;
+
+        $l0 := @parameter1: long;
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i1);
+
+        $i2 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeSFixed64SizeNoTag(long)>($l0);
+
+        $i1_2 = $i1_1 + $i2;
+
+        return $i1_2;
+    }
+
+    public static int computeSFixed64SizeNoTag(long)
+    {
+        long $l0;
+
+        $l0 := @parameter0: long;
+
+        return 8;
+    }
+
+    public static int computeSInt32Size(int, int)
+    {
+        int $i0, $i1, $i0_1, $i1_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeSInt32SizeNoTag(int)>($i1);
+
+        $i0_2 = $i0_1 + $i1_1;
+
+        return $i0_2;
+    }
+
+    public static int computeSInt32SizeNoTag(int)
+    {
+        int $i0, $i0_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int encodeZigZag32(int)>($i0);
+
+        $i0_2 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeRawVarint32Size(int)>($i0_1);
+
+        return $i0_2;
+    }
+
+    public static int computeSInt64Size(int, long)
+    {
+        long $l0;
+        int $i1, $i2, $i1_1, $i1_2;
+
+        $i1 := @parameter0: int;
+
+        $l0 := @parameter1: long;
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i1);
+
+        $i2 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeSInt64SizeNoTag(long)>($l0);
+
+        $i1_2 = $i1_1 + $i2;
+
+        return $i1_2;
+    }
+
+    public static int computeSInt64SizeNoTag(long)
+    {
+        long $l0, $l0_1;
+        int $i1;
+
+        $l0 := @parameter0: long;
+
+        $l0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: long encodeZigZag64(long)>($l0);
+
+        $i1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeRawVarint64Size(long)>($l0_1);
+
+        return $i1;
+    }
+
+    public static int computeStringSize(int, java.lang.String)
+    {
+        java.lang.String $r0;
+        int $i0, $i1, $i0_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $r0 := @parameter1: java.lang.String;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeStringSizeNoTag(java.lang.String)>($r0);
+
+        $i0_2 = $i0_1 + $i1;
+
+        return $i0_2;
+    }
+
+    public static int computeStringSizeNoTag(java.lang.String)
+    {
+        java.lang.String $r0;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3;
+        java.io.UnsupportedEncodingException $r1;
+        java.lang.RuntimeException $r2;
+        byte[] $r3;
+
+(0)     $r0 := @parameter0: java.lang.String;
+
+     label1:
+        $r3 = virtualinvoke $r0.<java.lang.String: byte[] getBytes(java.lang.String)>("UTF-8");
+
+     label2:
+        $i0 = lengthof $r3;
+
+     label3:
+        $i1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeRawVarint32Size(int)>($i0);
+
+     label4:
+        $i0_1 = lengthof $r3;
+
+        $i0_2 = $i1 + $i0_1;
+
+        return $i0_2;
+
+     label5:
+        $r1 := @caughtexception;
+
+        $i0_3 = Phi($i0 #0);
+
+        $r2 = new java.lang.RuntimeException;
+
+        specialinvoke $r2.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("UTF-8 not supported.", $r1);
+
+        throw $r2;
+
+        catch java.io.UnsupportedEncodingException from label1 to label2 with label5;
+        catch java.io.UnsupportedEncodingException from label3 to label4 with label5;
+    }
+
+    public static int computeTagSize(int)
+    {
+        int $i0, $i0_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.WireFormat: int makeTag(int,int)>($i0, 0);
+
+        $i0_2 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeRawVarint32Size(int)>($i0_1);
+
+        return $i0_2;
+    }
+
+    public static int computeUInt32Size(int, int)
+    {
+        int $i0, $i1, $i0_1, $i1_1, $i0_2;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i0);
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeUInt32SizeNoTag(int)>($i1);
+
+        $i0_2 = $i0_1 + $i1_1;
+
+        return $i0_2;
+    }
+
+    public static int computeUInt32SizeNoTag(int)
+    {
+        int $i0, $i0_1;
+
+        $i0 := @parameter0: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeRawVarint32Size(int)>($i0);
+
+        return $i0_1;
+    }
+
+    public static int computeUInt64Size(int, long)
+    {
+        long $l0;
+        int $i1, $i2, $i1_1, $i1_2;
+
+        $i1 := @parameter0: int;
+
+        $l0 := @parameter1: long;
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeTagSize(int)>($i1);
+
+        $i2 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeUInt64SizeNoTag(long)>($l0);
+
+        $i1_2 = $i1_1 + $i2;
+
+        return $i1_2;
+    }
+
+    public static int computeUInt64SizeNoTag(long)
+    {
+        long $l0;
+        int $i1;
+
+        $l0 := @parameter0: long;
+
+        $i1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int computeRawVarint64Size(long)>($l0);
+
+        return $i1;
+    }
+
+    public static int encodeZigZag32(int)
+    {
+        int $i0, $i1, $i1_1, $i1_2;
+
+        $i1 := @parameter0: int;
+
+        $i0 = $i1 << 1;
+
+        $i1_1 = $i1 >> 31;
+
+        $i1_2 = $i0 ^ $i1_1;
+
+        return $i1_2;
+    }
+
+    public static long encodeZigZag64(long)
+    {
+        long $l0, $l1, $l1_1, $l1_2;
+
+        $l1 := @parameter0: long;
+
+        $l0 = $l1 << 1;
+
+        $l1_1 = $l1 >> 63;
+
+        $l1_2 = $l0 ^ $l1_1;
+
+        return $l1_2;
+    }
+
+    public static com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream)
+    {
+        java.io.OutputStream $r0;
+        com.crashlytics.android.core.CodedOutputStream $r1;
+
+        $r0 := @parameter0: java.io.OutputStream;
+
+        $r1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream,int)>($r0, 4096);
+
+        return $r1;
+    }
+
+    public static com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream, int)
+    {
+        java.io.OutputStream $r0;
+        int $i0;
+        com.crashlytics.android.core.CodedOutputStream $r1;
+        byte[] $r2;
+
+        $r0 := @parameter0: java.io.OutputStream;
+
+        $i0 := @parameter1: int;
+
+        $r1 = new com.crashlytics.android.core.CodedOutputStream;
+
+        $r2 = newarray (byte)[$i0];
+
+        specialinvoke $r1.<com.crashlytics.android.core.CodedOutputStream: void <init>(java.io.OutputStream,byte[])>($r0, $r2);
+
+        return $r1;
+    }
+
+    public static com.crashlytics.android.core.CodedOutputStream newInstance(byte[])
+    {
+        byte[] $r0;
+        int $i0;
+        com.crashlytics.android.core.CodedOutputStream $r1;
+
+        $r0 := @parameter0: byte[];
+
+        $i0 = lengthof $r0;
+
+        $r1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(byte[],int,int)>($r0, 0, $i0);
+
+        return $r1;
+    }
+
+    public static com.crashlytics.android.core.CodedOutputStream newInstance(byte[], int, int)
+    {
+        byte[] $r0;
+        int $i0, $i1;
+        com.crashlytics.android.core.CodedOutputStream $r1;
+
+        $r0 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r1 = new com.crashlytics.android.core.CodedOutputStream;
+
+        specialinvoke $r1.<com.crashlytics.android.core.CodedOutputStream: void <init>(byte[],int,int)>($r0, $i0, $i1);
+
+        return $r1;
+    }
+
+    private void refreshBuffer() throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        com.crashlytics.android.core.CodedOutputStream$OutOfSpaceException $r1;
+        byte[] $r2;
+        int $i0;
+        java.io.OutputStream $r3, $r3_1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r3 = $r0.<com.crashlytics.android.core.CodedOutputStream: java.io.OutputStream output>;
+
+        if $r3 != null goto label1;
+
+        $r1 = new com.crashlytics.android.core.CodedOutputStream$OutOfSpaceException;
+
+        specialinvoke $r1.<com.crashlytics.android.core.CodedOutputStream$OutOfSpaceException: void <init>()>();
+
+        throw $r1;
+
+     label1:
+        $r3_1 = $r0.<com.crashlytics.android.core.CodedOutputStream: java.io.OutputStream output>;
+
+        $r2 = $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer>;
+
+        $i0 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        virtualinvoke $r3_1.<java.io.OutputStream: void write(byte[],int,int)>($r2, 0, $i0);
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int position> = 0;
+
+        return;
+    }
+
+    public void checkNoSpaceLeft()
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        java.lang.IllegalStateException $r1;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 = virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: int spaceLeft()>();
+
+        if $i0 == 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Did not write as much data as expected.");
+
+        throw $r1;
+
+     label1:
+        return;
+    }
+
+    public void flush() throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        java.io.OutputStream $r1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r1 = $r0.<com.crashlytics.android.core.CodedOutputStream: java.io.OutputStream output>;
+
+        if $r1 == null goto label1;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void refreshBuffer()>();
+
+     label1:
+        return;
+    }
+
+    public int spaceLeft()
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        java.io.OutputStream $r1;
+        int $i0, $i1, $i0_1;
+        java.lang.UnsupportedOperationException $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r1 = $r0.<com.crashlytics.android.core.CodedOutputStream: java.io.OutputStream output>;
+
+        if $r1 != null goto label1;
+
+        $i1 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        $i0 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        $i0_1 = $i1 - $i0;
+
+        return $i0_1;
+
+     label1:
+        $r2 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r2.<java.lang.UnsupportedOperationException: void <init>(java.lang.String)>("spaceLeft() can only be called on CodedOutputStreams that are writing to a flat array.");
+
+        throw $r2;
+    }
+
+    public void writeBool(int, boolean) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $z0 := @parameter1: boolean;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeBoolNoTag(boolean)>($z0);
+
+        return;
+    }
+
+    public void writeBoolNoTag(boolean) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        boolean $z0;
+        byte $b0, $b0_1, $b0_2;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $z0 := @parameter0: boolean;
+
+        if $z0 == 0 goto label2;
+
+(0)     $b0 = 1;
+
+     label1:
+        $b0_1 = Phi($b0 #0, $b0_2 #1);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($b0_1);
+
+        return;
+
+     label2:
+        $b0_2 = 0;
+
+(1)     goto label1;
+    }
+
+    public void writeBytes(int, com.crashlytics.android.core.ByteString) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        com.crashlytics.android.core.ByteString $r1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: com.crashlytics.android.core.ByteString;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 2);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeBytesNoTag(com.crashlytics.android.core.ByteString)>($r1);
+
+        return;
+    }
+
+    public void writeBytesNoTag(com.crashlytics.android.core.ByteString) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        com.crashlytics.android.core.ByteString $r1;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r1 := @parameter0: com.crashlytics.android.core.ByteString;
+
+        $i0 = virtualinvoke $r1.<com.crashlytics.android.core.ByteString: int size()>();
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawVarint32(int)>($i0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawBytes(com.crashlytics.android.core.ByteString)>($r1);
+
+        return;
+    }
+
+    public void writeDouble(int, double) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        double $d0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $d0 := @parameter1: double;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 1);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeDoubleNoTag(double)>($d0);
+
+        return;
+    }
+
+    public void writeDoubleNoTag(double) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        double $d0;
+        long $l0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $d0 := @parameter0: double;
+
+        $l0 = staticinvoke <java.lang.Double: long doubleToRawLongBits(double)>($d0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawLittleEndian64(long)>($l0);
+
+        return;
+    }
+
+    public void writeEnum(int, int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0, $i1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeEnumNoTag(int)>($i1);
+
+        return;
+    }
+
+    public void writeEnumNoTag(int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeInt32NoTag(int)>($i0);
+
+        return;
+    }
+
+    public void writeFixed32(int, int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0, $i1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 5);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeFixed32NoTag(int)>($i1);
+
+        return;
+    }
+
+    public void writeFixed32NoTag(int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawLittleEndian32(int)>($i0);
+
+        return;
+    }
+
+    public void writeFixed64(int, long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        long $l1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $l1 := @parameter1: long;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 1);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeFixed64NoTag(long)>($l1);
+
+        return;
+    }
+
+    public void writeFixed64NoTag(long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        long $l0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $l0 := @parameter0: long;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawLittleEndian64(long)>($l0);
+
+        return;
+    }
+
+    public void writeFloat(int, float) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        float $f0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $f0 := @parameter1: float;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 5);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeFloatNoTag(float)>($f0);
+
+        return;
+    }
+
+    public void writeFloatNoTag(float) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        float $f0;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $f0 := @parameter0: float;
+
+        $i0 = staticinvoke <java.lang.Float: int floatToRawIntBits(float)>($f0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawLittleEndian32(int)>($i0);
+
+        return;
+    }
+
+    public void writeInt32(int, int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0, $i1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeInt32NoTag(int)>($i1);
+
+        return;
+    }
+
+    public void writeInt32NoTag(int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        long $l1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        if $i0 < 0 goto label1;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawVarint32(int)>($i0);
+
+        return;
+
+     label1:
+        $l1 = (long) $i0;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawVarint64(long)>($l1);
+
+        return;
+    }
+
+    public void writeInt64(int, long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        long $l1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $l1 := @parameter1: long;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeInt64NoTag(long)>($l1);
+
+        return;
+    }
+
+    public void writeInt64NoTag(long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        long $l0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $l0 := @parameter0: long;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawVarint64(long)>($l0);
+
+        return;
+    }
+
+    public void writeRawByte(byte) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        byte $b0;
+        byte[] $r1;
+        int $i1, $i2, $i1_1, $i2_1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $b0 := @parameter0: byte;
+
+        $i1 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        $i2 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        if $i1 != $i2 goto label1;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void refreshBuffer()>();
+
+     label1:
+        $r1 = $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer>;
+
+        $i1_1 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        $i2_1 = $i1_1 + 1;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int position> = $i2_1;
+
+        $r1[$i1_1] = $b0;
+
+        return;
+    }
+
+    public void writeRawByte(int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        byte $b1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $b1 = (byte) $i0;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(byte)>($b1);
+
+        return;
+    }
+
+    public void writeRawBytes(com.crashlytics.android.core.ByteString) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        com.crashlytics.android.core.ByteString $r1;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r1 := @parameter0: com.crashlytics.android.core.ByteString;
+
+        $i0 = virtualinvoke $r1.<com.crashlytics.android.core.ByteString: int size()>();
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawBytes(com.crashlytics.android.core.ByteString,int,int)>($r1, 0, $i0);
+
+        return;
+    }
+
+    public void writeRawBytes(com.crashlytics.android.core.ByteString, int, int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        com.crashlytics.android.core.ByteString $r1;
+        long $l0, $l6, $l6_1;
+        byte $b1;
+        java.io.OutputStream $r2;
+        int $i2, $i3, $i4, $i5, $i4_1, $i4_2, $i2_1, $i2_2, $i4_3, $i5_1, $i5_2, $i4_4, $i4_5, $i2_3, $i3_1, $i3_2, $i4_6, $i2_4, $i3_3, $i3_4, $i3_5, $i4_7, $i2_5;
+        byte[] $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        java.io.InputStream $r4;
+        java.lang.IllegalStateException $r5, $r5_1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r1 := @parameter0: com.crashlytics.android.core.ByteString;
+
+        $i2 := @parameter1: int;
+
+        $i3 := @parameter2: int;
+
+        $i4 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        $i5 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        $i4_1 = $i4 - $i5;
+
+        if $i4_1 < $i3 goto label1;
+
+        $r3 = $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer>;
+
+        $i4_2 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        virtualinvoke $r1.<com.crashlytics.android.core.ByteString: void copyTo(byte[],int,int,int)>($r3, $i2, $i4_2, $i3);
+
+        $i2_1 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        $i2_2 = $i2_1 + $i3;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int position> = $i2_2;
+
+        return;
+
+     label1:
+        $i4_3 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        $i5_1 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        $i5_2 = $i4_3 - $i5_1;
+
+        $r3_1 = $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer>;
+
+        $i4_4 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        virtualinvoke $r1.<com.crashlytics.android.core.ByteString: void copyTo(byte[],int,int,int)>($r3_1, $i2, $i4_4, $i5_2);
+
+        $i4_5 = $i2 + $i5_2;
+
+        $i2_3 = $i3 - $i5_2;
+
+        $i3_1 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int position> = $i3_1;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void refreshBuffer()>();
+
+        $i3_2 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        if $i2_3 > $i3_2 goto label2;
+
+        $r3_2 = $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer>;
+
+        virtualinvoke $r1.<com.crashlytics.android.core.ByteString: void copyTo(byte[],int,int,int)>($r3_2, $i4_5, 0, $i2_3);
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int position> = $i2_3;
+
+        return;
+
+     label2:
+        $r4 = virtualinvoke $r1.<com.crashlytics.android.core.ByteString: java.io.InputStream newInput()>();
+
+        $l0 = (long) $i4_5;
+
+        $l6 = (long) $i4_5;
+
+        $l6_1 = virtualinvoke $r4.<java.io.InputStream: long skip(long)>($l6);
+
+        $b1 = $l0 cmp $l6_1;
+
+(0)     if $b1 == 0 goto label4;
+
+        $r5 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Skip failed.");
+
+        throw $r5;
+
+     label3:
+        $r2 = $r0.<com.crashlytics.android.core.CodedOutputStream: java.io.OutputStream output>;
+
+        $r3_5 = $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer>;
+
+        virtualinvoke $r2.<java.io.OutputStream: void write(byte[],int,int)>($r3_5, 0, $i4_7);
+
+(1)     $i2_5 = $i2_4 - $i4_7;
+
+     label4:
+        $i4_6 = Phi($i4_5 #0, $i4_7 #1);
+
+        $i2_4 = Phi($i2_3 #0, $i2_5 #1);
+
+        $r3_3 = Phi($r3_1 #0, $r3_5 #1);
+
+        $i3_3 = Phi($i3_2 #0, $i3_5 #1);
+
+        if $i2_4 <= 0 goto label5;
+
+        $i3_4 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        $i3_5 = staticinvoke <java.lang.Math: int min(int,int)>($i2_4, $i3_4);
+
+        $r3_4 = $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer>;
+
+        $i4_7 = virtualinvoke $r4.<java.io.InputStream: int read(byte[],int,int)>($r3_4, 0, $i3_5);
+
+        if $i4_7 == $i3_5 goto label3;
+
+        $r5_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Read failed.");
+
+        throw $r5_1;
+
+     label5:
+        return;
+    }
+
+    public void writeRawBytes(byte[]) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        byte[] $r1;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 = lengthof $r1;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawBytes(byte[],int,int)>($r1, 0, $i0);
+
+        return;
+    }
+
+    public void writeRawBytes(byte[], int, int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        byte[] $r1, $r3, $r3_1, $r3_2;
+        java.io.OutputStream $r2;
+        int $i0, $i1, $i2, $i3, $i2_1, $i2_2, $i0_1, $i0_2, $i2_3, $i3_1, $i2_4, $i3_2, $i0_3, $i1_1, $i2_5, $i2_6;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        $i3 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        $i2_1 = $i2 - $i3;
+
+        if $i2_1 < $i1 goto label1;
+
+        $r3 = $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer>;
+
+        $i2_2 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r1, $i0, $r3, $i2_2, $i1);
+
+        $i0_1 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        $i0_2 = $i0_1 + $i1;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int position> = $i0_2;
+
+        return;
+
+     label1:
+        $i2_3 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        $i3_1 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        $i2_4 = $i2_3 - $i3_1;
+
+        $r3_1 = $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer>;
+
+        $i3_2 = $r0.<com.crashlytics.android.core.CodedOutputStream: int position>;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r1, $i0, $r3_1, $i3_2, $i2_4);
+
+        $i0_3 = $i0 + $i2_4;
+
+        $i1_1 = $i1 - $i2_4;
+
+        $i2_5 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int position> = $i2_5;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void refreshBuffer()>();
+
+        $i2_6 = $r0.<com.crashlytics.android.core.CodedOutputStream: int limit>;
+
+        if $i1_1 > $i2_6 goto label2;
+
+        $r3_2 = $r0.<com.crashlytics.android.core.CodedOutputStream: byte[] buffer>;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r1, $i0_3, $r3_2, 0, $i1_1);
+
+        $r0.<com.crashlytics.android.core.CodedOutputStream: int position> = $i1_1;
+
+        return;
+
+     label2:
+        $r2 = $r0.<com.crashlytics.android.core.CodedOutputStream: java.io.OutputStream output>;
+
+        virtualinvoke $r2.<java.io.OutputStream: void write(byte[],int,int)>($r1, $i0_3, $i1_1);
+
+        return;
+    }
+
+    public void writeRawLittleEndian32(int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3, $i1_4, $i0_1, $i0_2;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $i1 = $i0 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1);
+
+        $i1_1 = $i0 >> 8;
+
+        $i1_2 = $i1_1 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_2);
+
+        $i1_3 = $i0 >> 16;
+
+        $i1_4 = $i1_3 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_4);
+
+        $i0_1 = $i0 >> 24;
+
+        $i0_2 = $i0_1 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i0_2);
+
+        return;
+    }
+
+    public void writeRawLittleEndian64(long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        long $l0, $l2, $l2_1, $l2_2, $l2_3, $l2_4, $l2_5, $l0_1;
+        int $i1, $i1_1, $i1_2, $i1_3, $i1_4, $i1_5, $i1_6, $i1_7, $i1_8, $i1_9, $i1_10, $i1_11, $i1_12, $i1_13, $i1_14, $i1_15;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $l0 := @parameter0: long;
+
+        $i1 = (int) $l0;
+
+        $i1_1 = $i1 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_1);
+
+        $l2 = $l0 >> 8;
+
+        $i1_2 = (int) $l2;
+
+        $i1_3 = $i1_2 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_3);
+
+        $l2_1 = $l0 >> 16;
+
+        $i1_4 = (int) $l2_1;
+
+        $i1_5 = $i1_4 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_5);
+
+        $l2_2 = $l0 >> 24;
+
+        $i1_6 = (int) $l2_2;
+
+        $i1_7 = $i1_6 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_7);
+
+        $l2_3 = $l0 >> 32;
+
+        $i1_8 = (int) $l2_3;
+
+        $i1_9 = $i1_8 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_9);
+
+        $l2_4 = $l0 >> 40;
+
+        $i1_10 = (int) $l2_4;
+
+        $i1_11 = $i1_10 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_11);
+
+        $l2_5 = $l0 >> 48;
+
+        $i1_12 = (int) $l2_5;
+
+        $i1_13 = $i1_12 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_13);
+
+        $l0_1 = $l0 >> 56;
+
+        $i1_14 = (int) $l0_1;
+
+        $i1_15 = $i1_14 & 255;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_15);
+
+        return;
+    }
+
+    public void writeRawMessageSetExtension(int, com.crashlytics.android.core.ByteString) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        com.crashlytics.android.core.ByteString $r1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: com.crashlytics.android.core.ByteString;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>(1, 3);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeUInt32(int,int)>(2, $i0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeBytes(int,com.crashlytics.android.core.ByteString)>(3, $r1);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>(1, 4);
+
+        return;
+    }
+
+    public void writeRawVarint32(int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0, $i1, $i0_1, $i1_1, $i1_2, $i1_3, $i0_2;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+(0)     $i0 := @parameter0: int;
+
+     label1:
+        $i1 = Phi($i1 #0, $i1_3 #1);
+
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        $i1_1 = $i0_1 & -128;
+
+        if $i1_1 != 0 goto label2;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i0_1);
+
+        return;
+
+     label2:
+        $i1_2 = $i0_1 & 127;
+
+        $i1_3 = $i1_2 | 128;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i1_3);
+
+        $i0_2 = $i0_1 >>> 7;
+
+(1)     goto label1;
+    }
+
+    public void writeRawVarint64(long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        long $l0, $l2, $l2_1, $l2_2;
+        byte $b1;
+        int $i3, $i3_1, $i3_2, $i3_3, $i3_4;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+(0)     $l2 := @parameter0: long;
+
+     label1:
+        $i3 = Phi($i3 #0, $i3_4 #1);
+
+        $l2_1 = Phi($l2 #0, $l2_2 #1);
+
+        $l0 = -128L & $l2_1;
+
+        $b1 = $l0 cmp 0L;
+
+        if $b1 != 0 goto label2;
+
+        $i3_1 = (int) $l2_1;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i3_1);
+
+        return;
+
+     label2:
+        $i3_2 = (int) $l2_1;
+
+        $i3_3 = $i3_2 & 127;
+
+        $i3_4 = $i3_3 | 128;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawByte(int)>($i3_4);
+
+        $l2_2 = $l2_1 >>> 7;
+
+(1)     goto label1;
+    }
+
+    public void writeSFixed32(int, int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0, $i1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 5);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeSFixed32NoTag(int)>($i1);
+
+        return;
+    }
+
+    public void writeSFixed32NoTag(int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawLittleEndian32(int)>($i0);
+
+        return;
+    }
+
+    public void writeSFixed64(int, long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        long $l1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $l1 := @parameter1: long;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 1);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeSFixed64NoTag(long)>($l1);
+
+        return;
+    }
+
+    public void writeSFixed64NoTag(long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        long $l0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $l0 := @parameter0: long;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawLittleEndian64(long)>($l0);
+
+        return;
+    }
+
+    public void writeSInt32(int, int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0, $i1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeSInt32NoTag(int)>($i1);
+
+        return;
+    }
+
+    public void writeSInt32NoTag(int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0, $i0_1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $i0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: int encodeZigZag32(int)>($i0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawVarint32(int)>($i0_1);
+
+        return;
+    }
+
+    public void writeSInt64(int, long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        long $l1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $l1 := @parameter1: long;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeSInt64NoTag(long)>($l1);
+
+        return;
+    }
+
+    public void writeSInt64NoTag(long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        long $l0, $l0_1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $l0 := @parameter0: long;
+
+        $l0_1 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: long encodeZigZag64(long)>($l0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawVarint64(long)>($l0_1);
+
+        return;
+    }
+
+    public void writeString(int, java.lang.String) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 2);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeStringNoTag(java.lang.String)>($r1);
+
+        return;
+    }
+
+    public void writeStringNoTag(java.lang.String) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        java.lang.String $r1;
+        int $i0;
+        byte[] $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke $r1.<java.lang.String: byte[] getBytes(java.lang.String)>("UTF-8");
+
+        $i0 = lengthof $r2;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawVarint32(int)>($i0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawBytes(byte[])>($r2);
+
+        return;
+    }
+
+    public void writeTag(int, int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0, $i1, $i1_1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i1 := @parameter0: int;
+
+        $i0 := @parameter1: int;
+
+        $i1_1 = staticinvoke <com.crashlytics.android.core.WireFormat: int makeTag(int,int)>($i1, $i0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawVarint32(int)>($i1_1);
+
+        return;
+    }
+
+    public void writeUInt32(int, int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0, $i1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeUInt32NoTag(int)>($i1);
+
+        return;
+    }
+
+    public void writeUInt32NoTag(int) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawVarint32(int)>($i0);
+
+        return;
+    }
+
+    public void writeUInt64(int, long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        int $i0;
+        long $l1;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $l1 := @parameter1: long;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeTag(int,int)>($i0, 0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeUInt64NoTag(long)>($l1);
+
+        return;
+    }
+
+    public void writeUInt64NoTag(long) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CodedOutputStream $r0;
+        long $l0;
+
+        $r0 := @this: com.crashlytics.android.core.CodedOutputStream;
+
+        $l0 := @parameter0: long;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CodedOutputStream: void writeRawVarint64(long)>($l0);
+
+        return;
+    }
+}

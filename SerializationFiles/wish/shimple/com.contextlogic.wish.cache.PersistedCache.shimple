@@ -1,0 +1,1649 @@
+public class com.contextlogic.wish.cache.PersistedCache extends java.lang.Object
+{
+    private static final long EXTERNAL_PERSISTENT_CACHE_MAX_SIZE;
+    private static final long INTERNAL_PERSISTENT_CACHE_MAX_SIZE;
+    private static final int IN_MEMORY_CACHE_SIZE;
+    private static com.contextlogic.wish.cache.PersistedCache _instance;
+    private java.util.concurrent.ConcurrentHashMap bufferCache;
+    private com.contextlogic.wish.cache.DiskLruCache diskLruCache;
+    private boolean diskLruCacheReady;
+    private android.graphics.Bitmap dummyBitmap;
+    private boolean externalDiskCacheAvailable;
+    private java.lang.String externalDiskCachePath;
+    private android.support.v4.util.LruCache inMemoryCache;
+    private java.util.concurrent.ExecutorService initializeThreadPool;
+    private boolean internalDiskCacheAvailable;
+    private java.lang.String internalDiskCachePath;
+    private java.util.concurrent.ExecutorService writeThreadPool;
+
+    static void <clinit>()
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+
+        $r0 = new com.contextlogic.wish.cache.PersistedCache;
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: void <init>()>();
+
+        <com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.PersistedCache _instance> = $r0;
+
+        return;
+    }
+
+    private void <init>()
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        com.contextlogic.wish.cache.PersistedCache$1 $r1;
+        com.contextlogic.wish.cache.PersistedCache$2 $r2;
+        java.util.concurrent.ConcurrentHashMap $r3;
+        com.contextlogic.wish.cache.PersistedCache$3 $r4;
+        android.graphics.Bitmap$Config $r5;
+        java.lang.Throwable $r6;
+        java.lang.String $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8, $r7_9;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        com.contextlogic.wish.WishApplication $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        java.io.File $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8;
+        java.util.concurrent.ExecutorService $r11, $r11_1;
+        android.graphics.Bitmap $r12;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r7 = staticinvoke <android.os.Environment: java.lang.String getExternalStorageState()>();
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>("mounted");
+
+        if $z0 == 0 goto label3;
+
+        $r8 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r9 = virtualinvoke $r8.<com.contextlogic.wish.WishApplication: java.io.File getExternalCacheDir()>();
+
+(0)     if $r9 == null goto label1;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_1 = virtualinvoke $r9.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r10_1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7_1);
+
+        $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/wish_cache/");
+
+        $r7_2 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String externalDiskCachePath> = $r7_2;
+
+        $r9_1 = new java.io.File;
+
+        $r7_3 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String externalDiskCachePath>;
+
+        specialinvoke $r9_1.<java.io.File: void <init>(java.lang.String)>($r7_3);
+
+        virtualinvoke $r9_1.<java.io.File: boolean mkdirs()>();
+
+        $z0_1 = virtualinvoke $r9_1.<java.io.File: boolean exists()>();
+
+(1)     $r0.<com.contextlogic.wish.cache.PersistedCache: boolean externalDiskCacheAvailable> = $z0_1;
+
+     label1:
+        $r10_3 = Phi($r10 #0, $r10_2 #1, $r10 #13);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0 #13);
+
+        $r7_4 = Phi($r7 #0, $r7_3 #1, $r7 #13);
+
+        $r8_1 = Phi($r8 #0, $r8 #1, $r8 #13);
+
+        $r9_2 = Phi($r9 #0, $r9_1 #1, $r9 #13);
+
+(2)     $r10_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_4.<java.lang.StringBuilder: void <init>()>();
+
+(3)     $r8_2 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+(4)     $r9_3 = virtualinvoke $r8_2.<com.contextlogic.wish.WishApplication: java.io.File getCacheDir()>();
+
+(5)     $r7_5 = virtualinvoke $r9_3.<java.io.File: java.lang.String getAbsolutePath()>();
+
+(6)     $r10_5 = virtualinvoke $r10_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7_5);
+
+(7)     $r10_6 = virtualinvoke $r10_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/web_cache/");
+
+(8)     $r7_6 = virtualinvoke $r10_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String internalDiskCachePath> = $r7_6;
+
+(9)     $r9_4 = new java.io.File;
+
+(10)    $r7_7 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String internalDiskCachePath>;
+
+        specialinvoke $r9_4.<java.io.File: void <init>(java.lang.String)>($r7_7);
+
+        virtualinvoke $r9_4.<java.io.File: boolean mkdirs()>();
+
+(11)    $z0_3 = virtualinvoke $r9_4.<java.io.File: boolean exists()>();
+
+(12)    $r0.<com.contextlogic.wish.cache.PersistedCache: boolean internalDiskCacheAvailable> = $z0_3;
+
+     label2:
+        $r10_7 = Phi($r10_6 #12, $r10_8 #14);
+
+        $z0_4 = Phi($z0_3 #12, $z0_5 #14);
+
+        $r7_8 = Phi($r7_7 #12, $r7_9 #14);
+
+        $r8_3 = Phi($r8_2 #12, $r8_4 #14);
+
+        $r9_5 = Phi($r9_4 #12, $r9_6 #14);
+
+        $r1 = new com.contextlogic.wish.cache.PersistedCache$1;
+
+        specialinvoke $r1.<com.contextlogic.wish.cache.PersistedCache$1: void <init>(com.contextlogic.wish.cache.PersistedCache)>($r0);
+
+        $r11 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.ExecutorService newFixedThreadPool(int,java.util.concurrent.ThreadFactory)>(2, $r1);
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ExecutorService writeThreadPool> = $r11;
+
+        $r2 = new com.contextlogic.wish.cache.PersistedCache$2;
+
+        specialinvoke $r2.<com.contextlogic.wish.cache.PersistedCache$2: void <init>(com.contextlogic.wish.cache.PersistedCache)>($r0);
+
+        $r11_1 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.ExecutorService newFixedThreadPool(int,java.util.concurrent.ThreadFactory)>(1, $r2);
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ExecutorService initializeThreadPool> = $r11_1;
+
+        $r3 = new java.util.concurrent.ConcurrentHashMap;
+
+        specialinvoke $r3.<java.util.concurrent.ConcurrentHashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ConcurrentHashMap bufferCache> = $r3;
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: void initializeDiskLruCache()>();
+
+        $r4 = new com.contextlogic.wish.cache.PersistedCache$3;
+
+        specialinvoke $r4.<com.contextlogic.wish.cache.PersistedCache$3: void <init>(com.contextlogic.wish.cache.PersistedCache,int)>($r0, 1572864);
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache> = $r4;
+
+        $r5 = <android.graphics.Bitmap$Config: android.graphics.Bitmap$Config ALPHA_8>;
+
+        $r12 = staticinvoke <android.graphics.Bitmap: android.graphics.Bitmap createBitmap(int,int,android.graphics.Bitmap$Config)>(1, 1, $r5);
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: android.graphics.Bitmap dummyBitmap> = $r12;
+
+        return;
+
+     label3:
+        $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String externalDiskCachePath> = null;
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: boolean externalDiskCacheAvailable> = 0;
+
+(13)    goto label1;
+
+     label4:
+        $r6 := @caughtexception;
+
+        $r10_8 = Phi($r10 #0, $r10_2 #1, $r10 #13, $r10_4 #2, $r10_5 #6, $r10_6 #7);
+
+        $z0_5 = Phi($z0 #0, $z0_1 #1, $z0 #13, $z0_2 #2, $z0_3 #11);
+
+        $r7_9 = Phi($r7 #0, $r7_3 #1, $r7 #13, $r7_4 #2, $r7_5 #5, $r7_6 #8, $r7_7 #10);
+
+        $r8_4 = Phi($r8 #0, $r8 #13, $r8_1 #2, $r8_2 #3);
+
+        $r9_6 = Phi($r9 #0, $r9_1 #1, $r9 #13, $r9_2 #2, $r9_3 #4, $r9_4 #9);
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String internalDiskCachePath> = "";
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: boolean internalDiskCacheAvailable> = 0;
+
+(14)    goto label2;
+
+        catch java.lang.Throwable from label1 to label2 with label4;
+    }
+
+    static java.lang.String access$000(com.contextlogic.wish.cache.PersistedCache, java.lang.String)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        java.lang.String $r1, $r1_1;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.PersistedCache;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r1_1 = specialinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String getSanitizedCacheKey(java.lang.String)>($r1);
+
+        return $r1_1;
+    }
+
+    static boolean access$100(com.contextlogic.wish.cache.PersistedCache)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.PersistedCache;
+
+        z0 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean diskLruCacheReady>;
+
+        return z0;
+    }
+
+    static boolean access$102(com.contextlogic.wish.cache.PersistedCache, boolean)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.PersistedCache;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: boolean diskLruCacheReady> = $z0;
+
+        return $z0;
+    }
+
+    static com.contextlogic.wish.cache.DiskLruCache access$200(com.contextlogic.wish.cache.PersistedCache)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        com.contextlogic.wish.cache.DiskLruCache r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.PersistedCache;
+
+        r1 = $r0.<com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.DiskLruCache diskLruCache>;
+
+        return r1;
+    }
+
+    static com.contextlogic.wish.cache.DiskLruCache access$202(com.contextlogic.wish.cache.PersistedCache, com.contextlogic.wish.cache.DiskLruCache)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        com.contextlogic.wish.cache.DiskLruCache $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.PersistedCache;
+
+        $r1 := @parameter1: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.DiskLruCache diskLruCache> = $r1;
+
+        return $r1;
+    }
+
+    static java.lang.String access$300(com.contextlogic.wish.cache.PersistedCache)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.PersistedCache;
+
+        r1 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String externalDiskCachePath>;
+
+        return r1;
+    }
+
+    static java.lang.String access$400(com.contextlogic.wish.cache.PersistedCache)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.PersistedCache;
+
+        r1 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String internalDiskCachePath>;
+
+        return r1;
+    }
+
+    static boolean access$500(com.contextlogic.wish.cache.PersistedCache)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.PersistedCache;
+
+        z0 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean externalDiskCacheAvailable>;
+
+        return z0;
+    }
+
+    static boolean access$600(com.contextlogic.wish.cache.PersistedCache)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.PersistedCache;
+
+        z0 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean internalDiskCacheAvailable>;
+
+        return z0;
+    }
+
+    static void access$700(com.contextlogic.wish.cache.PersistedCache)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.PersistedCache;
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: void initializeDiskLruCache()>();
+
+        return;
+    }
+
+    public static com.contextlogic.wish.cache.PersistedCache getInstance()
+    {
+        com.contextlogic.wish.cache.PersistedCache r0;
+
+        r0 = <com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.PersistedCache _instance>;
+
+        return r0;
+    }
+
+    private java.lang.String getSanitizedCacheKey(java.lang.String)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        java.lang.RuntimeException $r1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3, $r3_1;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        char $c2;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        $r3 := @parameter0: java.lang.String;
+
+        if $r3 != null goto label1;
+
+        $r1 = new java.lang.RuntimeException;
+
+        specialinvoke $r1.<java.lang.RuntimeException: void <init>(java.lang.String)>("Null cacheKey passed in");
+
+        throw $r1;
+
+     label1:
+        $r2 = new java.lang.StringBuilder;
+
+        $i0 = virtualinvoke $r3.<java.lang.String: int length()>();
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(int)>($i0);
+
+        $z0 = 0;
+
+(0)     $i0_1 = 0;
+
+     label2:
+        $i0_2 = Phi($i0_1 #0, $i0_3 #2);
+
+        $z0_1 = Phi($z0 #0, $z0_3 #2);
+
+        $i1 = virtualinvoke $r3.<java.lang.String: int length()>();
+
+        if $i0_2 >= $i1 goto label5;
+
+        $c2 = virtualinvoke $r3.<java.lang.String: char charAt(int)>($i0_2);
+
+        if $c2 == 46 goto label4;
+
+        if $c2 == 58 goto label4;
+
+        if $c2 == 47 goto label4;
+
+        if $c2 == 44 goto label4;
+
+        if $c2 == 37 goto label4;
+
+        if $c2 == 63 goto label4;
+
+        if $c2 == 38 goto label4;
+
+        if $c2 == 61 goto label4;
+
+        if $c2 == 43 goto label4;
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>($c2);
+
+(1)     $z0_2 = 0;
+
+     label3:
+        $z0_3 = Phi($z0_2 #1, $z0_1 #3, $z0_4 #4);
+
+        $i0_3 = $i0_2 + 1;
+
+(2)     goto label2;
+
+     label4:
+(3)     if $z0_1 != 0 goto label3;
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(43);
+
+        $z0_4 = 1;
+
+(4)     goto label3;
+
+     label5:
+        $r3_1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3_1;
+    }
+
+    private void initializeDiskLruCache()
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        com.contextlogic.wish.cache.PersistedCache$4 $r1;
+        com.contextlogic.wish.cache.PersistedCache$5 $r2;
+        boolean $z0, $z0_1;
+        java.util.concurrent.ExecutorService $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        $z0 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean externalDiskCacheAvailable>;
+
+        if $z0 == 0 goto label1;
+
+        $r3 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ExecutorService initializeThreadPool>;
+
+        $r1 = new com.contextlogic.wish.cache.PersistedCache$4;
+
+        specialinvoke $r1.<com.contextlogic.wish.cache.PersistedCache$4: void <init>(com.contextlogic.wish.cache.PersistedCache)>($r0);
+
+        interfaceinvoke $r3.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r1);
+
+        return;
+
+     label1:
+        $z0_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean internalDiskCacheAvailable>;
+
+(0)     if $z0_1 == 0 goto label2;
+
+        $r3_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ExecutorService initializeThreadPool>;
+
+        $r2 = new com.contextlogic.wish.cache.PersistedCache$5;
+
+        specialinvoke $r2.<com.contextlogic.wish.cache.PersistedCache$5: void <init>(com.contextlogic.wish.cache.PersistedCache)>($r0);
+
+(1)     interfaceinvoke $r3_1.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r2);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void cacheBitmap(java.lang.String, byte[], boolean)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        byte[] $r1;
+        android.support.v4.util.LruCache $r2;
+        com.contextlogic.wish.cache.CachedObject $r3;
+        java.util.concurrent.ExecutorService $r4;
+        com.contextlogic.wish.cache.PersistedCache$8 $r5;
+        java.lang.String $r6, $r6_1;
+        boolean $z0, $z0_1;
+        long $l0;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        $r6 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: byte[];
+
+        $z0 := @parameter2: boolean;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        if $z0 != 0 goto label2;
+
+        $r2 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+        $r3 = new com.contextlogic.wish.cache.CachedObject;
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        specialinvoke $r3.<com.contextlogic.wish.cache.CachedObject: void <init>(long,java.lang.Object)>($l0, $r1);
+
+        virtualinvoke $r2.<android.support.v4.util.LruCache: java.lang.Object put(java.lang.Object,java.lang.Object)>($r6, $r3);
+
+     label2:
+        $r6_1 = specialinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String getSanitizedCacheKey(java.lang.String)>($r6);
+
+        $z0_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean diskLruCacheReady>;
+
+        if $z0_1 == 0 goto label3;
+
+        $r4 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ExecutorService writeThreadPool>;
+
+        $r5 = new com.contextlogic.wish.cache.PersistedCache$8;
+
+        specialinvoke $r5.<com.contextlogic.wish.cache.PersistedCache$8: void <init>(com.contextlogic.wish.cache.PersistedCache,java.lang.String,byte[])>($r0, $r6_1, $r1);
+
+        interfaceinvoke $r4.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r5);
+
+     label3:
+        return;
+    }
+
+    public void cacheString(java.lang.String, java.lang.String, boolean)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        java.lang.String $r1, $r6, $r6_1;
+        android.support.v4.util.LruCache $r2;
+        com.contextlogic.wish.cache.CachedObject $r3;
+        java.util.concurrent.ExecutorService $r4;
+        com.contextlogic.wish.cache.PersistedCache$7 $r5;
+        boolean $z0, $z0_1;
+        long $l0;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        $r6 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $z0 := @parameter2: boolean;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        if $z0 != 0 goto label2;
+
+        $r2 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+        $r3 = new com.contextlogic.wish.cache.CachedObject;
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        specialinvoke $r3.<com.contextlogic.wish.cache.CachedObject: void <init>(long,java.lang.Object)>($l0, $r1);
+
+        virtualinvoke $r2.<android.support.v4.util.LruCache: java.lang.Object put(java.lang.Object,java.lang.Object)>($r6, $r3);
+
+     label2:
+        $r6_1 = specialinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String getSanitizedCacheKey(java.lang.String)>($r6);
+
+        $z0_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean diskLruCacheReady>;
+
+        if $z0_1 == 0 goto label3;
+
+        $r4 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ExecutorService writeThreadPool>;
+
+        $r5 = new com.contextlogic.wish.cache.PersistedCache$7;
+
+        specialinvoke $r5.<com.contextlogic.wish.cache.PersistedCache$7: void <init>(com.contextlogic.wish.cache.PersistedCache,java.lang.String,java.lang.String)>($r0, $r6_1, $r1);
+
+        interfaceinvoke $r4.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r5);
+
+     label3:
+        return;
+    }
+
+    public void clearCache()
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        boolean $z0;
+        java.util.concurrent.ExecutorService $r1;
+        com.contextlogic.wish.cache.PersistedCache$6 $r2;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        virtualinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: void clearInMemoryCache()>();
+
+        $z0 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean diskLruCacheReady>;
+
+        if $z0 == 0 goto label1;
+
+        $r0.<com.contextlogic.wish.cache.PersistedCache: boolean diskLruCacheReady> = 0;
+
+        $r1 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ExecutorService initializeThreadPool>;
+
+        $r2 = new com.contextlogic.wish.cache.PersistedCache$6;
+
+        specialinvoke $r2.<com.contextlogic.wish.cache.PersistedCache$6: void <init>(com.contextlogic.wish.cache.PersistedCache)>($r0);
+
+        interfaceinvoke $r1.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r2);
+
+     label1:
+        return;
+    }
+
+    public void clearInMemoryCache()
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        android.support.v4.util.LruCache $r1;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        $r1 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+        virtualinvoke $r1.<android.support.v4.util.LruCache: void evictAll()>();
+
+        return;
+    }
+
+    public android.graphics.Bitmap getCachedBitmap(java.lang.String, long, boolean, boolean, int, int, boolean)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        java.lang.String $r1, $r10;
+        boolean $z0, $z1, $z2, $z3, $z3_1;
+        int $i0, $i1, $i6, $i6_1, $i6_2, $i6_3, $i6_4, $i6_5, $i6_6, $i6_7, $i6_8, $i6_9;
+        java.io.IOException $r2, $r3, $r4;
+        long $l2, $l3, $l4, $l3_1, $l3_2, $l3_3, $l4_1, $l3_4, $l3_5, $l4_2, $l3_6, $l3_7, $l2_1, $l2_2, $l2_3, $l2_4, $l2_5, $l2_6, $l2_7, $l2_8, $l2_9, $l2_10, $l2_11, $l2_12, $l2_13, $l2_14, $l2_15, $l2_16, $l2_17, $l4_3, $l3_8, $l2_18, $l4_4, $l3_9;
+        android.support.v4.util.LruCache $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8;
+        java.lang.Object $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8, $r6_9;
+        com.contextlogic.wish.cache.CachedObject $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6;
+        byte $b5, $b5_1, $b5_2, $b5_3, $b5_4, $b5_5, $b5_6, $b5_7, $b5_8, $b5_9, $b5_10, $b5_11;
+        byte[] $r8, $r18, $r8_1, $r8_2, $r18_1, $r8_3, $r8_4, $r18_2, $r8_5, $r8_6, $r18_3, $r18_4, $r8_7, $r18_5, $r8_8, $r8_9, $r18_6, $r8_10, $r8_11, $r18_7, $r8_12, $r18_8, $r8_13, $r18_9;
+        android.graphics.Bitmap $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10;
+        com.contextlogic.wish.cache.DiskLruCache$Snapshot $r11, $r13, $r11_1, $r11_2, $r11_3;
+        com.contextlogic.wish.cache.DiskLruCache $r12, $r12_1, $r12_2, $r12_3;
+        java.io.InputStream $r14, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5;
+        java.util.concurrent.ConcurrentHashMap $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6, $r15_7, $r15_8, $r15_9;
+        java.lang.Thread $r16, $r16_1, $r16_2, $r16_3, $r16_4, $r16_5, $r16_6, $r16_7, $r16_8, $r16_9;
+        java.lang.Long $r17, $r17_1, $r17_2, $r17_3, $r17_4, $r17_5, $r17_6, $r17_7, $r17_8, $r17_9;
+        long[] $r19, $r19_1, $r19_2, $r19_3, $r19_4, $r19_5, $r19_6, $r19_7, $r19_8, $r19_9, $r19_10, $r19_11, $r19_12, $r19_13;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $l2 := @parameter1: long;
+
+        $z3 := @parameter2: boolean;
+
+        $z0 := @parameter3: boolean;
+
+        $i0 := @parameter4: int;
+
+        $i1 := @parameter5: int;
+
+        $z1 := @parameter6: boolean;
+
+        $r5 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+        $r6 = virtualinvoke $r5.<android.support.v4.util.LruCache: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r7 = (com.contextlogic.wish.cache.CachedObject) $r6;
+
+(0)     if $r7 == null goto label03;
+
+        $l3 = virtualinvoke $r7.<com.contextlogic.wish.cache.CachedObject: long getCacheTime()>();
+
+        $l4 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r6_1 = virtualinvoke $r7.<com.contextlogic.wish.cache.CachedObject: java.lang.Object getObject()>();
+
+        $z2 = $r6_1 instanceof byte[];
+
+        $b5 = $l2 cmp -1L;
+
+        if $b5 == 0 goto label01;
+
+(1)     if $z2 == 0 goto label02;
+
+     label01:
+        $b5_1 = $l3 cmp $l4;
+
+(2)     if $b5_1 >= 0 goto label04;
+
+        $l3_1 = $l4 - $l3;
+
+        $b5_2 = $l3_1 cmp $l2;
+
+(3)     if $b5_2 <= 0 goto label04;
+
+     label02:
+        $b5_4 = Phi($b5 #1, $b5_2 #3);
+
+        $l3_3 = Phi($l3 #1, $l3_1 #3);
+
+        $r5_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+(4)     virtualinvoke $r5_1.<android.support.v4.util.LruCache: java.lang.Object remove(java.lang.Object)>($r1);
+
+     label03:
+        $r6_3 = Phi($r6 #0, $r6_1 #4, $r6_2 #5);
+
+        $r8_1 = Phi($r8 #0, $r8 #4, $r8 #5);
+
+        $b5_5 = Phi($b5 #0, $b5_4 #4, $b5_3 #5);
+
+        $l4_1 = Phi($l4 #0, $l4 #4, $l4 #5);
+
+        $r9_2 = Phi($r9 #0, $r9 #4, $r9 #5);
+
+        $l3_4 = Phi($l3 #0, $l3_3 #4, $l3_2 #5);
+
+        $r5_2 = Phi($r5 #0, $r5_1 #4, $r5 #5);
+
+        if $z3 == 0 goto label06;
+
+        return null;
+
+     label04:
+        $b5_3 = Phi($b5_1 #2, $b5_2 #3);
+
+        $l3_2 = Phi($l3 #2, $l3_1 #3);
+
+        if $z0 == 0 goto label05;
+
+        $r6_2 = virtualinvoke $r7.<com.contextlogic.wish.cache.CachedObject: java.lang.Object getObject()>();
+
+        $r8 = (byte[]) $r6_2;
+
+        $r9 = staticinvoke <com.contextlogic.wish.util.BitmapUtil: android.graphics.Bitmap decodeBitmap(byte[],int,int,boolean)>($r8, $i0, $i1, $z1);
+
+(5)     if $r9 == null goto label03;
+
+        return $r9;
+
+     label05:
+        $r9_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.graphics.Bitmap dummyBitmap>;
+
+        return $r9_1;
+
+     label06:
+        $z3_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean diskLruCacheReady>;
+
+(6)     if $z3_1 == 0 goto label64;
+
+        $r10 = specialinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String getSanitizedCacheKey(java.lang.String)>($r1);
+
+        $r11 = null;
+
+(7)     $r12 = $r0.<com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.DiskLruCache diskLruCache>;
+
+     label07:
+        $r13 = virtualinvoke $r12.<com.contextlogic.wish.cache.DiskLruCache: com.contextlogic.wish.cache.DiskLruCache$Snapshot get(java.lang.String)>($r10);
+
+     label08:
+        $r11_1 = $r13;
+
+(8)     if $r13 == null goto label64;
+
+        $b5_6 = $l2 cmp -1L;
+
+(9)     if $b5_6 == 0 goto label39;
+
+     label09:
+(10)    $l3_5 = virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: long getTimestamp()>();
+
+(11)    $l4_2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+     label10:
+        $b5_7 = $l3_5 cmp $l4_2;
+
+(12)    if $b5_7 >= 0 goto label15;
+
+        $l3_6 = $l4_2 - $l3_5;
+
+        $b5_8 = $l3_6 cmp $l2;
+
+(13)    if $b5_8 <= 0 goto label15;
+
+     label11:
+        virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label12:
+(14)    $r12_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.DiskLruCache diskLruCache>;
+
+     label13:
+        virtualinvoke $r12_1.<com.contextlogic.wish.cache.DiskLruCache: boolean remove(java.lang.String)>($r10);
+
+     label14:
+        return null;
+
+     label15:
+        $b5_9 = Phi($b5_7 #12, $b5_8 #13);
+
+        $l3_7 = Phi($l3_5 #12, $l3_6 #13);
+
+(15)    if $z0 == 0 goto label37;
+
+     label16:
+        $r14 = virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: java.io.InputStream getInputStream(int)>(0);
+
+     label17:
+        if $r14 == null goto label35;
+
+        $r15 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ConcurrentHashMap bufferCache>;
+
+     label18:
+        $r16 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+(16)    $l2_1 = virtualinvoke $r16.<java.lang.Thread: long getId()>();
+
+        $r17 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l2_1);
+
+(17)    $r6_4 = virtualinvoke $r15.<java.util.concurrent.ConcurrentHashMap: java.lang.Object get(java.lang.Object)>($r17);
+
+     label19:
+        $r18 = (byte[]) $r6_4;
+
+        $r8_2 = $r18;
+
+(18)    if $r18 != null goto label21;
+
+        $r18_1 = newarray (byte)[4096];
+
+        $r8_3 = $r18_1;
+
+(19)    $r15_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ConcurrentHashMap bufferCache>;
+
+     label20:
+(20)    $r16_1 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+(21)    $l2_2 = virtualinvoke $r16_1.<java.lang.Thread: long getId()>();
+
+(22)    $r17_1 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l2_2);
+
+(23)    virtualinvoke $r15_1.<java.util.concurrent.ConcurrentHashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r17_1, $r18_1);
+
+     label21:
+        $r17_2 = Phi($r17 #18, $r17_1 #23);
+
+        $l2_3 = Phi($l2_1 #18, $l2_2 #23);
+
+        $r8_4 = Phi($r8_2 #18, $r8_3 #23);
+
+        $r18_2 = Phi($r18 #18, $r18_1 #23);
+
+        $r16_2 = Phi($r16 #18, $r16_1 #23);
+
+        $r15_2 = Phi($r15 #18, $r15_1 #23);
+
+(24)    $r19 = virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: long[] getLengths()>();
+
+     label22:
+(25)    if $r19 == null goto label34;
+
+     label23:
+(26)    $r19_1 = virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: long[] getLengths()>();
+
+     label24:
+        $i6 = lengthof $r19_1;
+
+(27)    if $i6 <= 0 goto label34;
+
+     label25:
+(28)    $r19_2 = virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: long[] getLengths()>();
+
+     label26:
+(29)    $l2_4 = $r19_2[0];
+
+     label27:
+        $l2_5 = Phi($l2_4 #29, $l2_7 #35);
+
+        $i6_1 = Phi($i6 #29, $i6_2 #35);
+
+        $r19_3 = Phi($r19_2 #29, $r19_4 #35);
+
+(30)    $r8_5 = staticinvoke <com.contextlogic.wish.util.FileUtil: byte[] getBytes(java.io.InputStream,byte[],long)>($r14, $r8_4, $l2_5);
+
+(31)    $r9_3 = staticinvoke <com.contextlogic.wish.util.BitmapUtil: android.graphics.Bitmap decodeBitmap(byte[],int,int,boolean)>($r8_5, $i0, $i1, $z1);
+
+     label28:
+        $r5_3 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+(32)    $r7_1 = new com.contextlogic.wish.cache.CachedObject;
+
+     label29:
+(33)    $l2_6 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        specialinvoke $r7_1.<com.contextlogic.wish.cache.CachedObject: void <init>(long,java.lang.Object)>($l2_6, $r8_5);
+
+        virtualinvoke $r5_3.<android.support.v4.util.LruCache: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r7_1);
+
+     label30:
+        return $r9_3;
+
+     label31:
+        $r2 := @caughtexception;
+
+        $r17_3 = Phi($r17 #15, $r17_1 #22, $r17_2 #24);
+
+        $r6_5 = Phi($r6_3 #15, $r6_4 #17);
+
+        $l2_8 = Phi($l2 #15, $l2_1 #16, $l2_2 #21, $l2_3 #24, $l2_4 #29, $l2_7 #35, $l2_5 #30, $l2_6 #33);
+
+        $i6_3 = Phi($i6 #15, $i6_2 #35, $i6_1 #30);
+
+        $r8_6 = Phi($r8_1 #15, $r8_3 #19, $r8_2 #18, $r8_4 #24, $r8_5 #30);
+
+        $r19_5 = Phi($r19 #15, $r19_1 #26, $r19_2 #28, $r19_4 #35, $r19_3 #30);
+
+        $r14_1 = Phi($r14 #15);
+
+        $r18_3 = Phi($r18 #15, $r18_1 #19, $r18_2 #24);
+
+        $r7_2 = Phi($r7 #15, $r7_1 #32);
+
+        $r9_4 = Phi($r9_2 #15, $r9_3 #31);
+
+        $r16_3 = Phi($r16 #15, $r16_1 #20, $r16_2 #24);
+
+        $r5_4 = Phi($r5_2 #15, $r5_3 #32);
+
+(34)    $r15_3 = Phi($r15 #15, $r15_1 #19, $r15_2 #24);
+
+     label32:
+        virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label33:
+        return null;
+
+     label34:
+        $i6_2 = Phi($i6 #25, $i6 #27);
+
+        $r19_4 = Phi($r19 #25, $r19_1 #27);
+
+        $l2_7 = 0L;
+
+(35)    goto label27;
+
+     label35:
+        virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label36:
+        return null;
+
+     label37:
+        virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label38:
+        $r9_5 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.graphics.Bitmap dummyBitmap>;
+
+        return $r9_5;
+
+     label39:
+(36)    if $z0 == 0 goto label61;
+
+     label40:
+(37)    $r14_2 = virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: java.io.InputStream getInputStream(int)>(0);
+
+     label41:
+        if $r14_2 == null goto label59;
+
+(38)    $r15_4 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ConcurrentHashMap bufferCache>;
+
+     label42:
+(39)    $r16_4 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+(40)    $l2_9 = virtualinvoke $r16_4.<java.lang.Thread: long getId()>();
+
+(41)    $r17_4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l2_9);
+
+(42)    $r6_6 = virtualinvoke $r15_4.<java.util.concurrent.ConcurrentHashMap: java.lang.Object get(java.lang.Object)>($r17_4);
+
+     label43:
+        $r18_4 = (byte[]) $r6_6;
+
+        $r8_7 = $r18_4;
+
+(43)    if $r18_4 != null goto label45;
+
+        $r18_5 = newarray (byte)[4096];
+
+        $r8_8 = $r18_5;
+
+(44)    $r15_5 = $r0.<com.contextlogic.wish.cache.PersistedCache: java.util.concurrent.ConcurrentHashMap bufferCache>;
+
+     label44:
+(45)    $r16_5 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+(46)    $l2_10 = virtualinvoke $r16_5.<java.lang.Thread: long getId()>();
+
+(47)    $r17_5 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l2_10);
+
+(48)    virtualinvoke $r15_5.<java.util.concurrent.ConcurrentHashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r17_5, $r18_5);
+
+     label45:
+        $r17_6 = Phi($r17_4 #43, $r17_5 #48);
+
+        $l2_11 = Phi($l2_9 #43, $l2_10 #48);
+
+        $r8_9 = Phi($r8_7 #43, $r8_8 #48);
+
+        $r18_6 = Phi($r18_4 #43, $r18_5 #48);
+
+        $r16_6 = Phi($r16_4 #43, $r16_5 #48);
+
+        $r15_6 = Phi($r15_4 #43, $r15_5 #48);
+
+(49)    $r19_6 = virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: long[] getLengths()>();
+
+     label46:
+(50)    if $r19_6 == null goto label58;
+
+     label47:
+(51)    $r19_7 = virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: long[] getLengths()>();
+
+     label48:
+        $i6_4 = lengthof $r19_7;
+
+(52)    if $i6_4 <= 0 goto label58;
+
+     label49:
+(53)    $r19_8 = virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: long[] getLengths()>();
+
+     label50:
+(54)    $l2_12 = $r19_8[0];
+
+     label51:
+        $l2_13 = Phi($l2_12 #54, $l2_15 #60);
+
+        $i6_5 = Phi($i6_4 #54, $i6_6 #60);
+
+        $r19_9 = Phi($r19_8 #54, $r19_10 #60);
+
+(55)    $r8_10 = staticinvoke <com.contextlogic.wish.util.FileUtil: byte[] getBytes(java.io.InputStream,byte[],long)>($r14_2, $r8_9, $l2_13);
+
+(56)    $r9_6 = staticinvoke <com.contextlogic.wish.util.BitmapUtil: android.graphics.Bitmap decodeBitmap(byte[],int,int,boolean)>($r8_10, $i0, $i1, $z1);
+
+     label52:
+        $r5_5 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+(57)    $r7_3 = new com.contextlogic.wish.cache.CachedObject;
+
+     label53:
+(58)    $l2_14 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        specialinvoke $r7_3.<com.contextlogic.wish.cache.CachedObject: void <init>(long,java.lang.Object)>($l2_14, $r8_10);
+
+        virtualinvoke $r5_5.<android.support.v4.util.LruCache: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r7_3);
+
+        virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label54:
+        return $r9_6;
+
+     label55:
+        $r3 := @caughtexception;
+
+        $r17_7 = Phi($r17 #36, $r17_4 #41, $r17_5 #47, $r17_6 #49);
+
+        $r6_7 = Phi($r6_3 #36, $r6_6 #42);
+
+        $l2_16 = Phi($l2 #36, $l2_9 #40, $l2_10 #46, $l2_11 #49, $l2_12 #54, $l2_15 #60, $l2_13 #55, $l2_14 #58);
+
+        $i6_7 = Phi($i6 #36, $i6_4 #52, $i6_6 #60, $i6_5 #55);
+
+        $r8_11 = Phi($r8_1 #36, $r8_8 #44, $r8_7 #43, $r8_9 #49, $r8_10 #55);
+
+        $r19_11 = Phi($r19 #36, $r19_6 #49, $r19_7 #51, $r19_8 #53, $r19_10 #60, $r19_9 #55);
+
+        $r14_3 = Phi($r14 #36, $r14_2 #37);
+
+        $r18_7 = Phi($r18 #36, $r18_5 #44, $r18_4 #43, $r18_6 #49);
+
+        $r7_4 = Phi($r7 #36, $r7_3 #57);
+
+        $r9_7 = Phi($r9_2 #36, $r9_6 #56);
+
+        $r16_7 = Phi($r16 #36, $r16_4 #39, $r16_5 #45, $r16_6 #49);
+
+        $r5_6 = Phi($r5_2 #36, $r5_5 #57);
+
+(59)    $r15_7 = Phi($r15 #36, $r15_4 #38, $r15_5 #44, $r15_6 #49);
+
+     label56:
+        virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label57:
+        return null;
+
+     label58:
+        $i6_6 = Phi($i6 #50, $i6_4 #52);
+
+        $r19_10 = Phi($r19_6 #50, $r19_7 #52);
+
+        $l2_15 = 0L;
+
+(60)    goto label51;
+
+     label59:
+        virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label60:
+        return null;
+
+     label61:
+        virtualinvoke $r13.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label62:
+        $r9_8 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.graphics.Bitmap dummyBitmap>;
+
+        return $r9_8;
+
+     label63:
+        $r4 := @caughtexception;
+
+        $r17_8 = Phi($r17 #7, $r17_3 #34, $r17_7 #59);
+
+        $r6_8 = Phi($r6_3 #7, $r6_5 #34, $r6_7 #59);
+
+        $l2_17 = Phi($l2 #7, $l2_8 #34, $l2_16 #59);
+
+        $i6_8 = Phi($i6 #7, $i6_3 #34, $i6_7 #59);
+
+        $r12_2 = Phi($r12 #7, $r12_1 #14);
+
+        $r8_12 = Phi($r8_1 #7, $r8_6 #34, $r8_11 #59);
+
+        $r19_12 = Phi($r19 #7, $r19_5 #34, $r19_11 #59);
+
+        $r14_4 = Phi($r14 #7, $r14_1 #34, $r14_3 #59);
+
+        $b5_10 = Phi($b5_5 #7, $b5_6 #9, $b5_8 #13, $b5_9 #15);
+
+        $r18_8 = Phi($r18 #7, $r18_3 #34, $r18_7 #59);
+
+        $r11_2 = Phi($r11 #7, $r11_1 #9);
+
+        $r7_5 = Phi($r7 #7, $r7_2 #34, $r7_4 #59);
+
+        $l4_3 = Phi($l4_1 #7, $l4_2 #11);
+
+        $r9_9 = Phi($r9_2 #7, $r9_4 #34, $r9_7 #59);
+
+        $l3_8 = Phi($l3_4 #7, $l3_5 #10, $l3_6 #13, $l3_7 #15);
+
+        $r16_8 = Phi($r16 #7, $r16_3 #34, $r16_7 #59);
+
+        $r5_7 = Phi($r5_2 #7, $r5_4 #34, $r5_6 #59);
+
+        $r15_8 = Phi($r15 #7, $r15_3 #34, $r15_7 #59);
+
+(61)    if $r11_2 == null goto label64;
+
+(62)    virtualinvoke $r11_2.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label64:
+        $r17_9 = Phi($r17 #6, $r17 #8, $r17_8 #61, $r17_8 #62);
+
+        $r6_9 = Phi($r6_3 #6, $r6_3 #8, $r6_8 #61, $r6_8 #62);
+
+        $l2_18 = Phi($l2 #6, $l2 #8, $l2_17 #61, $l2_17 #62);
+
+        $i6_9 = Phi($i6 #6, $i6 #8, $i6_8 #61, $i6_8 #62);
+
+        $r12_3 = Phi($r12 #6, $r12 #8, $r12_2 #61, $r12_2 #62);
+
+        $r8_13 = Phi($r8_1 #6, $r8_1 #8, $r8_12 #61, $r8_12 #62);
+
+        $r19_13 = Phi($r19 #6, $r19 #8, $r19_12 #61, $r19_12 #62);
+
+        $r14_5 = Phi($r14 #6, $r14 #8, $r14_4 #61, $r14_4 #62);
+
+        $b5_11 = Phi($b5_5 #6, $b5_5 #8, $b5_10 #61, $b5_10 #62);
+
+        $r18_9 = Phi($r18 #6, $r18 #8, $r18_8 #61, $r18_8 #62);
+
+        $r11_3 = Phi($r11 #6, $r11_1 #8, $r11_2 #61, $r11_2 #62);
+
+        $r7_6 = Phi($r7 #6, $r7 #8, $r7_5 #61, $r7_5 #62);
+
+        $l4_4 = Phi($l4_1 #6, $l4_1 #8, $l4_3 #61, $l4_3 #62);
+
+        $r9_10 = Phi($r9_2 #6, $r9_2 #8, $r9_9 #61, $r9_9 #62);
+
+        $l3_9 = Phi($l3_4 #6, $l3_4 #8, $l3_8 #61, $l3_8 #62);
+
+        $r16_9 = Phi($r16 #6, $r16 #8, $r16_8 #61, $r16_8 #62);
+
+        $r5_8 = Phi($r5_2 #6, $r5_2 #8, $r5_7 #61, $r5_7 #62);
+
+        $r15_9 = Phi($r15 #6, $r15 #8, $r15_8 #61, $r15_8 #62);
+
+        return null;
+
+        catch java.io.IOException from label07 to label08 with label63;
+        catch java.io.IOException from label09 to label10 with label63;
+        catch java.io.IOException from label11 to label12 with label63;
+        catch java.io.IOException from label13 to label14 with label63;
+        catch java.io.IOException from label16 to label17 with label31;
+        catch java.io.IOException from label18 to label19 with label31;
+        catch java.io.IOException from label20 to label22 with label31;
+        catch java.io.IOException from label23 to label24 with label31;
+        catch java.io.IOException from label25 to label26 with label31;
+        catch java.io.IOException from label27 to label28 with label31;
+        catch java.io.IOException from label29 to label30 with label31;
+        catch java.io.IOException from label32 to label33 with label63;
+        catch java.io.IOException from label35 to label36 with label31;
+        catch java.io.IOException from label37 to label38 with label63;
+        catch java.io.IOException from label40 to label41 with label55;
+        catch java.io.IOException from label42 to label43 with label55;
+        catch java.io.IOException from label44 to label46 with label55;
+        catch java.io.IOException from label47 to label48 with label55;
+        catch java.io.IOException from label49 to label50 with label55;
+        catch java.io.IOException from label51 to label52 with label55;
+        catch java.io.IOException from label53 to label54 with label55;
+        catch java.io.IOException from label56 to label57 with label63;
+        catch java.io.IOException from label59 to label60 with label55;
+        catch java.io.IOException from label61 to label62 with label63;
+    }
+
+    public android.graphics.Bitmap getCachedBitmap(java.lang.String, boolean, boolean, int, int, boolean)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        java.lang.String $r1;
+        boolean $z0, $z1, $z2;
+        int $i0, $i1;
+        android.graphics.Bitmap $r2;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 := @parameter1: boolean;
+
+        $z1 := @parameter2: boolean;
+
+        $i0 := @parameter3: int;
+
+        $i1 := @parameter4: int;
+
+        $z2 := @parameter5: boolean;
+
+        $r2 = virtualinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: android.graphics.Bitmap getCachedBitmap(java.lang.String,long,boolean,boolean,int,int,boolean)>($r1, -1L, $z0, $z1, $i0, $i1, $z2);
+
+        return $r2;
+    }
+
+    public java.lang.String getCachedString(java.lang.String, long, boolean)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        boolean $z0, $z1, $z1_1;
+        java.io.IOException $r1;
+        java.lang.String $r2, $r6, $r2_1, $r6_1, $r6_2, $r6_3, $r6_4;
+        long $l0, $l1, $l2, $l1_1, $l1_2, $l1_3, $l2_1, $l1_4, $l1_5, $l2_2, $l1_6, $l1_7, $l0_1, $l0_2, $l2_3, $l1_8, $l0_3;
+        android.support.v4.util.LruCache $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        java.lang.Object $r4, $r4_1, $r4_2, $r4_3;
+        com.contextlogic.wish.cache.CachedObject $r5, $r5_1, $r5_2, $r5_3;
+        byte $b3, $b3_1, $b3_2, $b3_3, $b3_4, $b3_5, $b3_6, $b3_7, $b3_8, $b3_9, $b3_10;
+        com.contextlogic.wish.cache.DiskLruCache$Snapshot $r7, $r9, $r7_1, $r7_2, $r7_3;
+        com.contextlogic.wish.cache.DiskLruCache $r8, $r8_1, $r8_2, $r8_3;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $l0 := @parameter1: long;
+
+        $z1 := @parameter2: boolean;
+
+        $r3 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+        $r4 = virtualinvoke $r3.<android.support.v4.util.LruCache: java.lang.Object get(java.lang.Object)>($r2);
+
+        $r5 = (com.contextlogic.wish.cache.CachedObject) $r4;
+
+(0)     if $r5 == null goto label03;
+
+        $l1 = virtualinvoke $r5.<com.contextlogic.wish.cache.CachedObject: long getCacheTime()>();
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r4_1 = virtualinvoke $r5.<com.contextlogic.wish.cache.CachedObject: java.lang.Object getObject()>();
+
+        $z0 = $r4_1 instanceof java.lang.String;
+
+        $b3 = $l0 cmp -1L;
+
+        if $b3 == 0 goto label01;
+
+(1)     if $z0 == 0 goto label02;
+
+     label01:
+        $b3_1 = $l1 cmp $l2;
+
+(2)     if $b3_1 >= 0 goto label04;
+
+        $l1_1 = $l2 - $l1;
+
+        $b3_2 = $l1_1 cmp $l0;
+
+(3)     if $b3_2 <= 0 goto label04;
+
+     label02:
+        $b3_4 = Phi($b3 #1, $b3_2 #3);
+
+        $l1_3 = Phi($l1 #1, $l1_1 #3);
+
+        $r3_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+(4)     virtualinvoke $r3_1.<android.support.v4.util.LruCache: java.lang.Object remove(java.lang.Object)>($r2);
+
+     label03:
+        $r3_2 = Phi($r3 #0, $r3_1 #4);
+
+        $l2_1 = Phi($l2 #0, $l2 #4);
+
+        $b3_5 = Phi($b3 #0, $b3_4 #4);
+
+        $l1_4 = Phi($l1 #0, $l1_3 #4);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #4);
+
+        if $z1 == 0 goto label05;
+
+        return null;
+
+     label04:
+        $b3_3 = Phi($b3_1 #2, $b3_2 #3);
+
+        $l1_2 = Phi($l1 #2, $l1_1 #3);
+
+        $r4_2 = virtualinvoke $r5.<com.contextlogic.wish.cache.CachedObject: java.lang.Object getObject()>();
+
+        $r2_1 = (java.lang.String) $r4_2;
+
+        return $r2_1;
+
+     label05:
+        $z1_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean diskLruCacheReady>;
+
+(5)     if $z1_1 == 0 goto label24;
+
+        $r6 = specialinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String getSanitizedCacheKey(java.lang.String)>($r2);
+
+        $r7 = null;
+
+(6)     $r8 = $r0.<com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.DiskLruCache diskLruCache>;
+
+     label06:
+        $r9 = virtualinvoke $r8.<com.contextlogic.wish.cache.DiskLruCache: com.contextlogic.wish.cache.DiskLruCache$Snapshot get(java.lang.String)>($r6);
+
+     label07:
+        $r7_1 = $r9;
+
+(7)     if $r9 == null goto label24;
+
+        $b3_6 = $l0 cmp -1L;
+
+(8)     if $b3_6 == 0 goto label20;
+
+     label08:
+(9)     $l1_5 = virtualinvoke $r9.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: long getTimestamp()>();
+
+(10)    $l2_2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+     label09:
+        $b3_7 = $l1_5 cmp $l2_2;
+
+(11)    if $b3_7 >= 0 goto label14;
+
+        $l1_6 = $l2_2 - $l1_5;
+
+        $b3_8 = $l1_6 cmp $l0;
+
+(12)    if $b3_8 <= 0 goto label14;
+
+     label10:
+        virtualinvoke $r9.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label11:
+(13)    $r8_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.DiskLruCache diskLruCache>;
+
+     label12:
+        virtualinvoke $r8_1.<com.contextlogic.wish.cache.DiskLruCache: boolean remove(java.lang.String)>($r6);
+
+     label13:
+        return null;
+
+     label14:
+        $b3_9 = Phi($b3_7 #11, $b3_8 #12);
+
+        $l1_7 = Phi($l1_5 #11, $l1_6 #12);
+
+(14)    $r6_1 = virtualinvoke $r9.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: java.lang.String getString(int)>(0);
+
+        virtualinvoke $r9.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label15:
+        $r3_3 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+(15)    $r5_1 = new com.contextlogic.wish.cache.CachedObject;
+
+     label16:
+(16)    $l0_1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        specialinvoke $r5_1.<com.contextlogic.wish.cache.CachedObject: void <init>(long,java.lang.Object)>($l0_1, $r6_1);
+
+        virtualinvoke $r3_3.<android.support.v4.util.LruCache: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2, $r5_1);
+
+     label17:
+        return $r6_1;
+
+     label18:
+        $r1 := @caughtexception;
+
+        $r3_5 = Phi($r3_2 #6, $r3_3 #15, $r3_4 #18);
+
+        $l2_3 = Phi($l2_1 #6, $l2_2 #10);
+
+        $b3_10 = Phi($b3_5 #6, $b3_6 #8, $b3_8 #12, $b3_7 #11, $b3_9 #14);
+
+        $r8_2 = Phi($r8 #6, $r8_1 #13);
+
+        $l1_8 = Phi($l1_4 #6, $l1_5 #9, $l1_6 #12, $l1_7 #14);
+
+        $r6_3 = Phi($r6 #6, $r6_1 #14, $r6_2 #17);
+
+        $r5_3 = Phi($r5 #6, $r5_1 #15, $r5_2 #18);
+
+        $l0_3 = Phi($l0 #6, $l0_1 #16, $l0_2 #19);
+
+        $r7_2 = Phi($r7 #6, $r7_1 #8);
+
+        if $r7_2 == null goto label19;
+
+        virtualinvoke $r7_2.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label19:
+        return null;
+
+     label20:
+(17)    $r6_2 = virtualinvoke $r9.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: java.lang.String getString(int)>(0);
+
+        virtualinvoke $r9.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void close()>();
+
+     label21:
+        $r3_4 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+(18)    $r5_2 = new com.contextlogic.wish.cache.CachedObject;
+
+     label22:
+(19)    $l0_2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        specialinvoke $r5_2.<com.contextlogic.wish.cache.CachedObject: void <init>(long,java.lang.Object)>($l0_2, $r6_2);
+
+        virtualinvoke $r3_4.<android.support.v4.util.LruCache: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2, $r5_2);
+
+     label23:
+        return $r6_2;
+
+     label24:
+        $r8_3 = Phi($r8 #5, $r8 #7);
+
+        $r6_4 = Phi($r6 #5, $r6 #7);
+
+        $r7_3 = Phi($r7 #5, $r7_1 #7);
+
+        return null;
+
+        catch java.io.IOException from label06 to label07 with label18;
+        catch java.io.IOException from label08 to label09 with label18;
+        catch java.io.IOException from label10 to label11 with label18;
+        catch java.io.IOException from label12 to label13 with label18;
+        catch java.io.IOException from label14 to label15 with label18;
+        catch java.io.IOException from label16 to label17 with label18;
+        catch java.io.IOException from label20 to label21 with label18;
+        catch java.io.IOException from label22 to label23 with label18;
+    }
+
+    public java.lang.String getCachedString(java.lang.String, boolean)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        boolean $z0;
+        java.lang.String $r1, $r1_1;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 := @parameter1: boolean;
+
+        $r1_1 = virtualinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String getCachedString(java.lang.String,long,boolean)>($r1, -1L, $z0);
+
+        return $r1_1;
+    }
+
+    public boolean hasCachedBitmap(java.lang.String, long, boolean)
+    {
+        com.contextlogic.wish.cache.PersistedCache $r0;
+        long $l0, $l1, $l2, $l1_1, $l1_2, $l2_1, $l1_3, $l1_4, $l2_2, $l1_5, $l1_6, $l2_3, $l1_7;
+        android.support.v4.util.LruCache $r1;
+        boolean $z0, $z1, $z1_1;
+        com.contextlogic.wish.cache.DiskLruCache $r2;
+        java.io.IOException $r3;
+        java.lang.String $r4, $r4_1, $r4_2;
+        java.lang.Object $r5, $r5_1, $r5_2;
+        com.contextlogic.wish.cache.CachedObject $r6;
+        byte $b3, $b3_1, $b3_2, $b3_3, $b3_4, $b3_5, $b3_6, $b3_7, $b3_8, $b3_9;
+        com.contextlogic.wish.cache.DiskLruCache$Snapshot $r7;
+
+        $r0 := @this: com.contextlogic.wish.cache.PersistedCache;
+
+        $r4 := @parameter0: java.lang.String;
+
+        $l0 := @parameter1: long;
+
+        $z1 := @parameter2: boolean;
+
+        $r1 = $r0.<com.contextlogic.wish.cache.PersistedCache: android.support.v4.util.LruCache inMemoryCache>;
+
+        $r5 = virtualinvoke $r1.<android.support.v4.util.LruCache: java.lang.Object get(java.lang.Object)>($r4);
+
+        $r6 = (com.contextlogic.wish.cache.CachedObject) $r5;
+
+(0)     if $r6 == null goto label02;
+
+        $l1 = virtualinvoke $r6.<com.contextlogic.wish.cache.CachedObject: long getCacheTime()>();
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r5_1 = virtualinvoke $r6.<com.contextlogic.wish.cache.CachedObject: java.lang.Object getObject()>();
+
+        $z0 = $r5_1 instanceof byte[];
+
+        $b3 = $l0 cmp -1L;
+
+(1)     if $b3 == 0 goto label01;
+
+(2)     if $z0 == 0 goto label01;
+
+        $l1_1 = $l2 - $l1;
+
+        $b3_1 = $l1_1 cmp $l0;
+
+(3)     if $b3_1 > 0 goto label01;
+
+        return 1;
+
+     label01:
+        $b3_2 = Phi($b3 #1, $b3 #2, $b3_1 #3);
+
+        $l1_2 = Phi($l1 #1, $l1 #2, $l1_1 #3);
+
+        $b3_3 = $l0 cmp -1L;
+
+(4)     if $b3_3 != 0 goto label02;
+
+        return 1;
+
+     label02:
+        $b3_4 = Phi($b3 #0, $b3_3 #4);
+
+        $r5_2 = Phi($r5 #0, $r5_1 #4);
+
+        $l2_1 = Phi($l2 #0, $l2 #4);
+
+        $l1_3 = Phi($l1 #0, $l1_2 #4);
+
+        if $z1 == 0 goto label03;
+
+        return 0;
+
+     label03:
+        $z1_1 = $r0.<com.contextlogic.wish.cache.PersistedCache: boolean diskLruCacheReady>;
+
+(5)     if $z1_1 == 0 goto label11;
+
+        $r4_1 = specialinvoke $r0.<com.contextlogic.wish.cache.PersistedCache: java.lang.String getSanitizedCacheKey(java.lang.String)>($r4);
+
+(6)     $r2 = $r0.<com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.DiskLruCache diskLruCache>;
+
+     label04:
+        $r7 = virtualinvoke $r2.<com.contextlogic.wish.cache.DiskLruCache: com.contextlogic.wish.cache.DiskLruCache$Snapshot poll(java.lang.String)>($r4_1);
+
+     label05:
+(7)     if $r7 == null goto label11;
+
+        $b3_5 = $l0 cmp -1L;
+
+(8)     if $b3_5 == 0 goto label09;
+
+     label06:
+(9)     $l1_4 = virtualinvoke $r7.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: long getTimestamp()>();
+
+(10)    $l2_2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+     label07:
+        $b3_6 = $l1_4 cmp $l2_2;
+
+(11)    if $b3_6 >= 0 goto label08;
+
+        $l1_5 = $l2_2 - $l1_4;
+
+        $b3_7 = $l1_5 cmp $l0;
+
+(12)    if $b3_7 <= 0 goto label08;
+
+        return 0;
+
+     label08:
+        $b3_8 = Phi($b3_6 #11, $b3_7 #12);
+
+        $l1_6 = Phi($l1_4 #11, $l1_5 #12);
+
+        return 1;
+
+     label09:
+        return 1;
+
+     label10:
+        $r3 := @caughtexception;
+
+        $b3_9 = Phi($b3_4 #6, $b3_5 #8);
+
+        $l2_3 = Phi($l2_1 #6, $l2_2 #10);
+
+        $l1_7 = Phi($l1_3 #6, $l1_4 #9);
+
+        return 0;
+
+     label11:
+        $r4_2 = Phi($r4 #5, $r4_1 #7);
+
+        return 0;
+
+        catch java.io.IOException from label04 to label05 with label10;
+        catch java.io.IOException from label06 to label07 with label10;
+    }
+}

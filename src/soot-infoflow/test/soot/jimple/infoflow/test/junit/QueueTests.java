@@ -13,10 +13,10 @@ package soot.jimple.infoflow.test.junit;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 /**
  * test taint propagation in queues
  */
@@ -25,7 +25,7 @@ public class QueueTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void concreteSynchronousQueueTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.QueueTestCode: void concreteWriteReadTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -34,7 +34,7 @@ public class QueueTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void concreteSynchronousQueueNegativeTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.QueueTestCode: void concreteWriteReadNegativeTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);

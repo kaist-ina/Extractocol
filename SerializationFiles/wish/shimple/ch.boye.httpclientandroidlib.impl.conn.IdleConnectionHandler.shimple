@@ -1,0 +1,446 @@
+public class ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler extends java.lang.Object
+{
+    private final java.util.Map connectionToTimes;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler $r0;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r1;
+        java.util.HashMap $r2;
+        java.lang.Class $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r3 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r3);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r1;
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: java.util.Map connectionToTimes> = $r2;
+
+        return;
+    }
+
+    public void add(ch.boye.httpclientandroidlib.HttpConnection, long, java.util.concurrent.TimeUnit)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler $r0;
+        ch.boye.httpclientandroidlib.HttpConnection $r1;
+        long $l0, $l1;
+        java.util.concurrent.TimeUnit $r2;
+        java.util.Map $r3;
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues $r4;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r5, $r5_1, $r5_2;
+        boolean $z0;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3;
+        java.lang.String $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpConnection;
+
+        $l0 := @parameter1: long;
+
+        $r2 := @parameter2: java.util.concurrent.TimeUnit;
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $r5_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Adding connection at: ");
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l1);
+
+        $r7 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     virtualinvoke $r5_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r7);
+
+     label1:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        $r6_3 = Phi($r6 #0, $r6_2 #1);
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: java.util.Map connectionToTimes>;
+
+        $r4 = new ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues: void <init>(long,long,java.util.concurrent.TimeUnit)>($l1, $l0, $r2);
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r4);
+
+        return;
+    }
+
+    public void closeExpiredConnections()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler $r0;
+        java.util.Map $r1;
+        byte $b0;
+        java.io.IOException $r2;
+        long $l1, $l2, $l2_1, $l2_2, $l2_3, $l2_4;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        java.util.Set $r6;
+        java.util.Iterator $r7;
+        java.lang.Object $r8, $r8_1, $r8_2, $r8_3;
+        java.util.Map$Entry $r9;
+        ch.boye.httpclientandroidlib.HttpConnection $r10;
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues $r11;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler;
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Checking for expired connections, now: ");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l1);
+
+        $r5 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r5);
+
+     label1:
+        $r5_1 = Phi($r5 #0, $r5 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $r4_3 = Phi($r4 #0, $r4_2 #1);
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: java.util.Map connectionToTimes>;
+
+        $r6 = interfaceinvoke $r1.<java.util.Map: java.util.Set entrySet()>();
+
+(2)     $r7 = interfaceinvoke $r6.<java.util.Set: java.util.Iterator iterator()>();
+
+     label2:
+        $r8 = Phi($r8 #2, $r8_3 #3, $r8_3 #7, $r8_3 #8);
+
+        $l2 = Phi($l2 #2, $l2_1 #3, $l2_3 #7, $l2_4 #8);
+
+        $r5_2 = Phi($r5_1 #2, $r5_2 #3, $r5_4 #7, $r5_5 #8);
+
+        $r3_3 = Phi($r3_2 #2, $r3_3 #3, $r3_6 #7, $r3_8 #8);
+
+        $r4_4 = Phi($r4_3 #2, $r4_4 #3, $r4_8 #7, $r4_9 #8);
+
+        $z0_1 = Phi($z0 #2, $z0_2 #3, $z0_3 #7, $z0_3 #8);
+
+        $z0_2 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_2 == 0 goto label6;
+
+        $r8_1 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r9 = (java.util.Map$Entry) $r8_1;
+
+        $r8_2 = interfaceinvoke $r9.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r10 = (ch.boye.httpclientandroidlib.HttpConnection) $r8_2;
+
+        $r8_3 = interfaceinvoke $r9.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r11 = (ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues) $r8_3;
+
+        $l2_1 = staticinvoke <ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues: long access$000(ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues)>($r11);
+
+        $b0 = $l2_1 cmp $l1;
+
+(3)     if $b0 > 0 goto label2;
+
+        $r3_4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0_3 = virtualinvoke $r3_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(4)     if $z0_3 == 0 goto label3;
+
+        $r3_5 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r4_5 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_5.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_6 = virtualinvoke $r4_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Closing connection, expired @: ");
+
+        $l2_2 = staticinvoke <ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues: long access$000(ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues)>($r11);
+
+        $r4_7 = virtualinvoke $r4_6.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l2_2);
+
+        $r5_3 = virtualinvoke $r4_7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(5)     virtualinvoke $r3_5.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r5_3);
+
+     label3:
+        $l2_3 = Phi($l2_1 #4, $l2_2 #5);
+
+        $r5_4 = Phi($r5_2 #4, $r5_3 #5);
+
+        $r3_6 = Phi($r3_4 #4, $r3_5 #5);
+
+        $r4_8 = Phi($r4_4 #4, $r4_7 #5);
+
+(6)     interfaceinvoke $r10.<ch.boye.httpclientandroidlib.HttpConnection: void close()>();
+
+     label4:
+(7)     goto label2;
+
+     label5:
+        $r2 := @caughtexception;
+
+        $l2_4 = Phi($l2_1 #4, $l2_2 #5, $l2_3 #6);
+
+        $r5_5 = Phi($r5_2 #4, $r5_3 #5, $r5_4 #6);
+
+        $r3_7 = Phi($r3_4 #4, $r3_5 #5, $r3_6 #6);
+
+        $r4_9 = Phi($r4_4 #4, $r4_7 #5, $r4_8 #6);
+
+        $r3_8 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r3_8.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>("I/O error closing connection", $r2);
+
+(8)     goto label2;
+
+     label6:
+        return;
+
+        catch java.io.IOException from label3 to label4 with label5;
+    }
+
+    public void closeIdleConnections(long)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler $r0;
+        java.util.Map $r1;
+        byte $b0;
+        java.io.IOException $r2;
+        long $l1, $l2, $l1_1, $l2_1, $l2_2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        java.util.Set $r6;
+        java.util.Iterator $r7;
+        java.lang.Object $r8, $r8_1, $r8_2, $r8_3;
+        java.util.Map$Entry $r9;
+        ch.boye.httpclientandroidlib.HttpConnection $r10;
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues $r11;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler;
+
+        $l1 := @parameter0: long;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l1_1 = $l2 - $l1;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Checking for connections, idle timeout: ");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l1_1);
+
+        $r5 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r5);
+
+     label1:
+        $r4_3 = Phi($r4 #0, $r4_2 #1);
+
+        $r5_1 = Phi($r5 #0, $r5 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: java.util.Map connectionToTimes>;
+
+        $r6 = interfaceinvoke $r1.<java.util.Map: java.util.Set entrySet()>();
+
+(2)     $r7 = interfaceinvoke $r6.<java.util.Set: java.util.Iterator iterator()>();
+
+     label2:
+        $z0_1 = Phi($z0 #2, $z0_2 #3, $z0_3 #7, $z0_3 #8);
+
+        $r4_4 = Phi($r4_3 #2, $r4_4 #3, $r4_8 #7, $r4_9 #8);
+
+        $r5_2 = Phi($r5_1 #2, $r5_2 #3, $r5_4 #7, $r5_5 #8);
+
+        $r8 = Phi($r8 #2, $r8_3 #3, $r8_3 #7, $r8_3 #8);
+
+        $l2_1 = Phi($l2 #2, $l2_2 #3, $l2_2 #7, $l2_2 #8);
+
+        $r3_3 = Phi($r3_2 #2, $r3_3 #3, $r3_6 #7, $r3_8 #8);
+
+        $z0_2 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_2 == 0 goto label6;
+
+        $r8_1 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r9 = (java.util.Map$Entry) $r8_1;
+
+        $r8_2 = interfaceinvoke $r9.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r10 = (ch.boye.httpclientandroidlib.HttpConnection) $r8_2;
+
+        $r8_3 = interfaceinvoke $r9.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r11 = (ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues) $r8_3;
+
+        $l2_2 = staticinvoke <ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues: long access$100(ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues)>($r11);
+
+        $b0 = $l2_2 cmp $l1_1;
+
+(3)     if $b0 > 0 goto label2;
+
+        $r3_4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0_3 = virtualinvoke $r3_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(4)     if $z0_3 == 0 goto label3;
+
+        $r3_5 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r4_5 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_5.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_6 = virtualinvoke $r4_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Closing idle connection, connection time: ");
+
+        $r4_7 = virtualinvoke $r4_6.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l2_2);
+
+        $r5_3 = virtualinvoke $r4_7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(5)     virtualinvoke $r3_5.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r5_3);
+
+     label3:
+        $r4_8 = Phi($r4_4 #4, $r4_7 #5);
+
+        $r5_4 = Phi($r5_2 #4, $r5_3 #5);
+
+        $r3_6 = Phi($r3_4 #4, $r3_5 #5);
+
+(6)     interfaceinvoke $r10.<ch.boye.httpclientandroidlib.HttpConnection: void close()>();
+
+     label4:
+(7)     goto label2;
+
+     label5:
+        $r2 := @caughtexception;
+
+        $r4_9 = Phi($r4_4 #4, $r4_7 #5, $r4_8 #6);
+
+        $r5_5 = Phi($r5_2 #4, $r5_3 #5, $r5_4 #6);
+
+        $r3_7 = Phi($r3_4 #4, $r3_5 #5, $r3_6 #6);
+
+        $r3_8 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r3_8.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>("I/O error closing connection", $r2);
+
+(8)     goto label2;
+
+     label6:
+        return;
+
+        catch java.io.IOException from label3 to label4 with label5;
+    }
+
+    public boolean remove(ch.boye.httpclientandroidlib.HttpConnection)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler $r0;
+        ch.boye.httpclientandroidlib.HttpConnection $r1;
+        java.util.Map $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3;
+        byte $b0;
+        java.lang.Object $r4;
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues $r5;
+        long $l1, $l2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpConnection;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: java.util.Map connectionToTimes>;
+
+        $r4 = interfaceinvoke $r2.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r1);
+
+        $r5 = (ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues) $r4;
+
+        if $r5 != null goto label1;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void warn(java.lang.Object)>("Removing a connection that never existed!");
+
+        return 1;
+
+     label1:
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l2 = staticinvoke <ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues: long access$000(ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler$TimeValues)>($r5);
+
+        $b0 = $l1 cmp $l2;
+
+        if $b0 <= 0 goto label2;
+
+        return 0;
+
+     label2:
+        return 1;
+    }
+
+    public void removeAll()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler $r0;
+        java.util.Map $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: java.util.Map connectionToTimes>;
+
+        interfaceinvoke $r1.<java.util.Map: void clear()>();
+
+        return;
+    }
+}

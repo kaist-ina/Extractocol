@@ -1,0 +1,386 @@
+public class ch.boye.httpclientandroidlib.conn.BasicManagedEntity extends ch.boye.httpclientandroidlib.entity.HttpEntityWrapper implements ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger, ch.boye.httpclientandroidlib.conn.EofSensorWatcher
+{
+    protected final boolean attemptReuse;
+    protected ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn;
+
+    public void <init>(ch.boye.httpclientandroidlib.HttpEntity, ch.boye.httpclientandroidlib.conn.ManagedClientConnection, boolean)
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+        ch.boye.httpclientandroidlib.HttpEntity $r1;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r2;
+        boolean $z0;
+        java.lang.IllegalArgumentException $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpEntity;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.conn.ManagedClientConnection;
+
+        $z0 := @parameter2: boolean;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.entity.HttpEntityWrapper: void <init>(ch.boye.httpclientandroidlib.HttpEntity)>($r1);
+
+        if $r2 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Connection may not be null.");
+
+        throw $r3;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn> = $r2;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: boolean attemptReuse> = $z0;
+
+        return;
+    }
+
+    private void ensureConsumed() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.HttpEntity $r1;
+        java.lang.Throwable $r2;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(0)     if $r3 != null goto label1;
+
+        return;
+
+     label1:
+        $z0 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: boolean attemptReuse>;
+
+     label2:
+(1)     if $z0 == 0 goto label4;
+
+     label3:
+        $r1 = $r0.<ch.boye.httpclientandroidlib.entity.HttpEntityWrapper: ch.boye.httpclientandroidlib.HttpEntity wrappedEntity>;
+
+        staticinvoke <ch.boye.httpclientandroidlib.util.EntityUtils: void consume(ch.boye.httpclientandroidlib.HttpEntity)>($r1);
+
+(2)     $r3_1 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(3)     interfaceinvoke $r3_1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void markReusable()>();
+
+     label4:
+        $r3_2 = Phi($r3 #1, $r3_1 #3);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: void releaseManagedConnection()>();
+
+        return;
+
+     label5:
+        $r2 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: void releaseManagedConnection()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.lang.Throwable from label3 to label4 with label5;
+    }
+
+    public void abortConnection() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r2, $r2_1, $r2_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(0)     if $r2 == null goto label4;
+
+     label1:
+(1)     $r2_1 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        interfaceinvoke $r2_1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void abortConnection()>();
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn> = null;
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn> = null;
+
+        throw $r1;
+
+     label4:
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void consumeContent() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: void ensureConsumed()>();
+
+        return;
+    }
+
+    public boolean eofDetected(java.io.InputStream) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+        java.io.InputStream $r1;
+        boolean $z0;
+        java.lang.Throwable $r2;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+(0)     $r1 := @parameter0: java.io.InputStream;
+
+     label1:
+        $z0 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: boolean attemptReuse>;
+
+     label2:
+(1)     if $z0 == 0 goto label6;
+
+     label3:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label4:
+(2)     if $r3 == null goto label6;
+
+     label5:
+        virtualinvoke $r1.<java.io.InputStream: void close()>();
+
+(3)     $r3_1 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(4)     interfaceinvoke $r3_1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void markReusable()>();
+
+     label6:
+        $r3_2 = Phi($r3 #1, $r3 #2, $r3_1 #4);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: void releaseManagedConnection()>();
+
+        return 0;
+
+     label7:
+        $r2 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_1 #3);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: void releaseManagedConnection()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label3 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+
+    public java.io.InputStream getContent() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r1;
+        ch.boye.httpclientandroidlib.HttpEntity $r2;
+        java.io.InputStream $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+        $r1 = new ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.entity.HttpEntityWrapper: ch.boye.httpclientandroidlib.HttpEntity wrappedEntity>;
+
+        $r3 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpEntity: java.io.InputStream getContent()>();
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void <init>(java.io.InputStream,ch.boye.httpclientandroidlib.conn.EofSensorWatcher)>($r3, $r0);
+
+        return $r1;
+    }
+
+    public boolean isRepeatable()
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+        return 0;
+    }
+
+    public void releaseConnection() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: void ensureConsumed()>();
+
+        return;
+    }
+
+    protected void releaseManagedConnection() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r2, $r2_1, $r2_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(0)     if $r2 == null goto label4;
+
+     label1:
+(1)     $r2_1 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        interfaceinvoke $r2_1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void releaseConnection()>();
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn> = null;
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn> = null;
+
+        throw $r1;
+
+     label4:
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public boolean streamAbort(java.io.InputStream) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+        java.io.InputStream $r1;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r2, $r2_1, $r2_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+        $r1 := @parameter0: java.io.InputStream;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(1)     interfaceinvoke $r2_1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void abortConnection()>();
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return 0;
+    }
+
+    public boolean streamClosed(java.io.InputStream) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+        java.io.InputStream $r1;
+        java.net.SocketException $r2;
+        java.lang.Throwable $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+(0)     $r1 := @parameter0: java.io.InputStream;
+
+     label01:
+        $z0 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: boolean attemptReuse>;
+
+     label02:
+(1)     if $z0 == 0 goto label09;
+
+     label03:
+        $r4 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label04:
+(2)     if $r4 == null goto label09;
+
+     label05:
+(3)     $r4_1 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(4)     $z0_1 = interfaceinvoke $r4_1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: boolean isOpen()>();
+
+     label06:
+        virtualinvoke $r1.<java.io.InputStream: void close()>();
+
+     label07:
+(5)     $r4_2 = $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label08:
+(6)     interfaceinvoke $r4_2.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void markReusable()>();
+
+     label09:
+        $z0_2 = Phi($z0 #1, $z0 #2, $z0_1 #6, $z0_1 #7);
+
+        $r4_4 = Phi($r4 #1, $r4 #2, $r4_2 #6, $r4_3 #7);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: void releaseManagedConnection()>();
+
+        return 0;
+
+     label10:
+        $r2 := @caughtexception;
+
+        $r4_3 = Phi($r4_1 #4, $r4_2 #5);
+
+(7)     if $z0_1 == 0 goto label09;
+
+     label11:
+        throw $r2;
+
+     label12:
+        $r3 := @caughtexception;
+
+        $z0_3 = Phi($z0 #0, $z0_1 #4);
+
+        $r4_5 = Phi($r4 #0, $r4_1 #3, $r4_2 #5, $r4_3 #7);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: void releaseManagedConnection()>();
+
+        throw $r3;
+
+        catch java.lang.Throwable from label01 to label02 with label12;
+        catch java.lang.Throwable from label03 to label04 with label12;
+        catch java.lang.Throwable from label05 to label06 with label12;
+        catch java.net.SocketException from label06 to label07 with label10;
+        catch java.lang.Throwable from label06 to label07 with label12;
+        catch java.net.SocketException from label08 to label09 with label10;
+        catch java.lang.Throwable from label08 to label09 with label12;
+        catch java.lang.Throwable from label11 to label12 with label12;
+    }
+
+    public void writeTo(java.io.OutputStream) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r0;
+        java.io.OutputStream $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+        $r1 := @parameter0: java.io.OutputStream;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.entity.HttpEntityWrapper: void writeTo(java.io.OutputStream)>($r1);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: void ensureConsumed()>();
+
+        return;
+    }
+}

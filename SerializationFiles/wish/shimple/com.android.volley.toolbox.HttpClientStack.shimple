@@ -1,0 +1,363 @@
+public class com.android.volley.toolbox.HttpClientStack extends java.lang.Object implements com.android.volley.toolbox.HttpStack
+{
+    private static final java.lang.String HEADER_CONTENT_TYPE;
+    protected final org.apache.http.client.HttpClient mClient;
+
+    public void <init>(org.apache.http.client.HttpClient)
+    {
+        com.android.volley.toolbox.HttpClientStack $r0;
+        org.apache.http.client.HttpClient $r1;
+
+        $r0 := @this: com.android.volley.toolbox.HttpClientStack;
+
+        $r1 := @parameter0: org.apache.http.client.HttpClient;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.android.volley.toolbox.HttpClientStack: org.apache.http.client.HttpClient mClient> = $r1;
+
+        return;
+    }
+
+    private static void addHeaders(org.apache.http.client.methods.HttpUriRequest, java.util.Map)
+    {
+        org.apache.http.client.methods.HttpUriRequest $r0;
+        java.util.Map $r1;
+        java.util.Set $r2;
+        java.util.Iterator $r3;
+        boolean $z0;
+        java.lang.Object $r4, $r4_1, $r4_2;
+        java.lang.String $r5, $r6;
+
+        $r0 := @parameter0: org.apache.http.client.methods.HttpUriRequest;
+
+        $r1 := @parameter1: java.util.Map;
+
+        $r2 = interfaceinvoke $r1.<java.util.Map: java.util.Set keySet()>();
+
+(0)     $r3 = interfaceinvoke $r2.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $r4 = Phi($r4 #0, $r4_2 #1);
+
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r4_1 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.lang.String) $r4_1;
+
+        $r4_2 = interfaceinvoke $r1.<java.util.Map: java.lang.Object get(java.lang.Object)>($r5);
+
+        $r6 = (java.lang.String) $r4_2;
+
+        interfaceinvoke $r0.<org.apache.http.client.methods.HttpUriRequest: void setHeader(java.lang.String,java.lang.String)>($r5, $r6);
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    static org.apache.http.client.methods.HttpUriRequest createHttpRequest(com.android.volley.Request, java.util.Map) throws com.android.volley.AuthFailureError
+    {
+        com.android.volley.Request $r0;
+        java.util.Map $r1;
+        java.lang.IllegalStateException $r2;
+        org.apache.http.entity.ByteArrayEntity $r3;
+        org.apache.http.client.methods.HttpDelete $r4;
+        org.apache.http.client.methods.HttpPut $r5;
+        org.apache.http.client.methods.HttpHead $r6;
+        org.apache.http.client.methods.HttpOptions $r7;
+        org.apache.http.client.methods.HttpTrace $r8;
+        com.android.volley.toolbox.HttpClientStack$HttpPatch $r9;
+        int $i0;
+        byte[] $r10;
+        org.apache.http.client.methods.HttpPost $r11, $r11_1;
+        java.lang.String $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8, $r12_9, $r12_10, $r12_11, $r12_12, $r12_13;
+        org.apache.http.client.methods.HttpGet $r13, $r13_1;
+
+        $r0 := @parameter0: com.android.volley.Request;
+
+        $r1 := @parameter1: java.util.Map;
+
+        $i0 = virtualinvoke $r0.<com.android.volley.Request: int getMethod()>();
+
+        lookupswitch($i0)
+        {
+            case -1: goto label03;
+            case 0: goto label05;
+            case 1: goto label07;
+            case 2: goto label08;
+            case 3: goto label06;
+            case 4: goto label09;
+            case 5: goto label10;
+            case 6: goto label11;
+            case 7: goto label12;
+            default: goto label01;
+        };
+
+     label01:
+        goto label02;
+
+     label02:
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Unknown request method.");
+
+        throw $r2;
+
+     label03:
+        $r10 = virtualinvoke $r0.<com.android.volley.Request: byte[] getPostBody()>();
+
+        if $r10 == null goto label04;
+
+        $r11 = new org.apache.http.client.methods.HttpPost;
+
+        $r12 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        specialinvoke $r11.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>($r12);
+
+        $r12_1 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getPostBodyContentType()>();
+
+        virtualinvoke $r11.<org.apache.http.client.methods.HttpPost: void addHeader(java.lang.String,java.lang.String)>("Content-Type", $r12_1);
+
+        $r3 = new org.apache.http.entity.ByteArrayEntity;
+
+        specialinvoke $r3.<org.apache.http.entity.ByteArrayEntity: void <init>(byte[])>($r10);
+
+        virtualinvoke $r11.<org.apache.http.client.methods.HttpPost: void setEntity(org.apache.http.HttpEntity)>($r3);
+
+        return $r11;
+
+     label04:
+        $r13 = new org.apache.http.client.methods.HttpGet;
+
+        $r12_2 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        specialinvoke $r13.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r12_2);
+
+        return $r13;
+
+     label05:
+        $r13_1 = new org.apache.http.client.methods.HttpGet;
+
+        $r12_3 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        specialinvoke $r13_1.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r12_3);
+
+        return $r13_1;
+
+     label06:
+        $r4 = new org.apache.http.client.methods.HttpDelete;
+
+        $r12_4 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        specialinvoke $r4.<org.apache.http.client.methods.HttpDelete: void <init>(java.lang.String)>($r12_4);
+
+        return $r4;
+
+     label07:
+        $r11_1 = new org.apache.http.client.methods.HttpPost;
+
+        $r12_5 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        specialinvoke $r11_1.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>($r12_5);
+
+        $r12_6 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getBodyContentType()>();
+
+        virtualinvoke $r11_1.<org.apache.http.client.methods.HttpPost: void addHeader(java.lang.String,java.lang.String)>("Content-Type", $r12_6);
+
+        staticinvoke <com.android.volley.toolbox.HttpClientStack: void setEntityIfNonEmptyBody(org.apache.http.client.methods.HttpEntityEnclosingRequestBase,com.android.volley.Request)>($r11_1, $r0);
+
+        return $r11_1;
+
+     label08:
+        $r5 = new org.apache.http.client.methods.HttpPut;
+
+        $r12_7 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        specialinvoke $r5.<org.apache.http.client.methods.HttpPut: void <init>(java.lang.String)>($r12_7);
+
+        $r12_8 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getBodyContentType()>();
+
+        virtualinvoke $r5.<org.apache.http.client.methods.HttpPut: void addHeader(java.lang.String,java.lang.String)>("Content-Type", $r12_8);
+
+        staticinvoke <com.android.volley.toolbox.HttpClientStack: void setEntityIfNonEmptyBody(org.apache.http.client.methods.HttpEntityEnclosingRequestBase,com.android.volley.Request)>($r5, $r0);
+
+        return $r5;
+
+     label09:
+        $r6 = new org.apache.http.client.methods.HttpHead;
+
+        $r12_9 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        specialinvoke $r6.<org.apache.http.client.methods.HttpHead: void <init>(java.lang.String)>($r12_9);
+
+        return $r6;
+
+     label10:
+        $r7 = new org.apache.http.client.methods.HttpOptions;
+
+        $r12_10 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        specialinvoke $r7.<org.apache.http.client.methods.HttpOptions: void <init>(java.lang.String)>($r12_10);
+
+        return $r7;
+
+     label11:
+        $r8 = new org.apache.http.client.methods.HttpTrace;
+
+        $r12_11 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        specialinvoke $r8.<org.apache.http.client.methods.HttpTrace: void <init>(java.lang.String)>($r12_11);
+
+        return $r8;
+
+     label12:
+        $r9 = new com.android.volley.toolbox.HttpClientStack$HttpPatch;
+
+        $r12_12 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        specialinvoke $r9.<com.android.volley.toolbox.HttpClientStack$HttpPatch: void <init>(java.lang.String)>($r12_12);
+
+        $r12_13 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getBodyContentType()>();
+
+        virtualinvoke $r9.<com.android.volley.toolbox.HttpClientStack$HttpPatch: void addHeader(java.lang.String,java.lang.String)>("Content-Type", $r12_13);
+
+        staticinvoke <com.android.volley.toolbox.HttpClientStack: void setEntityIfNonEmptyBody(org.apache.http.client.methods.HttpEntityEnclosingRequestBase,com.android.volley.Request)>($r9, $r0);
+
+        return $r9;
+    }
+
+    private static java.util.List getPostParameterPairs(java.util.Map)
+    {
+        java.util.Map $r0;
+        java.util.ArrayList $r1;
+        org.apache.http.message.BasicNameValuePair $r2;
+        int $i0;
+        java.util.Set $r3;
+        java.util.Iterator $r4;
+        boolean $z0;
+        java.lang.Object $r5, $r5_1, $r5_2;
+        java.lang.String $r6, $r7;
+
+        $r0 := @parameter0: java.util.Map;
+
+        $r1 = new java.util.ArrayList;
+
+        $i0 = interfaceinvoke $r0.<java.util.Map: int size()>();
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>(int)>($i0);
+
+        $r3 = interfaceinvoke $r0.<java.util.Map: java.util.Set keySet()>();
+
+(0)     $r4 = interfaceinvoke $r3.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $r5 = Phi($r5 #0, $r5_2 #1);
+
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r5_1 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (java.lang.String) $r5_1;
+
+        $r2 = new org.apache.http.message.BasicNameValuePair;
+
+        $r5_2 = interfaceinvoke $r0.<java.util.Map: java.lang.Object get(java.lang.Object)>($r6);
+
+        $r7 = (java.lang.String) $r5_2;
+
+        specialinvoke $r2.<org.apache.http.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>($r6, $r7);
+
+        interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+(1)     goto label1;
+
+     label2:
+        return $r1;
+    }
+
+    private static void setEntityIfNonEmptyBody(org.apache.http.client.methods.HttpEntityEnclosingRequestBase, com.android.volley.Request) throws com.android.volley.AuthFailureError
+    {
+        org.apache.http.client.methods.HttpEntityEnclosingRequestBase $r0;
+        com.android.volley.Request $r1;
+        org.apache.http.entity.ByteArrayEntity $r2;
+        byte[] $r3;
+
+        $r0 := @parameter0: org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+
+        $r1 := @parameter1: com.android.volley.Request;
+
+        $r3 = virtualinvoke $r1.<com.android.volley.Request: byte[] getBody()>();
+
+        if $r3 == null goto label1;
+
+        $r2 = new org.apache.http.entity.ByteArrayEntity;
+
+        specialinvoke $r2.<org.apache.http.entity.ByteArrayEntity: void <init>(byte[])>($r3);
+
+        virtualinvoke $r0.<org.apache.http.client.methods.HttpEntityEnclosingRequestBase: void setEntity(org.apache.http.HttpEntity)>($r2);
+
+     label1:
+        return;
+    }
+
+    protected void onPrepareRequest(org.apache.http.client.methods.HttpUriRequest) throws java.io.IOException
+    {
+        com.android.volley.toolbox.HttpClientStack $r0;
+        org.apache.http.client.methods.HttpUriRequest $r1;
+
+        $r0 := @this: com.android.volley.toolbox.HttpClientStack;
+
+        $r1 := @parameter0: org.apache.http.client.methods.HttpUriRequest;
+
+        return;
+    }
+
+    public org.apache.http.HttpResponse performRequest(com.android.volley.Request, java.util.Map) throws java.io.IOException, com.android.volley.AuthFailureError
+    {
+        com.android.volley.toolbox.HttpClientStack $r0;
+        com.android.volley.Request $r1;
+        org.apache.http.client.HttpClient $r2;
+        java.util.Map $r3, $r3_1;
+        org.apache.http.client.methods.HttpUriRequest $r4;
+        org.apache.http.params.HttpParams $r5;
+        int $i0;
+        org.apache.http.HttpResponse $r6;
+
+        $r0 := @this: com.android.volley.toolbox.HttpClientStack;
+
+        $r1 := @parameter0: com.android.volley.Request;
+
+        $r3 := @parameter1: java.util.Map;
+
+        $r4 = staticinvoke <com.android.volley.toolbox.HttpClientStack: org.apache.http.client.methods.HttpUriRequest createHttpRequest(com.android.volley.Request,java.util.Map)>($r1, $r3);
+
+        staticinvoke <com.android.volley.toolbox.HttpClientStack: void addHeaders(org.apache.http.client.methods.HttpUriRequest,java.util.Map)>($r4, $r3);
+
+        $r3_1 = virtualinvoke $r1.<com.android.volley.Request: java.util.Map getHeaders()>();
+
+        staticinvoke <com.android.volley.toolbox.HttpClientStack: void addHeaders(org.apache.http.client.methods.HttpUriRequest,java.util.Map)>($r4, $r3_1);
+
+        virtualinvoke $r0.<com.android.volley.toolbox.HttpClientStack: void onPrepareRequest(org.apache.http.client.methods.HttpUriRequest)>($r4);
+
+        $r5 = interfaceinvoke $r4.<org.apache.http.client.methods.HttpUriRequest: org.apache.http.params.HttpParams getParams()>();
+
+        $i0 = virtualinvoke $r1.<com.android.volley.Request: int getTimeoutMs()>();
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setConnectionTimeout(org.apache.http.params.HttpParams,int)>($r5, 5000);
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setSoTimeout(org.apache.http.params.HttpParams,int)>($r5, $i0);
+
+        $r2 = $r0.<com.android.volley.toolbox.HttpClientStack: org.apache.http.client.HttpClient mClient>;
+
+        $r6 = interfaceinvoke $r2.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>($r4);
+
+        return $r6;
+    }
+}

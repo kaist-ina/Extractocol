@@ -1,0 +1,976 @@
+public class com.braintreepayments.api.BraintreeBroadcastManager extends java.lang.Object
+{
+    private static final boolean DEBUG;
+    static final int MSG_EXEC_PENDING_BROADCASTS;
+    private static final java.lang.String TAG;
+    private static com.braintreepayments.api.BraintreeBroadcastManager mInstance;
+    private static final java.lang.Object mLock;
+    private final java.util.HashMap mActions;
+    private final android.content.Context mAppContext;
+    private final android.os.Handler mHandler;
+    private final java.util.ArrayList mPendingBroadcasts;
+    private final java.util.HashMap mReceivers;
+
+    static void <clinit>()
+    {
+        java.lang.Object $r0;
+
+        $r0 = new java.lang.Object;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        <com.braintreepayments.api.BraintreeBroadcastManager: java.lang.Object mLock> = $r0;
+
+        return;
+    }
+
+    private void <init>(android.content.Context)
+    {
+        com.braintreepayments.api.BraintreeBroadcastManager $r0;
+        android.content.Context $r1;
+        java.util.ArrayList $r2;
+        com.braintreepayments.api.BraintreeBroadcastManager$1 $r3;
+        android.os.Looper $r4;
+        java.util.HashMap $r5, $r5_1;
+
+        $r0 := @this: com.braintreepayments.api.BraintreeBroadcastManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mReceivers> = $r5;
+
+        $r5_1 = new java.util.HashMap;
+
+        specialinvoke $r5_1.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mActions> = $r5_1;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.ArrayList mPendingBroadcasts> = $r2;
+
+        $r0.<com.braintreepayments.api.BraintreeBroadcastManager: android.content.Context mAppContext> = $r1;
+
+        $r3 = new com.braintreepayments.api.BraintreeBroadcastManager$1;
+
+        $r4 = virtualinvoke $r1.<android.content.Context: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r3.<com.braintreepayments.api.BraintreeBroadcastManager$1: void <init>(com.braintreepayments.api.BraintreeBroadcastManager,android.os.Looper)>($r0, $r4);
+
+        $r0.<com.braintreepayments.api.BraintreeBroadcastManager: android.os.Handler mHandler> = $r3;
+
+        return;
+    }
+
+    static void access$000(com.braintreepayments.api.BraintreeBroadcastManager)
+    {
+        com.braintreepayments.api.BraintreeBroadcastManager $r0;
+
+        $r0 := @parameter0: com.braintreepayments.api.BraintreeBroadcastManager;
+
+        specialinvoke $r0.<com.braintreepayments.api.BraintreeBroadcastManager: void executePendingBroadcasts()>();
+
+        return;
+    }
+
+    private void executePendingBroadcasts()
+    {
+        com.braintreepayments.api.BraintreeBroadcastManager $r0;
+        java.util.HashMap $r1;
+        com.braintreepayments.api.BraintreeBroadcastManager$BroadcastRecord[] $r2;
+        com.braintreepayments.api.BraintreeBroadcastManager$BroadcastRecord $r3;
+        android.content.BroadcastReceiver $r4;
+        android.content.Context $r5;
+        android.content.Intent $r6;
+        java.lang.Throwable $r7;
+        java.util.ArrayList $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8;
+        int $i0, $i1, $i2, $i0_1, $i0_2, $i1_1, $i0_3, $i1_2, $i1_3, $i1_4, $i1_5, $i0_4, $i0_5;
+        java.lang.Object $r9;
+        com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord $r10;
+
+(0)     $r0 := @this: com.braintreepayments.api.BraintreeBroadcastManager;
+
+     label01:
+        $i1 = Phi($i1 #0, $i1_2 #7);
+
+        $r8 = Phi($r8 #0, $r8_4 #7);
+
+        $i0 = Phi($i0 #0, $i0_3 #7);
+
+        $r1 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mReceivers>;
+
+(1)     entermonitor $r1;
+
+     label02:
+(2)     $r8_1 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.ArrayList mPendingBroadcasts>;
+
+(3)     $i0_1 = virtualinvoke $r8_1.<java.util.ArrayList: int size()>();
+
+        if $i0_1 > 0 goto label04;
+
+        exitmonitor $r1;
+
+     label03:
+        return;
+
+     label04:
+        $r2 = newarray (com.braintreepayments.api.BraintreeBroadcastManager$BroadcastRecord)[$i0_1];
+
+(4)     $r8_2 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.ArrayList mPendingBroadcasts>;
+
+        virtualinvoke $r8_2.<java.util.ArrayList: java.lang.Object[] toArray(java.lang.Object[])>($r2);
+
+(5)     $r8_3 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.ArrayList mPendingBroadcasts>;
+
+        virtualinvoke $r8_3.<java.util.ArrayList: void clear()>();
+
+        exitmonitor $r1;
+
+     label05:
+(6)     $i0_2 = 0;
+
+     label06:
+        $i1_1 = Phi($i1 #6, $i1_4 #11);
+
+        $r8_4 = Phi($r8_3 #6, $r8_6 #11);
+
+        $i0_3 = Phi($i0_2 #6, $i0_4 #11);
+
+        $i1_2 = lengthof $r2;
+
+(7)     if $i0_3 >= $i1_2 goto label01;
+
+        $r3 = $r2[$i0_3];
+
+(8)     $i1_3 = 0;
+
+     label07:
+        $i1_4 = Phi($i1_3 #8, $i1_5 #9);
+
+        $r8_5 = Phi($r8_4 #8, $r8_7 #9);
+
+        $r8_6 = $r3.<com.braintreepayments.api.BraintreeBroadcastManager$BroadcastRecord: java.util.ArrayList receivers>;
+
+        $i2 = virtualinvoke $r8_6.<java.util.ArrayList: int size()>();
+
+        if $i1_4 >= $i2 goto label11;
+
+        $r8_7 = $r3.<com.braintreepayments.api.BraintreeBroadcastManager$BroadcastRecord: java.util.ArrayList receivers>;
+
+        $r9 = virtualinvoke $r8_7.<java.util.ArrayList: java.lang.Object get(int)>($i1_4);
+
+        $r10 = (com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord) $r9;
+
+        $r4 = $r10.<com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord: android.content.BroadcastReceiver receiver>;
+
+        $r5 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: android.content.Context mAppContext>;
+
+        $r6 = $r3.<com.braintreepayments.api.BraintreeBroadcastManager$BroadcastRecord: android.content.Intent intent>;
+
+        virtualinvoke $r4.<android.content.BroadcastReceiver: void onReceive(android.content.Context,android.content.Intent)>($r5, $r6);
+
+        $i1_5 = $i1_4 + 1;
+
+(9)     goto label07;
+
+     label08:
+        $r7 := @caughtexception;
+
+        $r8_8 = Phi($r8 #1, $r8_1 #2, $r8_2 #4, $r8_3 #5, $r8_8 #10);
+
+(10)    $i0_5 = Phi($i0 #1, $i0_1 #3, $i0_5 #10);
+
+     label09:
+        exitmonitor $r1;
+
+     label10:
+        throw $r7;
+
+     label11:
+        $i0_4 = $i0_3 + 1;
+
+(11)    goto label06;
+
+        catch java.lang.Throwable from label02 to label03 with label08;
+        catch java.lang.Throwable from label04 to label05 with label08;
+        catch java.lang.Throwable from label09 to label10 with label08;
+    }
+
+    public static com.braintreepayments.api.BraintreeBroadcastManager getInstance(android.content.Context)
+    {
+        java.lang.Object $r0;
+        java.lang.Throwable $r1;
+        android.content.Context $r2, $r2_1, $r2_2, $r2_3;
+        com.braintreepayments.api.BraintreeBroadcastManager $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+
+        $r2 := @parameter0: android.content.Context;
+
+        $r0 = <com.braintreepayments.api.BraintreeBroadcastManager: java.lang.Object mLock>;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r3 = <com.braintreepayments.api.BraintreeBroadcastManager: com.braintreepayments.api.BraintreeBroadcastManager mInstance>;
+
+(1)     if $r3 != null goto label2;
+
+(2)     $r3_1 = new com.braintreepayments.api.BraintreeBroadcastManager;
+
+(3)     $r2_1 = virtualinvoke $r2.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        specialinvoke $r3_1.<com.braintreepayments.api.BraintreeBroadcastManager: void <init>(android.content.Context)>($r2_1);
+
+(4)     <com.braintreepayments.api.BraintreeBroadcastManager: com.braintreepayments.api.BraintreeBroadcastManager mInstance> = $r3_1;
+
+     label2:
+        $r3_2 = Phi($r3 #1, $r3_1 #4);
+
+        $r2_2 = Phi($r2 #1, $r2_1 #4);
+
+(5)     $r3_3 = <com.braintreepayments.api.BraintreeBroadcastManager: com.braintreepayments.api.BraintreeBroadcastManager mInstance>;
+
+        exitmonitor $r0;
+
+     label3:
+        return $r3_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r3_4 = Phi($r3 #0, $r3_1 #2, $r3_3 #5, $r3_4 #6);
+
+(6)     $r2_3 = Phi($r2 #0, $r2_1 #3, $r2_2 #5, $r2_3 #6);
+
+        exitmonitor $r0;
+
+     label5:
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label4 to label5 with label4;
+    }
+
+    public void registerReceiver(android.content.BroadcastReceiver, android.content.IntentFilter)
+    {
+        com.braintreepayments.api.BraintreeBroadcastManager $r0;
+        android.content.BroadcastReceiver $r1;
+        android.content.IntentFilter $r2;
+        java.util.HashMap $r3, $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7;
+        com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord $r4;
+        java.lang.Throwable $r5;
+        java.lang.Object $r7, $r7_1, $r7_2, $r7_3;
+        java.util.ArrayList $r8, $r9, $r9_1, $r9_2, $r8_1, $r9_3, $r8_2, $r9_4, $r9_5, $r9_6, $r8_3, $r9_7;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3;
+        java.lang.String $r10;
+
+        $r0 := @this: com.braintreepayments.api.BraintreeBroadcastManager;
+
+        $r1 := @parameter0: android.content.BroadcastReceiver;
+
+        $r2 := @parameter1: android.content.IntentFilter;
+
+        $r3 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mReceivers>;
+
+(0)     entermonitor $r3;
+
+     label1:
+        $r4 = new com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord;
+
+        specialinvoke $r4.<com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord: void <init>(android.content.IntentFilter,android.content.BroadcastReceiver)>($r2, $r1);
+
+        $r6 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mReceivers>;
+
+        $r7 = virtualinvoke $r6.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r8 = (java.util.ArrayList) $r7;
+
+        $r9 = $r8;
+
+(1)     if $r8 != null goto label2;
+
+(2)     $r9_1 = new java.util.ArrayList;
+
+        specialinvoke $r9_1.<java.util.ArrayList: void <init>(int)>(1);
+
+(3)     $r6_1 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mReceivers>;
+
+(4)     virtualinvoke $r6_1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r9_1);
+
+     label2:
+        $r9_2 = Phi($r9 #1, $r9_1 #4);
+
+        $r6_2 = Phi($r6 #1, $r6_1 #4);
+
+(5)     virtualinvoke $r9_2.<java.util.ArrayList: boolean add(java.lang.Object)>($r2);
+
+(6)     $i0 = 0;
+
+     label3:
+        $i0_1 = Phi($i0 #6, $i0_2 #18);
+
+        $r8_1 = Phi($r8 #6, $r8_2 #18);
+
+        $r9_3 = Phi($r9_2 #6, $r9_6 #18);
+
+        $r7_1 = Phi($r7 #6, $r7_2 #18);
+
+        $r6_3 = Phi($r6_2 #6, $r6_6 #18);
+
+(7)     $i1 = virtualinvoke $r2.<android.content.IntentFilter: int countActions()>();
+
+        if $i0_1 >= $i1 goto label5;
+
+        $r10 = virtualinvoke $r2.<android.content.IntentFilter: java.lang.String getAction(int)>($i0_1);
+
+(8)     $r6_4 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mActions>;
+
+(9)     $r7_2 = virtualinvoke $r6_4.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r10);
+
+(10)    $r8_2 = (java.util.ArrayList) $r7_2;
+
+(11)    $r9_4 = $r8_2;
+
+(12)    if $r8_2 != null goto label4;
+
+(13)    $r9_5 = new java.util.ArrayList;
+
+        specialinvoke $r9_5.<java.util.ArrayList: void <init>(int)>(1);
+
+(14)    $r6_5 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mActions>;
+
+(15)    virtualinvoke $r6_5.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r10, $r9_5);
+
+     label4:
+        $r9_6 = Phi($r9_4 #12, $r9_5 #15);
+
+        $r6_6 = Phi($r6_4 #12, $r6_5 #15);
+
+(16)    virtualinvoke $r9_6.<java.util.ArrayList: boolean add(java.lang.Object)>($r4);
+
+(17)    $i0_2 = $i0_1 + 1;
+
+(18)    goto label3;
+
+     label5:
+        exitmonitor $r3;
+
+     label6:
+        return;
+
+     label7:
+        $r5 := @caughtexception;
+
+        $i0_3 = Phi($i0 #0, $i0_1 #7, $i0_2 #17, $i0_3 #19);
+
+        $r8_3 = Phi($r8 #0, $r8_1 #7, $r8_2 #10, $r8_3 #19);
+
+        $r9_7 = Phi($r9 #0, $r9_1 #2, $r9_2 #5, $r9_3 #7, $r9_4 #11, $r9_5 #13, $r9_6 #16, $r9_7 #19);
+
+        $r7_3 = Phi($r7 #0, $r7_1 #7, $r7_2 #9, $r7_3 #19);
+
+(19)    $r6_7 = Phi($r6 #0, $r6_1 #3, $r6_2 #5, $r6_3 #7, $r6_4 #8, $r6_5 #14, $r6_6 #16, $r6_7 #19);
+
+        exitmonitor $r3;
+
+     label8:
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label6 with label7;
+        catch java.lang.Throwable from label7 to label8 with label7;
+    }
+
+    public boolean sendBroadcast(android.content.Intent)
+    {
+        com.braintreepayments.api.BraintreeBroadcastManager $r0;
+        android.content.Intent $r1;
+        java.util.HashMap $r2, $r14;
+        android.content.Context $r3;
+        java.lang.Throwable $r4;
+        com.braintreepayments.api.BraintreeBroadcastManager$BroadcastRecord $r5;
+        java.lang.String $r6, $r8, $r10, $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7, $r13_8, $r13_9, $r13_10, $r13_11, $r13_12, $r13_13, $r13_14, $r13_15, $r13_16, $r13_17, $r13_18, $r13_19, $r13_20;
+        android.content.ContentResolver $r7;
+        android.net.Uri $r9;
+        java.util.Set $r11;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i1_1, $i1_2, $i0_4, $i1_3, $i0_5, $i0_6, $i1_4, $i1_5, $i0_7, $i0_8, $i1_6, $i0_9, $i1_7;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.lang.StringBuilder $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8, $r12_9, $r12_10, $r12_11, $r12_12, $r12_13, $r12_14, $r12_15, $r12_16, $r12_17, $r12_18, $r12_19, $r12_20, $r12_21, $r12_22, $r12_23, $r12_24, $r12_25, $r12_26;
+        java.lang.Object $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6;
+        java.util.ArrayList $r16, $r17, $r17_1, $r17_2, $r17_3, $r17_4, $r16_1, $r17_5, $r17_6, $r16_2;
+        com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord $r18, $r18_1, $r18_2, $r18_3, $r18_4, $r18_5;
+        android.content.IntentFilter $r19, $r19_1, $r19_2, $r19_3, $r19_4, $r19_5, $r19_6;
+        android.os.Handler $r20, $r20_1, $r20_2, $r20_3;
+
+        $r0 := @this: com.braintreepayments.api.BraintreeBroadcastManager;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $r2 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mReceivers>;
+
+(0)     entermonitor $r2;
+
+     label01:
+        $r6 = virtualinvoke $r1.<android.content.Intent: java.lang.String getAction()>();
+
+        $r3 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: android.content.Context mAppContext>;
+
+        $r7 = virtualinvoke $r3.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r8 = virtualinvoke $r1.<android.content.Intent: java.lang.String resolveTypeIfNeeded(android.content.ContentResolver)>($r7);
+
+        $r9 = virtualinvoke $r1.<android.content.Intent: android.net.Uri getData()>();
+
+        $r10 = virtualinvoke $r1.<android.content.Intent: java.lang.String getScheme()>();
+
+        $r11 = virtualinvoke $r1.<android.content.Intent: java.util.Set getCategories()>();
+
+        $i0 = virtualinvoke $r1.<android.content.Intent: int getFlags()>();
+
+(1)     $i0_1 = $i0 & 8;
+
+        if $i0_1 == 0 goto label08;
+
+(2)     $z0 = 1;
+
+     label02:
+        $z0_1 = Phi($z0 #2, $z0_3 #38);
+
+(3)     if $z0_1 == 0 goto label03;
+
+        $r12 = new java.lang.StringBuilder;
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>()>();
+
+(4)     $r12_1 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Resolving type ");
+
+(5)     $r12_2 = virtualinvoke $r12_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+(6)     $r12_3 = virtualinvoke $r12_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" scheme ");
+
+(7)     $r12_4 = virtualinvoke $r12_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+(8)     $r12_5 = virtualinvoke $r12_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" of intent ");
+
+(9)     $r12_6 = virtualinvoke $r12_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r13 = virtualinvoke $r12_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(10)    staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("BTBroadcastManager", $r13);
+
+     label03:
+        $r13_1 = Phi($r13 #3, $r13 #10);
+
+        $r12_7 = Phi($r12 #3, $r12_6 #10);
+
+(11)    $r14 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mActions>;
+
+(12)    $r13_2 = virtualinvoke $r1.<android.content.Intent: java.lang.String getAction()>();
+
+        $r15 = virtualinvoke $r14.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r13_2);
+
+        $r16 = (java.util.ArrayList) $r15;
+
+(13)    if $r16 == null goto label27;
+
+(14)    if $z0_1 == 0 goto label04;
+
+(15)    $r12_8 = new java.lang.StringBuilder;
+
+        specialinvoke $r12_8.<java.lang.StringBuilder: void <init>()>();
+
+(16)    $r12_9 = virtualinvoke $r12_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Action list: ");
+
+(17)    $r12_10 = virtualinvoke $r12_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r16);
+
+(18)    $r13_3 = virtualinvoke $r12_10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(19)    staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("BTBroadcastManager", $r13_3);
+
+     label04:
+        $r13_4 = Phi($r13_2 #14, $r13_3 #19);
+
+        $r12_11 = Phi($r12_7 #14, $r12_10 #19);
+
+(20)    $r17 = null;
+
+(21)    $i0_2 = 0;
+
+     label05:
+        $i0_3 = Phi($i0_2 #21, $i0_4 #36);
+
+        $r17_1 = Phi($r17 #21, $r17_2 #36);
+
+        $r18 = Phi($r18 #21, $r18_1 #36);
+
+        $r19 = Phi($r19 #21, $r19_3 #36);
+
+        $r15_1 = Phi($r15 #21, $r15_2 #36);
+
+        $r13_5 = Phi($r13_4 #21, $r13_8 #36);
+
+        $i1 = Phi($i1 #21, $i1_2 #36);
+
+        $r12_12 = Phi($r12_11 #21, $r12_17 #36);
+
+(22)    $i1_1 = virtualinvoke $r16.<java.util.ArrayList: int size()>();
+
+        if $i0_3 >= $i1_1 goto label22;
+
+(23)    $r15_2 = virtualinvoke $r16.<java.util.ArrayList: java.lang.Object get(int)>($i0_3);
+
+(24)    $r18_1 = (com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord) $r15_2;
+
+(25)    if $z0_1 == 0 goto label06;
+
+(26)    $r12_13 = new java.lang.StringBuilder;
+
+        specialinvoke $r12_13.<java.lang.StringBuilder: void <init>()>();
+
+(27)    $r12_14 = virtualinvoke $r12_13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Matching against filter ");
+
+(28)    $r19_1 = $r18_1.<com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord: android.content.IntentFilter filter>;
+
+(29)    $r12_15 = virtualinvoke $r12_14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r19_1);
+
+(30)    $r13_6 = virtualinvoke $r12_15.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(31)    staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("BTBroadcastManager", $r13_6);
+
+     label06:
+        $r19_2 = Phi($r19 #25, $r19_1 #31);
+
+        $r13_7 = Phi($r13_5 #25, $r13_6 #31);
+
+        $r12_16 = Phi($r12_12 #25, $r12_15 #31);
+
+(32)    $z1 = $r18_1.<com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord: boolean broadcasting>;
+
+        if $z1 == 0 goto label09;
+
+(33)    if $z0_1 == 0 goto label07;
+
+(34)    staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("BTBroadcastManager", "  Filter\'s target already added");
+
+     label07:
+        $r17_2 = Phi($r17_1 #33, $r17_1 #34, $r17_4 #52, $r17_1 #54, $r17_1 #60);
+
+        $r19_3 = Phi($r19_2 #33, $r19_2 #34, $r19_4 #52, $r19_4 #54, $r19_4 #60);
+
+        $r13_8 = Phi($r13_7 #33, $r13_7 #34, $r13_11 #52, $r13_7 #54, $r13_14 #60);
+
+        $i1_2 = Phi($i1_1 #33, $i1_1 #34, $i1_3 #52, $i1_3 #54, $i1_3 #60);
+
+        $r12_17 = Phi($r12_16 #33, $r12_16 #34, $r12_21 #52, $r12_16 #54, $r12_24 #60);
+
+(35)    $i0_4 = $i0_3 + 1;
+
+(36)    goto label05;
+
+     label08:
+(37)    $z0_3 = 0;
+
+(38)    goto label02;
+
+     label09:
+(39)    $r19_4 = $r18_1.<com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord: android.content.IntentFilter filter>;
+
+(40)    $i1_3 = virtualinvoke $r19_4.<android.content.IntentFilter: int match(java.lang.String,java.lang.String,java.lang.String,android.net.Uri,java.util.Set,java.lang.String)>($r6, $r8, $r10, $r9, $r11, "BraintreeBroadcastManager");
+
+        if $i1_3 < 0 goto label14;
+
+(41)    if $z0_1 == 0 goto label10;
+
+(42)    $r12_18 = new java.lang.StringBuilder;
+
+        specialinvoke $r12_18.<java.lang.StringBuilder: void <init>()>();
+
+(43)    $r12_19 = virtualinvoke $r12_18.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  Filter matched!  match=0x");
+
+(44)    $r13_9 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i1_3);
+
+(45)    $r12_20 = virtualinvoke $r12_19.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13_9);
+
+(46)    $r13_10 = virtualinvoke $r12_20.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(47)    staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("BTBroadcastManager", $r13_10);
+
+     label10:
+        $r13_11 = Phi($r13_7 #41, $r13_10 #47);
+
+        $r12_21 = Phi($r12_16 #41, $r12_20 #47);
+
+(48)    if $r17_1 != null goto label11;
+
+(49)    $r17_3 = new java.util.ArrayList;
+
+(50)    specialinvoke $r17_3.<java.util.ArrayList: void <init>()>();
+
+     label11:
+        $r17_4 = Phi($r17_1 #48, $r17_3 #50);
+
+(51)    virtualinvoke $r17_4.<java.util.ArrayList: boolean add(java.lang.Object)>($r18_1);
+
+        $r18_1.<com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord: boolean broadcasting> = 1;
+
+(52)    goto label07;
+
+     label12:
+        $r4 := @caughtexception;
+
+        $i0_9 = Phi($i0 #0, $i0_1 #1, $i0_2 #21, $i0_3 #22, $i0_4 #35, $i0_9 #53, $i0_5 #70, $i0_6 #71, $i0_7 #74, $i0_8 #82);
+
+        $r17_6 = Phi($r17 #0, $r17_1 #22, $r17_2 #35, $r17_3 #49, $r17_4 #51, $r17_6 #53, $r17_5 #82);
+
+        $r18_5 = Phi($r18 #0, $r18_1 #24, $r18_5 #53, $r18_2 #71, $r18_3 #73, $r18_4 #82);
+
+        $r19_6 = Phi($r19 #0, $r19_1 #28, $r19_2 #32, $r19_3 #35, $r19_4 #39, $r19_6 #53, $r19_5 #82);
+
+        $r20_3 = Phi($r20 #0, $r20_3 #53, $r20_1 #79, $r20_2 #81);
+
+        $r15_6 = Phi($r15 #0, $r15_1 #22, $r15_2 #23, $r15_6 #53, $r15_3 #71, $r15_4 #72, $r15_5 #82);
+
+        $r13_20 = Phi($r13 #0, $r13_1 #11, $r13_2 #12, $r13_3 #18, $r13_4 #20, $r13_5 #22, $r13_6 #30, $r13_7 #32, $r13_8 #35, $r13_9 #44, $r13_10 #46, $r13_11 #48, $r13_20 #53, $r13_12 #55, $r13_13 #56, $r13_14 #59, $r13_15 #61, $r13_16 #63, $r13_17 #65, $r13_18 #67, $r13_19 #82);
+
+        $z0_4 = Phi($z0 #0, $z0_1 #3, $z0_3 #37, $z0_4 #53, $z0_2 #77);
+
+        $i1_7 = Phi($i1 #0, $i1_1 #22, $i1_2 #35, $i1_3 #40, $i1_7 #53, $i1_5 #71, $i1_6 #82);
+
+        $r12_26 = Phi($r12 #0, $r12_1 #4, $r12_2 #5, $r12_3 #6, $r12_4 #7, $r12_5 #8, $r12_6 #9, $r12_7 #11, $r12_8 #15, $r12_9 #16, $r12_10 #17, $r12_11 #20, $r12_12 #22, $r12_13 #26, $r12_14 #27, $r12_15 #29, $r12_16 #32, $r12_17 #35, $r12_18 #42, $r12_19 #43, $r12_20 #45, $r12_21 #48, $r12_26 #53, $r12_22 #56, $r12_23 #57, $r12_24 #58, $r12_25 #82);
+
+(53)    $r16_2 = Phi($r16 #0, $r16_2 #53, $r16_1 #76);
+
+        exitmonitor $r2;
+
+     label13:
+        throw $r4;
+
+     label14:
+(54)    if $z0_1 == 0 goto label07;
+
+        lookupswitch($i1_3)
+        {
+            case -4: goto label19;
+            case -3: goto label18;
+            case -2: goto label20;
+            case -1: goto label21;
+            default: goto label15;
+        };
+
+     label15:
+        goto label16;
+
+     label16:
+(55)    $r13_12 = "unknown reason";
+
+     label17:
+        $r13_13 = Phi($r13_12 #55, $r13_15 #62, $r13_16 #64, $r13_17 #66, $r13_18 #68);
+
+(56)    $r12_22 = new java.lang.StringBuilder;
+
+        specialinvoke $r12_22.<java.lang.StringBuilder: void <init>()>();
+
+(57)    $r12_23 = virtualinvoke $r12_22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  Filter did not match: ");
+
+(58)    $r12_24 = virtualinvoke $r12_23.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13_13);
+
+(59)    $r13_14 = virtualinvoke $r12_24.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("BTBroadcastManager", $r13_14);
+
+(60)    goto label07;
+
+     label18:
+(61)    $r13_15 = "action";
+
+(62)    goto label17;
+
+     label19:
+(63)    $r13_16 = "category";
+
+(64)    goto label17;
+
+     label20:
+(65)    $r13_17 = "data";
+
+(66)    goto label17;
+
+     label21:
+(67)    $r13_18 = "type";
+
+(68)    goto label17;
+
+     label22:
+(69)    if $r17_1 == null goto label27;
+
+(70)    $i0_5 = 0;
+
+     label23:
+        $i0_6 = Phi($i0_5 #70, $i0_7 #75);
+
+        $r18_2 = Phi($r18 #70, $r18_3 #75);
+
+        $r15_3 = Phi($r15_1 #70, $r15_4 #75);
+
+        $i1_4 = Phi($i1_1 #70, $i1_5 #75);
+
+(71)    $i1_5 = virtualinvoke $r17_1.<java.util.ArrayList: int size()>();
+
+        if $i0_6 >= $i1_5 goto label24;
+
+(72)    $r15_4 = virtualinvoke $r17_1.<java.util.ArrayList: java.lang.Object get(int)>($i0_6);
+
+(73)    $r18_3 = (com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord) $r15_4;
+
+        $r18_3.<com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord: boolean broadcasting> = 0;
+
+(74)    $i0_7 = $i0_6 + 1;
+
+(75)    goto label23;
+
+     label24:
+(76)    $r16_1 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.ArrayList mPendingBroadcasts>;
+
+        $r5 = new com.braintreepayments.api.BraintreeBroadcastManager$BroadcastRecord;
+
+        specialinvoke $r5.<com.braintreepayments.api.BraintreeBroadcastManager$BroadcastRecord: void <init>(android.content.Intent,java.util.ArrayList)>($r1, $r17_1);
+
+        virtualinvoke $r16_1.<java.util.ArrayList: boolean add(java.lang.Object)>($r5);
+
+        $r20 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: android.os.Handler mHandler>;
+
+(77)    $z0_2 = virtualinvoke $r20.<android.os.Handler: boolean hasMessages(int)>(1);
+
+(78)    if $z0_2 != 0 goto label25;
+
+(79)    $r20_1 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: android.os.Handler mHandler>;
+
+(80)    virtualinvoke $r20_1.<android.os.Handler: boolean sendEmptyMessage(int)>(1);
+
+     label25:
+        $r20_2 = Phi($r20 #78, $r20_1 #80);
+
+(81)    exitmonitor $r2;
+
+     label26:
+        return 1;
+
+     label27:
+        $i0_8 = Phi($i0_1 #13, $i0_3 #69);
+
+        $r17_5 = Phi($r17 #13, $r17_1 #69);
+
+        $r18_4 = Phi($r18 #13, $r18 #69);
+
+        $r19_5 = Phi($r19 #13, $r19 #69);
+
+        $r15_5 = Phi($r15 #13, $r15_1 #69);
+
+        $r13_19 = Phi($r13_2 #13, $r13_5 #69);
+
+        $i1_6 = Phi($i1 #13, $i1_1 #69);
+
+        $r12_25 = Phi($r12_7 #13, $r12_12 #69);
+
+(82)    exitmonitor $r2;
+
+     label28:
+        return 0;
+
+        catch java.lang.Throwable from label01 to label13 with label12;
+        catch java.lang.Throwable from label16 to label26 with label12;
+        catch java.lang.Throwable from label27 to label28 with label12;
+    }
+
+    public void sendBroadcastSync(android.content.Intent)
+    {
+        com.braintreepayments.api.BraintreeBroadcastManager $r0;
+        android.content.Intent $r1;
+        boolean $z0;
+
+        $r0 := @this: com.braintreepayments.api.BraintreeBroadcastManager;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $z0 = virtualinvoke $r0.<com.braintreepayments.api.BraintreeBroadcastManager: boolean sendBroadcast(android.content.Intent)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        specialinvoke $r0.<com.braintreepayments.api.BraintreeBroadcastManager: void executePendingBroadcasts()>();
+
+     label1:
+        return;
+    }
+
+    public void unregisterReceiver(android.content.BroadcastReceiver)
+    {
+        com.braintreepayments.api.BraintreeBroadcastManager $r0;
+        android.content.BroadcastReceiver $r1, $r11;
+        java.util.HashMap $r2, $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6;
+        java.lang.Throwable $r3;
+        java.lang.Object $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8;
+        java.util.ArrayList $r6, $r9;
+        int $i0, $i1, $i2, $i3, $i0_1, $i1_1, $i1_2, $i1_3, $i2_1, $i2_2, $i2_3, $i2_4, $i2_5, $i2_6, $i2_7, $i2_8, $i2_9, $i1_4, $i0_2, $i1_5, $i0_3, $i2_10;
+        android.content.IntentFilter $r7;
+        java.lang.String $r8;
+        com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord $r10;
+
+        $r0 := @this: com.braintreepayments.api.BraintreeBroadcastManager;
+
+        $r1 := @parameter0: android.content.BroadcastReceiver;
+
+        $r2 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mReceivers>;
+
+(0)     entermonitor $r2;
+
+     label01:
+        $r4 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mReceivers>;
+
+        $r5 = virtualinvoke $r4.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>($r1);
+
+        $r6 = (java.util.ArrayList) $r5;
+
+        if $r6 != null goto label03;
+
+        exitmonitor $r2;
+
+     label02:
+        return;
+
+     label03:
+(1)     $i0 = 0;
+
+     label04:
+        $r5_1 = Phi($r5 #1, $r5_3 #23);
+
+        $i1 = Phi($i1 #1, $i1_3 #23);
+
+        $r4_1 = Phi($r4 #1, $r4_2 #23);
+
+        $i0_1 = Phi($i0 #1, $i0_2 #23);
+
+        $i2 = Phi($i2 #1, $i2_2 #23);
+
+(2)     $i1_1 = virtualinvoke $r6.<java.util.ArrayList: int size()>();
+
+        if $i0_1 >= $i1_1 goto label11;
+
+(3)     $r5_2 = virtualinvoke $r6.<java.util.ArrayList: java.lang.Object get(int)>($i0_1);
+
+        $r7 = (android.content.IntentFilter) $r5_2;
+
+(4)     $i1_2 = 0;
+
+     label05:
+        $r5_3 = Phi($r5_2 #4, $r5_7 #21);
+
+        $i1_3 = Phi($i1_2 #4, $i1_4 #21);
+
+        $r4_2 = Phi($r4_1 #4, $r4_5 #21);
+
+        $i2_1 = Phi($i2 #4, $i2_9 #21);
+
+(5)     $i2_2 = virtualinvoke $r7.<android.content.IntentFilter: int countActions()>();
+
+        if $i1_3 >= $i2_2 goto label10;
+
+        $r8 = virtualinvoke $r7.<android.content.IntentFilter: java.lang.String getAction(int)>($i1_3);
+
+(6)     $r4_3 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mActions>;
+
+(7)     $r5_4 = virtualinvoke $r4_3.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r8);
+
+        $r9 = (java.util.ArrayList) $r5_4;
+
+(8)     if $r9 == null goto label09;
+
+(9)     $i2_3 = 0;
+
+     label06:
+        $r5_5 = Phi($r5_4 #9, $r5_6 #15);
+
+        $i2_4 = Phi($i2_3 #9, $i2_7 #15);
+
+(10)    $i3 = virtualinvoke $r9.<java.util.ArrayList: int size()>();
+
+        if $i2_4 >= $i3 goto label08;
+
+(11)    $r5_6 = virtualinvoke $r9.<java.util.ArrayList: java.lang.Object get(int)>($i2_4);
+
+        $r10 = (com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord) $r5_6;
+
+        $r11 = $r10.<com.braintreepayments.api.BraintreeBroadcastManager$ReceiverRecord: android.content.BroadcastReceiver receiver>;
+
+(12)    if $r11 != $r1 goto label07;
+
+        virtualinvoke $r9.<java.util.ArrayList: java.lang.Object remove(int)>($i2_4);
+
+(13)    $i2_5 = $i2_4 + -1;
+
+     label07:
+        $i2_6 = Phi($i2_4 #12, $i2_5 #13);
+
+(14)    $i2_7 = $i2_6 + 1;
+
+(15)    goto label06;
+
+     label08:
+(16)    $i2_8 = virtualinvoke $r9.<java.util.ArrayList: int size()>();
+
+(17)    if $i2_8 > 0 goto label09;
+
+(18)    $r4_4 = $r0.<com.braintreepayments.api.BraintreeBroadcastManager: java.util.HashMap mActions>;
+
+(19)    virtualinvoke $r4_4.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>($r8);
+
+     label09:
+        $r5_7 = Phi($r5_4 #8, $r5_5 #17, $r5_5 #19);
+
+        $r4_5 = Phi($r4_3 #8, $r4_3 #17, $r4_4 #19);
+
+        $i2_9 = Phi($i2_2 #8, $i2_8 #17, $i2_8 #19);
+
+(20)    $i1_4 = $i1_3 + 1;
+
+(21)    goto label05;
+
+     label10:
+(22)    $i0_2 = $i0_1 + 1;
+
+(23)    goto label04;
+
+     label11:
+        exitmonitor $r2;
+
+     label12:
+        return;
+
+     label13:
+        $r3 := @caughtexception;
+
+        $r5_8 = Phi($r5 #0, $r5_1 #2, $r5_2 #3, $r5_3 #5, $r5_4 #7, $r5_5 #10, $r5_6 #11, $r5_7 #20, $r5_8 #24);
+
+        $i1_5 = Phi($i1 #0, $i1_1 #2, $i1_2 #4, $i1_3 #5, $i1_4 #20, $i1_5 #24);
+
+        $r4_6 = Phi($r4 #0, $r4_1 #2, $r4_2 #5, $r4_3 #6, $r4_4 #18, $r4_5 #20, $r4_6 #24);
+
+        $i0_3 = Phi($i0 #0, $i0_1 #2, $i0_2 #22, $i0_3 #24);
+
+(24)    $i2_10 = Phi($i2 #0, $i2_2 #5, $i2_3 #9, $i2_4 #10, $i2_5 #13, $i2_7 #14, $i2_8 #16, $i2_9 #20, $i2_10 #24);
+
+        exitmonitor $r2;
+
+     label14:
+        throw $r3;
+
+        catch java.lang.Throwable from label01 to label02 with label13;
+        catch java.lang.Throwable from label03 to label12 with label13;
+        catch java.lang.Throwable from label13 to label14 with label13;
+    }
+}

@@ -1,0 +1,435 @@
+public class io.fabric.sdk.android.services.settings.Settings extends java.lang.Object
+{
+    public static final java.lang.String SETTINGS_CACHE_FILENAME;
+    private static final java.lang.String SETTINGS_URL_FORMAT;
+    private boolean initialized;
+    private io.fabric.sdk.android.services.settings.SettingsController settingsController;
+    private final java.util.concurrent.atomic.AtomicReference settingsData;
+    private final java.util.concurrent.CountDownLatch settingsDataLatch;
+
+    private void <init>()
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0;
+        java.util.concurrent.atomic.AtomicReference $r1;
+        java.util.concurrent.CountDownLatch $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.Settings;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new java.util.concurrent.atomic.AtomicReference;
+
+        specialinvoke $r1.<java.util.concurrent.atomic.AtomicReference: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.settings.Settings: java.util.concurrent.atomic.AtomicReference settingsData> = $r1;
+
+        $r2 = new java.util.concurrent.CountDownLatch;
+
+        specialinvoke $r2.<java.util.concurrent.CountDownLatch: void <init>(int)>(1);
+
+        $r0.<io.fabric.sdk.android.services.settings.Settings: java.util.concurrent.CountDownLatch settingsDataLatch> = $r2;
+
+        $r0.<io.fabric.sdk.android.services.settings.Settings: boolean initialized> = 0;
+
+        return;
+    }
+
+    void <init>(io.fabric.sdk.android.services.settings.Settings$1)
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0;
+        io.fabric.sdk.android.services.settings.Settings$1 $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.Settings;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.Settings$1;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.settings.Settings: void <init>()>();
+
+        return;
+    }
+
+    public static io.fabric.sdk.android.services.settings.Settings getInstance()
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0;
+
+        $r0 = staticinvoke <io.fabric.sdk.android.services.settings.Settings$LazyHolder: io.fabric.sdk.android.services.settings.Settings access$100()>();
+
+        return $r0;
+    }
+
+    private void setSettingsData(io.fabric.sdk.android.services.settings.SettingsData)
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0;
+        io.fabric.sdk.android.services.settings.SettingsData $r1;
+        java.util.concurrent.atomic.AtomicReference $r2;
+        java.util.concurrent.CountDownLatch $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.Settings;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.SettingsData;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.settings.Settings: java.util.concurrent.atomic.AtomicReference settingsData>;
+
+        virtualinvoke $r2.<java.util.concurrent.atomic.AtomicReference: void set(java.lang.Object)>($r1);
+
+        $r3 = $r0.<io.fabric.sdk.android.services.settings.Settings: java.util.concurrent.CountDownLatch settingsDataLatch>;
+
+        virtualinvoke $r3.<java.util.concurrent.CountDownLatch: void countDown()>();
+
+        return;
+    }
+
+    public io.fabric.sdk.android.services.settings.SettingsData awaitSettingsData()
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0;
+        java.util.concurrent.CountDownLatch $r1;
+        java.util.concurrent.atomic.AtomicReference $r2;
+        java.lang.InterruptedException $r3;
+        java.lang.Object $r4;
+        io.fabric.sdk.android.services.settings.SettingsData $r5;
+        io.fabric.sdk.android.Logger $r6;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.Settings;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.settings.Settings: java.util.concurrent.CountDownLatch settingsDataLatch>;
+
+     label1:
+        virtualinvoke $r1.<java.util.concurrent.CountDownLatch: void await()>();
+
+     label2:
+        $r2 = $r0.<io.fabric.sdk.android.services.settings.Settings: java.util.concurrent.atomic.AtomicReference settingsData>;
+
+     label3:
+        $r4 = virtualinvoke $r2.<java.util.concurrent.atomic.AtomicReference: java.lang.Object get()>();
+
+     label4:
+        $r5 = (io.fabric.sdk.android.services.settings.SettingsData) $r4;
+
+        return $r5;
+
+     label5:
+        $r3 := @caughtexception;
+
+        $r6 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r6.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String)>("Fabric", "Interrupted while waiting for settings data.");
+
+        return null;
+
+        catch java.lang.InterruptedException from label1 to label2 with label5;
+        catch java.lang.InterruptedException from label3 to label4 with label5;
+    }
+
+    public void clearSettings()
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0;
+        java.util.concurrent.atomic.AtomicReference $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.Settings;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.settings.Settings: java.util.concurrent.atomic.AtomicReference settingsData>;
+
+        virtualinvoke $r1.<java.util.concurrent.atomic.AtomicReference: void set(java.lang.Object)>(null);
+
+        return;
+    }
+
+    public io.fabric.sdk.android.services.settings.Settings initialize(io.fabric.sdk.android.Kit, io.fabric.sdk.android.services.common.IdManager, io.fabric.sdk.android.services.network.HttpRequestFactory, java.lang.String, java.lang.String, java.lang.String)
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0, $r17, $r17_1, $r17_2;
+        io.fabric.sdk.android.Kit $r1;
+        io.fabric.sdk.android.services.common.IdManager $r2;
+        io.fabric.sdk.android.services.network.HttpRequestFactory $r3;
+        java.lang.String $r4, $r5, $r16, $r19, $r20, $r21, $r22, $r24, $r16_1, $r19_1, $r16_2, $r19_2, $r19_3, $r16_3, $r19_4, $r16_4, $r19_5;
+        boolean $z0;
+        io.fabric.sdk.android.services.settings.SettingsController $r6;
+        io.fabric.sdk.android.services.common.ApiKey $r7;
+        io.fabric.sdk.android.services.common.SystemCurrentTimeProvider $r8;
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r9;
+        io.fabric.sdk.android.services.settings.DefaultCachedSettingsIo $r10;
+        java.util.Locale $r11;
+        io.fabric.sdk.android.services.settings.DefaultSettingsSpiCall $r12;
+        io.fabric.sdk.android.services.settings.SettingsRequest $r13;
+        io.fabric.sdk.android.services.settings.DefaultSettingsController $r14;
+        java.lang.Throwable $r15;
+        android.content.Context $r18;
+        java.lang.Object[] $r23;
+        java.lang.String[] $r25;
+        io.fabric.sdk.android.services.common.DeliveryMechanism $r26;
+        int $i0;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.Settings;
+
+        $r1 := @parameter0: io.fabric.sdk.android.Kit;
+
+        $r2 := @parameter1: io.fabric.sdk.android.services.common.IdManager;
+
+        $r3 := @parameter2: io.fabric.sdk.android.services.network.HttpRequestFactory;
+
+        $r4 := @parameter3: java.lang.String;
+
+        $r5 := @parameter4: java.lang.String;
+
+        $r16 := @parameter5: java.lang.String;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $z0 = $r0.<io.fabric.sdk.android.services.settings.Settings: boolean initialized>;
+
+     label2:
+        if $z0 == 0 goto label4;
+
+(1)     $r17 = $r0;
+
+     label3:
+        $r16_1 = Phi($r16 #1, $r16_3 #9);
+
+        $r19 = Phi($r19 #1, $r19_4 #9);
+
+        $r17_1 = Phi($r17 #1, $r17_2 #9);
+
+        exitmonitor $r0;
+
+        return $r17_1;
+
+     label4:
+        $r6 = $r0.<io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.SettingsController settingsController>;
+
+(2)     if $r6 != null goto label5;
+
+        $r18 = virtualinvoke $r1.<io.fabric.sdk.android.Kit: android.content.Context getContext()>();
+
+(3)     $r19_1 = virtualinvoke $r2.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getAppIdentifier()>();
+
+        $r7 = new io.fabric.sdk.android.services.common.ApiKey;
+
+        specialinvoke $r7.<io.fabric.sdk.android.services.common.ApiKey: void <init>()>();
+
+        $r20 = virtualinvoke $r7.<io.fabric.sdk.android.services.common.ApiKey: java.lang.String getValue(android.content.Context)>($r18);
+
+        $r21 = virtualinvoke $r2.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getInstallerPackageName()>();
+
+        $r8 = new io.fabric.sdk.android.services.common.SystemCurrentTimeProvider;
+
+        specialinvoke $r8.<io.fabric.sdk.android.services.common.SystemCurrentTimeProvider: void <init>()>();
+
+        $r9 = new io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        specialinvoke $r9.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: void <init>()>();
+
+        $r10 = new io.fabric.sdk.android.services.settings.DefaultCachedSettingsIo;
+
+        specialinvoke $r10.<io.fabric.sdk.android.services.settings.DefaultCachedSettingsIo: void <init>(io.fabric.sdk.android.Kit)>($r1);
+
+        $r22 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String getAppIconHashOrNull(android.content.Context)>($r18);
+
+        $r11 = <java.util.Locale: java.util.Locale US>;
+
+        $r23 = newarray (java.lang.Object)[1];
+
+        $r23[0] = $r19_1;
+
+        $r24 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r11, "https://settings.crashlytics.com/spi/v2/platforms/android/apps/%s/settings", $r23);
+
+        $r12 = new io.fabric.sdk.android.services.settings.DefaultSettingsSpiCall;
+
+        specialinvoke $r12.<io.fabric.sdk.android.services.settings.DefaultSettingsSpiCall: void <init>(io.fabric.sdk.android.Kit,java.lang.String,java.lang.String,io.fabric.sdk.android.services.network.HttpRequestFactory)>($r1, $r16, $r24, $r3);
+
+(4)     $r16_2 = virtualinvoke $r2.<io.fabric.sdk.android.services.common.IdManager: java.lang.String createIdHeaderValue(java.lang.String,java.lang.String)>($r20, $r19_1);
+
+        $r25 = newarray (java.lang.String)[1];
+
+(5)     $r19_2 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String resolveBuildId(android.content.Context)>($r18);
+
+        $r25[0] = $r19_2;
+
+(6)     $r19_3 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String createInstanceIdFrom(java.lang.String[])>($r25);
+
+        $r26 = staticinvoke <io.fabric.sdk.android.services.common.DeliveryMechanism: io.fabric.sdk.android.services.common.DeliveryMechanism determineFrom(java.lang.String)>($r21);
+
+        $i0 = virtualinvoke $r26.<io.fabric.sdk.android.services.common.DeliveryMechanism: int getId()>();
+
+        $r13 = new io.fabric.sdk.android.services.settings.SettingsRequest;
+
+        specialinvoke $r13.<io.fabric.sdk.android.services.settings.SettingsRequest: void <init>(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,java.lang.String)>($r20, $r16_2, $r19_3, $r5, $r4, $i0, $r22);
+
+        $r14 = new io.fabric.sdk.android.services.settings.DefaultSettingsController;
+
+        specialinvoke $r14.<io.fabric.sdk.android.services.settings.DefaultSettingsController: void <init>(io.fabric.sdk.android.Kit,io.fabric.sdk.android.services.settings.SettingsRequest,io.fabric.sdk.android.services.common.CurrentTimeProvider,io.fabric.sdk.android.services.settings.SettingsJsonTransform,io.fabric.sdk.android.services.settings.CachedSettingsIo,io.fabric.sdk.android.services.settings.SettingsSpiCall)>($r1, $r13, $r8, $r9, $r10, $r12);
+
+(7)     $r0.<io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.SettingsController settingsController> = $r14;
+
+     label5:
+        $r16_3 = Phi($r16 #2, $r16_2 #7);
+
+        $r19_4 = Phi($r19 #2, $r19_3 #7);
+
+(8)     $r0.<io.fabric.sdk.android.services.settings.Settings: boolean initialized> = 1;
+
+     label6:
+        $r17_2 = $r0;
+
+(9)     goto label3;
+
+     label7:
+        $r15 := @caughtexception;
+
+        $r16_4 = Phi($r16 #0, $r16_2 #4, $r16_3 #8);
+
+        $r19_5 = Phi($r19 #0, $r19_1 #3, $r19_2 #5, $r19_3 #6, $r19_4 #8);
+
+        exitmonitor $r0;
+
+        throw $r15;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label4 to label6 with label7;
+    }
+
+    public boolean loadSettingsData()
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0;
+        io.fabric.sdk.android.services.settings.SettingsController $r1;
+        java.lang.Throwable $r2;
+        io.fabric.sdk.android.services.settings.SettingsData $r3;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.Settings;
+
+        entermonitor $r0;
+
+     label1:
+        $r1 = $r0.<io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.SettingsController settingsController>;
+
+        $r3 = interfaceinvoke $r1.<io.fabric.sdk.android.services.settings.SettingsController: io.fabric.sdk.android.services.settings.SettingsData loadSettingsData()>();
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.settings.Settings: void setSettingsData(io.fabric.sdk.android.services.settings.SettingsData)>($r3);
+
+     label2:
+        if $r3 == null goto label4;
+
+(0)     $z0 = 1;
+
+     label3:
+        $z0_1 = Phi($z0 #0, $z0_2 #1);
+
+        exitmonitor $r0;
+
+        return $z0_1;
+
+     label4:
+        $z0_2 = 0;
+
+(1)     goto label3;
+
+     label5:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+    }
+
+    public boolean loadSettingsSkippingCache()
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0;
+        io.fabric.sdk.android.services.settings.SettingsController $r1;
+        io.fabric.sdk.android.services.settings.SettingsCacheBehavior $r2;
+        java.lang.Throwable $r3;
+        io.fabric.sdk.android.services.settings.SettingsData $r4;
+        io.fabric.sdk.android.Logger $r5;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.Settings;
+
+        entermonitor $r0;
+
+     label1:
+        $r1 = $r0.<io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.SettingsController settingsController>;
+
+        $r2 = <io.fabric.sdk.android.services.settings.SettingsCacheBehavior: io.fabric.sdk.android.services.settings.SettingsCacheBehavior SKIP_CACHE_LOOKUP>;
+
+        $r4 = interfaceinvoke $r1.<io.fabric.sdk.android.services.settings.SettingsController: io.fabric.sdk.android.services.settings.SettingsData loadSettingsData(io.fabric.sdk.android.services.settings.SettingsCacheBehavior)>($r2);
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.settings.Settings: void setSettingsData(io.fabric.sdk.android.services.settings.SettingsData)>($r4);
+
+        if $r4 != null goto label2;
+
+        $r5 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r5.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Failed to force reload of settings from Crashlytics.", null);
+
+     label2:
+        if $r4 == null goto label4;
+
+(0)     $z0 = 1;
+
+     label3:
+        $z0_1 = Phi($z0 #0, $z0_2 #1);
+
+        exitmonitor $r0;
+
+        return $z0_1;
+
+     label4:
+        $z0_2 = 0;
+
+(1)     goto label3;
+
+     label5:
+        $r3 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+    }
+
+    public void setSettingsController(io.fabric.sdk.android.services.settings.SettingsController)
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0;
+        io.fabric.sdk.android.services.settings.SettingsController $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.Settings;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.SettingsController;
+
+        $r0.<io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.SettingsController settingsController> = $r1;
+
+        return;
+    }
+
+    public java.lang.Object withSettings(io.fabric.sdk.android.services.settings.Settings$SettingsAccess, java.lang.Object)
+    {
+        io.fabric.sdk.android.services.settings.Settings $r0;
+        io.fabric.sdk.android.services.settings.Settings$SettingsAccess $r1;
+        java.util.concurrent.atomic.AtomicReference $r2;
+        java.lang.Object $r3, $r4, $r3_1;
+        io.fabric.sdk.android.services.settings.SettingsData $r5;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.Settings;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.Settings$SettingsAccess;
+
+        $r3 := @parameter1: java.lang.Object;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.settings.Settings: java.util.concurrent.atomic.AtomicReference settingsData>;
+
+        $r4 = virtualinvoke $r2.<java.util.concurrent.atomic.AtomicReference: java.lang.Object get()>();
+
+        $r5 = (io.fabric.sdk.android.services.settings.SettingsData) $r4;
+
+        if $r5 != null goto label1;
+
+        return $r3;
+
+     label1:
+        $r3_1 = interfaceinvoke $r1.<io.fabric.sdk.android.services.settings.Settings$SettingsAccess: java.lang.Object usingSettings(io.fabric.sdk.android.services.settings.SettingsData)>($r5);
+
+        return $r3_1;
+    }
+}

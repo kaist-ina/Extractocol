@@ -1,0 +1,149 @@
+class com.crashlytics.android.answers.RandomBackoff extends java.lang.Object implements io.fabric.sdk.android.services.concurrency.internal.Backoff
+{
+    final io.fabric.sdk.android.services.concurrency.internal.Backoff backoff;
+    final double jitterPercent;
+    final java.util.Random random;
+
+    public void <init>(io.fabric.sdk.android.services.concurrency.internal.Backoff, double)
+    {
+        com.crashlytics.android.answers.RandomBackoff $r0;
+        io.fabric.sdk.android.services.concurrency.internal.Backoff $r1;
+        double $d0;
+        java.util.Random $r2;
+
+        $r0 := @this: com.crashlytics.android.answers.RandomBackoff;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.concurrency.internal.Backoff;
+
+        $d0 := @parameter1: double;
+
+        $r2 = new java.util.Random;
+
+        specialinvoke $r2.<java.util.Random: void <init>()>();
+
+        specialinvoke $r0.<com.crashlytics.android.answers.RandomBackoff: void <init>(io.fabric.sdk.android.services.concurrency.internal.Backoff,double,java.util.Random)>($r1, $d0, $r2);
+
+        return;
+    }
+
+    public void <init>(io.fabric.sdk.android.services.concurrency.internal.Backoff, double, java.util.Random)
+    {
+        com.crashlytics.android.answers.RandomBackoff $r0;
+        io.fabric.sdk.android.services.concurrency.internal.Backoff $r1;
+        double $d0;
+        java.util.Random $r2;
+        java.lang.IllegalArgumentException $r3;
+        byte $b0, $b0_1, $b0_2;
+        java.lang.NullPointerException $r4, $r4_1;
+
+        $r0 := @this: com.crashlytics.android.answers.RandomBackoff;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.concurrency.internal.Backoff;
+
+        $d0 := @parameter1: double;
+
+        $r2 := @parameter2: java.util.Random;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $b0 = $d0 cmpg 0.0;
+
+(0)     if $b0 < 0 goto label1;
+
+        $b0_1 = $d0 cmpl 1.0;
+
+(1)     if $b0_1 <= 0 goto label2;
+
+     label1:
+        $b0_2 = Phi($b0 #0, $b0_1 #1);
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("jitterPercent must be between 0.0 and 1.0");
+
+        throw $r3;
+
+     label2:
+        if $r1 != null goto label3;
+
+        $r4 = new java.lang.NullPointerException;
+
+        specialinvoke $r4.<java.lang.NullPointerException: void <init>(java.lang.String)>("backoff must not be null");
+
+        throw $r4;
+
+     label3:
+        if $r2 != null goto label4;
+
+        $r4_1 = new java.lang.NullPointerException;
+
+        specialinvoke $r4_1.<java.lang.NullPointerException: void <init>(java.lang.String)>("random must not be null");
+
+        throw $r4_1;
+
+     label4:
+        $r0.<com.crashlytics.android.answers.RandomBackoff: io.fabric.sdk.android.services.concurrency.internal.Backoff backoff> = $r1;
+
+        $r0.<com.crashlytics.android.answers.RandomBackoff: double jitterPercent> = $d0;
+
+        $r0.<com.crashlytics.android.answers.RandomBackoff: java.util.Random random> = $r2;
+
+        return;
+    }
+
+    public long getDelayMillis(int)
+    {
+        com.crashlytics.android.answers.RandomBackoff $r0;
+        int $i0;
+        io.fabric.sdk.android.services.concurrency.internal.Backoff $r1;
+        double $d0, $d1, $d0_1;
+        long $l1, $l1_1;
+
+        $r0 := @this: com.crashlytics.android.answers.RandomBackoff;
+
+        $i0 := @parameter0: int;
+
+        $d1 = virtualinvoke $r0.<com.crashlytics.android.answers.RandomBackoff: double randomJitter()>();
+
+        $r1 = $r0.<com.crashlytics.android.answers.RandomBackoff: io.fabric.sdk.android.services.concurrency.internal.Backoff backoff>;
+
+        $l1 = interfaceinvoke $r1.<io.fabric.sdk.android.services.concurrency.internal.Backoff: long getDelayMillis(int)>($i0);
+
+        $d0 = (double) $l1;
+
+        $d0_1 = $d1 * $d0;
+
+        $l1_1 = (long) $d0_1;
+
+        return $l1_1;
+    }
+
+    double randomJitter()
+    {
+        com.crashlytics.android.answers.RandomBackoff $r0;
+        java.util.Random $r1;
+        double $d0, $d1, $d2, $d1_1, $d0_1, $d2_1, $d0_2, $d1_2;
+
+        $r0 := @this: com.crashlytics.android.answers.RandomBackoff;
+
+        $d1 = $r0.<com.crashlytics.android.answers.RandomBackoff: double jitterPercent>;
+
+        $d1_1 = 1.0 - $d1;
+
+        $d0 = $r0.<com.crashlytics.android.answers.RandomBackoff: double jitterPercent>;
+
+        $d2 = 1.0 + $d0;
+
+        $r1 = $r0.<com.crashlytics.android.answers.RandomBackoff: java.util.Random random>;
+
+        $d0_1 = virtualinvoke $r1.<java.util.Random: double nextDouble()>();
+
+        $d2_1 = $d2 - $d1_1;
+
+        $d0_2 = $d2_1 * $d0_1;
+
+        $d1_2 = $d0_2 + $d1_1;
+
+        return $d1_2;
+    }
+}

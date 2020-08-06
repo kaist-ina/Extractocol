@@ -1,0 +1,450 @@
+class ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor extends java.lang.Object implements ch.boye.httpclientandroidlib.client.AuthenticationStrategy
+{
+    private final ch.boye.httpclientandroidlib.client.AuthenticationHandler handler;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+
+    public void <init>(ch.boye.httpclientandroidlib.client.AuthenticationHandler)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r0;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r1;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r2;
+        java.lang.Class $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r2 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r3 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r3);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r2;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.client.AuthenticationHandler handler> = $r1;
+
+        return;
+    }
+
+    private boolean isCachable(ch.boye.httpclientandroidlib.auth.AuthScheme)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r0;
+        ch.boye.httpclientandroidlib.auth.AuthScheme $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.lang.String $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.auth.AuthScheme;
+
+(0)     if $r1 == null goto label3;
+
+        $z0 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.auth.AuthScheme: boolean isComplete()>();
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r2 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.auth.AuthScheme: java.lang.String getSchemeName()>();
+
+        $z0_1 = virtualinvoke $r2.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("Basic");
+
+(1)     if $z0_1 != 0 goto label2;
+
+        $z0_2 = virtualinvoke $r2.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("Digest");
+
+(2)     if $z0_2 == 0 goto label3;
+
+     label2:
+        $z0_3 = Phi($z0_1 #1, $z0_2 #2);
+
+        return 1;
+
+     label3:
+        $z0_4 = Phi($z0 #0, $z0_2 #2);
+
+        return 0;
+    }
+
+    public void authFailed(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.auth.AuthScheme, ch.boye.httpclientandroidlib.protocol.HttpContext)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.auth.AuthScheme $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        java.lang.Object $r4;
+        ch.boye.httpclientandroidlib.client.AuthCache $r5;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r6, $r6_1, $r6_2;
+        boolean $z0;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        java.lang.String $r8, $r8_1, $r8_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.auth.AuthScheme;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r4 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.protocol.HttpContext: java.lang.Object getAttribute(java.lang.String)>("http.auth.auth-cache");
+
+        $r5 = (ch.boye.httpclientandroidlib.client.AuthCache) $r4;
+
+        if $r5 != null goto label1;
+
+        return;
+
+     label1:
+        $r6 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(0)     if $z0 == 0 goto label2;
+
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Removing from cache \'");
+
+        $r8 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.auth.AuthScheme: java.lang.String getSchemeName()>();
+
+        $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7_3 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\' auth scheme for ");
+
+        $r7_4 = virtualinvoke $r7_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r8_1 = virtualinvoke $r7_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     virtualinvoke $r6_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r8_1);
+
+     label2:
+        $r7_5 = Phi($r7 #0, $r7_4 #1);
+
+        $r8_2 = Phi($r8 #0, $r8_1 #1);
+
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        interfaceinvoke $r5.<ch.boye.httpclientandroidlib.client.AuthCache: void remove(ch.boye.httpclientandroidlib.HttpHost)>($r1);
+
+        return;
+    }
+
+    public void authSucceeded(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.auth.AuthScheme, ch.boye.httpclientandroidlib.protocol.HttpContext)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.auth.AuthScheme $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        ch.boye.httpclientandroidlib.impl.client.BasicAuthCache $r4;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6;
+        java.lang.Object $r6;
+        ch.boye.httpclientandroidlib.client.AuthCache $r7, $r8, $r8_1, $r8_2, $r8_3;
+        boolean $z0, $z0_1, $z0_2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r9, $r9_1, $r9_2, $r9_3;
+        java.lang.String $r10, $r10_1, $r10_2, $r10_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.auth.AuthScheme;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r6 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.protocol.HttpContext: java.lang.Object getAttribute(java.lang.String)>("http.auth.auth-cache");
+
+        $r7 = (ch.boye.httpclientandroidlib.client.AuthCache) $r6;
+
+        $r8 = $r7;
+
+        $z0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: boolean isCachable(ch.boye.httpclientandroidlib.auth.AuthScheme)>($r2);
+
+(0)     if $z0 == 0 goto label3;
+
+(1)     if $r7 != null goto label1;
+
+        $r4 = new ch.boye.httpclientandroidlib.impl.client.BasicAuthCache;
+
+        $r8_1 = $r4;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.impl.client.BasicAuthCache: void <init>()>();
+
+(2)     interfaceinvoke $r3.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.auth.auth-cache", $r4);
+
+     label1:
+        $r8_2 = Phi($r8 #1, $r8_1 #2);
+
+        $r9 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0_1 = virtualinvoke $r9.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(3)     if $z0_1 == 0 goto label2;
+
+        $r9_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Caching \'");
+
+        $r10 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.auth.AuthScheme: java.lang.String getSchemeName()>();
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r5_3 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\' auth scheme for ");
+
+        $r5_4 = virtualinvoke $r5_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r10_1 = virtualinvoke $r5_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(4)     virtualinvoke $r9_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r10_1);
+
+     label2:
+        $r5_5 = Phi($r5 #3, $r5_4 #4);
+
+        $r10_2 = Phi($r10 #3, $r10_1 #4);
+
+        $r9_2 = Phi($r9 #3, $r9_1 #4);
+
+(5)     interfaceinvoke $r8_2.<ch.boye.httpclientandroidlib.client.AuthCache: void put(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.auth.AuthScheme)>($r1, $r2);
+
+     label3:
+        $r5_6 = Phi($r5 #0, $r5_5 #5);
+
+        $r8_3 = Phi($r8 #0, $r8_2 #5);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #5);
+
+        $r10_3 = Phi($r10 #0, $r10_2 #5);
+
+        $r9_3 = Phi($r9 #0, $r9_2 #5);
+
+        return;
+    }
+
+    public java.util.Map getChallenges(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpResponse, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.auth.MalformedChallengeException
+    {
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.HttpResponse $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r4;
+        java.util.Map $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.client.AuthenticationHandler handler>;
+
+        $r5 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.client.AuthenticationHandler: java.util.Map getChallenges(ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r2, $r3);
+
+        return $r5;
+    }
+
+    public ch.boye.httpclientandroidlib.client.AuthenticationHandler getHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r0;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.client.AuthenticationHandler handler>;
+
+        return r1;
+    }
+
+    public boolean isAuthenticationRequested(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpResponse, ch.boye.httpclientandroidlib.protocol.HttpContext)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.HttpResponse $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r4;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.client.AuthenticationHandler handler>;
+
+        $z0 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.client.AuthenticationHandler: boolean isAuthenticationRequested(ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r2, $r3);
+
+        return $z0;
+    }
+
+    public java.util.Queue select(java.util.Map, ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpResponse, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.auth.MalformedChallengeException
+    {
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r0;
+        java.util.Map $r1;
+        ch.boye.httpclientandroidlib.HttpHost $r2;
+        ch.boye.httpclientandroidlib.HttpResponse $r3;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r4;
+        java.util.LinkedList $r5;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r6;
+        java.util.Locale $r7;
+        ch.boye.httpclientandroidlib.auth.AuthScope $r8;
+        ch.boye.httpclientandroidlib.auth.AuthOption $r9;
+        ch.boye.httpclientandroidlib.auth.AuthenticationException $r10;
+        java.lang.IllegalArgumentException $r11, $r11_1, $r11_2, $r11_3;
+        java.lang.Object $r12, $r12_1, $r12_2;
+        ch.boye.httpclientandroidlib.client.CredentialsProvider $r13;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r14, $r14_1, $r14_2, $r14_3;
+        ch.boye.httpclientandroidlib.auth.AuthScheme $r15;
+        java.lang.String $r16, $r18, $r19, $r16_1, $r16_2, $r16_3, $r16_4;
+        ch.boye.httpclientandroidlib.Header $r17;
+        int $i0;
+        ch.boye.httpclientandroidlib.auth.Credentials $r20;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        $r1 := @parameter0: java.util.Map;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r4 := @parameter3: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label1;
+
+        $r11 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r11.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Map of auth challenges may not be null");
+
+        throw $r11;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r11_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r11_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Host may not be null");
+
+        throw $r11_1;
+
+     label2:
+        if $r3 != null goto label3;
+
+        $r11_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r11_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP response may not be null");
+
+        throw $r11_2;
+
+     label3:
+        if $r4 != null goto label4;
+
+        $r11_3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r11_3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP context may not be null");
+
+        throw $r11_3;
+
+     label4:
+        $r5 = new java.util.LinkedList;
+
+        specialinvoke $r5.<java.util.LinkedList: void <init>()>();
+
+        $r12 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.protocol.HttpContext: java.lang.Object getAttribute(java.lang.String)>("http.auth.credentials-provider");
+
+        $r13 = (ch.boye.httpclientandroidlib.client.CredentialsProvider) $r12;
+
+        if $r13 != null goto label5;
+
+        $r14 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r14.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Credentials provider not set in the context");
+
+        return $r5;
+
+     label5:
+        $r6 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.client.AuthenticationHandler handler>;
+
+     label6:
+        $r15 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.client.AuthenticationHandler: ch.boye.httpclientandroidlib.auth.AuthScheme selectScheme(java.util.Map,ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r3, $r4);
+
+     label7:
+        $r16 = interfaceinvoke $r15.<ch.boye.httpclientandroidlib.auth.AuthScheme: java.lang.String getSchemeName()>();
+
+        $r7 = <java.util.Locale: java.util.Locale US>;
+
+        $r16_1 = virtualinvoke $r16.<java.lang.String: java.lang.String toLowerCase(java.util.Locale)>($r7);
+
+        $r12_1 = interfaceinvoke $r1.<java.util.Map: java.lang.Object get(java.lang.Object)>($r16_1);
+
+        $r17 = (ch.boye.httpclientandroidlib.Header) $r12_1;
+
+        interfaceinvoke $r15.<ch.boye.httpclientandroidlib.auth.AuthScheme: void processChallenge(ch.boye.httpclientandroidlib.Header)>($r17);
+
+        $r8 = new ch.boye.httpclientandroidlib.auth.AuthScope;
+
+        $r16_2 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.HttpHost: java.lang.String getHostName()>();
+
+        $i0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.HttpHost: int getPort()>();
+
+        $r18 = interfaceinvoke $r15.<ch.boye.httpclientandroidlib.auth.AuthScheme: java.lang.String getRealm()>();
+
+        $r19 = interfaceinvoke $r15.<ch.boye.httpclientandroidlib.auth.AuthScheme: java.lang.String getSchemeName()>();
+
+        specialinvoke $r8.<ch.boye.httpclientandroidlib.auth.AuthScope: void <init>(java.lang.String,int,java.lang.String,java.lang.String)>($r16_2, $i0, $r18, $r19);
+
+        $r20 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.client.CredentialsProvider: ch.boye.httpclientandroidlib.auth.Credentials getCredentials(ch.boye.httpclientandroidlib.auth.AuthScope)>($r8);
+
+(0)     if $r20 == null goto label9;
+
+        $r9 = new ch.boye.httpclientandroidlib.auth.AuthOption;
+
+        specialinvoke $r9.<ch.boye.httpclientandroidlib.auth.AuthOption: void <init>(ch.boye.httpclientandroidlib.auth.AuthScheme,ch.boye.httpclientandroidlib.auth.Credentials)>($r15, $r20);
+
+        interfaceinvoke $r5.<java.util.Queue: boolean add(java.lang.Object)>($r9);
+
+        return $r5;
+
+     label8:
+        $r10 := @caughtexception;
+
+        $r14_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r14_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isWarnEnabled()>();
+
+(1)     if $z0 == 0 goto label9;
+
+        $r14_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r16_3 = virtualinvoke $r10.<ch.boye.httpclientandroidlib.auth.AuthenticationException: java.lang.String getMessage()>();
+
+(2)     virtualinvoke $r14_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void warn(java.lang.Object,java.lang.Throwable)>($r16_3, $r10);
+
+     label9:
+        $r16_4 = Phi($r16_2 #0, $r16 #1, $r16_3 #2);
+
+        $r14_3 = Phi($r14 #0, $r14_1 #1, $r14_2 #2);
+
+        $r12_2 = Phi($r12_1 #0, $r12 #1, $r12 #2);
+
+        return $r5;
+
+        catch ch.boye.httpclientandroidlib.auth.AuthenticationException from label6 to label7 with label8;
+    }
+}

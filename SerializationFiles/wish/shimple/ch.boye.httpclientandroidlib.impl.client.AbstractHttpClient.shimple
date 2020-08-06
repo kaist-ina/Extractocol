@@ -1,0 +1,3062 @@
+public abstract class ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient extends java.lang.Object implements ch.boye.httpclientandroidlib.client.HttpClient
+{
+    private ch.boye.httpclientandroidlib.client.BackoffManager backoffManager;
+    private ch.boye.httpclientandroidlib.conn.ClientConnectionManager connManager;
+    private ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy connectionBackoffStrategy;
+    private ch.boye.httpclientandroidlib.client.CookieStore cookieStore;
+    private ch.boye.httpclientandroidlib.client.CredentialsProvider credsProvider;
+    private ch.boye.httpclientandroidlib.params.HttpParams defaultParams;
+    private ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy keepAliveStrategy;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+    private ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor mutableProcessor;
+    private ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor;
+    private ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy;
+    private ch.boye.httpclientandroidlib.client.RedirectStrategy redirectStrategy;
+    private ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec;
+    private ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler retryHandler;
+    private ch.boye.httpclientandroidlib.ConnectionReuseStrategy reuseStrategy;
+    private ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner routePlanner;
+    private ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry supportedAuthSchemes;
+    private ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry supportedCookieSpecs;
+    private ch.boye.httpclientandroidlib.client.AuthenticationStrategy targetAuthStrategy;
+    private ch.boye.httpclientandroidlib.client.UserTokenHandler userTokenHandler;
+
+    protected void <init>(ch.boye.httpclientandroidlib.conn.ClientConnectionManager, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3;
+        java.lang.Class $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.ClientConnectionManager;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r3 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r4 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r4);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r3;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.params.HttpParams defaultParams> = $r2;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ClientConnectionManager connManager> = $r1;
+
+        return;
+    }
+
+    private static ch.boye.httpclientandroidlib.HttpHost determineTarget(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest) throws ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpUriRequest $r0;
+        ch.boye.httpclientandroidlib.client.ClientProtocolException $r1;
+        java.net.URI $r2;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.HttpHost $r3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2;
+        java.lang.String $r5;
+
+        $r0 := @parameter0: ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+
+        $r2 = interfaceinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpUriRequest: java.net.URI getURI()>();
+
+        $z0 = virtualinvoke $r2.<java.net.URI: boolean isAbsolute()>();
+
+        if $z0 == 0 goto label1;
+
+        $r3 = staticinvoke <ch.boye.httpclientandroidlib.client.utils.URIUtils: ch.boye.httpclientandroidlib.HttpHost extractHost(java.net.URI)>($r2);
+
+        if $r3 != null goto label2;
+
+        $r1 = new ch.boye.httpclientandroidlib.client.ClientProtocolException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("URI does not specify a valid host name: ");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        $r5 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.client.ClientProtocolException: void <init>(java.lang.String)>($r5);
+
+        throw $r1;
+
+     label1:
+        return null;
+
+     label2:
+        return $r3;
+    }
+
+    private final ch.boye.httpclientandroidlib.protocol.HttpProcessor getProtocolProcessor()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.HttpRequestInterceptor[] $r1;
+        ch.boye.httpclientandroidlib.HttpResponseInterceptor[] $r2;
+        java.lang.Throwable $r3;
+        ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r5;
+        int $i0, $i1, $i1_1, $i1_2, $i0_1, $i1_3, $i1_4, $i1_5, $i0_2, $i1_6, $i0_3, $i1_7;
+        ch.boye.httpclientandroidlib.HttpRequestInterceptor $r6;
+        ch.boye.httpclientandroidlib.HttpResponseInterceptor $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor>;
+
+(1)     if $r4 != null goto label6;
+
+        $r5 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        $i0 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: int getRequestInterceptorCount()>();
+
+        $r1 = newarray (ch.boye.httpclientandroidlib.HttpRequestInterceptor)[$i0];
+
+(2)     $i1 = 0;
+
+     label2:
+        $i1_1 = Phi($i1 #2, $i1_2 #5);
+
+(3)     if $i1_1 >= $i0 goto label3;
+
+        $r6 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: ch.boye.httpclientandroidlib.HttpRequestInterceptor getRequestInterceptor(int)>($i1_1);
+
+        $r1[$i1_1] = $r6;
+
+(4)     $i1_2 = $i1_1 + 1;
+
+(5)     goto label2;
+
+     label3:
+(6)     $i0_1 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: int getResponseInterceptorCount()>();
+
+        $r2 = newarray (ch.boye.httpclientandroidlib.HttpResponseInterceptor)[$i0_1];
+
+(7)     $i1_3 = 0;
+
+     label4:
+        $i1_4 = Phi($i1_3 #7, $i1_5 #10);
+
+(8)     if $i1_4 >= $i0_1 goto label5;
+
+        $r7 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: ch.boye.httpclientandroidlib.HttpResponseInterceptor getResponseInterceptor(int)>($i1_4);
+
+        $r2[$i1_4] = $r7;
+
+(9)     $i1_5 = $i1_4 + 1;
+
+(10)    goto label4;
+
+     label5:
+(11)    $r4_1 = new ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor;
+
+        specialinvoke $r4_1.<ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor: void <init>(ch.boye.httpclientandroidlib.HttpRequestInterceptor[],ch.boye.httpclientandroidlib.HttpResponseInterceptor[])>($r1, $r2);
+
+(12)    $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor> = $r4_1;
+
+     label6:
+        $i0_2 = Phi($i0 #1, $i0_1 #12);
+
+        $i1_6 = Phi($i1 #1, $i1_4 #12);
+
+        $r4_2 = Phi($r4 #1, $r4_1 #12);
+
+(13)    $r4_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor>;
+
+     label7:
+        exitmonitor $r0;
+
+        return $r4_3;
+
+     label8:
+        $r3 := @caughtexception;
+
+        $i0_3 = Phi($i0 #0, $i0_1 #6, $i0_2 #13);
+
+        $i1_7 = Phi($i1 #0, $i1_1 #3, $i1_2 #4, $i1_3 #7, $i1_4 #8, $i1_5 #9, $i1_6 #13);
+
+        $r4_4 = Phi($r4 #0, $r4_1 #11, $r4_3 #13);
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label7 with label8;
+    }
+
+    public void addRequestInterceptor(ch.boye.httpclientandroidlib.HttpRequestInterceptor)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.HttpRequestInterceptor $r1;
+        java.lang.Throwable $r2;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequestInterceptor;
+
+        entermonitor $r0;
+
+     label1:
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: void addInterceptor(ch.boye.httpclientandroidlib.HttpRequestInterceptor)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor> = null;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void addRequestInterceptor(ch.boye.httpclientandroidlib.HttpRequestInterceptor, int)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.HttpRequestInterceptor $r1;
+        int $i0;
+        java.lang.Throwable $r2;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequestInterceptor;
+
+        $i0 := @parameter1: int;
+
+        entermonitor $r0;
+
+     label1:
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: void addInterceptor(ch.boye.httpclientandroidlib.HttpRequestInterceptor,int)>($r1, $i0);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor> = null;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void addResponseInterceptor(ch.boye.httpclientandroidlib.HttpResponseInterceptor)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.HttpResponseInterceptor $r1;
+        java.lang.Throwable $r2;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponseInterceptor;
+
+        entermonitor $r0;
+
+     label1:
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: void addInterceptor(ch.boye.httpclientandroidlib.HttpResponseInterceptor)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor> = null;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void addResponseInterceptor(ch.boye.httpclientandroidlib.HttpResponseInterceptor, int)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.HttpResponseInterceptor $r1;
+        int $i0;
+        java.lang.Throwable $r2;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponseInterceptor;
+
+        $i0 := @parameter1: int;
+
+        entermonitor $r0;
+
+     label1:
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: void addInterceptor(ch.boye.httpclientandroidlib.HttpResponseInterceptor,int)>($r1, $i0);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor> = null;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void clearRequestInterceptors()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: void clearRequestInterceptors()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor> = null;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void clearResponseInterceptors()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: void clearResponseInterceptors()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor> = null;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    protected ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry createAuthSchemeRegistry()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry $r1;
+        ch.boye.httpclientandroidlib.impl.auth.BasicSchemeFactory $r2;
+        ch.boye.httpclientandroidlib.impl.auth.DigestSchemeFactory $r3;
+        ch.boye.httpclientandroidlib.impl.auth.NTLMSchemeFactory $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry: void <init>()>();
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.auth.BasicSchemeFactory;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.auth.BasicSchemeFactory: void <init>()>();
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry: void register(java.lang.String,ch.boye.httpclientandroidlib.auth.AuthSchemeFactory)>("Basic", $r2);
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.auth.DigestSchemeFactory;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.auth.DigestSchemeFactory: void <init>()>();
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry: void register(java.lang.String,ch.boye.httpclientandroidlib.auth.AuthSchemeFactory)>("Digest", $r3);
+
+        $r4 = new ch.boye.httpclientandroidlib.impl.auth.NTLMSchemeFactory;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.impl.auth.NTLMSchemeFactory: void <init>()>();
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry: void register(java.lang.String,ch.boye.httpclientandroidlib.auth.AuthSchemeFactory)>("NTLM", $r4);
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.conn.ClientConnectionManager createClientConnectionManager()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.ClassNotFoundException $r1;
+        java.lang.IllegalStateException $r2;
+        java.lang.IllegalAccessException $r3;
+        java.lang.IllegalAccessError $r4;
+        java.lang.InstantiationException $r5;
+        java.lang.InstantiationError $r6;
+        ch.boye.httpclientandroidlib.impl.conn.BasicClientConnectionManager $r7;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r8;
+        ch.boye.httpclientandroidlib.params.HttpParams $r9;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManagerFactory $r10, $r10_1, $r10_2;
+        java.lang.Object $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5;
+        java.lang.String $r12, $r12_1, $r12_2, $r12_3;
+        java.lang.Class $r13;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r14;
+        java.lang.StringBuilder $r15, $r15_1, $r15_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r8 = staticinvoke <ch.boye.httpclientandroidlib.impl.conn.SchemeRegistryFactory: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry createDefault()>();
+
+        $r9 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        $r10 = null;
+
+        $r11 = interfaceinvoke $r9.<ch.boye.httpclientandroidlib.params.HttpParams: java.lang.Object getParameter(java.lang.String)>("http.connection-manager.factory-class-name");
+
+        $r12 = (java.lang.String) $r11;
+
+(0)     if $r12 == null goto label3;
+
+     label1:
+        $r13 = staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>($r12);
+
+(1)     $r11_1 = virtualinvoke $r13.<java.lang.Class: java.lang.Object newInstance()>();
+
+     label2:
+(2)     $r10_1 = (ch.boye.httpclientandroidlib.conn.ClientConnectionManagerFactory) $r11_1;
+
+     label3:
+        $r11_2 = Phi($r11 #0, $r11_1 #2);
+
+        $r10_2 = Phi($r10 #0, $r10_1 #2);
+
+        if $r10_2 == null goto label7;
+
+        $r14 = interfaceinvoke $r10_2.<ch.boye.httpclientandroidlib.conn.ClientConnectionManagerFactory: ch.boye.httpclientandroidlib.conn.ClientConnectionManager newInstance(ch.boye.httpclientandroidlib.params.HttpParams,ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)>($r9, $r8);
+
+        return $r14;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r11_3 = Phi($r11 #0, $r11_1 #1);
+
+        $r2 = new java.lang.IllegalStateException;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r15_1 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Invalid class name: ");
+
+        $r15_2 = virtualinvoke $r15_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+        $r12_1 = virtualinvoke $r15_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r12_1);
+
+        throw $r2;
+
+     label5:
+        $r3 := @caughtexception;
+
+        $r11_4 = Phi($r11 #0, $r11_1 #1);
+
+        $r4 = new java.lang.IllegalAccessError;
+
+        $r12_2 = virtualinvoke $r3.<java.lang.IllegalAccessException: java.lang.String getMessage()>();
+
+        specialinvoke $r4.<java.lang.IllegalAccessError: void <init>(java.lang.String)>($r12_2);
+
+        throw $r4;
+
+     label6:
+        $r5 := @caughtexception;
+
+        $r11_5 = Phi($r11 #0, $r11_1 #1);
+
+        $r6 = new java.lang.InstantiationError;
+
+        $r12_3 = virtualinvoke $r5.<java.lang.InstantiationException: java.lang.String getMessage()>();
+
+        specialinvoke $r6.<java.lang.InstantiationError: void <init>(java.lang.String)>($r12_3);
+
+        throw $r6;
+
+     label7:
+        $r7 = new ch.boye.httpclientandroidlib.impl.conn.BasicClientConnectionManager;
+
+        specialinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.BasicClientConnectionManager: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)>($r8);
+
+        return $r7;
+
+        catch java.lang.ClassNotFoundException from label1 to label2 with label4;
+        catch java.lang.IllegalAccessException from label1 to label2 with label5;
+        catch java.lang.InstantiationException from label1 to label2 with label6;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.RequestDirector createClientRequestDirector(ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor, ch.boye.httpclientandroidlib.conn.ClientConnectionManager, ch.boye.httpclientandroidlib.ConnectionReuseStrategy, ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy, ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner, ch.boye.httpclientandroidlib.protocol.HttpProcessor, ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler, ch.boye.httpclientandroidlib.client.RedirectHandler, ch.boye.httpclientandroidlib.client.AuthenticationHandler, ch.boye.httpclientandroidlib.client.AuthenticationHandler, ch.boye.httpclientandroidlib.client.UserTokenHandler, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r1;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r2;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r3;
+        ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy $r4;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner $r5;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r6;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r7;
+        ch.boye.httpclientandroidlib.client.RedirectHandler $r8;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r9, $r10;
+        ch.boye.httpclientandroidlib.client.UserTokenHandler $r11;
+        ch.boye.httpclientandroidlib.params.HttpParams $r12;
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r13;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.conn.ClientConnectionManager;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.ConnectionReuseStrategy;
+
+        $r4 := @parameter3: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy;
+
+        $r5 := @parameter4: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner;
+
+        $r6 := @parameter5: ch.boye.httpclientandroidlib.protocol.HttpProcessor;
+
+        $r7 := @parameter6: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler;
+
+        $r8 := @parameter7: ch.boye.httpclientandroidlib.client.RedirectHandler;
+
+        $r9 := @parameter8: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        $r10 := @parameter9: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        $r11 := @parameter10: ch.boye.httpclientandroidlib.client.UserTokenHandler;
+
+        $r12 := @parameter11: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r13 = new ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        specialinvoke $r13.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void <init>(ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor,ch.boye.httpclientandroidlib.conn.ClientConnectionManager,ch.boye.httpclientandroidlib.ConnectionReuseStrategy,ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy,ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner,ch.boye.httpclientandroidlib.protocol.HttpProcessor,ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler,ch.boye.httpclientandroidlib.client.RedirectHandler,ch.boye.httpclientandroidlib.client.AuthenticationHandler,ch.boye.httpclientandroidlib.client.AuthenticationHandler,ch.boye.httpclientandroidlib.client.UserTokenHandler,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $r2, $r3, $r4, $r5, $r6, $r7, $r8, $r9, $r10, $r11, $r12);
+
+        return $r13;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.RequestDirector createClientRequestDirector(ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor, ch.boye.httpclientandroidlib.conn.ClientConnectionManager, ch.boye.httpclientandroidlib.ConnectionReuseStrategy, ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy, ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner, ch.boye.httpclientandroidlib.protocol.HttpProcessor, ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler, ch.boye.httpclientandroidlib.client.RedirectStrategy, ch.boye.httpclientandroidlib.client.AuthenticationHandler, ch.boye.httpclientandroidlib.client.AuthenticationHandler, ch.boye.httpclientandroidlib.client.UserTokenHandler, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r1;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r2;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r3;
+        ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy $r4;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner $r5;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r6;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r7;
+        ch.boye.httpclientandroidlib.client.RedirectStrategy $r8;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r9, $r10;
+        ch.boye.httpclientandroidlib.client.UserTokenHandler $r11;
+        ch.boye.httpclientandroidlib.params.HttpParams $r12;
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r13;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r14;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.conn.ClientConnectionManager;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.ConnectionReuseStrategy;
+
+        $r4 := @parameter3: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy;
+
+        $r5 := @parameter4: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner;
+
+        $r6 := @parameter5: ch.boye.httpclientandroidlib.protocol.HttpProcessor;
+
+        $r7 := @parameter6: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler;
+
+        $r8 := @parameter7: ch.boye.httpclientandroidlib.client.RedirectStrategy;
+
+        $r9 := @parameter8: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        $r10 := @parameter9: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        $r11 := @parameter10: ch.boye.httpclientandroidlib.client.UserTokenHandler;
+
+        $r12 := @parameter11: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r13 = new ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r14 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        specialinvoke $r13.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void <init>(ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog,ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor,ch.boye.httpclientandroidlib.conn.ClientConnectionManager,ch.boye.httpclientandroidlib.ConnectionReuseStrategy,ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy,ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner,ch.boye.httpclientandroidlib.protocol.HttpProcessor,ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler,ch.boye.httpclientandroidlib.client.RedirectStrategy,ch.boye.httpclientandroidlib.client.AuthenticationHandler,ch.boye.httpclientandroidlib.client.AuthenticationHandler,ch.boye.httpclientandroidlib.client.UserTokenHandler,ch.boye.httpclientandroidlib.params.HttpParams)>($r14, $r1, $r2, $r3, $r4, $r5, $r6, $r7, $r8, $r9, $r10, $r11, $r12);
+
+        return $r13;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.RequestDirector createClientRequestDirector(ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor, ch.boye.httpclientandroidlib.conn.ClientConnectionManager, ch.boye.httpclientandroidlib.ConnectionReuseStrategy, ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy, ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner, ch.boye.httpclientandroidlib.protocol.HttpProcessor, ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler, ch.boye.httpclientandroidlib.client.RedirectStrategy, ch.boye.httpclientandroidlib.client.AuthenticationStrategy, ch.boye.httpclientandroidlib.client.AuthenticationStrategy, ch.boye.httpclientandroidlib.client.UserTokenHandler, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r1;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r2;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r3;
+        ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy $r4;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner $r5;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r6;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r7;
+        ch.boye.httpclientandroidlib.client.RedirectStrategy $r8;
+        ch.boye.httpclientandroidlib.client.AuthenticationStrategy $r9, $r10;
+        ch.boye.httpclientandroidlib.client.UserTokenHandler $r11;
+        ch.boye.httpclientandroidlib.params.HttpParams $r12;
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r13;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r14;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.conn.ClientConnectionManager;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.ConnectionReuseStrategy;
+
+        $r4 := @parameter3: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy;
+
+        $r5 := @parameter4: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner;
+
+        $r6 := @parameter5: ch.boye.httpclientandroidlib.protocol.HttpProcessor;
+
+        $r7 := @parameter6: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler;
+
+        $r8 := @parameter7: ch.boye.httpclientandroidlib.client.RedirectStrategy;
+
+        $r9 := @parameter8: ch.boye.httpclientandroidlib.client.AuthenticationStrategy;
+
+        $r10 := @parameter9: ch.boye.httpclientandroidlib.client.AuthenticationStrategy;
+
+        $r11 := @parameter10: ch.boye.httpclientandroidlib.client.UserTokenHandler;
+
+        $r12 := @parameter11: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r13 = new ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r14 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        specialinvoke $r13.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void <init>(ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog,ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor,ch.boye.httpclientandroidlib.conn.ClientConnectionManager,ch.boye.httpclientandroidlib.ConnectionReuseStrategy,ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy,ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner,ch.boye.httpclientandroidlib.protocol.HttpProcessor,ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler,ch.boye.httpclientandroidlib.client.RedirectStrategy,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.client.UserTokenHandler,ch.boye.httpclientandroidlib.params.HttpParams)>($r14, $r1, $r2, $r3, $r4, $r5, $r6, $r7, $r8, $r9, $r10, $r11, $r12);
+
+        return $r13;
+    }
+
+    protected ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy createConnectionKeepAliveStrategy()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.DefaultConnectionKeepAliveStrategy $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.DefaultConnectionKeepAliveStrategy;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.DefaultConnectionKeepAliveStrategy: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.ConnectionReuseStrategy createConnectionReuseStrategy()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.DefaultConnectionReuseStrategy: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry createCookieSpecRegistry()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry $r1;
+        ch.boye.httpclientandroidlib.impl.cookie.BestMatchSpecFactory $r2;
+        ch.boye.httpclientandroidlib.impl.cookie.BrowserCompatSpecFactory $r3;
+        ch.boye.httpclientandroidlib.impl.cookie.NetscapeDraftSpecFactory $r4;
+        ch.boye.httpclientandroidlib.impl.cookie.RFC2109SpecFactory $r5;
+        ch.boye.httpclientandroidlib.impl.cookie.RFC2965SpecFactory $r6;
+        ch.boye.httpclientandroidlib.impl.cookie.IgnoreSpecFactory $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry: void <init>()>();
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.cookie.BestMatchSpecFactory;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.cookie.BestMatchSpecFactory: void <init>()>();
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry: void register(java.lang.String,ch.boye.httpclientandroidlib.cookie.CookieSpecFactory)>("best-match", $r2);
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.cookie.BrowserCompatSpecFactory;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.cookie.BrowserCompatSpecFactory: void <init>()>();
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry: void register(java.lang.String,ch.boye.httpclientandroidlib.cookie.CookieSpecFactory)>("compatibility", $r3);
+
+        $r4 = new ch.boye.httpclientandroidlib.impl.cookie.NetscapeDraftSpecFactory;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.impl.cookie.NetscapeDraftSpecFactory: void <init>()>();
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry: void register(java.lang.String,ch.boye.httpclientandroidlib.cookie.CookieSpecFactory)>("netscape", $r4);
+
+        $r5 = new ch.boye.httpclientandroidlib.impl.cookie.RFC2109SpecFactory;
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.impl.cookie.RFC2109SpecFactory: void <init>()>();
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry: void register(java.lang.String,ch.boye.httpclientandroidlib.cookie.CookieSpecFactory)>("rfc2109", $r5);
+
+        $r6 = new ch.boye.httpclientandroidlib.impl.cookie.RFC2965SpecFactory;
+
+        specialinvoke $r6.<ch.boye.httpclientandroidlib.impl.cookie.RFC2965SpecFactory: void <init>()>();
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry: void register(java.lang.String,ch.boye.httpclientandroidlib.cookie.CookieSpecFactory)>("rfc2965", $r6);
+
+        $r7 = new ch.boye.httpclientandroidlib.impl.cookie.IgnoreSpecFactory;
+
+        specialinvoke $r7.<ch.boye.httpclientandroidlib.impl.cookie.IgnoreSpecFactory: void <init>()>();
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry: void register(java.lang.String,ch.boye.httpclientandroidlib.cookie.CookieSpecFactory)>("ignoreCookies", $r7);
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.CookieStore createCookieStore()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.BasicCookieStore $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.BasicCookieStore;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.BasicCookieStore: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.CredentialsProvider createCredentialsProvider()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.BasicCredentialsProvider $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.BasicCredentialsProvider;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.BasicCredentialsProvider: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.protocol.HttpContext createHttpContext()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpContext $r1;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r2;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r3;
+        ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry $r4;
+        ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry $r5;
+        ch.boye.httpclientandroidlib.client.CookieStore $r6;
+        ch.boye.httpclientandroidlib.client.CredentialsProvider $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.protocol.BasicHttpContext;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.protocol.BasicHttpContext: void <init>()>();
+
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ClientConnectionManager getConnectionManager()>();
+
+        $r3 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.conn.ClientConnectionManager: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry getSchemeRegistry()>();
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.scheme-registry", $r3);
+
+        $r4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry getAuthSchemes()>();
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.authscheme-registry", $r4);
+
+        $r5 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry getCookieSpecs()>();
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.cookiespec-registry", $r5);
+
+        $r6 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CookieStore getCookieStore()>();
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.cookie-store", $r6);
+
+        $r7 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CredentialsProvider getCredentialsProvider()>();
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.auth.credentials-provider", $r7);
+
+        return $r1;
+    }
+
+    protected abstract ch.boye.httpclientandroidlib.params.HttpParams createHttpParams();
+
+    protected abstract ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor createHttpProcessor();
+
+    protected ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler createHttpRequestRetryHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.DefaultHttpRequestRetryHandler $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.DefaultHttpRequestRetryHandler;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.DefaultHttpRequestRetryHandler: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner createHttpRoutePlanner()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.conn.DefaultHttpRoutePlanner $r1;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r2;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.conn.DefaultHttpRoutePlanner;
+
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ClientConnectionManager getConnectionManager()>();
+
+        $r3 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.conn.ClientConnectionManager: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry getSchemeRegistry()>();
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.DefaultHttpRoutePlanner: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)>($r3);
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.AuthenticationHandler createProxyAuthenticationHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.DefaultProxyAuthenticationHandler $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.DefaultProxyAuthenticationHandler;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.DefaultProxyAuthenticationHandler: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.AuthenticationStrategy createProxyAuthenticationStrategy()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.ProxyAuthenticationStrategy $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.ProxyAuthenticationStrategy;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.ProxyAuthenticationStrategy: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.RedirectHandler createRedirectHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.DefaultRedirectHandler $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.DefaultRedirectHandler;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.DefaultRedirectHandler: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor createRequestExecutor()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.AuthenticationHandler createTargetAuthenticationHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.DefaultTargetAuthenticationHandler $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.DefaultTargetAuthenticationHandler;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.DefaultTargetAuthenticationHandler: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.AuthenticationStrategy createTargetAuthenticationStrategy()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.TargetAuthenticationStrategy $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.TargetAuthenticationStrategy;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.TargetAuthenticationStrategy: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.client.UserTokenHandler createUserTokenHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.DefaultUserTokenHandler $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.DefaultUserTokenHandler;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.DefaultUserTokenHandler: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.params.HttpParams determineParams(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.impl.client.ClientParamsStack $r2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r3, $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.client.ClientParamsStack;
+
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.ClientParamsStack: void <init>(ch.boye.httpclientandroidlib.params.HttpParams,ch.boye.httpclientandroidlib.params.HttpParams,ch.boye.httpclientandroidlib.params.HttpParams,ch.boye.httpclientandroidlib.params.HttpParams)>(null, $r3, $r4, null);
+
+        return $r2;
+    }
+
+    public final ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpRequest) throws java.io.IOException, ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.HttpResponse $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2, null);
+
+        return $r3;
+    }
+
+    public final ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws java.io.IOException, ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1, $r27, $r27_1, $r27_2, $r27_3;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        java.lang.IllegalArgumentException $r3;
+        ch.boye.httpclientandroidlib.protocol.DefaultedHttpContext $r4;
+        java.lang.Throwable $r5;
+        java.lang.RuntimeException $r6;
+        ch.boye.httpclientandroidlib.client.ClientProtocolException $r7;
+        java.lang.Exception $r8;
+        java.lang.reflect.UndeclaredThrowableException $r9;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r10, $r11, $r10_1, $r10_2, $r10_3, $r10_4;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r12;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r13;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r14;
+        ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy $r15;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner $r16, $r16_1, $r16_2;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r17;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r18;
+        ch.boye.httpclientandroidlib.client.RedirectStrategy $r19;
+        ch.boye.httpclientandroidlib.client.AuthenticationStrategy $r20, $r21;
+        ch.boye.httpclientandroidlib.client.UserTokenHandler $r22;
+        ch.boye.httpclientandroidlib.params.HttpParams $r23, $r23_1, $r23_2, $r23_3, $r23_4;
+        ch.boye.httpclientandroidlib.client.RequestDirector $r24;
+        ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy $r25;
+        ch.boye.httpclientandroidlib.client.BackoffManager $r26;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r28;
+        ch.boye.httpclientandroidlib.HttpResponse $r29, $r29_1, $r29_2, $r29_3, $r29_4;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.lang.Object $r30;
+        ch.boye.httpclientandroidlib.HttpException $r31, $r31_1, $r31_2;
+        java.io.IOException $r32;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r10 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r2 != null goto label01;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Request must not be null.");
+
+        throw $r3;
+
+     label01:
+(0)     entermonitor $r0;
+
+     label02:
+        $r11 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.HttpContext createHttpContext()>();
+
+        if $r10 != null goto label11;
+
+(1)     $r10_1 = $r11;
+
+     label03:
+        $r10_2 = Phi($r10_1 #1, $r10_3 #8);
+
+(2)     $r12 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor getRequestExecutor()>();
+
+        $r13 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ClientConnectionManager getConnectionManager()>();
+
+        $r14 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.ConnectionReuseStrategy getConnectionReuseStrategy()>();
+
+        $r15 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy getConnectionKeepAliveStrategy()>();
+
+        $r16 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner getRoutePlanner()>();
+
+        $r17 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.HttpProcessor getProtocolProcessor()>();
+
+        $r18 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler getHttpRequestRetryHandler()>();
+
+        $r19 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.RedirectStrategy getRedirectStrategy()>();
+
+        $r20 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy getTargetAuthenticationStrategy()>();
+
+        $r21 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy getProxyAuthenticationStrategy()>();
+
+        $r22 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.UserTokenHandler getUserTokenHandler()>();
+
+        $r23 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.params.HttpParams determineParams(ch.boye.httpclientandroidlib.HttpRequest)>($r2);
+
+        $r24 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.RequestDirector createClientRequestDirector(ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor,ch.boye.httpclientandroidlib.conn.ClientConnectionManager,ch.boye.httpclientandroidlib.ConnectionReuseStrategy,ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy,ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner,ch.boye.httpclientandroidlib.protocol.HttpProcessor,ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler,ch.boye.httpclientandroidlib.client.RedirectStrategy,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.client.UserTokenHandler,ch.boye.httpclientandroidlib.params.HttpParams)>($r12, $r13, $r14, $r15, $r16, $r17, $r18, $r19, $r20, $r21, $r22, $r23);
+
+(3)     $r16_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner getRoutePlanner()>();
+
+        $r25 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy getConnectionBackoffStrategy()>();
+
+        $r26 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.BackoffManager getBackoffManager()>();
+
+        exitmonitor $r0;
+
+     label04:
+(4)     if $r25 == null goto label34;
+
+        if $r26 == null goto label34;
+
+        if $r1 == null goto label14;
+
+(5)     $r27 = $r1;
+
+     label05:
+        $r27_1 = Phi($r27 #5, $r27_2 #11);
+
+        $r23_1 = Phi($r23 #5, $r23_2 #11);
+
+(6)     $r28 = interfaceinvoke $r16_1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner: ch.boye.httpclientandroidlib.conn.routing.HttpRoute determineRoute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r27_1, $r2, $r10_2);
+
+     label06:
+        $r29 = interfaceinvoke $r24.<ch.boye.httpclientandroidlib.client.RequestDirector: ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2, $r10_2);
+
+     label07:
+        $z0 = interfaceinvoke $r25.<ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy: boolean shouldBackoff(ch.boye.httpclientandroidlib.HttpResponse)>($r29);
+
+     label08:
+        if $z0 == 0 goto label32;
+
+     label09:
+        interfaceinvoke $r26.<ch.boye.httpclientandroidlib.client.BackoffManager: void backOff(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r28);
+
+     label10:
+        return $r29;
+
+     label11:
+        $r4 = new ch.boye.httpclientandroidlib.protocol.DefaultedHttpContext;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.protocol.DefaultedHttpContext: void <init>(ch.boye.httpclientandroidlib.protocol.HttpContext,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r10, $r11);
+
+(7)     $r10_3 = $r4;
+
+(8)     goto label03;
+
+     label12:
+        $r5 := @caughtexception;
+
+        $r23_4 = Phi($r23 #0, $r23_4 #9);
+
+        $r10_4 = Phi($r10 #0, $r10_1 #1, $r10_2 #2, $r10_3 #7, $r10_4 #9);
+
+(9)     $r16_2 = Phi($r16 #0, $r16_1 #3, $r16_2 #9);
+
+        exitmonitor $r0;
+
+     label13:
+        throw $r5;
+
+     label14:
+(10)    $r23_2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.params.HttpParams determineParams(ch.boye.httpclientandroidlib.HttpRequest)>($r2);
+
+        $r30 = interfaceinvoke $r23_2.<ch.boye.httpclientandroidlib.params.HttpParams: java.lang.Object getParameter(java.lang.String)>("http.default-host");
+
+     label15:
+        $r27_2 = (ch.boye.httpclientandroidlib.HttpHost) $r30;
+
+(11)    goto label05;
+
+     label16:
+        $r6 := @caughtexception;
+
+(12)    $r29_1 = Phi($r29 #6);
+
+     label17:
+(13)    $z0_1 = interfaceinvoke $r25.<ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy: boolean shouldBackoff(java.lang.Throwable)>($r6);
+
+     label18:
+        if $z0_1 == 0 goto label20;
+
+     label19:
+        interfaceinvoke $r26.<ch.boye.httpclientandroidlib.client.BackoffManager: void backOff(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r28);
+
+     label20:
+        throw $r6;
+
+     label21:
+        $r31_1 := @caughtexception;
+
+        $r27_3 = Phi($r27_2 #11, $r27_1 #6, $r27 #4);
+
+        $r23_3 = Phi($r23_1 #6, $r23_2 #10, $r23 #4);
+
+        $z0_5 = Phi($z0_1 #13, $z0_2 #15, $z0_3 #16, $z0_4 #17, $z0 #4);
+
+        $r31_2 = Phi($r31 #4);
+
+        $r29_3 = Phi($r29_1 #12, $r29_2 #14, $r29 #4, $r29_4 #18);
+
+        $r7 = new ch.boye.httpclientandroidlib.client.ClientProtocolException;
+
+        specialinvoke $r7.<ch.boye.httpclientandroidlib.client.ClientProtocolException: void <init>(java.lang.Throwable)>($r31_2);
+
+        throw $r7;
+
+     label22:
+        $r8 := @caughtexception;
+
+(14)    $r29_2 = Phi($r29 #6);
+
+     label23:
+(15)    $z0_2 = interfaceinvoke $r25.<ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy: boolean shouldBackoff(java.lang.Throwable)>($r8);
+
+     label24:
+        if $z0_2 == 0 goto label26;
+
+     label25:
+        interfaceinvoke $r26.<ch.boye.httpclientandroidlib.client.BackoffManager: void backOff(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r28);
+
+     label26:
+        $z0_3 = $r8 instanceof ch.boye.httpclientandroidlib.HttpException;
+
+        if $z0_3 == 0 goto label28;
+
+        $r31 = (ch.boye.httpclientandroidlib.HttpException) $r8;
+
+     label27:
+(16)    throw $r31;
+
+     label28:
+        $z0_4 = $r8 instanceof java.io.IOException;
+
+        if $z0_4 == 0 goto label29;
+
+        $r32 = (java.io.IOException) $r8;
+
+        throw $r32;
+
+     label29:
+(17)    $r9 = new java.lang.reflect.UndeclaredThrowableException;
+
+     label30:
+        specialinvoke $r9.<java.lang.reflect.UndeclaredThrowableException: void <init>(java.lang.Throwable)>($r8);
+
+     label31:
+        throw $r9;
+
+     label32:
+        interfaceinvoke $r26.<ch.boye.httpclientandroidlib.client.BackoffManager: void probe(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r28);
+
+     label33:
+        return $r29;
+
+     label34:
+(18)    $r29_4 = interfaceinvoke $r24.<ch.boye.httpclientandroidlib.client.RequestDirector: ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2, $r10_2);
+
+     label35:
+        return $r29_4;
+
+        catch java.lang.Throwable from label02 to label04 with label12;
+        catch ch.boye.httpclientandroidlib.HttpException from label05 to label06 with label21;
+        catch java.lang.RuntimeException from label06 to label07 with label16;
+        catch java.lang.Exception from label06 to label07 with label22;
+        catch ch.boye.httpclientandroidlib.HttpException from label07 to label08 with label21;
+        catch ch.boye.httpclientandroidlib.HttpException from label09 to label10 with label21;
+        catch java.lang.Throwable from label11 to label13 with label12;
+        catch ch.boye.httpclientandroidlib.HttpException from label14 to label15 with label21;
+        catch ch.boye.httpclientandroidlib.HttpException from label17 to label18 with label21;
+        catch ch.boye.httpclientandroidlib.HttpException from label19 to label20 with label21;
+        catch ch.boye.httpclientandroidlib.HttpException from label23 to label24 with label21;
+        catch ch.boye.httpclientandroidlib.HttpException from label25 to label26 with label21;
+        catch ch.boye.httpclientandroidlib.HttpException from label27 to label28 with label21;
+        catch ch.boye.httpclientandroidlib.HttpException from label30 to label31 with label21;
+        catch ch.boye.httpclientandroidlib.HttpException from label32 to label33 with label21;
+        catch ch.boye.httpclientandroidlib.HttpException from label34 to label35 with label21;
+    }
+
+    public final ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest) throws java.io.IOException, ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.methods.HttpUriRequest $r1;
+        ch.boye.httpclientandroidlib.HttpResponse $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, null);
+
+        return $r2;
+    }
+
+    public final ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws java.io.IOException, ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.methods.HttpUriRequest $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        java.lang.IllegalArgumentException $r3;
+        ch.boye.httpclientandroidlib.HttpHost $r4;
+        ch.boye.httpclientandroidlib.HttpResponse $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Request must not be null.");
+
+        throw $r3;
+
+     label1:
+        $r4 = staticinvoke <ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.HttpHost determineTarget(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest)>($r1);
+
+        $r5 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r4, $r1, $r2);
+
+        return $r5;
+    }
+
+    public java.lang.Object execute(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.client.ResponseHandler) throws java.io.IOException, ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.client.ResponseHandler $r3;
+        java.lang.Object $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.client.ResponseHandler;
+
+        $r4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: java.lang.Object execute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.client.ResponseHandler,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2, $r3, null);
+
+        return $r4;
+    }
+
+    public java.lang.Object execute(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.client.ResponseHandler, ch.boye.httpclientandroidlib.protocol.HttpContext) throws java.io.IOException, ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.client.ResponseHandler $r3;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r4;
+        java.lang.IllegalArgumentException $r5;
+        java.lang.Exception $r6, $r7;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r8;
+        java.lang.reflect.UndeclaredThrowableException $r9;
+        ch.boye.httpclientandroidlib.HttpResponse $r10;
+        java.lang.Object $r11;
+        ch.boye.httpclientandroidlib.HttpEntity $r12, $r12_1;
+        boolean $z0, $z0_1;
+        java.lang.RuntimeException $r13;
+        java.io.IOException $r14;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.client.ResponseHandler;
+
+        $r4 := @parameter3: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r3 != null goto label1;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Response handler must not be null.");
+
+        throw $r5;
+
+     label1:
+        $r10 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2, $r4);
+
+     label2:
+        $r11 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.client.ResponseHandler: java.lang.Object handleResponse(ch.boye.httpclientandroidlib.HttpResponse)>($r10);
+
+     label3:
+        $r12 = interfaceinvoke $r10.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+        staticinvoke <ch.boye.httpclientandroidlib.util.EntityUtils: void consume(ch.boye.httpclientandroidlib.HttpEntity)>($r12);
+
+        return $r11;
+
+     label4:
+        $r6 := @caughtexception;
+
+        $r12_1 = interfaceinvoke $r10.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+     label5:
+        staticinvoke <ch.boye.httpclientandroidlib.util.EntityUtils: void consume(ch.boye.httpclientandroidlib.HttpEntity)>($r12_1);
+
+     label6:
+        $z0 = $r6 instanceof java.lang.RuntimeException;
+
+        if $z0 == 0 goto label8;
+
+        $r13 = (java.lang.RuntimeException) $r6;
+
+        throw $r13;
+
+     label7:
+        $r7 := @caughtexception;
+
+        $r8 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r8.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void warn(java.lang.Object,java.lang.Throwable)>("Error consuming content after an exception.", $r7);
+
+        goto label6;
+
+     label8:
+        $z0_1 = $r6 instanceof java.io.IOException;
+
+        if $z0_1 == 0 goto label9;
+
+        $r14 = (java.io.IOException) $r6;
+
+        throw $r14;
+
+     label9:
+        $r9 = new java.lang.reflect.UndeclaredThrowableException;
+
+        specialinvoke $r9.<java.lang.reflect.UndeclaredThrowableException: void <init>(java.lang.Throwable)>($r6);
+
+        throw $r9;
+
+        catch java.lang.Exception from label2 to label3 with label4;
+        catch java.lang.Exception from label5 to label6 with label7;
+    }
+
+    public java.lang.Object execute(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest, ch.boye.httpclientandroidlib.client.ResponseHandler) throws java.io.IOException, ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.methods.HttpUriRequest $r1;
+        ch.boye.httpclientandroidlib.client.ResponseHandler $r2;
+        java.lang.Object $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.client.ResponseHandler;
+
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: java.lang.Object execute(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest,ch.boye.httpclientandroidlib.client.ResponseHandler,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2, null);
+
+        return $r3;
+    }
+
+    public java.lang.Object execute(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest, ch.boye.httpclientandroidlib.client.ResponseHandler, ch.boye.httpclientandroidlib.protocol.HttpContext) throws java.io.IOException, ch.boye.httpclientandroidlib.client.ClientProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.methods.HttpUriRequest $r1;
+        ch.boye.httpclientandroidlib.client.ResponseHandler $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        ch.boye.httpclientandroidlib.HttpHost $r4;
+        java.lang.Object $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.client.ResponseHandler;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r4 = staticinvoke <ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.HttpHost determineTarget(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest)>($r1);
+
+        $r5 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: java.lang.Object execute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.client.ResponseHandler,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r4, $r1, $r2, $r3);
+
+        return $r5;
+    }
+
+    public final ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry getAuthSchemes()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry supportedAuthSchemes>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry createAuthSchemeRegistry()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry supportedAuthSchemes> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry supportedAuthSchemes>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.BackoffManager getBackoffManager()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.BackoffManager r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        entermonitor $r0;
+
+     label1:
+        r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.BackoffManager backoffManager>;
+
+     label2:
+        exitmonitor $r0;
+
+        return r2;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy getConnectionBackoffStrategy()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        entermonitor $r0;
+
+     label1:
+        r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy connectionBackoffStrategy>;
+
+     label2:
+        exitmonitor $r0;
+
+        return r2;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public final ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy getConnectionKeepAliveStrategy()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy keepAliveStrategy>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy createConnectionKeepAliveStrategy()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy keepAliveStrategy> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy keepAliveStrategy>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.conn.ClientConnectionManager getConnectionManager()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ClientConnectionManager connManager>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ClientConnectionManager createClientConnectionManager()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ClientConnectionManager connManager> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ClientConnectionManager connManager>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.ConnectionReuseStrategy getConnectionReuseStrategy()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.ConnectionReuseStrategy reuseStrategy>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.ConnectionReuseStrategy createConnectionReuseStrategy()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.ConnectionReuseStrategy reuseStrategy> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.ConnectionReuseStrategy reuseStrategy>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry getCookieSpecs()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry supportedCookieSpecs>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry createCookieSpecRegistry()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry supportedCookieSpecs> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry supportedCookieSpecs>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.CookieStore getCookieStore()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.CookieStore $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CookieStore cookieStore>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CookieStore createCookieStore()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CookieStore cookieStore> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CookieStore cookieStore>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.CredentialsProvider getCredentialsProvider()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.CredentialsProvider $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CredentialsProvider credsProvider>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CredentialsProvider createCredentialsProvider()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CredentialsProvider credsProvider> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CredentialsProvider credsProvider>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    protected final ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor mutableProcessor>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor createHttpProcessor()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor mutableProcessor> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor mutableProcessor>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler getHttpRequestRetryHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler retryHandler>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler createHttpRequestRetryHandler()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler retryHandler> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler retryHandler>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.params.HttpParams getParams()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.params.HttpParams defaultParams>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.params.HttpParams createHttpParams()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.params.HttpParams defaultParams> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.params.HttpParams defaultParams>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.AuthenticationHandler getProxyAuthenticationHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationHandler createProxyAuthenticationHandler()>();
+
+     label2:
+        exitmonitor $r0;
+
+        return $r2;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.AuthenticationStrategy getProxyAuthenticationStrategy()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.AuthenticationStrategy $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy createProxyAuthenticationStrategy()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.RedirectHandler getRedirectHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.RedirectHandler $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.RedirectHandler createRedirectHandler()>();
+
+     label2:
+        exitmonitor $r0;
+
+        return $r2;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.RedirectStrategy getRedirectStrategy()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategy $r1;
+        java.lang.Throwable $r2;
+        ch.boye.httpclientandroidlib.client.RedirectStrategy $r3, $r3_1, $r3_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.RedirectStrategy redirectStrategy>;
+
+        if $r3 != null goto label2;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategy;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategy: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.RedirectStrategy redirectStrategy> = $r1;
+
+     label2:
+(1)     $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.RedirectStrategy redirectStrategy>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r3_1;
+
+     label4:
+        $r2 := @caughtexception;
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor getRequestExecutor()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor createRequestExecutor()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpRequestInterceptor getRequestInterceptor(int)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        int $i0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r2;
+        ch.boye.httpclientandroidlib.HttpRequestInterceptor $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $i0 := @parameter0: int;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        $r3 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: ch.boye.httpclientandroidlib.HttpRequestInterceptor getRequestInterceptor(int)>($i0);
+
+     label2:
+        exitmonitor $r0;
+
+        return $r3;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public int getRequestInterceptorCount()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r2;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        $i0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: int getRequestInterceptorCount()>();
+
+     label2:
+        exitmonitor $r0;
+
+        return $i0;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpResponseInterceptor getResponseInterceptor(int)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        int $i0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r2;
+        ch.boye.httpclientandroidlib.HttpResponseInterceptor $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $i0 := @parameter0: int;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        $r3 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: ch.boye.httpclientandroidlib.HttpResponseInterceptor getResponseInterceptor(int)>($i0);
+
+     label2:
+        exitmonitor $r0;
+
+        return $r3;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public int getResponseInterceptorCount()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r2;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        $i0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: int getResponseInterceptorCount()>();
+
+     label2:
+        exitmonitor $r0;
+
+        return $i0;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public final ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner getRoutePlanner()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner routePlanner>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner createHttpRoutePlanner()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner routePlanner> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner routePlanner>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.AuthenticationHandler getTargetAuthenticationHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationHandler createTargetAuthenticationHandler()>();
+
+     label2:
+        exitmonitor $r0;
+
+        return $r2;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.AuthenticationStrategy getTargetAuthenticationStrategy()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.AuthenticationStrategy $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy targetAuthStrategy>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy createTargetAuthenticationStrategy()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy targetAuthStrategy> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy targetAuthStrategy>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final ch.boye.httpclientandroidlib.client.UserTokenHandler getUserTokenHandler()
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Throwable $r1;
+        ch.boye.httpclientandroidlib.client.UserTokenHandler $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.UserTokenHandler userTokenHandler>;
+
+(1)     if $r2 != null goto label2;
+
+(2)     $r2_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.UserTokenHandler createUserTokenHandler()>();
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.UserTokenHandler userTokenHandler> = $r2_1;
+
+     label2:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.UserTokenHandler userTokenHandler>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_3;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public void removeRequestInterceptorByClass(java.lang.Class)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Class $r1;
+        java.lang.Throwable $r2;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        entermonitor $r0;
+
+     label1:
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: void removeRequestInterceptorByClass(java.lang.Class)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor> = null;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void removeResponseInterceptorByClass(java.lang.Class)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        java.lang.Class $r1;
+        java.lang.Throwable $r2;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        entermonitor $r0;
+
+     label1:
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor getHttpProcessor()>();
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.protocol.BasicHttpProcessor: void removeResponseInterceptorByClass(java.lang.Class)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.protocol.ImmutableHttpProcessor protocolProcessor> = null;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setAuthSchemes(ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.auth.AuthSchemeRegistry supportedAuthSchemes> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setBackoffManager(ch.boye.httpclientandroidlib.client.BackoffManager)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.BackoffManager $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.BackoffManager;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.BackoffManager backoffManager> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setConnectionBackoffStrategy(ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.ConnectionBackoffStrategy connectionBackoffStrategy> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setCookieSpecs(ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.cookie.CookieSpecRegistry supportedCookieSpecs> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setCookieStore(ch.boye.httpclientandroidlib.client.CookieStore)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.CookieStore $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.CookieStore;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CookieStore cookieStore> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setCredentialsProvider(ch.boye.httpclientandroidlib.client.CredentialsProvider)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.CredentialsProvider $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.CredentialsProvider;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.CredentialsProvider credsProvider> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setHttpRequestRetryHandler(ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler retryHandler> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setKeepAliveStrategy(ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy keepAliveStrategy> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setParams(ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.params.HttpParams defaultParams> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setProxyAuthenticationHandler(ch.boye.httpclientandroidlib.client.AuthenticationHandler)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r1;
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r2;
+        java.lang.Throwable $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = new ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: void <init>(ch.boye.httpclientandroidlib.client.AuthenticationHandler)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy> = $r2;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setProxyAuthenticationStrategy(ch.boye.httpclientandroidlib.client.AuthenticationStrategy)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.AuthenticationStrategy $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.AuthenticationStrategy;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setRedirectHandler(ch.boye.httpclientandroidlib.client.RedirectHandler)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.RedirectHandler $r1;
+        ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategyAdaptor $r2;
+        java.lang.Throwable $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.RedirectHandler;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = new ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategyAdaptor;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategyAdaptor: void <init>(ch.boye.httpclientandroidlib.client.RedirectHandler)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.RedirectStrategy redirectStrategy> = $r2;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setRedirectStrategy(ch.boye.httpclientandroidlib.client.RedirectStrategy)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.RedirectStrategy $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.RedirectStrategy;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.RedirectStrategy redirectStrategy> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setReuseStrategy(ch.boye.httpclientandroidlib.ConnectionReuseStrategy)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.ConnectionReuseStrategy;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.ConnectionReuseStrategy reuseStrategy> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setRoutePlanner(ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner routePlanner> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setTargetAuthenticationHandler(ch.boye.httpclientandroidlib.client.AuthenticationHandler)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r1;
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r2;
+        java.lang.Throwable $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = new ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: void <init>(ch.boye.httpclientandroidlib.client.AuthenticationHandler)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy targetAuthStrategy> = $r2;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setTargetAuthenticationStrategy(ch.boye.httpclientandroidlib.client.AuthenticationStrategy)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.AuthenticationStrategy $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.AuthenticationStrategy;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.AuthenticationStrategy targetAuthStrategy> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setUserTokenHandler(ch.boye.httpclientandroidlib.client.UserTokenHandler)
+    {
+        ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient $r0;
+        ch.boye.httpclientandroidlib.client.UserTokenHandler $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.UserTokenHandler;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.AbstractHttpClient: ch.boye.httpclientandroidlib.client.UserTokenHandler userTokenHandler> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+}

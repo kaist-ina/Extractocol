@@ -1,0 +1,301 @@
+class io.fabric.sdk.android.services.common.AdvertisingInfoProvider extends java.lang.Object
+{
+    private static final java.lang.String ADVERTISING_INFO_PREFERENCES;
+    private static final java.lang.String PREFKEY_ADVERTISING_ID;
+    private static final java.lang.String PREFKEY_LIMIT_AD_TRACKING;
+    private final android.content.Context context;
+    private final io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore;
+
+    public void <init>(android.content.Context)
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        android.content.Context $r1, $r3;
+        io.fabric.sdk.android.services.persistence.PreferenceStoreImpl $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r3 = virtualinvoke $r1.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: android.content.Context context> = $r3;
+
+        $r2 = new io.fabric.sdk.android.services.persistence.PreferenceStoreImpl;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.persistence.PreferenceStoreImpl: void <init>(android.content.Context,java.lang.String)>($r1, "TwitterAdvertisingInfoPreferences");
+
+        $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore> = $r2;
+
+        return;
+    }
+
+    static io.fabric.sdk.android.services.common.AdvertisingInfo access$000(io.fabric.sdk.android.services.common.AdvertisingInfoProvider)
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.common.AdvertisingInfo getAdvertisingInfoFromStrategies()>();
+
+        return $r1;
+    }
+
+    static void access$100(io.fabric.sdk.android.services.common.AdvertisingInfoProvider, io.fabric.sdk.android.services.common.AdvertisingInfo)
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r1 := @parameter1: io.fabric.sdk.android.services.common.AdvertisingInfo;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: void storeInfoToPreferences(io.fabric.sdk.android.services.common.AdvertisingInfo)>($r1);
+
+        return;
+    }
+
+    private io.fabric.sdk.android.services.common.AdvertisingInfo getAdvertisingInfoFromStrategies()
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        io.fabric.sdk.android.services.common.AdvertisingInfoStrategy $r1, $r1_1;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r2, $r2_1;
+        boolean $z0, $z0_1;
+        io.fabric.sdk.android.Logger $r3, $r3_1, $r3_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r1 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.common.AdvertisingInfoStrategy getReflectionStrategy()>();
+
+        $r2 = interfaceinvoke $r1.<io.fabric.sdk.android.services.common.AdvertisingInfoStrategy: io.fabric.sdk.android.services.common.AdvertisingInfo getAdvertisingInfo()>();
+
+        $z0 = specialinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: boolean isInfoValid(io.fabric.sdk.android.services.common.AdvertisingInfo)>($r2);
+
+        if $z0 != 0 goto label2;
+
+        $r1_1 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.common.AdvertisingInfoStrategy getServiceStrategy()>();
+
+        $r2_1 = interfaceinvoke $r1_1.<io.fabric.sdk.android.services.common.AdvertisingInfoStrategy: io.fabric.sdk.android.services.common.AdvertisingInfo getAdvertisingInfo()>();
+
+        $z0_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: boolean isInfoValid(io.fabric.sdk.android.services.common.AdvertisingInfo)>($r2_1);
+
+        if $z0_1 != 0 goto label1;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Fabric", "AdvertisingInfo not present");
+
+        return $r2_1;
+
+     label1:
+        $r3_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Fabric", "Using AdvertisingInfo from Service Provider");
+
+        return $r2_1;
+
+     label2:
+        $r3_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3_2.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Fabric", "Using AdvertisingInfo from Reflection Provider");
+
+        return $r2;
+    }
+
+    private boolean isInfoValid(io.fabric.sdk.android.services.common.AdvertisingInfo)
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r1;
+        java.lang.String $r2;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.common.AdvertisingInfo;
+
+        if $r1 == null goto label1;
+
+        $r2 = $r1.<io.fabric.sdk.android.services.common.AdvertisingInfo: java.lang.String advertisingId>;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r2);
+
+        if $z0 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private void refreshInfoIfNeededAsync(io.fabric.sdk.android.services.common.AdvertisingInfo)
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r1;
+        java.lang.Thread $r2;
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider$1 $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.common.AdvertisingInfo;
+
+        $r2 = new java.lang.Thread;
+
+        $r3 = new io.fabric.sdk.android.services.common.AdvertisingInfoProvider$1;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider$1: void <init>(io.fabric.sdk.android.services.common.AdvertisingInfoProvider,io.fabric.sdk.android.services.common.AdvertisingInfo)>($r0, $r1);
+
+        specialinvoke $r2.<java.lang.Thread: void <init>(java.lang.Runnable)>($r3);
+
+        virtualinvoke $r2.<java.lang.Thread: void start()>();
+
+        return;
+    }
+
+    private void storeInfoToPreferences(io.fabric.sdk.android.services.common.AdvertisingInfo)
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r1;
+        java.lang.String $r2;
+        boolean $z0, $z0_1;
+        io.fabric.sdk.android.services.persistence.PreferenceStore $r3, $r4, $r3_1, $r4_1;
+        android.content.SharedPreferences$Editor $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.common.AdvertisingInfo;
+
+        $z0 = specialinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: boolean isInfoValid(io.fabric.sdk.android.services.common.AdvertisingInfo)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        $r3 = $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore>;
+
+        $r4 = $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore>;
+
+        $r5 = interfaceinvoke $r4.<io.fabric.sdk.android.services.persistence.PreferenceStore: android.content.SharedPreferences$Editor edit()>();
+
+        $r2 = $r1.<io.fabric.sdk.android.services.common.AdvertisingInfo: java.lang.String advertisingId>;
+
+        $r5_1 = interfaceinvoke $r5.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("advertising_id", $r2);
+
+        $z0_1 = $r1.<io.fabric.sdk.android.services.common.AdvertisingInfo: boolean limitAdTrackingEnabled>;
+
+        $r5_2 = interfaceinvoke $r5_1.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putBoolean(java.lang.String,boolean)>("limit_ad_tracking_enabled", $z0_1);
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.services.persistence.PreferenceStore: boolean save(android.content.SharedPreferences$Editor)>($r5_2);
+
+        return;
+
+     label1:
+        $r3_1 = $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore>;
+
+        $r4_1 = $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore>;
+
+        $r5_3 = interfaceinvoke $r4_1.<io.fabric.sdk.android.services.persistence.PreferenceStore: android.content.SharedPreferences$Editor edit()>();
+
+        $r5_4 = interfaceinvoke $r5_3.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor remove(java.lang.String)>("advertising_id");
+
+        $r5_5 = interfaceinvoke $r5_4.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor remove(java.lang.String)>("limit_ad_tracking_enabled");
+
+        interfaceinvoke $r3_1.<io.fabric.sdk.android.services.persistence.PreferenceStore: boolean save(android.content.SharedPreferences$Editor)>($r5_5);
+
+        return;
+    }
+
+    public io.fabric.sdk.android.services.common.AdvertisingInfo getAdvertisingInfo()
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r1, $r1_1;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r1 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.common.AdvertisingInfo getInfoFromPreferences()>();
+
+        $z0 = specialinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: boolean isInfoValid(io.fabric.sdk.android.services.common.AdvertisingInfo)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        $r2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r2.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Fabric", "Using AdvertisingInfo from Preference Store");
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: void refreshInfoIfNeededAsync(io.fabric.sdk.android.services.common.AdvertisingInfo)>($r1);
+
+        return $r1;
+
+     label1:
+        $r1_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.common.AdvertisingInfo getAdvertisingInfoFromStrategies()>();
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: void storeInfoToPreferences(io.fabric.sdk.android.services.common.AdvertisingInfo)>($r1_1);
+
+        return $r1_1;
+    }
+
+    protected io.fabric.sdk.android.services.common.AdvertisingInfo getInfoFromPreferences()
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r1;
+        io.fabric.sdk.android.services.persistence.PreferenceStore $r2, $r2_1;
+        android.content.SharedPreferences $r3, $r3_1;
+        java.lang.String $r4;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore>;
+
+        $r3 = interfaceinvoke $r2.<io.fabric.sdk.android.services.persistence.PreferenceStore: android.content.SharedPreferences get()>();
+
+        $r4 = interfaceinvoke $r3.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("advertising_id", "");
+
+        $r2_1 = $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore>;
+
+        $r3_1 = interfaceinvoke $r2_1.<io.fabric.sdk.android.services.persistence.PreferenceStore: android.content.SharedPreferences get()>();
+
+        $z0 = interfaceinvoke $r3_1.<android.content.SharedPreferences: boolean getBoolean(java.lang.String,boolean)>("limit_ad_tracking_enabled", 0);
+
+        $r1 = new io.fabric.sdk.android.services.common.AdvertisingInfo;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.common.AdvertisingInfo: void <init>(java.lang.String,boolean)>($r4, $z0);
+
+        return $r1;
+    }
+
+    public io.fabric.sdk.android.services.common.AdvertisingInfoStrategy getReflectionStrategy()
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        io.fabric.sdk.android.services.common.AdvertisingInfoReflectionStrategy $r1;
+        android.content.Context $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r1 = new io.fabric.sdk.android.services.common.AdvertisingInfoReflectionStrategy;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: android.content.Context context>;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.common.AdvertisingInfoReflectionStrategy: void <init>(android.content.Context)>($r2);
+
+        return $r1;
+    }
+
+    public io.fabric.sdk.android.services.common.AdvertisingInfoStrategy getServiceStrategy()
+    {
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r0;
+        io.fabric.sdk.android.services.common.AdvertisingInfoServiceStrategy $r1;
+        android.content.Context $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        $r1 = new io.fabric.sdk.android.services.common.AdvertisingInfoServiceStrategy;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: android.content.Context context>;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.common.AdvertisingInfoServiceStrategy: void <init>(android.content.Context)>($r2);
+
+        return $r1;
+    }
+}

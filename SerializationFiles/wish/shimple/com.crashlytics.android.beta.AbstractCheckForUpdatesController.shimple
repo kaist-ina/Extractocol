@@ -1,0 +1,400 @@
+abstract class com.crashlytics.android.beta.AbstractCheckForUpdatesController extends java.lang.Object implements com.crashlytics.android.beta.UpdatesController
+{
+    static final long LAST_UPDATE_CHECK_DEFAULT;
+    static final java.lang.String LAST_UPDATE_CHECK_KEY;
+    private static final long MILLIS_PER_SECOND;
+    private com.crashlytics.android.beta.Beta beta;
+    private io.fabric.sdk.android.services.settings.BetaSettingsData betaSettings;
+    private com.crashlytics.android.beta.BuildProperties buildProps;
+    private android.content.Context context;
+    private io.fabric.sdk.android.services.common.CurrentTimeProvider currentTimeProvider;
+    private final java.util.concurrent.atomic.AtomicBoolean externallyReady;
+    private io.fabric.sdk.android.services.network.HttpRequestFactory httpRequestFactory;
+    private io.fabric.sdk.android.services.common.IdManager idManager;
+    private final java.util.concurrent.atomic.AtomicBoolean initialized;
+    private long lastCheckTimeMillis;
+    private io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore;
+
+    public void <init>()
+    {
+        com.crashlytics.android.beta.AbstractCheckForUpdatesController $r0;
+
+        $r0 := @this: com.crashlytics.android.beta.AbstractCheckForUpdatesController;
+
+        specialinvoke $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: void <init>(boolean)>(0);
+
+        return;
+    }
+
+    public void <init>(boolean)
+    {
+        com.crashlytics.android.beta.AbstractCheckForUpdatesController $r0;
+        boolean $z0;
+        java.util.concurrent.atomic.AtomicBoolean $r1, $r1_1;
+
+        $r0 := @this: com.crashlytics.android.beta.AbstractCheckForUpdatesController;
+
+        $z0 := @parameter0: boolean;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new java.util.concurrent.atomic.AtomicBoolean;
+
+        specialinvoke $r1.<java.util.concurrent.atomic.AtomicBoolean: void <init>()>();
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: java.util.concurrent.atomic.AtomicBoolean initialized> = $r1;
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: long lastCheckTimeMillis> = 0L;
+
+        $r1_1 = new java.util.concurrent.atomic.AtomicBoolean;
+
+        specialinvoke $r1_1.<java.util.concurrent.atomic.AtomicBoolean: void <init>(boolean)>($z0);
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: java.util.concurrent.atomic.AtomicBoolean externallyReady> = $r1_1;
+
+        return;
+    }
+
+    private void performUpdateCheck()
+    {
+        com.crashlytics.android.beta.AbstractCheckForUpdatesController $r0;
+        io.fabric.sdk.android.services.common.ApiKey $r1;
+        android.content.Context $r2;
+        io.fabric.sdk.android.services.common.IdManager $r3;
+        com.crashlytics.android.beta.CheckForUpdatesRequest $r4;
+        com.crashlytics.android.beta.CheckForUpdatesResponseTransform $r5;
+        io.fabric.sdk.android.Logger $r6;
+        java.lang.String $r7, $r9, $r12, $r14, $r9_1;
+        com.crashlytics.android.beta.BuildProperties $r8, $r8_1;
+        com.crashlytics.android.beta.Beta $r10, $r11;
+        io.fabric.sdk.android.services.settings.BetaSettingsData $r13;
+        io.fabric.sdk.android.services.network.HttpRequestFactory $r15;
+
+        $r0 := @this: com.crashlytics.android.beta.AbstractCheckForUpdatesController;
+
+        $r6 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r6.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Beta", "Performing update check");
+
+        $r1 = new io.fabric.sdk.android.services.common.ApiKey;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.common.ApiKey: void <init>()>();
+
+        $r2 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: android.content.Context context>;
+
+        $r7 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.ApiKey: java.lang.String getValue(android.content.Context)>($r2);
+
+        $r3 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.common.IdManager idManager>;
+
+        $r8 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: com.crashlytics.android.beta.BuildProperties buildProps>;
+
+        $r9 = $r8.<com.crashlytics.android.beta.BuildProperties: java.lang.String packageName>;
+
+        $r9_1 = virtualinvoke $r3.<io.fabric.sdk.android.services.common.IdManager: java.lang.String createIdHeaderValue(java.lang.String,java.lang.String)>($r7, $r9);
+
+        $r4 = new com.crashlytics.android.beta.CheckForUpdatesRequest;
+
+        $r10 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: com.crashlytics.android.beta.Beta beta>;
+
+        $r11 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: com.crashlytics.android.beta.Beta beta>;
+
+        $r12 = virtualinvoke $r11.<com.crashlytics.android.beta.Beta: java.lang.String getOverridenSpiEndpoint()>();
+
+        $r13 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.settings.BetaSettingsData betaSettings>;
+
+        $r14 = $r13.<io.fabric.sdk.android.services.settings.BetaSettingsData: java.lang.String updateUrl>;
+
+        $r15 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.network.HttpRequestFactory httpRequestFactory>;
+
+        $r5 = new com.crashlytics.android.beta.CheckForUpdatesResponseTransform;
+
+        specialinvoke $r5.<com.crashlytics.android.beta.CheckForUpdatesResponseTransform: void <init>()>();
+
+        specialinvoke $r4.<com.crashlytics.android.beta.CheckForUpdatesRequest: void <init>(io.fabric.sdk.android.Kit,java.lang.String,java.lang.String,io.fabric.sdk.android.services.network.HttpRequestFactory,com.crashlytics.android.beta.CheckForUpdatesResponseTransform)>($r10, $r12, $r14, $r15, $r5);
+
+        $r8_1 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: com.crashlytics.android.beta.BuildProperties buildProps>;
+
+        virtualinvoke $r4.<com.crashlytics.android.beta.CheckForUpdatesRequest: com.crashlytics.android.beta.CheckForUpdatesResponse invoke(java.lang.String,java.lang.String,com.crashlytics.android.beta.BuildProperties)>($r7, $r9_1, $r8_1);
+
+        return;
+    }
+
+    protected void checkForUpdates()
+    {
+        com.crashlytics.android.beta.AbstractCheckForUpdatesController $r0;
+        io.fabric.sdk.android.services.persistence.PreferenceStore $r1, $r2, $r8, $r2_1, $r2_2, $r2_3;
+        io.fabric.sdk.android.services.common.CurrentTimeProvider $r3;
+        io.fabric.sdk.android.services.settings.BetaSettingsData $r4;
+        int $i0;
+        byte $b1;
+        java.lang.Throwable $r5, $r6;
+        android.content.SharedPreferences $r7;
+        boolean $z0;
+        android.content.SharedPreferences$Editor $r9, $r9_1, $r9_2, $r9_3;
+        long $l2, $l3, $l4, $l3_1, $l4_1, $l3_2;
+        io.fabric.sdk.android.Logger $r10, $r10_1, $r10_2, $r10_3;
+        java.lang.StringBuilder $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8, $r11_9, $r11_10;
+        java.lang.String $r12, $r12_1, $r12_2;
+
+        $r0 := @this: com.crashlytics.android.beta.AbstractCheckForUpdatesController;
+
+        $r1 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore>;
+
+(0)     entermonitor $r1;
+
+     label01:
+        $r2 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore>;
+
+        $r7 = interfaceinvoke $r2.<io.fabric.sdk.android.services.persistence.PreferenceStore: android.content.SharedPreferences get()>();
+
+        $z0 = interfaceinvoke $r7.<android.content.SharedPreferences: boolean contains(java.lang.String)>("last_update_check");
+
+(1)     if $z0 == 0 goto label02;
+
+        $r8 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore>;
+
+(2)     $r2_1 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore>;
+
+        $r9 = interfaceinvoke $r2_1.<io.fabric.sdk.android.services.persistence.PreferenceStore: android.content.SharedPreferences$Editor edit()>();
+
+(3)     $r9_1 = interfaceinvoke $r9.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor remove(java.lang.String)>("last_update_check");
+
+(4)     interfaceinvoke $r8.<io.fabric.sdk.android.services.persistence.PreferenceStore: boolean save(android.content.SharedPreferences$Editor)>($r9_1);
+
+     label02:
+        $r9_2 = Phi($r9 #1, $r9_1 #4);
+
+        $r2_2 = Phi($r2 #1, $r2_1 #4);
+
+(5)     exitmonitor $r1;
+
+     label03:
+        $r3 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.common.CurrentTimeProvider currentTimeProvider>;
+
+        $l2 = interfaceinvoke $r3.<io.fabric.sdk.android.services.common.CurrentTimeProvider: long getCurrentTimeMillis()>();
+
+        $r4 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.settings.BetaSettingsData betaSettings>;
+
+        $i0 = $r4.<io.fabric.sdk.android.services.settings.BetaSettingsData: int updateSuspendDurationSeconds>;
+
+        $l3 = (long) $i0;
+
+        $l3_1 = $l3 * 1000L;
+
+        $r10 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_1 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Check for updates delay: ");
+
+        $r11_2 = virtualinvoke $r11_1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l3_1);
+
+        $r12 = virtualinvoke $r11_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r10.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Beta", $r12);
+
+        $r10_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r11_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r11_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_4 = virtualinvoke $r11_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Check for updates last check time: ");
+
+        $l4 = virtualinvoke $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: long getLastCheckTimeMillis()>();
+
+        $r11_5 = virtualinvoke $r11_4.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l4);
+
+        $r12_1 = virtualinvoke $r11_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r10_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Beta", $r12_1);
+
+        $l4_1 = virtualinvoke $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: long getLastCheckTimeMillis()>();
+
+        $l3_2 = $l4_1 + $l3_1;
+
+        $r10_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r11_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r11_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_7 = virtualinvoke $r11_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Check for updates current time: ");
+
+        $r11_8 = virtualinvoke $r11_7.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l2);
+
+        $r11_9 = virtualinvoke $r11_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", next check time: ");
+
+        $r11_10 = virtualinvoke $r11_9.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l3_2);
+
+        $r12_2 = virtualinvoke $r11_10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r10_2.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Beta", $r12_2);
+
+        $b1 = $l2 cmp $l3_2;
+
+        if $b1 < 0 goto label10;
+
+     label04:
+        specialinvoke $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: void performUpdateCheck()>();
+
+     label05:
+        virtualinvoke $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: void setLastCheckTimeMillis(long)>($l2);
+
+        return;
+
+     label06:
+        $r5 := @caughtexception;
+
+        $r9_3 = Phi($r9 #0, $r9_1 #3, $r9_2 #5, $r9_3 #6);
+
+(6)     $r2_3 = Phi($r2 #0, $r2_1 #2, $r2_2 #5, $r2_3 #6);
+
+     label07:
+        exitmonitor $r1;
+
+     label08:
+        throw $r5;
+
+     label09:
+        $r6 := @caughtexception;
+
+        virtualinvoke $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: void setLastCheckTimeMillis(long)>($l2);
+
+        throw $r6;
+
+     label10:
+        $r10_3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_3.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Beta", "Check for updates next check time was not passed");
+
+        return;
+
+        catch java.lang.Throwable from label01 to label03 with label06;
+        catch java.lang.Throwable from label04 to label05 with label09;
+        catch java.lang.Throwable from label07 to label08 with label06;
+    }
+
+    long getLastCheckTimeMillis()
+    {
+        com.crashlytics.android.beta.AbstractCheckForUpdatesController $r0;
+        long l0;
+
+        $r0 := @this: com.crashlytics.android.beta.AbstractCheckForUpdatesController;
+
+        l0 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: long lastCheckTimeMillis>;
+
+        return l0;
+    }
+
+    public void initialize(android.content.Context, com.crashlytics.android.beta.Beta, io.fabric.sdk.android.services.common.IdManager, io.fabric.sdk.android.services.settings.BetaSettingsData, com.crashlytics.android.beta.BuildProperties, io.fabric.sdk.android.services.persistence.PreferenceStore, io.fabric.sdk.android.services.common.CurrentTimeProvider, io.fabric.sdk.android.services.network.HttpRequestFactory)
+    {
+        com.crashlytics.android.beta.AbstractCheckForUpdatesController $r0;
+        android.content.Context $r1;
+        com.crashlytics.android.beta.Beta $r2;
+        io.fabric.sdk.android.services.common.IdManager $r3;
+        io.fabric.sdk.android.services.settings.BetaSettingsData $r4;
+        com.crashlytics.android.beta.BuildProperties $r5;
+        io.fabric.sdk.android.services.persistence.PreferenceStore $r6;
+        io.fabric.sdk.android.services.common.CurrentTimeProvider $r7;
+        io.fabric.sdk.android.services.network.HttpRequestFactory $r8;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.beta.AbstractCheckForUpdatesController;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.crashlytics.android.beta.Beta;
+
+        $r3 := @parameter2: io.fabric.sdk.android.services.common.IdManager;
+
+        $r4 := @parameter3: io.fabric.sdk.android.services.settings.BetaSettingsData;
+
+        $r5 := @parameter4: com.crashlytics.android.beta.BuildProperties;
+
+        $r6 := @parameter5: io.fabric.sdk.android.services.persistence.PreferenceStore;
+
+        $r7 := @parameter6: io.fabric.sdk.android.services.common.CurrentTimeProvider;
+
+        $r8 := @parameter7: io.fabric.sdk.android.services.network.HttpRequestFactory;
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: android.content.Context context> = $r1;
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: com.crashlytics.android.beta.Beta beta> = $r2;
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.common.IdManager idManager> = $r3;
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.settings.BetaSettingsData betaSettings> = $r4;
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: com.crashlytics.android.beta.BuildProperties buildProps> = $r5;
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.persistence.PreferenceStore preferenceStore> = $r6;
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.common.CurrentTimeProvider currentTimeProvider> = $r7;
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: io.fabric.sdk.android.services.network.HttpRequestFactory httpRequestFactory> = $r8;
+
+        $z0 = virtualinvoke $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: boolean signalInitialized()>();
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: void checkForUpdates()>();
+
+     label1:
+        return;
+    }
+
+    void setLastCheckTimeMillis(long)
+    {
+        com.crashlytics.android.beta.AbstractCheckForUpdatesController $r0;
+        long $l0;
+
+        $r0 := @this: com.crashlytics.android.beta.AbstractCheckForUpdatesController;
+
+        $l0 := @parameter0: long;
+
+        $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: long lastCheckTimeMillis> = $l0;
+
+        return;
+    }
+
+    protected boolean signalExternallyReady()
+    {
+        com.crashlytics.android.beta.AbstractCheckForUpdatesController $r0;
+        boolean $z0;
+        java.util.concurrent.atomic.AtomicBoolean $r1, $r1_1;
+
+        $r0 := @this: com.crashlytics.android.beta.AbstractCheckForUpdatesController;
+
+        $r1 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: java.util.concurrent.atomic.AtomicBoolean externallyReady>;
+
+        virtualinvoke $r1.<java.util.concurrent.atomic.AtomicBoolean: void set(boolean)>(1);
+
+        $r1_1 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: java.util.concurrent.atomic.AtomicBoolean initialized>;
+
+        $z0 = virtualinvoke $r1_1.<java.util.concurrent.atomic.AtomicBoolean: boolean get()>();
+
+        return $z0;
+    }
+
+    boolean signalInitialized()
+    {
+        com.crashlytics.android.beta.AbstractCheckForUpdatesController $r0;
+        boolean $z0;
+        java.util.concurrent.atomic.AtomicBoolean $r1, $r1_1;
+
+        $r0 := @this: com.crashlytics.android.beta.AbstractCheckForUpdatesController;
+
+        $r1 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: java.util.concurrent.atomic.AtomicBoolean initialized>;
+
+        virtualinvoke $r1.<java.util.concurrent.atomic.AtomicBoolean: void set(boolean)>(1);
+
+        $r1_1 = $r0.<com.crashlytics.android.beta.AbstractCheckForUpdatesController: java.util.concurrent.atomic.AtomicBoolean externallyReady>;
+
+        $z0 = virtualinvoke $r1_1.<java.util.concurrent.atomic.AtomicBoolean: boolean get()>();
+
+        return $z0;
+    }
+}

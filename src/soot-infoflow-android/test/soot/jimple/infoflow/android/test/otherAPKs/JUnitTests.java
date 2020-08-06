@@ -62,9 +62,9 @@ public class JUnitTests {
 		SetupApplication setupApplication = new SetupApplication(androidJars, fileName);
 		setupApplication.setTaintWrapper(new EasyTaintWrapper("EasyTaintWrapperSource.txt"));
 		setupApplication.calculateSourcesSinksEntrypoints("SourcesAndSinks.txt");
-		setupApplication.setEnableImplicitFlows(enableImplicitFlows);
-		setupApplication.setEnableStaticFieldTracking(enableStaticFields);
-		setupApplication.setFlowSensitiveAliasing(flowSensitiveAliasing);
+		setupApplication.getConfig().setEnableImplicitFlows(enableImplicitFlows);
+		setupApplication.getConfig().setEnableStaticFieldTracking(enableStaticFields);
+		setupApplication.getConfig().setFlowSensitiveAliasing(flowSensitiveAliasing);
 		return setupApplication.runInfoflow();
 	}
 	

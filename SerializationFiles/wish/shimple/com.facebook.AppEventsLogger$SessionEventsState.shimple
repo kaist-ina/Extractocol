@@ -1,0 +1,506 @@
+class com.facebook.AppEventsLogger$SessionEventsState extends java.lang.Object
+{
+    public static final java.lang.String ENCODED_EVENTS_KEY;
+    public static final java.lang.String EVENT_COUNT_KEY;
+    public static final java.lang.String NUM_SKIPPED_KEY;
+    private final int MAX_ACCUMULATED_LOG_EVENTS;
+    private java.util.List accumulatedEvents;
+    private com.facebook.internal.AttributionIdentifiers attributionIdentifiers;
+    private java.lang.String hashedDeviceAndAppId;
+    private java.util.List inFlightEvents;
+    private int numSkippedEventsDueToFullBuffer;
+    private java.lang.String packageName;
+
+    public void <init>(com.facebook.internal.AttributionIdentifiers, java.lang.String, java.lang.String)
+    {
+        com.facebook.AppEventsLogger$SessionEventsState $r0;
+        com.facebook.internal.AttributionIdentifiers $r1;
+        java.lang.String $r2, $r3;
+        java.util.ArrayList $r4, $r4_1;
+
+        $r0 := @this: com.facebook.AppEventsLogger$SessionEventsState;
+
+        $r1 := @parameter0: com.facebook.internal.AttributionIdentifiers;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r4 = new java.util.ArrayList;
+
+        specialinvoke $r4.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List accumulatedEvents> = $r4;
+
+        $r4_1 = new java.util.ArrayList;
+
+        specialinvoke $r4_1.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List inFlightEvents> = $r4_1;
+
+        $r0.<com.facebook.AppEventsLogger$SessionEventsState: int MAX_ACCUMULATED_LOG_EVENTS> = 1000;
+
+        $r0.<com.facebook.AppEventsLogger$SessionEventsState: com.facebook.internal.AttributionIdentifiers attributionIdentifiers> = $r1;
+
+        $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.lang.String packageName> = $r2;
+
+        $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.lang.String hashedDeviceAndAppId> = $r3;
+
+        return;
+    }
+
+    private byte[] getStringAsByteArray(java.lang.String)
+    {
+        com.facebook.AppEventsLogger$SessionEventsState $r0;
+        java.lang.String $r1;
+        java.io.UnsupportedEncodingException $r2;
+        byte[] $r3;
+
+        $r0 := @this: com.facebook.AppEventsLogger$SessionEventsState;
+
+        $r1 := @parameter0: java.lang.String;
+
+     label1:
+        $r3 = virtualinvoke $r1.<java.lang.String: byte[] getBytes(java.lang.String)>("UTF-8");
+
+     label2:
+        return $r3;
+
+     label3:
+        $r2 := @caughtexception;
+
+        staticinvoke <com.facebook.internal.Utility: void logd(java.lang.String,java.lang.Exception)>("Encoding exception: ", $r2);
+
+        return null;
+
+        catch java.io.UnsupportedEncodingException from label1 to label2 with label3;
+    }
+
+    private void populateRequest(com.facebook.Request, int, org.json.JSONArray, boolean, boolean)
+    {
+        com.facebook.AppEventsLogger$SessionEventsState $r0;
+        com.facebook.Request $r1;
+        int $i0, $i1;
+        org.json.JSONArray $r2;
+        boolean $z0, $z1;
+        com.facebook.internal.AttributionIdentifiers $r3;
+        java.lang.Exception $r4;
+        com.facebook.model.GraphObject $r5;
+        java.lang.Integer $r6;
+        java.lang.String $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        android.content.Context $r8;
+        android.os.Bundle $r9, $r10, $r10_1, $r10_2;
+        byte[] $r11;
+
+        $r0 := @this: com.facebook.AppEventsLogger$SessionEventsState;
+
+        $r1 := @parameter0: com.facebook.Request;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: org.json.JSONArray;
+
+        $z0 := @parameter3: boolean;
+
+        $z1 := @parameter4: boolean;
+
+        $r5 = staticinvoke <com.facebook.model.GraphObject$Factory: com.facebook.model.GraphObject create()>();
+
+        interfaceinvoke $r5.<com.facebook.model.GraphObject: void setProperty(java.lang.String,java.lang.Object)>("event", "CUSTOM_APP_EVENTS");
+
+        $i1 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: int numSkippedEventsDueToFullBuffer>;
+
+        if $i1 <= 0 goto label1;
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        interfaceinvoke $r5.<com.facebook.model.GraphObject: void setProperty(java.lang.String,java.lang.Object)>("num_skipped_events", $r6);
+
+     label1:
+(0)     if $z0 == 0 goto label2;
+
+        $r3 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: com.facebook.internal.AttributionIdentifiers attributionIdentifiers>;
+
+        $r7 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.lang.String hashedDeviceAndAppId>;
+
+(1)     staticinvoke <com.facebook.internal.Utility: void setAppEventAttributionParameters(com.facebook.model.GraphObject,com.facebook.internal.AttributionIdentifiers,java.lang.String,boolean)>($r5, $r3, $r7, $z1);
+
+     label2:
+        $r7_1 = Phi($r7 #0, $r7 #1);
+
+(2)     $r8 = staticinvoke <com.facebook.AppEventsLogger: android.content.Context access$1000()>();
+
+(3)     staticinvoke <com.facebook.internal.Utility: void setAppEventExtendedDeviceInfoParameters(com.facebook.model.GraphObject,android.content.Context)>($r5, $r8);
+
+     label3:
+        $r7_2 = Phi($r7_1 #3, $r7_5 #6);
+
+        $r7_3 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.lang.String packageName>;
+
+        interfaceinvoke $r5.<com.facebook.model.GraphObject: void setProperty(java.lang.String,java.lang.Object)>("application_package_name", $r7_3);
+
+        virtualinvoke $r1.<com.facebook.Request: void setGraphObject(com.facebook.model.GraphObject)>($r5);
+
+        $r9 = virtualinvoke $r1.<com.facebook.Request: android.os.Bundle getParameters()>();
+
+        $r10 = $r9;
+
+(4)     if $r9 != null goto label4;
+
+        $r10_1 = new android.os.Bundle;
+
+(5)     specialinvoke $r10_1.<android.os.Bundle: void <init>()>();
+
+     label4:
+        $r10_2 = Phi($r10 #4, $r10_1 #5);
+
+        $r7_4 = virtualinvoke $r2.<org.json.JSONArray: java.lang.String toString()>();
+
+        if $r7_4 == null goto label5;
+
+        $r11 = specialinvoke $r0.<com.facebook.AppEventsLogger$SessionEventsState: byte[] getStringAsByteArray(java.lang.String)>($r7_4);
+
+        virtualinvoke $r10_2.<android.os.Bundle: void putByteArray(java.lang.String,byte[])>("custom_events_file", $r11);
+
+        virtualinvoke $r1.<com.facebook.Request: void setTag(java.lang.Object)>($r7_4);
+
+     label5:
+        virtualinvoke $r1.<com.facebook.Request: void setParameters(android.os.Bundle)>($r10_2);
+
+        return;
+
+     label6:
+        $r4 := @caughtexception;
+
+        $r7_5 = Phi($r7 #0, $r7_1 #2);
+
+(6)     goto label3;
+
+        catch java.lang.Exception from label2 to label3 with label6;
+    }
+
+    public void accumulatePersistedEvents(java.util.List)
+    {
+        com.facebook.AppEventsLogger$SessionEventsState $r0;
+        java.util.List $r1, $r2;
+        java.lang.Throwable $r3;
+
+        $r0 := @this: com.facebook.AppEventsLogger$SessionEventsState;
+
+        $r1 := @parameter0: java.util.List;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List accumulatedEvents>;
+
+        interfaceinvoke $r2.<java.util.List: boolean addAll(java.util.Collection)>($r1);
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void addEvent(com.facebook.AppEventsLogger$AppEvent)
+    {
+        com.facebook.AppEventsLogger$SessionEventsState $r0;
+        com.facebook.AppEventsLogger$AppEvent $r1;
+        java.lang.Throwable $r2;
+        java.util.List $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5;
+
+        $r0 := @this: com.facebook.AppEventsLogger$SessionEventsState;
+
+        $r1 := @parameter0: com.facebook.AppEventsLogger$AppEvent;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r3 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List accumulatedEvents>;
+
+        $i0 = interfaceinvoke $r3.<java.util.List: int size()>();
+
+(1)     $r3_1 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List inFlightEvents>;
+
+        $i1 = interfaceinvoke $r3_1.<java.util.List: int size()>();
+
+(2)     $i0_1 = $i0 + $i1;
+
+        if $i0_1 < 1000 goto label3;
+
+(3)     $i0_2 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: int numSkippedEventsDueToFullBuffer>;
+
+(4)     $i0_3 = $i0_2 + 1;
+
+(5)     $r0.<com.facebook.AppEventsLogger$SessionEventsState: int numSkippedEventsDueToFullBuffer> = $i0_3;
+
+     label2:
+        $i0_4 = Phi($i0_3 #5, $i0_1 #7);
+
+        $r3_2 = Phi($r3_1 #5, $r3_3 #7);
+
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+(6)     $r3_3 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List accumulatedEvents>;
+
+        interfaceinvoke $r3_3.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+     label4:
+(7)     goto label2;
+
+     label5:
+        $r2 := @caughtexception;
+
+        $i0_5 = Phi($i0 #0, $i0_1 #2, $i0_2 #3, $i0_3 #4);
+
+        $r3_4 = Phi($r3 #0, $r3_1 #1, $r3_3 #6);
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.lang.Throwable from label3 to label4 with label5;
+    }
+
+    public void clearInFlightAndStats(boolean)
+    {
+        com.facebook.AppEventsLogger$SessionEventsState $r0;
+        boolean $z0;
+        java.util.List $r1, $r3, $r1_1, $r1_2, $r1_3;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: com.facebook.AppEventsLogger$SessionEventsState;
+
+        $z0 := @parameter0: boolean;
+
+        entermonitor $r0;
+
+(0)     if $z0 == 0 goto label2;
+
+     label1:
+        $r1 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List accumulatedEvents>;
+
+        $r3 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List inFlightEvents>;
+
+(1)     interfaceinvoke $r1.<java.util.List: boolean addAll(java.util.Collection)>($r3);
+
+     label2:
+        $r1_1 = Phi($r1 #0, $r1 #1);
+
+(2)     $r1_2 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List inFlightEvents>;
+
+        interfaceinvoke $r1_2.<java.util.List: void clear()>();
+
+        $r0.<com.facebook.AppEventsLogger$SessionEventsState: int numSkippedEventsDueToFullBuffer> = 0;
+
+     label3:
+        exitmonitor $r0;
+
+        return;
+
+     label4:
+        $r2 := @caughtexception;
+
+        $r1_3 = Phi($r1 #0, $r1_2 #2);
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public int getAccumulatedEventCount()
+    {
+        com.facebook.AppEventsLogger$SessionEventsState $r0;
+        java.util.List $r1;
+        java.lang.Throwable $r2;
+        int $i0;
+
+        $r0 := @this: com.facebook.AppEventsLogger$SessionEventsState;
+
+        entermonitor $r0;
+
+     label1:
+        $r1 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List accumulatedEvents>;
+
+        $i0 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+     label2:
+        exitmonitor $r0;
+
+        return $i0;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public java.util.List getEventsToPersist()
+    {
+        com.facebook.AppEventsLogger$SessionEventsState $r0;
+        java.util.ArrayList $r1;
+        java.lang.Throwable $r2;
+        java.util.List r3;
+
+        $r0 := @this: com.facebook.AppEventsLogger$SessionEventsState;
+
+        entermonitor $r0;
+
+     label1:
+        r3 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List accumulatedEvents>;
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List accumulatedEvents> = $r1;
+
+     label2:
+        exitmonitor $r0;
+
+        return r3;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public int populateRequest(com.facebook.Request, boolean, boolean, boolean)
+    {
+        com.facebook.AppEventsLogger$SessionEventsState $r0;
+        com.facebook.Request $r1;
+        boolean $z0, $z1, $z2, $z3, $z3_1, $z3_2, $z3_3, $z3_4;
+        java.util.List $r2, $r5, $r2_1, $r2_2, $r2_3;
+        org.json.JSONArray $r3;
+        java.lang.Throwable $r4;
+        int $i0, $i1, $i0_1, $i0_2;
+        java.util.Iterator $r6;
+        java.lang.Object $r7;
+        com.facebook.AppEventsLogger$AppEvent $r8;
+        org.json.JSONObject $r9;
+
+        $r0 := @this: com.facebook.AppEventsLogger$SessionEventsState;
+
+        $r1 := @parameter0: com.facebook.Request;
+
+        $z0 := @parameter1: boolean;
+
+        $z1 := @parameter2: boolean;
+
+        $z2 := @parameter3: boolean;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $i0 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: int numSkippedEventsDueToFullBuffer>;
+
+        $r5 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List inFlightEvents>;
+
+        $r2 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List accumulatedEvents>;
+
+        interfaceinvoke $r5.<java.util.List: boolean addAll(java.util.Collection)>($r2);
+
+(1)     $r2_1 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List accumulatedEvents>;
+
+        interfaceinvoke $r2_1.<java.util.List: void clear()>();
+
+        $r3 = new org.json.JSONArray;
+
+        specialinvoke $r3.<org.json.JSONArray: void <init>()>();
+
+(2)     $r2_2 = $r0.<com.facebook.AppEventsLogger$SessionEventsState: java.util.List inFlightEvents>;
+
+(3)     $r6 = interfaceinvoke $r2_2.<java.util.List: java.util.Iterator iterator()>();
+
+     label2:
+        $z3 = Phi($z3 #3, $z3_2 #7, $z3_3 #9);
+
+(4)     $z3_1 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z3_1 == 0 goto label6;
+
+        $r7 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r8 = (com.facebook.AppEventsLogger$AppEvent) $r7;
+
+(5)     if $z0 != 0 goto label3;
+
+(6)     $z3_2 = virtualinvoke $r8.<com.facebook.AppEventsLogger$AppEvent: boolean getIsImplicit()>();
+
+(7)     if $z3_2 != 0 goto label2;
+
+     label3:
+        $z3_3 = Phi($z3_1 #5, $z3_2 #7);
+
+(8)     $r9 = virtualinvoke $r8.<com.facebook.AppEventsLogger$AppEvent: org.json.JSONObject getJSONObject()>();
+
+        virtualinvoke $r3.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r9);
+
+(9)     goto label2;
+
+     label4:
+        $r4 := @caughtexception;
+
+        $z3_4 = Phi($z3 #0, $z3_1 #4, $z3_2 #6, $z3_3 #8, $z3_4 #10);
+
+        $r2_3 = Phi($r2 #0, $r2_1 #1, $r2_2 #2, $r2_3 #10);
+
+(10)    $i0_2 = Phi($i0 #0, $i0_2 #10);
+
+        exitmonitor $r0;
+
+     label5:
+        throw $r4;
+
+     label6:
+        $i1 = virtualinvoke $r3.<org.json.JSONArray: int length()>();
+
+        if $i1 != 0 goto label8;
+
+        exitmonitor $r0;
+
+     label7:
+        return 0;
+
+     label8:
+        exitmonitor $r0;
+
+     label9:
+        specialinvoke $r0.<com.facebook.AppEventsLogger$SessionEventsState: void populateRequest(com.facebook.Request,int,org.json.JSONArray,boolean,boolean)>($r1, $i0, $r3, $z1, $z2);
+
+        $i0_1 = virtualinvoke $r3.<org.json.JSONArray: int length()>();
+
+        return $i0_1;
+
+        catch java.lang.Throwable from label1 to label5 with label4;
+        catch java.lang.Throwable from label6 to label7 with label4;
+        catch java.lang.Throwable from label8 to label9 with label4;
+    }
+}

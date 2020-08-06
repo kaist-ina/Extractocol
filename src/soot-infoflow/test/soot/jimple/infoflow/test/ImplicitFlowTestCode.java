@@ -1,5 +1,6 @@
 package soot.jimple.infoflow.test;
 
+import soot.jimple.infoflow.test.android.Base64;
 import soot.jimple.infoflow.test.android.ConnectionManager;
 import soot.jimple.infoflow.test.android.TelephonyManager;
 
@@ -551,5 +552,60 @@ public class ImplicitFlowTestCode {
 	private String getConditionalValue() {
 		return TelephonyManager.getIMEI() == 42 ? "a" : "b";
 	}
+	
+	private String getBar() {
+		return Math.random() < 0.5 ? "bar" : "foobar";
+	}
+	
+	public void callToReturnTest2() {
+		String tainted = "foo";
+		if (TelephonyManager.getIMEI() == 42)
+			tainted = getBar();
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(tainted);
+	}
+	
+	public void stringObfuscationTest1() {
+		String pwdString = TelephonyManager.getDeviceId();
+		String obfPwd = "";
+		for(char c : pwdString.toCharArray())
+			obfPwd += c + "_";
+		String message = " | PWD: " + obfPwd;
+		String message_base64 = Base64.encodeToString(message.getBytes());
 
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(message_base64);
+	}
+	
+	public void arrayIndexTest1() {
+		String[] arr = new String[] { "hello", "world" };
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(arr[TelephonyManager.getIMEI()]);
+	}
+	
+	public void exceptionTest1() {
+		int val = TelephonyManager.getIMEI();
+		String[] arr = new String[val];
+		try {
+			arr[42] = "Hello";
+		}
+		catch (ArrayIndexOutOfBoundsException ex) {
+			ConnectionManager cm = new ConnectionManager();
+			cm.publish("Hello World");
+		}
+	}
+	
+	public void exceptionTest4() {
+		int val = TelephonyManager.getIMEI();
+		String[] arr = new String[val];
+		try {
+			System.out.println("Hello World");
+		}
+		catch (ArrayIndexOutOfBoundsException ex) {
+			ConnectionManager cm = new ConnectionManager();
+			cm.publish("Hello World");
+		}
+		arr[42] = "Hello";		
+	}
+	
 }

@@ -15,8 +15,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
-
+import soot.jimple.infoflow.IInfoflow;
 
 /**
  * covers taint propagation of fields with classes from a class hierarchy
@@ -25,7 +24,7 @@ public class HierarchyTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void hierarchytaintedTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.HierarchyTestCode: void taintedOutputTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -34,7 +33,7 @@ public class HierarchyTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void hierarchyuntaintedTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.HierarchyTestCode: void untaintedOutputTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -43,7 +42,7 @@ public class HierarchyTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void classHierarchyTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.HierarchyTestCode: void classHierarchyTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -52,7 +51,7 @@ public class HierarchyTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void classHierarchyTest2() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.HierarchyTestCode: void classHierarchyTest2()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);

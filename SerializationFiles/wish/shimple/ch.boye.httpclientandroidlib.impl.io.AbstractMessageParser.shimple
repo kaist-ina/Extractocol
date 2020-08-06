@@ -1,0 +1,460 @@
+public abstract class ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser extends java.lang.Object implements ch.boye.httpclientandroidlib.io.HttpMessageParser
+{
+    private static final int HEADERS;
+    private static final int HEAD_LINE;
+    private final java.util.List headerLines;
+    protected final ch.boye.httpclientandroidlib.message.LineParser lineParser;
+    private final int maxHeaderCount;
+    private final int maxLineLen;
+    private ch.boye.httpclientandroidlib.HttpMessage message;
+    private final ch.boye.httpclientandroidlib.io.SessionInputBuffer sessionBuffer;
+    private int state;
+
+    public void <init>(ch.boye.httpclientandroidlib.io.SessionInputBuffer, ch.boye.httpclientandroidlib.message.LineParser, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        java.util.ArrayList $r3;
+        ch.boye.httpclientandroidlib.message.LineParser $r4, $r4_1, $r4_2;
+        java.lang.IllegalArgumentException $r5, $r5_1;
+        int $i0, $i0_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+        $r4 := @parameter1: ch.boye.httpclientandroidlib.message.LineParser;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Session input buffer may not be null");
+
+        throw $r5;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r5_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP parameters may not be null");
+
+        throw $r5_1;
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.io.SessionInputBuffer sessionBuffer> = $r1;
+
+        $i0 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.params.HttpParams: int getIntParameter(java.lang.String,int)>("http.connection.max-header-count", -1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: int maxHeaderCount> = $i0;
+
+        $i0_1 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.params.HttpParams: int getIntParameter(java.lang.String,int)>("http.connection.max-line-length", -1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: int maxLineLen> = $i0_1;
+
+(0)     if $r4 == null goto label4;
+
+     label3:
+        $r4_1 = Phi($r4 #0, $r4_2 #1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.message.LineParser lineParser> = $r4_1;
+
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: java.util.List headerLines> = $r3;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: int state> = 0;
+
+        return;
+
+     label4:
+        $r4_2 = <ch.boye.httpclientandroidlib.message.BasicLineParser: ch.boye.httpclientandroidlib.message.BasicLineParser DEFAULT>;
+
+(1)     goto label3;
+    }
+
+    public static ch.boye.httpclientandroidlib.Header[] parseHeaders(ch.boye.httpclientandroidlib.io.SessionInputBuffer, int, int, ch.boye.httpclientandroidlib.message.LineParser) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r0;
+        int $i0, $i1;
+        java.util.ArrayList $r1;
+        ch.boye.httpclientandroidlib.Header[] $r2;
+        ch.boye.httpclientandroidlib.message.LineParser $r3, $r3_1, $r3_2;
+
+        $r0 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r3 := @parameter3: ch.boye.httpclientandroidlib.message.LineParser;
+
+(0)     if $r3 != null goto label1;
+
+(1)     $r3_1 = <ch.boye.httpclientandroidlib.message.BasicLineParser: ch.boye.httpclientandroidlib.message.BasicLineParser DEFAULT>;
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $r2 = staticinvoke <ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.Header[] parseHeaders(ch.boye.httpclientandroidlib.io.SessionInputBuffer,int,int,ch.boye.httpclientandroidlib.message.LineParser,java.util.List)>($r0, $i0, $i1, $r3_2, $r1);
+
+        return $r2;
+    }
+
+    public static ch.boye.httpclientandroidlib.Header[] parseHeaders(ch.boye.httpclientandroidlib.io.SessionInputBuffer, int, int, ch.boye.httpclientandroidlib.message.LineParser, java.util.List) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r0;
+        ch.boye.httpclientandroidlib.message.LineParser $r1;
+        java.util.List $r2;
+        ch.boye.httpclientandroidlib.Header[] $r3;
+        ch.boye.httpclientandroidlib.ParseException $r4;
+        ch.boye.httpclientandroidlib.ProtocolException $r5;
+        int $i0, $i1, $i2, $i4, $i5, $i2_1, $i2_2, $i2_3, $i2_4, $i4_1, $i4_2, $i2_5, $i4_3, $i4_4, $i4_5, $i4_6, $i4_7, $i4_8, $i4_9, $i2_6, $i4_10, $i2_7, $i2_8, $i0_1, $i0_2, $i0_3, $i1_1, $i1_2, $i0_4;
+        java.lang.IllegalArgumentException $r6, $r6_1, $r6_2;
+        ch.boye.httpclientandroidlib.util.CharArrayBuffer $r7, $r8, $r8_1, $r7_1, $r7_2, $r7_3, $r8_2, $r7_4, $r8_3, $r7_5, $r7_6, $r7_7;
+        java.lang.Object $r9;
+        ch.boye.httpclientandroidlib.Header $r10;
+        char $c3, $c3_1, $c3_2, $c3_3, $c3_4, $c3_5, $c3_6, $c3_7, $c3_8;
+        java.io.IOException $r11, $r11_1;
+        java.lang.String $r12;
+
+        $r0 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r1 := @parameter3: ch.boye.httpclientandroidlib.message.LineParser;
+
+        $r2 := @parameter4: java.util.List;
+
+        if $r0 != null goto label01;
+
+        $r6 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Session input buffer may not be null");
+
+        throw $r6;
+
+     label01:
+        if $r1 != null goto label02;
+
+        $r6_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Line parser may not be null");
+
+        throw $r6_1;
+
+     label02:
+        if $r2 != null goto label03;
+
+        $r6_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Header line list may not be null");
+
+        throw $r6_2;
+
+     label03:
+        $r7 = null;
+
+(0)     $r8 = null;
+
+     label04:
+        $i2 = Phi($i2 #0, $i2_6 #17, $i2_7 #18);
+
+        $r8_1 = Phi($r8 #0, $r8_2 #17, $r8_2 #18);
+
+        $c3 = Phi($c3 #0, $c3_7 #17, $c3_7 #18);
+
+        $r7_1 = Phi($r7 #0, $r7_4 #17, $r7_4 #18);
+
+        $i4 = Phi($i4 #0, $i4_10 #17, $i4_10 #18);
+
+        if $r7_1 != null goto label10;
+
+        $r7_2 = new ch.boye.httpclientandroidlib.util.CharArrayBuffer;
+
+(1)     specialinvoke $r7_2.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void <init>(int)>(64);
+
+     label05:
+        $r7_3 = Phi($r7_2 #1, $r7_1 #6);
+
+        $i2_1 = interfaceinvoke $r0.<ch.boye.httpclientandroidlib.io.SessionInputBuffer: int readLine(ch.boye.httpclientandroidlib.util.CharArrayBuffer)>($r7_3);
+
+(2)     if $i2_1 == -1 goto label06;
+
+        $i2_2 = virtualinvoke $r7_3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: int length()>();
+
+(3)     if $i2_2 >= 1 goto label11;
+
+     label06:
+        $i2_8 = Phi($i2_1 #2, $i2_2 #3);
+
+        $i0_1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        $r3 = newarray (ch.boye.httpclientandroidlib.Header)[$i0_1];
+
+(4)     $i0_2 = 0;
+
+     label07:
+        $i0_3 = Phi($i0_2 #4, $i0_4 #5);
+
+        $i1_1 = Phi($i1 #4, $i1_2 #5);
+
+        $r7_6 = Phi($r7_3 #4, $r7_7 #5);
+
+        $i1_2 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if $i0_3 >= $i1_2 goto label20;
+
+        $r9 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>($i0_3);
+
+        $r7_7 = (ch.boye.httpclientandroidlib.util.CharArrayBuffer) $r9;
+
+     label08:
+        $r10 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.message.LineParser: ch.boye.httpclientandroidlib.Header parseHeader(ch.boye.httpclientandroidlib.util.CharArrayBuffer)>($r7_7);
+
+     label09:
+        $r3[$i0_3] = $r10;
+
+        $i0_4 = $i0_3 + 1;
+
+(5)     goto label07;
+
+     label10:
+        virtualinvoke $r7_1.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void clear()>();
+
+(6)     goto label05;
+
+     label11:
+        $c3_1 = virtualinvoke $r7_3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: char charAt(int)>(0);
+
+(7)     if $c3_1 == 32 goto label12;
+
+        $c3_2 = virtualinvoke $r7_3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: char charAt(int)>(0);
+
+(8)     if $c3_2 != 9 goto label18;
+
+     label12:
+        $c3_3 = Phi($c3_1 #7, $c3_2 #8);
+
+(9)     if $r8_1 == null goto label18;
+
+(10)    $i2_3 = 0;
+
+     label13:
+        $i2_4 = Phi($i2_3 #10, $i2_5 #15);
+
+        $c3_4 = Phi($c3_3 #10, $c3_5 #15);
+
+        $i4_1 = Phi($i4 #10, $i4_2 #15);
+
+        $i4_2 = virtualinvoke $r7_3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: int length()>();
+
+(11)    if $i2_4 >= $i4_2 goto label14;
+
+        $c3_5 = virtualinvoke $r7_3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: char charAt(int)>($i2_4);
+
+        if $c3_5 == 32 goto label15;
+
+(12)    if $c3_5 == 9 goto label15;
+
+     label14:
+        $c3_6 = Phi($c3_4 #11, $c3_5 #12);
+
+(13)    if $i1 <= 0 goto label16;
+
+        $i4_3 = virtualinvoke $r8_1.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: int length()>();
+
+        $i4_4 = $i4_3 + 1;
+
+        $i5 = virtualinvoke $r7_3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: int length()>();
+
+        $i4_5 = $i4_4 + $i5;
+
+        $i4_6 = $i4_5 - $i2_4;
+
+(14)    if $i4_6 <= $i1 goto label16;
+
+        $r11 = new java.io.IOException;
+
+        specialinvoke $r11.<java.io.IOException: void <init>(java.lang.String)>("Maximum line length limit exceeded");
+
+        throw $r11;
+
+     label15:
+        $i2_5 = $i2_4 + 1;
+
+(15)    goto label13;
+
+     label16:
+        $i4_7 = Phi($i4_2 #13, $i4_6 #14);
+
+        virtualinvoke $r8_1.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(char)>(32);
+
+        $i4_8 = virtualinvoke $r7_3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: int length()>();
+
+        $i4_9 = $i4_8 - $i2_4;
+
+(16)    virtualinvoke $r8_1.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(ch.boye.httpclientandroidlib.util.CharArrayBuffer,int,int)>($r7_3, $i2_4, $i4_9);
+
+     label17:
+        $i2_6 = Phi($i2_4 #16, $i2_2 #19);
+
+        $r8_2 = Phi($r8_1 #16, $r8_3 #19);
+
+        $c3_7 = Phi($c3_6 #16, $c3_8 #19);
+
+        $r7_4 = Phi($r7_3 #16, $r7_5 #19);
+
+        $i4_10 = Phi($i4_9 #16, $i4 #19);
+
+(17)    if $i0 <= 0 goto label04;
+
+        $i2_7 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+(18)    if $i2_7 < $i0 goto label04;
+
+        $r11_1 = new java.io.IOException;
+
+        specialinvoke $r11_1.<java.io.IOException: void <init>(java.lang.String)>("Maximum header count exceeded");
+
+        throw $r11_1;
+
+     label18:
+        $c3_8 = Phi($c3_2 #8, $c3_3 #9);
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r7_3);
+
+        $r8_3 = $r7_3;
+
+        $r7_5 = null;
+
+(19)    goto label17;
+
+     label19:
+        $r4 := @caughtexception;
+
+        $r5 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        $r12 = virtualinvoke $r4.<ch.boye.httpclientandroidlib.ParseException: java.lang.String getMessage()>();
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>($r12);
+
+        throw $r5;
+
+     label20:
+        return $r3;
+
+        catch ch.boye.httpclientandroidlib.ParseException from label08 to label09 with label19;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpMessage parse() throws java.io.IOException, ch.boye.httpclientandroidlib.HttpException
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser $r0;
+        java.lang.IllegalStateException $r1;
+        int $i0, $i1, $i0_1;
+        ch.boye.httpclientandroidlib.message.LineParser $r2;
+        ch.boye.httpclientandroidlib.ParseException $r3;
+        ch.boye.httpclientandroidlib.ProtocolException $r4;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r5, $r5_1, $r5_2;
+        ch.boye.httpclientandroidlib.HttpMessage $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        java.util.List $r7, $r7_1;
+        ch.boye.httpclientandroidlib.Header[] $r8;
+        java.lang.String $r9;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser;
+
+        $i0 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: int state>;
+
+(0)     lookupswitch($i0)
+        {
+            case 0: goto label3;
+            case 1: goto label6;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Inconsistent parser state");
+
+        throw $r1;
+
+     label3:
+(1)     $r5 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.io.SessionInputBuffer sessionBuffer>;
+
+     label4:
+        $r6 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.HttpMessage parseHead(ch.boye.httpclientandroidlib.io.SessionInputBuffer)>($r5);
+
+     label5:
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.HttpMessage message> = $r6;
+
+(2)     $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: int state> = 1;
+
+     label6:
+        $r6_2 = Phi($r6 #0, $r6 #2);
+
+        $r5_1 = Phi($r5 #0, $r5 #2);
+
+        $r5_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.io.SessionInputBuffer sessionBuffer>;
+
+        $i0_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: int maxHeaderCount>;
+
+        $i1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: int maxLineLen>;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.message.LineParser lineParser>;
+
+        $r7 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: java.util.List headerLines>;
+
+        $r8 = staticinvoke <ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.Header[] parseHeaders(ch.boye.httpclientandroidlib.io.SessionInputBuffer,int,int,ch.boye.httpclientandroidlib.message.LineParser,java.util.List)>($r5_2, $i0_1, $i1, $r2, $r7);
+
+        $r6_3 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.HttpMessage message>;
+
+        interfaceinvoke $r6_3.<ch.boye.httpclientandroidlib.HttpMessage: void setHeaders(ch.boye.httpclientandroidlib.Header[])>($r8);
+
+        $r6_4 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.HttpMessage message>;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: ch.boye.httpclientandroidlib.HttpMessage message> = null;
+
+        $r7_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: java.util.List headerLines>;
+
+        interfaceinvoke $r7_1.<java.util.List: void clear()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractMessageParser: int state> = 0;
+
+        return $r6_4;
+
+     label7:
+        $r3 := @caughtexception;
+
+        $r6_1 = Phi($r6 #1);
+
+        $r4 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        $r9 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.ParseException: java.lang.String getMessage()>();
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String,java.lang.Throwable)>($r9, $r3);
+
+        throw $r4;
+
+        catch ch.boye.httpclientandroidlib.ParseException from label4 to label5 with label7;
+    }
+
+    protected abstract ch.boye.httpclientandroidlib.HttpMessage parseHead(ch.boye.httpclientandroidlib.io.SessionInputBuffer) throws java.io.IOException, ch.boye.httpclientandroidlib.HttpException, ch.boye.httpclientandroidlib.ParseException;
+}

@@ -1,0 +1,784 @@
+public class com.amazon.android.adm.AmazonDeviceMessaging extends java.lang.Object
+{
+    public static final java.lang.String ERROR_INVALID_PARAMETERS;
+    public static final java.lang.String ERROR_INVALID_SENDER;
+    public static final java.lang.String ERROR_MAIN_THREAD;
+    public static final java.lang.String ERROR_NOT_SUPPORTED;
+    public static final java.lang.String ERROR_SERVICE_NOT_AVAILABLE;
+    private static final java.lang.String EXTRA_SPECIAL_MESSAGE;
+    public static final java.lang.String MESSAGE_TYPE_DELETED;
+    public static final java.lang.String MESSAGE_TYPE_MESSAGE;
+    public static final java.lang.String MESSAGE_TYPE_SEND_ERROR;
+    private static final java.lang.String TAG;
+    private static java.lang.ClassLoader sClassLoader;
+    private static com.amazon.android.adm.AmazonDeviceMessaging sInstance;
+    private final com.amazon.android.adm.ADMProvider mADMProvider;
+    private final boolean mSupported;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0, $r0_1;
+        java.lang.String $r1;
+        java.lang.ClassLoader $r2;
+
+        $r0 = class "com/amazon/android/adm/AmazonDeviceMessaging";
+
+        $r1 = virtualinvoke $r0.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        <com.amazon.android.adm.AmazonDeviceMessaging: java.lang.String TAG> = $r1;
+
+        $r0_1 = class "com/amazon/android/adm/AmazonDeviceMessaging";
+
+        $r2 = virtualinvoke $r0_1.<java.lang.Class: java.lang.ClassLoader getClassLoader()>();
+
+        <com.amazon.android.adm.AmazonDeviceMessaging: java.lang.ClassLoader sClassLoader> = $r2;
+
+        <com.amazon.android.adm.AmazonDeviceMessaging: com.amazon.android.adm.AmazonDeviceMessaging sInstance> = null;
+
+        return;
+    }
+
+    protected void <init>()
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        com.amazon.android.adm.ADMProvider $r1;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.amazon.android.adm.AmazonDeviceMessaging: boolean mSupported> = 1;
+
+        $r1 = new com.amazon.android.adm.ADMProvider;
+
+        specialinvoke $r1.<com.amazon.android.adm.ADMProvider: void <init>(android.content.Context)>(null);
+
+        $r0.<com.amazon.android.adm.AmazonDeviceMessaging: com.amazon.android.adm.ADMProvider mADMProvider> = $r1;
+
+        return;
+    }
+
+    private void <init>(android.content.Context)
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        android.content.Context $r1;
+        com.amazon.android.adm.ADMProvider $r2;
+        boolean $z0;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $z0 = specialinvoke $r0.<com.amazon.android.adm.AmazonDeviceMessaging: boolean isSupported(android.content.Context)>($r1);
+
+        $r0.<com.amazon.android.adm.AmazonDeviceMessaging: boolean mSupported> = $z0;
+
+        $r2 = new com.amazon.android.adm.ADMProvider;
+
+        specialinvoke $r2.<com.amazon.android.adm.ADMProvider: void <init>(android.content.Context)>($r1);
+
+        $r0.<com.amazon.android.adm.AmazonDeviceMessaging: com.amazon.android.adm.ADMProvider mADMProvider> = $r2;
+
+        return;
+    }
+
+    private boolean areAdmClassesOnClasspath()
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        java.lang.ClassLoader $r1;
+        java.lang.ClassNotFoundException $r2;
+        java.lang.String $r3;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        $r1 = <com.amazon.android.adm.AmazonDeviceMessaging: java.lang.ClassLoader sClassLoader>;
+
+     label1:
+        virtualinvoke $r1.<java.lang.ClassLoader: java.lang.Class loadClass(java.lang.String)>("com.amazon.device.messaging.ADM");
+
+     label2:
+        return 1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = <com.amazon.android.adm.AmazonDeviceMessaging: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r3, "Required ADM classes not loaded");
+
+        return 0;
+
+        catch java.lang.ClassNotFoundException from label1 to label2 with label3;
+    }
+
+    private boolean areCompatibilityCheckerClassesLoaded()
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        java.lang.ClassLoader $r1;
+        java.lang.ClassNotFoundException $r2;
+        java.lang.String $r3;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        $r1 = <com.amazon.android.adm.AmazonDeviceMessaging: java.lang.ClassLoader sClassLoader>;
+
+     label1:
+        virtualinvoke $r1.<java.lang.ClassLoader: java.lang.Class loadClass(java.lang.String)>("com.amazon.compatibility.enforcer.CompatibilityChecker");
+
+     label2:
+        return 1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = <com.amazon.android.adm.AmazonDeviceMessaging: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r3, "Required CompatibilityChecker classes not loaded");
+
+        return 0;
+
+        catch java.lang.ClassNotFoundException from label1 to label2 with label3;
+    }
+
+    private boolean areRequiredPackagesInstalled(android.content.Context)
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        android.content.Context $r1;
+        com.amazon.compatibility.enforcer.CompatibilityChecker $r2;
+        com.amazon.compatibility.enforcer.CompatibilityStatus $r3, $r4;
+        boolean $z0;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $z0 = specialinvoke $r0.<com.amazon.android.adm.AmazonDeviceMessaging: boolean areCompatibilityCheckerClassesLoaded()>();
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r2 = new com.amazon.compatibility.enforcer.CompatibilityChecker;
+
+        specialinvoke $r2.<com.amazon.compatibility.enforcer.CompatibilityChecker: void <init>(android.content.Context)>($r1);
+
+        $r4 = virtualinvoke $r2.<com.amazon.compatibility.enforcer.CompatibilityChecker: com.amazon.compatibility.enforcer.CompatibilityStatus check()>();
+
+        $r3 = <com.amazon.compatibility.enforcer.CompatibilityStatus: com.amazon.compatibility.enforcer.CompatibilityStatus Compatible>;
+
+        if $r4 != $r3 goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    private static android.os.Bundle getApplicationMetaData(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.pm.PackageManager$NameNotFoundException $r1;
+        java.lang.RuntimeException $r2;
+        android.content.pm.PackageManager $r3;
+        java.lang.String $r4;
+        android.content.pm.ApplicationInfo $r5;
+        android.os.Bundle r6;
+
+        $r0 := @parameter0: android.content.Context;
+
+     label1:
+        $r3 = virtualinvoke $r0.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r4 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r5 = virtualinvoke $r3.<android.content.pm.PackageManager: android.content.pm.ApplicationInfo getApplicationInfo(java.lang.String,int)>($r4, 128);
+
+     label2:
+        r6 = $r5.<android.content.pm.PackageItemInfo: android.os.Bundle metaData>;
+
+        return r6;
+
+     label3:
+        $r1 := @caughtexception;
+
+        $r2 = new java.lang.RuntimeException;
+
+        specialinvoke $r2.<java.lang.RuntimeException: void <init>(java.lang.Throwable)>($r1);
+
+        throw $r2;
+
+        catch android.content.pm.PackageManager$NameNotFoundException from label1 to label2 with label3;
+    }
+
+    public static com.amazon.android.adm.AmazonDeviceMessaging getInstance(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.Throwable $r1;
+        com.amazon.android.adm.AmazonDeviceMessaging $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @parameter0: android.content.Context;
+
+(0)     entermonitor class "com/amazon/android/adm/AmazonDeviceMessaging";
+
+     label1:
+        $r2 = <com.amazon.android.adm.AmazonDeviceMessaging: com.amazon.android.adm.AmazonDeviceMessaging sInstance>;
+
+     label2:
+(1)     if $r2 != null goto label4;
+
+     label3:
+        staticinvoke <com.amazon.android.adm.AmazonDeviceMessaging: void verifyAdmClientVersionDefinedCorrectly(android.content.Context)>($r0);
+
+        staticinvoke <com.amazon.android.adm.AmazonDeviceMessaging: void verifyRequiredPackageVersionMetadataDefinedCorrectly(android.content.Context)>($r0);
+
+(2)     $r2_1 = new com.amazon.android.adm.AmazonDeviceMessaging;
+
+        specialinvoke $r2_1.<com.amazon.android.adm.AmazonDeviceMessaging: void <init>(android.content.Context)>($r0);
+
+(3)     <com.amazon.android.adm.AmazonDeviceMessaging: com.amazon.android.adm.AmazonDeviceMessaging sInstance> = $r2_1;
+
+     label4:
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+(4)     $r2_3 = <com.amazon.android.adm.AmazonDeviceMessaging: com.amazon.android.adm.AmazonDeviceMessaging sInstance>;
+
+     label5:
+        exitmonitor class "com/amazon/android/adm/AmazonDeviceMessaging";
+
+        return $r2_3;
+
+     label6:
+        $r1 := @caughtexception;
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_3 #4);
+
+        exitmonitor class "com/amazon/android/adm/AmazonDeviceMessaging";
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label3 to label5 with label6;
+    }
+
+    private boolean isSupported(android.content.Context)
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        android.content.Context $r1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $z0 = specialinvoke $r0.<com.amazon.android.adm.AmazonDeviceMessaging: boolean areRequiredPackagesInstalled(android.content.Context)>($r1);
+
+(0)     if $z0 == 0 goto label1;
+
+        $z0_1 = specialinvoke $r0.<com.amazon.android.adm.AmazonDeviceMessaging: boolean areAdmClassesOnClasspath()>();
+
+(1)     if $z0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 0;
+    }
+
+    private java.io.IOException sanitizeRegistrationException(java.io.IOException)
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        java.io.IOException $r1, $r5, $r5_1, $r5_2, $r5_3;
+        boolean $z0;
+        int[] $r2;
+        com.amazon.device.messaging.ADMRegistrationException $r3;
+        com.amazon.device.messaging.ADMRegistrationException$ErrorCode $r4;
+        int $i0, $i0_1;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        $r1 := @parameter0: java.io.IOException;
+
+        $z0 = $r1 instanceof com.amazon.device.messaging.ADMRegistrationException;
+
+        if $z0 != 0 goto label1;
+
+        return $r1;
+
+     label1:
+        $r2 = <com.amazon.android.adm.AmazonDeviceMessaging$1: int[] $SwitchMap$com$amazon$device$messaging$ADMRegistrationException$ErrorCode>;
+
+        $r3 = (com.amazon.device.messaging.ADMRegistrationException) $r1;
+
+        $r4 = virtualinvoke $r3.<com.amazon.device.messaging.ADMRegistrationException: com.amazon.device.messaging.ADMRegistrationException$ErrorCode getErrorCode()>();
+
+        $i0 = virtualinvoke $r4.<com.amazon.device.messaging.ADMRegistrationException$ErrorCode: int ordinal()>();
+
+        $i0_1 = $r2[$i0];
+
+        lookupswitch($i0_1)
+        {
+            case 1: goto label3;
+            case 2: goto label4;
+            case 3: goto label5;
+            case 4: goto label6;
+            default: goto label2;
+        };
+
+     label2:
+        return $r1;
+
+     label3:
+        $r5 = new java.io.IOException;
+
+        specialinvoke $r5.<java.io.IOException: void <init>(java.lang.String,java.lang.Throwable)>("MAIN_THREAD", $r1);
+
+        return $r5;
+
+     label4:
+        $r5_1 = new java.io.IOException;
+
+        specialinvoke $r5_1.<java.io.IOException: void <init>(java.lang.String,java.lang.Throwable)>("SERVICE_NOT_AVAILABLE", $r1);
+
+        return $r5_1;
+
+     label5:
+        $r5_2 = new java.io.IOException;
+
+        specialinvoke $r5_2.<java.io.IOException: void <init>(java.lang.String,java.lang.Throwable)>("INVALID_PARAMETERS", $r1);
+
+        return $r5_2;
+
+     label6:
+        $r5_3 = new java.io.IOException;
+
+        specialinvoke $r5_3.<java.io.IOException: void <init>(java.lang.String,java.lang.Throwable)>("INVALID_SENDER", $r1);
+
+        return $r5_3;
+    }
+
+    private void throwIfAdmNotSupported() throws java.io.IOException
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        java.io.IOException $r1;
+        boolean $z0;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        $z0 = virtualinvoke $r0.<com.amazon.android.adm.AmazonDeviceMessaging: boolean isSupported()>();
+
+        if $z0 != 0 goto label1;
+
+        $r1 = new java.io.IOException;
+
+        specialinvoke $r1.<java.io.IOException: void <init>(java.lang.String)>("NOT_SUPPORTED");
+
+        throw $r1;
+
+     label1:
+        return;
+    }
+
+    private static void verifyAdmClientVersionDefinedCorrectly(android.content.Context)
+    {
+        android.content.Context $r0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        staticinvoke <com.amazon.android.adm.AmazonDeviceMessaging: void verifyResourceMetaDataDefinedCorrectly(android.content.Context,java.lang.String,java.lang.String,int)>($r0, "amazon.device.messaging.client.version", "amazon_device_messaging_client_version", 177);
+
+        return;
+    }
+
+    private static void verifyIntegerMetaDataDefinedCorrectly(android.content.Context, java.lang.String, int)
+    {
+        android.content.Context $r0;
+        int $i0, $i1;
+        java.lang.String $r1, $r1_1, $r1_2;
+        android.os.Bundle $r2;
+        boolean $z0;
+        java.lang.Object[] $r3, $r3_1;
+        java.lang.Integer $r4, $r4_1, $r4_2, $r4_3;
+        java.lang.IllegalStateException $r5, $r5_1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $i0 := @parameter2: int;
+
+        $r2 = staticinvoke <com.amazon.android.adm.AmazonDeviceMessaging: android.os.Bundle getApplicationMetaData(android.content.Context)>($r0);
+
+        if $r2 == null goto label1;
+
+        $z0 = virtualinvoke $r2.<android.os.Bundle: boolean containsKey(java.lang.String)>($r1);
+
+        if $z0 != 0 goto label2;
+
+     label1:
+        $r3_1 = newarray (java.lang.Object)[2];
+
+        $r3_1[0] = $r1;
+
+        $r4_3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r3_1[1] = $r4_3;
+
+        $r1_2 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("A required meta-data tag in your AndroidManifest.xml is missing.%nThe following should have been defined within your <application> element:%n<meta-data android:name=\"%s\" android:value=\"%d\" />%n%nDo you have manifest merging enabled?", $r3_1);
+
+        $r5_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r1_2);
+
+        throw $r5_1;
+
+     label2:
+        $i1 = virtualinvoke $r2.<android.os.Bundle: int getInt(java.lang.String)>($r1);
+
+        if $i1 == $i0 goto label3;
+
+        $r3 = newarray (java.lang.Object)[4];
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r3[0] = $r4;
+
+        $r4_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1);
+
+        $r3[1] = $r4_1;
+
+        $r3[2] = $r1;
+
+        $r4_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r3[3] = $r4_2;
+
+        $r1_1 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("A meta-data tag in your AndroidManifest.xml has an incorrect value.%nExpected %d but found %d.%nThe following should have been defined within your <application> element:%n<meta-data android:name=\"%s\" android:value=\"%d\" />%n%nDo you have manifest merging enabled?", $r3);
+
+        $r5 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r1_1);
+
+        throw $r5;
+
+     label3:
+        return;
+    }
+
+    private static void verifyRequiredPackageVersionMetadataDefinedCorrectly(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.util.Map $r1;
+        java.util.Set $r2;
+        java.util.Iterator $r3;
+        boolean $z0;
+        java.lang.Object $r4, $r4_1, $r4_2, $r4_3;
+        java.util.Map$Entry $r5;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3;
+        java.lang.String $r7, $r7_1, $r7_2;
+        java.lang.Integer $r8;
+        int $i0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = <com.amazon.android.adm.BuildConfig: java.util.Map REQUIRED_PACKAGE_VERSIONS>;
+
+        $r2 = interfaceinvoke $r1.<java.util.Map: java.util.Set entrySet()>();
+
+(0)     $r3 = interfaceinvoke $r2.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $r4 = Phi($r4 #0, $r4_3 #1);
+
+        $r6 = Phi($r6 #0, $r6_3 #1);
+
+        $r7 = Phi($r7 #0, $r7_2 #1);
+
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r4_1 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.util.Map$Entry) $r4_1;
+
+        $r6_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("required_amazon_package:");
+
+        $r4_2 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r7_1 = (java.lang.String) $r4_2;
+
+        $r6_3 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7_1);
+
+        $r7_2 = virtualinvoke $r6_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4_3 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r8 = (java.lang.Integer) $r4_3;
+
+        $i0 = virtualinvoke $r8.<java.lang.Integer: int intValue()>();
+
+        staticinvoke <com.amazon.android.adm.AmazonDeviceMessaging: void verifyIntegerMetaDataDefinedCorrectly(android.content.Context,java.lang.String,int)>($r0, $r7_2, $i0);
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    private static void verifyResourceMetaDataDefinedCorrectly(android.content.Context, java.lang.String, java.lang.String, int)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1, $r2, $r2_1, $r2_2;
+        int $i0, $i1;
+        android.os.Bundle $r3;
+        boolean $z0;
+        java.lang.Object[] $r4, $r4_1;
+        java.lang.IllegalStateException $r5, $r5_1;
+        java.lang.Integer $r6, $r6_1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r1 := @parameter2: java.lang.String;
+
+        $i0 := @parameter3: int;
+
+        $r3 = staticinvoke <com.amazon.android.adm.AmazonDeviceMessaging: android.os.Bundle getApplicationMetaData(android.content.Context)>($r0);
+
+        if $r3 == null goto label1;
+
+        $z0 = virtualinvoke $r3.<android.os.Bundle: boolean containsKey(java.lang.String)>($r2);
+
+        if $z0 != 0 goto label2;
+
+     label1:
+        $r4_1 = newarray (java.lang.Object)[2];
+
+        $r4_1[0] = $r2;
+
+        $r4_1[1] = $r1;
+
+        $r2_2 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("A required meta-data tag in your AndroidManifest.xml is missing.%nThe following should have been defined within your <application> element:%n<meta-data android:name=\"%s\" android:value=\"@integer/%s\" />%n%nDo you have manifest merging enabled?", $r4_1);
+
+        $r5_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r2_2);
+
+        throw $r5_1;
+
+     label2:
+        $i1 = virtualinvoke $r3.<android.os.Bundle: int getInt(java.lang.String)>($r2);
+
+        if $i1 == $i0 goto label3;
+
+        $r4 = newarray (java.lang.Object)[4];
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r4[0] = $r6;
+
+        $r6_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1);
+
+        $r4[1] = $r6_1;
+
+        $r4[2] = $r2;
+
+        $r4[3] = $r1;
+
+        $r2_1 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("A meta-data tag in your AndroidManifest.xml has an incorrect value.%nExpected %d but found %d.%nThe following should have been defined within your <application> element:%n<meta-data android:name=\"%s\" android:value=\"@integer/%s\" />%n%nDo you have manifest merging enabled?", $r4);
+
+        $r5 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r2_1);
+
+        throw $r5;
+
+     label3:
+        return;
+    }
+
+    public void close()
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        return;
+    }
+
+    public java.lang.String getMessageType(android.content.Intent)
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        android.content.Intent $r1;
+        java.lang.String $r2, $r3, $r2_1;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $r2 = "com.amazon.device.messaging.intent.RECEIVE";
+
+        $r3 = virtualinvoke $r1.<android.content.Intent: java.lang.String getAction()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 != 0 goto label1;
+
+        return null;
+
+     label1:
+        $z0_1 = virtualinvoke $r1.<android.content.Intent: boolean hasExtra(java.lang.String)>("message_type");
+
+        if $z0_1 != 0 goto label2;
+
+        return "normal_message";
+
+     label2:
+        $r2_1 = virtualinvoke $r1.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("message_type");
+
+        return $r2_1;
+    }
+
+    public java.lang.String getRegistrationId()
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        com.amazon.android.adm.ADMProvider $r1;
+        com.amazon.device.messaging.ApiFlavor $r2;
+        boolean $z0;
+        java.lang.String $r3, $r3_1;
+        java.lang.Object $r4;
+        com.amazon.device.messaging.ADM $r5;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        $z0 = virtualinvoke $r0.<com.amazon.android.adm.AmazonDeviceMessaging: boolean isSupported()>();
+
+        if $z0 != 0 goto label1;
+
+        $r3 = <com.amazon.android.adm.AmazonDeviceMessaging: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r3, "ADM is not supported; returning null, so that the call to register throw");
+
+        return null;
+
+     label1:
+        $r1 = $r0.<com.amazon.android.adm.AmazonDeviceMessaging: com.amazon.android.adm.ADMProvider mADMProvider>;
+
+        $r4 = virtualinvoke $r1.<com.amazon.android.adm.ADMProvider: java.lang.Object get()>();
+
+        $r5 = (com.amazon.device.messaging.ADM) $r4;
+
+        $r2 = <com.amazon.device.messaging.ApiFlavor: com.amazon.device.messaging.ApiFlavor ADM>;
+
+        $r3_1 = virtualinvoke $r5.<com.amazon.device.messaging.ADM: java.lang.String getRegistrationId(com.amazon.device.messaging.ApiFlavor)>($r2);
+
+        return $r3_1;
+    }
+
+    public boolean isSupported()
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        boolean z0;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        z0 = $r0.<com.amazon.android.adm.AmazonDeviceMessaging: boolean mSupported>;
+
+        return z0;
+    }
+
+    public transient java.lang.String register(java.lang.String[]) throws java.io.IOException
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        java.lang.String[] $r1;
+        com.amazon.android.adm.ADMProvider $r2;
+        com.amazon.device.messaging.ApiFlavor $r3;
+        java.lang.Object $r4;
+        com.amazon.device.messaging.ADM $r5;
+        java.lang.String $r6;
+        java.io.IOException $r7, $r7_1;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        $r1 := @parameter0: java.lang.String[];
+
+        specialinvoke $r0.<com.amazon.android.adm.AmazonDeviceMessaging: void throwIfAdmNotSupported()>();
+
+        $r2 = $r0.<com.amazon.android.adm.AmazonDeviceMessaging: com.amazon.android.adm.ADMProvider mADMProvider>;
+
+     label1:
+        $r4 = virtualinvoke $r2.<com.amazon.android.adm.ADMProvider: java.lang.Object get()>();
+
+     label2:
+        $r5 = (com.amazon.device.messaging.ADM) $r4;
+
+        $r3 = <com.amazon.device.messaging.ApiFlavor: com.amazon.device.messaging.ApiFlavor ADM>;
+
+     label3:
+        $r6 = virtualinvoke $r5.<com.amazon.device.messaging.ADM: java.lang.String register(com.amazon.device.messaging.ApiFlavor,java.lang.String[])>($r3, $r1);
+
+     label4:
+        return $r6;
+
+     label5:
+        $r7 := @caughtexception;
+
+        $r7_1 = specialinvoke $r0.<com.amazon.android.adm.AmazonDeviceMessaging: java.io.IOException sanitizeRegistrationException(java.io.IOException)>($r7);
+
+        throw $r7_1;
+
+        catch java.io.IOException from label1 to label2 with label5;
+        catch java.io.IOException from label3 to label4 with label5;
+    }
+
+    public void unregister() throws java.io.IOException
+    {
+        com.amazon.android.adm.AmazonDeviceMessaging $r0;
+        com.amazon.android.adm.ADMProvider $r1;
+        com.amazon.device.messaging.ApiFlavor $r2;
+        java.lang.Object $r3;
+        com.amazon.device.messaging.ADM $r4;
+        java.io.IOException $r5, $r5_1;
+
+        $r0 := @this: com.amazon.android.adm.AmazonDeviceMessaging;
+
+        specialinvoke $r0.<com.amazon.android.adm.AmazonDeviceMessaging: void throwIfAdmNotSupported()>();
+
+        $r1 = $r0.<com.amazon.android.adm.AmazonDeviceMessaging: com.amazon.android.adm.ADMProvider mADMProvider>;
+
+     label1:
+        $r3 = virtualinvoke $r1.<com.amazon.android.adm.ADMProvider: java.lang.Object get()>();
+
+     label2:
+        $r4 = (com.amazon.device.messaging.ADM) $r3;
+
+        $r2 = <com.amazon.device.messaging.ApiFlavor: com.amazon.device.messaging.ApiFlavor ADM>;
+
+     label3:
+        virtualinvoke $r4.<com.amazon.device.messaging.ADM: void unregister(com.amazon.device.messaging.ApiFlavor)>($r2);
+
+     label4:
+        return;
+
+     label5:
+        $r5 := @caughtexception;
+
+        $r5_1 = specialinvoke $r0.<com.amazon.android.adm.AmazonDeviceMessaging: java.io.IOException sanitizeRegistrationException(java.io.IOException)>($r5);
+
+        throw $r5_1;
+
+        catch java.io.IOException from label1 to label2 with label5;
+        catch java.io.IOException from label3 to label4 with label5;
+    }
+}

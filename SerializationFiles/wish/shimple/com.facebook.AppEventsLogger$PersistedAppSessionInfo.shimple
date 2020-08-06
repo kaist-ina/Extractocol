@@ -1,0 +1,712 @@
+class com.facebook.AppEventsLogger$PersistedAppSessionInfo extends java.lang.Object
+{
+    private static final java.lang.String PERSISTED_SESSION_INFO_FILENAME;
+    private static final java.lang.Runnable appSessionInfoFlushRunnable;
+    private static java.util.Map appSessionInfoMap;
+    private static boolean hasChanges;
+    private static boolean isLoaded;
+    private static final java.lang.Object staticLock;
+
+    static void <clinit>()
+    {
+        java.lang.Object $r0;
+        com.facebook.AppEventsLogger$PersistedAppSessionInfo$1 $r1;
+
+        $r0 = new java.lang.Object;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.lang.Object staticLock> = $r0;
+
+        <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean hasChanges> = 0;
+
+        <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean isLoaded> = 0;
+
+        $r1 = new com.facebook.AppEventsLogger$PersistedAppSessionInfo$1;
+
+        specialinvoke $r1.<com.facebook.AppEventsLogger$PersistedAppSessionInfo$1: void <init>()>();
+
+        <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.lang.Runnable appSessionInfoFlushRunnable> = $r1;
+
+        return;
+    }
+
+    void <init>()
+    {
+        com.facebook.AppEventsLogger$PersistedAppSessionInfo $r0;
+
+        $r0 := @this: com.facebook.AppEventsLogger$PersistedAppSessionInfo;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static com.facebook.FacebookTimeSpentData getTimeSpentData(android.content.Context, com.facebook.AppEventsLogger$AccessTokenAppIdPair)
+    {
+        android.content.Context $r0;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r1;
+        java.lang.Object $r2;
+        java.util.Map $r3, $r3_1, $r3_2;
+        com.facebook.FacebookTimeSpentData $r4, $r4_1, $r4_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        staticinvoke <com.facebook.AppEventsLogger$PersistedAppSessionInfo: void restoreAppSessionInformation(android.content.Context)>($r0);
+
+        $r3 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap>;
+
+        $r2 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r4 = (com.facebook.FacebookTimeSpentData) $r2;
+
+(0)     if $r4 != null goto label1;
+
+        $r4_1 = new com.facebook.FacebookTimeSpentData;
+
+        specialinvoke $r4_1.<com.facebook.FacebookTimeSpentData: void <init>()>();
+
+        $r3_1 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap>;
+
+(1)     interfaceinvoke $r3_1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r4_1);
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        return $r4_2;
+    }
+
+    static void onResume(android.content.Context, com.facebook.AppEventsLogger$AccessTokenAppIdPair, com.facebook.AppEventsLogger, long, java.lang.String)
+    {
+        android.content.Context $r0;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r1;
+        com.facebook.AppEventsLogger $r2;
+        long $l0;
+        java.lang.String $r3;
+        java.lang.Object $r4;
+        java.lang.Throwable $r5;
+        com.facebook.FacebookTimeSpentData $r6;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        $r2 := @parameter2: com.facebook.AppEventsLogger;
+
+        $l0 := @parameter3: long;
+
+        $r3 := @parameter4: java.lang.String;
+
+        $r4 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.lang.Object staticLock>;
+
+        entermonitor $r4;
+
+     label1:
+        $r6 = staticinvoke <com.facebook.AppEventsLogger$PersistedAppSessionInfo: com.facebook.FacebookTimeSpentData getTimeSpentData(android.content.Context,com.facebook.AppEventsLogger$AccessTokenAppIdPair)>($r0, $r1);
+
+        virtualinvoke $r6.<com.facebook.FacebookTimeSpentData: void onResume(com.facebook.AppEventsLogger,long,java.lang.String)>($r2, $l0, $r3);
+
+        staticinvoke <com.facebook.AppEventsLogger$PersistedAppSessionInfo: void onTimeSpentDataUpdate()>();
+
+        exitmonitor $r4;
+
+     label2:
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        exitmonitor $r4;
+
+     label4:
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    static void onSuspend(android.content.Context, com.facebook.AppEventsLogger$AccessTokenAppIdPair, com.facebook.AppEventsLogger, long)
+    {
+        android.content.Context $r0;
+        com.facebook.AppEventsLogger$AccessTokenAppIdPair $r1;
+        com.facebook.AppEventsLogger $r2;
+        long $l0;
+        java.lang.Object $r3;
+        java.lang.Throwable $r4;
+        com.facebook.FacebookTimeSpentData $r5;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.AppEventsLogger$AccessTokenAppIdPair;
+
+        $r2 := @parameter2: com.facebook.AppEventsLogger;
+
+        $l0 := @parameter3: long;
+
+        $r3 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.lang.Object staticLock>;
+
+        entermonitor $r3;
+
+     label1:
+        $r5 = staticinvoke <com.facebook.AppEventsLogger$PersistedAppSessionInfo: com.facebook.FacebookTimeSpentData getTimeSpentData(android.content.Context,com.facebook.AppEventsLogger$AccessTokenAppIdPair)>($r0, $r1);
+
+        virtualinvoke $r5.<com.facebook.FacebookTimeSpentData: void onSuspend(com.facebook.AppEventsLogger,long)>($r2, $l0);
+
+        staticinvoke <com.facebook.AppEventsLogger$PersistedAppSessionInfo: void onTimeSpentDataUpdate()>();
+
+        exitmonitor $r3;
+
+     label2:
+        return;
+
+     label3:
+        $r4 := @caughtexception;
+
+        exitmonitor $r3;
+
+     label4:
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    private static void onTimeSpentDataUpdate()
+    {
+        boolean $z0;
+        java.lang.Runnable $r0;
+        java.util.concurrent.TimeUnit $r1;
+        java.util.concurrent.ScheduledThreadPoolExecutor $r2;
+
+        $z0 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean hasChanges>;
+
+        if $z0 != 0 goto label1;
+
+        <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean hasChanges> = 1;
+
+        $r2 = staticinvoke <com.facebook.AppEventsLogger: java.util.concurrent.ScheduledThreadPoolExecutor access$1400()>();
+
+        $r0 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.lang.Runnable appSessionInfoFlushRunnable>;
+
+        $r1 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+        virtualinvoke $r2.<java.util.concurrent.ScheduledThreadPoolExecutor: java.util.concurrent.ScheduledFuture schedule(java.lang.Runnable,long,java.util.concurrent.TimeUnit)>($r0, 30L, $r1);
+
+     label1:
+        return;
+    }
+
+    private static void restoreAppSessionInformation(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.Object $r1, $r8;
+        boolean $z0;
+        java.io.ObjectInputStream $r2, $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8, $r6_9, $r6_10;
+        com.facebook.LoggingBehavior $r3;
+        java.io.FileNotFoundException $r4, $r5;
+        java.io.FileInputStream $r7;
+        java.util.HashMap $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r9_11, $r9_12, $r9_13, $r9_14, $r9_15, $r9_16, $r9_17, $r9_18, $r9_19;
+        java.util.Map $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7;
+        java.lang.Throwable $r11, $r16, $r16_1, $r16_2, $r11_1, $r16_3, $r11_2, $r16_4, $r11_3;
+        java.lang.Exception $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7;
+        java.lang.String $r13, $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6;
+        java.lang.StringBuilder $r14, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5, $r14_6, $r14_7;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r6 = null;
+
+        $r1 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.lang.Object staticLock>;
+
+(0)     entermonitor $r1;
+
+     label01:
+        $z0 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean isLoaded>;
+
+     label02:
+(1)     if $z0 != 0 goto label10;
+
+(2)     $r2 = new java.io.ObjectInputStream;
+
+     label03:
+        $r7 = virtualinvoke $r0.<android.content.Context: java.io.FileInputStream openFileInput(java.lang.String)>("AppEventsLogger.persistedsessioninfo");
+
+(3)     specialinvoke $r2.<java.io.ObjectInputStream: void <init>(java.io.InputStream)>($r7);
+
+     label04:
+        $r8 = virtualinvoke $r2.<java.io.ObjectInputStream: java.lang.Object readObject()>();
+
+     label05:
+        $r9 = (java.util.HashMap) $r8;
+
+     label06:
+        <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap> = $r9;
+
+        $r3 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior APP_EVENTS>;
+
+     label07:
+(4)     staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String)>($r3, "AppEvents", "App session info loaded");
+
+     label08:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r2);
+
+        virtualinvoke $r0.<android.content.Context: boolean deleteFile(java.lang.String)>("AppEventsLogger.persistedsessioninfo");
+
+        $r10 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap>;
+
+(5)     if $r10 != null goto label09;
+
+(6)     $r9_1 = new java.util.HashMap;
+
+        specialinvoke $r9_1.<java.util.HashMap: void <init>()>();
+
+(7)     <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap> = $r9_1;
+
+     label09:
+        $r9_2 = Phi($r9 #5, $r9_1 #7);
+
+(8)     <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean isLoaded> = 1;
+
+(9)     <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean hasChanges> = 0;
+
+     label10:
+        $r9_17 = Phi($r9 #1, $r9_2 #9, $r9_9 #18, $r9_12 #31);
+
+        $r14_5 = Phi($r14 #1, $r14 #9, $r14 #18, $r14_2 #31);
+
+        $r6_8 = Phi($r6 #1, $r6 #9, $r6_4 #18, $r6_5 #31);
+
+        $r10_5 = Phi($r10 #1, $r10 #9, $r10_2 #18, $r10_3 #31);
+
+        $r15_4 = Phi($r15 #1, $r15 #9, $r15 #18, $r15_1 #31);
+
+        $r12_5 = Phi($r12 #1, $r12 #9, $r12 #18, $r12_2 #31);
+
+(10)    exitmonitor $r1;
+
+     label11:
+        return;
+
+     label12:
+(11)    $r4 := @caughtexception;
+
+     label13:
+        $r9_7 = Phi($r9 #11, $r9_6 #42);
+
+        $r6_4 = Phi($r6 #11, $r6_3 #42);
+
+(12)    staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r6_4);
+
+        virtualinvoke $r0.<android.content.Context: boolean deleteFile(java.lang.String)>("AppEventsLogger.persistedsessioninfo");
+
+(13)    $r10_2 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap>;
+
+(14)    if $r10_2 != null goto label14;
+
+(15)    $r9_8 = new java.util.HashMap;
+
+        specialinvoke $r9_8.<java.util.HashMap: void <init>()>();
+
+(16)    <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap> = $r9_8;
+
+     label14:
+        $r9_9 = Phi($r9_7 #14, $r9_8 #16);
+
+(17)    <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean isLoaded> = 1;
+
+        <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean hasChanges> = 0;
+
+(18)    goto label10;
+
+     label15:
+        $r11_1 := @caughtexception;
+
+        $r9_18 = Phi($r9 #0, $r9_2 #9, $r9_17 #10, $r9_6 #42, $r9_7 #12, $r9_8 #15, $r9_9 #17, $r9_18 #19, $r9_3 #39, $r9_19 #20, $r9_11 #28, $r9_12 #30, $r9_13 #32, $r9_4 #40, $r9_14 #33, $r9_15 #36, $r9_16 #38, $r9_5 #41, $r9_10 #22);
+
+        $r14_6 = Phi($r14 #0, $r14_5 #10, $r14_6 #19, $r14_7 #20, $r14_3 #32, $r14_4 #33, $r14_1 #23, $r14_2 #24);
+
+        $r16_3 = Phi($r16 #0, $r16_3 #19, $r16_4 #20, $r16_1 #32, $r16_2 #33);
+
+        $r6_9 = Phi($r6 #0, $r6_8 #10, $r6_3 #42, $r6_4 #12, $r6_9 #19, $r6_10 #20, $r6_6 #32, $r6_1 #40, $r6_7 #33, $r6_2 #41, $r6_5 #22);
+
+        $r11_2 = Phi($r11 #0, $r11_2 #19, $r11_3 #20);
+
+        $r10_6 = Phi($r10 #0, $r10_5 #10, $r10_2 #13, $r10_6 #19, $r10_1 #39, $r10_7 #20, $r10_3 #26, $r10_4 #34);
+
+        $r15_5 = Phi($r15 #0, $r15_4 #10, $r15_5 #19, $r15_6 #20, $r15_2 #32, $r15_3 #33, $r15_1 #25);
+
+(19)    $r12_6 = Phi($r12 #0, $r12_5 #10, $r12_6 #19, $r12_7 #20, $r12_3 #32, $r12_4 #33, $r12_1 #21, $r12_2 #22);
+
+     label16:
+        $r9_19 = Phi($r9_18 #19, $r9_3 #39);
+
+        $r14_7 = Phi($r14_6 #19, $r14 #39);
+
+        $r16_4 = Phi($r16_3 #19, $r16 #39);
+
+        $r6_10 = Phi($r6_9 #19, $r6 #39);
+
+        $r11_3 = Phi($r11_2 #19, $r11 #39);
+
+        $r10_7 = Phi($r10_6 #19, $r10_1 #39);
+
+        $r15_6 = Phi($r15_5 #19, $r15 #39);
+
+        $r12_7 = Phi($r12_6 #19, $r12 #39);
+
+(20)    exitmonitor $r1;
+
+     label17:
+        throw $r11_3;
+
+     label18:
+(21)    $r12_1 := @caughtexception;
+
+     label19:
+        $r9_10 = Phi($r9 #21, $r9_5 #41);
+
+        $r6_5 = Phi($r6 #21, $r6_2 #41);
+
+        $r12_2 = Phi($r12_1 #21, $r12 #41);
+
+(22)    $r13 = staticinvoke <com.facebook.AppEventsLogger: java.lang.String access$1300()>();
+
+        $r14 = new java.lang.StringBuilder;
+
+        specialinvoke $r14.<java.lang.StringBuilder: void <init>()>();
+
+(23)    $r14_1 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Got unexpected exception: ");
+
+        $r15 = virtualinvoke $r12_2.<java.lang.Exception: java.lang.String toString()>();
+
+(24)    $r14_2 = virtualinvoke $r14_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r15);
+
+(25)    $r15_1 = virtualinvoke $r14_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r13, $r15_1);
+
+     label20:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r6_5);
+
+        virtualinvoke $r0.<android.content.Context: boolean deleteFile(java.lang.String)>("AppEventsLogger.persistedsessioninfo");
+
+(26)    $r10_3 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap>;
+
+(27)    if $r10_3 != null goto label21;
+
+(28)    $r9_11 = new java.util.HashMap;
+
+        specialinvoke $r9_11.<java.util.HashMap: void <init>()>();
+
+(29)    <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap> = $r9_11;
+
+     label21:
+        $r9_12 = Phi($r9_10 #27, $r9_11 #29);
+
+(30)    <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean isLoaded> = 1;
+
+        <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean hasChanges> = 0;
+
+(31)    goto label10;
+
+     label22:
+        $r16_1 := @caughtexception;
+
+        $r9_13 = Phi($r9 #2, $r9_5 #41, $r9_10 #22);
+
+        $r14_3 = Phi($r14 #2, $r14_1 #23, $r14_2 #24);
+
+        $r6_6 = Phi($r6 #2, $r6_2 #41, $r6_5 #22);
+
+        $r15_2 = Phi($r15 #2, $r15_1 #25);
+
+(32)    $r12_3 = Phi($r12 #2, $r12_1 #21, $r12_2 #22);
+
+     label23:
+        $r9_14 = Phi($r9_13 #32, $r9_4 #40);
+
+        $r14_4 = Phi($r14_3 #32, $r14 #40);
+
+        $r16_2 = Phi($r16_1 #32, $r16 #40);
+
+        $r6_7 = Phi($r6_6 #32, $r6_1 #40);
+
+        $r15_3 = Phi($r15_2 #32, $r15 #40);
+
+        $r12_4 = Phi($r12_3 #32, $r12 #40);
+
+(33)    staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r6_7);
+
+        virtualinvoke $r0.<android.content.Context: boolean deleteFile(java.lang.String)>("AppEventsLogger.persistedsessioninfo");
+
+(34)    $r10_4 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap>;
+
+(35)    if $r10_4 != null goto label24;
+
+(36)    $r9_15 = new java.util.HashMap;
+
+        specialinvoke $r9_15.<java.util.HashMap: void <init>()>();
+
+(37)    <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap> = $r9_15;
+
+     label24:
+        $r9_16 = Phi($r9_14 #35, $r9_15 #37);
+
+(38)    <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean isLoaded> = 1;
+
+        <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean hasChanges> = 0;
+
+        throw $r16_2;
+
+     label25:
+        $r11 := @caughtexception;
+
+        $r9_3 = Phi($r9 #4, $r9_1 #6, $r9_2 #8);
+
+        $r10_1 = Phi($r10 #4);
+
+(39)    goto label16;
+
+     label26:
+        $r16 := @caughtexception;
+
+        $r9_4 = Phi($r9 #3);
+
+        $r6_1 = $r2;
+
+(40)    goto label23;
+
+     label27:
+        $r12 := @caughtexception;
+
+        $r9_5 = Phi($r9 #3);
+
+        $r6_2 = $r2;
+
+(41)    goto label19;
+
+     label28:
+        $r5 := @caughtexception;
+
+        $r9_6 = Phi($r9 #3);
+
+        $r6_3 = $r2;
+
+(42)    goto label13;
+
+        catch java.lang.Throwable from label01 to label02 with label15;
+        catch java.io.FileNotFoundException from label03 to label04 with label12;
+        catch java.lang.Exception from label03 to label04 with label18;
+        catch java.lang.Throwable from label03 to label04 with label22;
+        catch java.io.FileNotFoundException from label04 to label05 with label28;
+        catch java.lang.Exception from label04 to label05 with label27;
+        catch java.lang.Throwable from label04 to label05 with label26;
+        catch java.lang.Exception from label05 to label06 with label27;
+        catch java.lang.Throwable from label05 to label06 with label26;
+        catch java.io.FileNotFoundException from label07 to label08 with label28;
+        catch java.lang.Exception from label07 to label08 with label27;
+        catch java.lang.Throwable from label07 to label08 with label26;
+        catch java.lang.Throwable from label08 to label10 with label25;
+        catch java.lang.Throwable from label10 to label11 with label15;
+        catch java.lang.Throwable from label12 to label17 with label15;
+        catch java.lang.Throwable from label19 to label20 with label22;
+        catch java.lang.Throwable from label20 to label25 with label15;
+    }
+
+    static void saveAppSessionInformation(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.Object $r1;
+        boolean $z0;
+        java.io.ObjectOutputStream $r2, $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8;
+        java.io.BufferedOutputStream $r3;
+        java.util.Map $r4;
+        com.facebook.LoggingBehavior $r5;
+        java.io.FileOutputStream $r7;
+        java.lang.Exception $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7;
+        java.lang.String $r9, $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7;
+        java.lang.Throwable $r12, $r13, $r13_1, $r13_2, $r12_1, $r12_2, $r13_3, $r12_3, $r13_4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r6 = null;
+
+        $r1 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.lang.Object staticLock>;
+
+(0)     entermonitor $r1;
+
+     label01:
+        $z0 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean hasChanges>;
+
+     label02:
+(1)     if $z0 == 0 goto label09;
+
+        $r2 = new java.io.ObjectOutputStream;
+
+(2)     $r3 = new java.io.BufferedOutputStream;
+
+     label03:
+        $r7 = virtualinvoke $r0.<android.content.Context: java.io.FileOutputStream openFileOutput(java.lang.String,int)>("AppEventsLogger.persistedsessioninfo", 0);
+
+        specialinvoke $r3.<java.io.BufferedOutputStream: void <init>(java.io.OutputStream)>($r7);
+
+        specialinvoke $r2.<java.io.ObjectOutputStream: void <init>(java.io.OutputStream)>($r3);
+
+     label04:
+        $r4 = <com.facebook.AppEventsLogger$PersistedAppSessionInfo: java.util.Map appSessionInfoMap>;
+
+     label05:
+        virtualinvoke $r2.<java.io.ObjectOutputStream: void writeObject(java.lang.Object)>($r4);
+
+     label06:
+        <com.facebook.AppEventsLogger$PersistedAppSessionInfo: boolean hasChanges> = 0;
+
+        $r5 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior APP_EVENTS>;
+
+     label07:
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String)>($r5, "AppEvents", "App session info saved");
+
+     label08:
+(3)     staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r2);
+
+     label09:
+        $r6_6 = Phi($r6 #1, $r6 #3, $r6_3 #11);
+
+        $r11_4 = Phi($r11 #1, $r11 #3, $r11_1 #11);
+
+        $r10_5 = Phi($r10 #1, $r10 #3, $r10_2 #11);
+
+        $r8_5 = Phi($r8 #1, $r8 #3, $r8_2 #11);
+
+(4)     exitmonitor $r1;
+
+     label10:
+        return;
+
+     label11:
+(5)     $r8_1 := @caughtexception;
+
+     label12:
+        $r6_3 = Phi($r6 #5, $r6_1 #18);
+
+        $r8_2 = Phi($r8_1 #5, $r8 #18);
+
+(6)     $r9 = staticinvoke <com.facebook.AppEventsLogger: java.lang.String access$1300()>();
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+(7)     $r10_1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Got unexpected exception: ");
+
+        $r11 = virtualinvoke $r8_2.<java.lang.Exception: java.lang.String toString()>();
+
+(8)     $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r11);
+
+(9)     $r11_1 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(10)    staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r9, $r11_1);
+
+     label13:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r6_3);
+
+(11)    goto label09;
+
+     label14:
+        $r12_1 := @caughtexception;
+
+        $r12_2 = Phi($r12 #0, $r12_2 #12, $r12_3 #13);
+
+        $r6_7 = Phi($r6 #0, $r6_6 #4, $r6_3 #10, $r6_7 #12, $r6_8 #13, $r6_4 #14, $r6_2 #17, $r6_5 #15);
+
+        $r11_5 = Phi($r11 #0, $r11_4 #4, $r11_1 #10, $r11_5 #12, $r11_6 #13, $r11_2 #14, $r11_3 #15);
+
+        $r13_3 = Phi($r13 #0, $r13_3 #12, $r13_4 #13, $r13_1 #14, $r13_2 #15);
+
+        $r10_6 = Phi($r10 #0, $r10_5 #4, $r10_2 #10, $r10_6 #12, $r10_7 #13, $r10_3 #14, $r10_4 #15);
+
+(12)    $r8_6 = Phi($r8 #0, $r8_5 #4, $r8_2 #10, $r8_6 #12, $r8_7 #13, $r8_3 #14, $r8_4 #15);
+
+     label15:
+        $r12_3 = Phi($r12_2 #12, $r12 #16);
+
+        $r6_8 = Phi($r6_7 #12, $r6 #16);
+
+        $r11_6 = Phi($r11_5 #12, $r11 #16);
+
+        $r13_4 = Phi($r13_3 #12, $r13 #16);
+
+        $r10_7 = Phi($r10_6 #12, $r10 #16);
+
+        $r8_7 = Phi($r8_6 #12, $r8 #16);
+
+(13)    exitmonitor $r1;
+
+     label16:
+        throw $r12_3;
+
+     label17:
+        $r13_1 := @caughtexception;
+
+        $r6_4 = Phi($r6 #2, $r6_1 #18, $r6_3 #6);
+
+        $r11_2 = Phi($r11 #2, $r11_1 #9);
+
+        $r10_3 = Phi($r10 #2, $r10_1 #7, $r10_2 #8);
+
+(14)    $r8_3 = Phi($r8 #2, $r8_1 #5, $r8_2 #6);
+
+     label18:
+        $r6_5 = Phi($r6_4 #14, $r6_2 #17);
+
+        $r11_3 = Phi($r11_2 #14, $r11 #17);
+
+        $r13_2 = Phi($r13_1 #14, $r13 #17);
+
+        $r10_4 = Phi($r10_3 #14, $r10 #17);
+
+        $r8_4 = Phi($r8_3 #14, $r8 #17);
+
+(15)    staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r6_5);
+
+        throw $r13_2;
+
+     label19:
+        $r12 := @caughtexception;
+
+(16)    goto label15;
+
+     label20:
+        $r13 := @caughtexception;
+
+        $r6_2 = $r2;
+
+(17)    goto label18;
+
+     label21:
+        $r8 := @caughtexception;
+
+        $r6_1 = $r2;
+
+(18)    goto label12;
+
+        catch java.lang.Throwable from label01 to label02 with label14;
+        catch java.lang.Exception from label03 to label04 with label11;
+        catch java.lang.Throwable from label03 to label04 with label17;
+        catch java.lang.Throwable from label04 to label05 with label20;
+        catch java.lang.Exception from label05 to label06 with label21;
+        catch java.lang.Throwable from label05 to label06 with label20;
+        catch java.lang.Exception from label07 to label08 with label21;
+        catch java.lang.Throwable from label07 to label08 with label20;
+        catch java.lang.Throwable from label08 to label09 with label19;
+        catch java.lang.Throwable from label09 to label10 with label14;
+        catch java.lang.Throwable from label12 to label13 with label17;
+        catch java.lang.Throwable from label13 to label16 with label14;
+        catch java.lang.Throwable from label18 to label19 with label14;
+    }
+}

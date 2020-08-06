@@ -1,0 +1,3916 @@
+public class android.support.v4.widget.DrawerLayout extends android.view.ViewGroup implements android.support.v4.widget.DrawerLayoutImpl
+{
+    private static final boolean ALLOW_EDGE_LOCK;
+    private static final boolean CAN_HIDE_DESCENDANTS;
+    private static final boolean CHILDREN_DISALLOW_INTERCEPT;
+    private static final int DEFAULT_SCRIM_COLOR;
+    static final android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl IMPL;
+    private static final int[] LAYOUT_ATTRS;
+    public static final int LOCK_MODE_LOCKED_CLOSED;
+    public static final int LOCK_MODE_LOCKED_OPEN;
+    public static final int LOCK_MODE_UNLOCKED;
+    private static final int MIN_DRAWER_MARGIN;
+    private static final int MIN_FLING_VELOCITY;
+    private static final int PEEK_DELAY;
+    public static final int STATE_DRAGGING;
+    public static final int STATE_IDLE;
+    public static final int STATE_SETTLING;
+    private static final java.lang.String TAG;
+    private static final float TOUCH_SLOP_SENSITIVITY;
+    private final android.support.v4.widget.DrawerLayout$ChildAccessibilityDelegate mChildAccessibilityDelegate;
+    private boolean mChildrenCanceledTouch;
+    private boolean mDisallowInterceptRequested;
+    private boolean mDrawStatusBarBackground;
+    private int mDrawerState;
+    private boolean mFirstLayout;
+    private boolean mInLayout;
+    private float mInitialMotionX;
+    private float mInitialMotionY;
+    private java.lang.Object mLastInsets;
+    private final android.support.v4.widget.DrawerLayout$ViewDragCallback mLeftCallback;
+    private final android.support.v4.widget.ViewDragHelper mLeftDragger;
+    private android.support.v4.widget.DrawerLayout$DrawerListener mListener;
+    private int mLockModeLeft;
+    private int mLockModeRight;
+    private int mMinDrawerMargin;
+    private final android.support.v4.widget.DrawerLayout$ViewDragCallback mRightCallback;
+    private final android.support.v4.widget.ViewDragHelper mRightDragger;
+    private int mScrimColor;
+    private float mScrimOpacity;
+    private android.graphics.Paint mScrimPaint;
+    private android.graphics.drawable.Drawable mShadowLeft;
+    private android.graphics.drawable.Drawable mShadowRight;
+    private android.graphics.drawable.Drawable mStatusBarBackground;
+    private java.lang.CharSequence mTitleLeft;
+    private java.lang.CharSequence mTitleRight;
+
+    static void <clinit>()
+    {
+        int[] $r0;
+        android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImplApi21 $r1;
+        android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImplBase $r2;
+        boolean $z0, $z0_1, $z0_2;
+        int $i0, $i0_1;
+
+        $z0 = 1;
+
+        $r0 = newarray (int)[1];
+
+        $r0[0] = 16842931;
+
+        <android.support.v4.widget.DrawerLayout: int[] LAYOUT_ATTRS> = $r0;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+(0)     if $i0 < 19 goto label2;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0_2 #1);
+
+        <android.support.v4.widget.DrawerLayout: boolean CAN_HIDE_DESCENDANTS> = $z0_1;
+
+        $i0_1 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0_1 < 21 goto label3;
+
+        $r1 = new android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImplApi21;
+
+        specialinvoke $r1.<android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImplApi21: void <init>()>();
+
+        <android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl IMPL> = $r1;
+
+        return;
+
+     label2:
+        $z0_2 = 0;
+
+(1)     goto label1;
+
+     label3:
+        $r2 = new android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImplBase;
+
+        specialinvoke $r2.<android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImplBase: void <init>()>();
+
+        <android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl IMPL> = $r2;
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<android.support.v4.widget.DrawerLayout: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke $r0.<android.support.v4.widget.DrawerLayout: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, 0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        android.support.v4.widget.DrawerLayout$ChildAccessibilityDelegate $r3;
+        android.graphics.Paint $r4;
+        android.support.v4.widget.DrawerLayout$AccessibilityDelegate $r5;
+        int $i0, $i0_1;
+        android.content.res.Resources $r6;
+        android.util.DisplayMetrics $r7;
+        float $f0, $f1, $f1_1, $f0_1;
+        android.support.v4.widget.DrawerLayout$ViewDragCallback $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        android.support.v4.widget.ViewDragHelper $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7;
+        boolean $z0;
+        android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl $r10, $r10_1, $r10_2;
+        android.graphics.drawable.Drawable $r11;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<android.view.ViewGroup: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        $r3 = new android.support.v4.widget.DrawerLayout$ChildAccessibilityDelegate;
+
+        specialinvoke $r3.<android.support.v4.widget.DrawerLayout$ChildAccessibilityDelegate: void <init>(android.support.v4.widget.DrawerLayout)>($r0);
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ChildAccessibilityDelegate mChildAccessibilityDelegate> = $r3;
+
+        $r0.<android.support.v4.widget.DrawerLayout: int mScrimColor> = -1728053248;
+
+        $r4 = new android.graphics.Paint;
+
+        specialinvoke $r4.<android.graphics.Paint: void <init>()>();
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.graphics.Paint mScrimPaint> = $r4;
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mFirstLayout> = 1;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setDescendantFocusability(int)>(262144);
+
+        $r6 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.content.res.Resources getResources()>();
+
+        $r7 = virtualinvoke $r6.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0 = $r7.<android.util.DisplayMetrics: float density>;
+
+        $f1 = 64.0F * $f0;
+
+        $f1_1 = $f1 + 0.5F;
+
+        $i0_1 = (int) $f1_1;
+
+        $r0.<android.support.v4.widget.DrawerLayout: int mMinDrawerMargin> = $i0_1;
+
+        $f0_1 = 400.0F * $f0;
+
+        $r8 = new android.support.v4.widget.DrawerLayout$ViewDragCallback;
+
+        specialinvoke $r8.<android.support.v4.widget.DrawerLayout$ViewDragCallback: void <init>(android.support.v4.widget.DrawerLayout,int)>($r0, 3);
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ViewDragCallback mLeftCallback> = $r8;
+
+        $r8_1 = new android.support.v4.widget.DrawerLayout$ViewDragCallback;
+
+        specialinvoke $r8_1.<android.support.v4.widget.DrawerLayout$ViewDragCallback: void <init>(android.support.v4.widget.DrawerLayout,int)>($r0, 5);
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ViewDragCallback mRightCallback> = $r8_1;
+
+        $r8_2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ViewDragCallback mLeftCallback>;
+
+        $r9 = staticinvoke <android.support.v4.widget.ViewDragHelper: android.support.v4.widget.ViewDragHelper create(android.view.ViewGroup,float,android.support.v4.widget.ViewDragHelper$Callback)>($r0, 1.0F, $r8_2);
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger> = $r9;
+
+        $r9_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        virtualinvoke $r9_1.<android.support.v4.widget.ViewDragHelper: void setEdgeTrackingEnabled(int)>(1);
+
+        $r9_2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        virtualinvoke $r9_2.<android.support.v4.widget.ViewDragHelper: void setMinVelocity(float)>($f0_1);
+
+        $r8_3 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ViewDragCallback mLeftCallback>;
+
+        $r9_3 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        virtualinvoke $r8_3.<android.support.v4.widget.DrawerLayout$ViewDragCallback: void setDragger(android.support.v4.widget.ViewDragHelper)>($r9_3);
+
+        $r8_4 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ViewDragCallback mRightCallback>;
+
+        $r9_4 = staticinvoke <android.support.v4.widget.ViewDragHelper: android.support.v4.widget.ViewDragHelper create(android.view.ViewGroup,float,android.support.v4.widget.ViewDragHelper$Callback)>($r0, 1.0F, $r8_4);
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger> = $r9_4;
+
+        $r9_5 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        virtualinvoke $r9_5.<android.support.v4.widget.ViewDragHelper: void setEdgeTrackingEnabled(int)>(2);
+
+        $r9_6 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        virtualinvoke $r9_6.<android.support.v4.widget.ViewDragHelper: void setMinVelocity(float)>($f0_1);
+
+        $r8_5 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ViewDragCallback mRightCallback>;
+
+        $r9_7 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        virtualinvoke $r8_5.<android.support.v4.widget.DrawerLayout$ViewDragCallback: void setDragger(android.support.v4.widget.ViewDragHelper)>($r9_7);
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setFocusableInTouchMode(boolean)>(1);
+
+        staticinvoke <android.support.v4.view.ViewCompat: void setImportantForAccessibility(android.view.View,int)>($r0, 1);
+
+        $r5 = new android.support.v4.widget.DrawerLayout$AccessibilityDelegate;
+
+        specialinvoke $r5.<android.support.v4.widget.DrawerLayout$AccessibilityDelegate: void <init>(android.support.v4.widget.DrawerLayout)>($r0);
+
+        staticinvoke <android.support.v4.view.ViewCompat: void setAccessibilityDelegate(android.view.View,android.support.v4.view.AccessibilityDelegateCompat)>($r0, $r5);
+
+        staticinvoke <android.support.v4.view.ViewGroupCompat: void setMotionEventSplittingEnabled(android.view.ViewGroup,boolean)>($r0, 0);
+
+        $z0 = staticinvoke <android.support.v4.view.ViewCompat: boolean getFitsSystemWindows(android.view.View)>($r0);
+
+(0)     if $z0 == 0 goto label1;
+
+        $r10 = <android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl IMPL>;
+
+        interfaceinvoke $r10.<android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl: void configureApplyInsets(android.view.View)>($r0);
+
+        $r10_1 = <android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl IMPL>;
+
+        $r11 = interfaceinvoke $r10_1.<android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl: android.graphics.drawable.Drawable getDefaultStatusBarBackground(android.content.Context)>($r1);
+
+(1)     $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mStatusBarBackground> = $r11;
+
+     label1:
+        $r10_2 = Phi($r10 #0, $r10_1 #1);
+
+        return;
+    }
+
+    static int[] access$100()
+    {
+        int[] r0;
+
+        r0 = <android.support.v4.widget.DrawerLayout: int[] LAYOUT_ATTRS>;
+
+        return r0;
+    }
+
+    static boolean access$200()
+    {
+        boolean z0;
+
+        z0 = <android.support.v4.widget.DrawerLayout: boolean CAN_HIDE_DESCENDANTS>;
+
+        return z0;
+    }
+
+    static android.view.View access$300(android.support.v4.widget.DrawerLayout)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+
+        $r0 := @parameter0: android.support.v4.widget.DrawerLayout;
+
+        $r1 = specialinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findVisibleDrawer()>();
+
+        return $r1;
+    }
+
+    static boolean access$400(android.view.View)
+    {
+        android.view.View $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.view.View;
+
+        $z0 = staticinvoke <android.support.v4.widget.DrawerLayout: boolean includeChildForAccessibility(android.view.View)>($r0);
+
+        return $z0;
+    }
+
+    private android.view.View findVisibleDrawer()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0, $i1, $i1_1, $i1_2;
+        android.view.View $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+(0)     $i1 = 0;
+
+     label1:
+        $z0 = Phi($z0 #0, $z0_3 #3);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #3);
+
+        if $i1_1 >= $i0 goto label3;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i1_1);
+
+        $z0_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r1);
+
+(1)     if $z0_1 == 0 goto label2;
+
+        $z0_2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerVisible(android.view.View)>($r1);
+
+(2)     if $z0_2 == 0 goto label2;
+
+        return $r1;
+
+     label2:
+        $z0_3 = Phi($z0_1 #1, $z0_2 #2);
+
+        $i1_2 = $i1_1 + 1;
+
+(3)     goto label1;
+
+     label3:
+        return null;
+    }
+
+    static java.lang.String gravityToString(int)
+    {
+        int $i0, $i1, $i1_1;
+        java.lang.String $r0;
+
+        $i0 := @parameter0: int;
+
+        $i1 = $i0 & 3;
+
+        if $i1 != 3 goto label1;
+
+        return "LEFT";
+
+     label1:
+        $i1_1 = $i0 & 5;
+
+        if $i1_1 != 5 goto label2;
+
+        return "RIGHT";
+
+     label2:
+        $r0 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        return $r0;
+    }
+
+    private static boolean hasOpaqueBackground(android.view.View)
+    {
+        android.view.View $r0;
+        android.graphics.drawable.Drawable $r1;
+        int $i0;
+
+        $r0 := @parameter0: android.view.View;
+
+        $r1 = virtualinvoke $r0.<android.view.View: android.graphics.drawable.Drawable getBackground()>();
+
+        if $r1 == null goto label1;
+
+        $i0 = virtualinvoke $r1.<android.graphics.drawable.Drawable: int getOpacity()>();
+
+        if $i0 != -1 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private boolean hasPeekingDrawer()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        boolean $z0;
+        int $i0, $i1, $i1_1, $i1_2;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        if $i1_1 >= $i0 goto label3;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i1_1);
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $z0 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean isPeeking>;
+
+        if $z0 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label3:
+        return 0;
+    }
+
+    private boolean hasVisibleDrawer()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 = specialinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findVisibleDrawer()>();
+
+        if $r1 == null goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private static boolean includeChildForAccessibility(android.view.View)
+    {
+        android.view.View $r0;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @parameter0: android.view.View;
+
+        $i0 = staticinvoke <android.support.v4.view.ViewCompat: int getImportantForAccessibility(android.view.View)>($r0);
+
+(0)     if $i0 == 4 goto label1;
+
+        $i0_1 = staticinvoke <android.support.v4.view.ViewCompat: int getImportantForAccessibility(android.view.View)>($r0);
+
+(1)     if $i0_1 == 2 goto label1;
+
+        return 1;
+
+     label1:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        return 0;
+    }
+
+    private void updateChildrenImportantForAccessibility(android.view.View, boolean)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1, $r2;
+        boolean $z0, $z1;
+        int $i0, $i1, $i1_1, $i1_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $z0 := @parameter1: boolean;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        if $i1_1 >= $i0 goto label6;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i1_1);
+
+        if $z0 != 0 goto label2;
+
+        $z1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r2);
+
+        if $z1 == 0 goto label3;
+
+     label2:
+        if $z0 == 0 goto label5;
+
+        if $r2 != $r1 goto label5;
+
+     label3:
+        staticinvoke <android.support.v4.view.ViewCompat: void setImportantForAccessibility(android.view.View,int)>($r2, 1);
+
+     label4:
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label5:
+        staticinvoke <android.support.v4.view.ViewCompat: void setImportantForAccessibility(android.view.View,int)>($r2, 4);
+
+        goto label4;
+
+     label6:
+        return;
+    }
+
+    public void addView(android.view.View, int, android.view.ViewGroup$LayoutParams)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1, $r4;
+        int $i0;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$ChildAccessibilityDelegate $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: android.view.ViewGroup$LayoutParams;
+
+        specialinvoke $r0.<android.view.ViewGroup: void addView(android.view.View,int,android.view.ViewGroup$LayoutParams)>($r1, $i0, $r2);
+
+        $r4 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findOpenDrawer()>();
+
+(0)     if $r4 != null goto label1;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r1);
+
+(1)     if $z0 == 0 goto label3;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0 #1);
+
+(2)     staticinvoke <android.support.v4.view.ViewCompat: void setImportantForAccessibility(android.view.View,int)>($r1, 4);
+
+     label2:
+        $z0_2 = Phi($z0_1 #2, $z0 #3);
+
+        $z0_3 = <android.support.v4.widget.DrawerLayout: boolean CAN_HIDE_DESCENDANTS>;
+
+        if $z0_3 != 0 goto label4;
+
+        $r3 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ChildAccessibilityDelegate mChildAccessibilityDelegate>;
+
+        staticinvoke <android.support.v4.view.ViewCompat: void setAccessibilityDelegate(android.view.View,android.support.v4.view.AccessibilityDelegateCompat)>($r1, $r3);
+
+        return;
+
+     label3:
+        staticinvoke <android.support.v4.view.ViewCompat: void setImportantForAccessibility(android.view.View,int)>($r1, 1);
+
+(3)     goto label2;
+
+     label4:
+        return;
+    }
+
+    void cancelChildViewTouch()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        boolean $z0;
+        long $l0;
+        android.view.MotionEvent $r1;
+        int $i1, $i2, $i2_1, $i2_2, $i2_3;
+        android.view.View $r2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $z0 = $r0.<android.support.v4.widget.DrawerLayout: boolean mChildrenCanceledTouch>;
+
+(0)     if $z0 != 0 goto label3;
+
+        $l0 = staticinvoke <android.os.SystemClock: long uptimeMillis()>();
+
+        $r1 = staticinvoke <android.view.MotionEvent: android.view.MotionEvent obtain(long,long,int,float,float,int)>($l0, $l0, 3, 0.0F, 0.0F, 0);
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+(1)     $i2 = 0;
+
+     label1:
+        $i2_1 = Phi($i2 #1, $i2_2 #2);
+
+        if $i2_1 >= $i1 goto label2;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i2_1);
+
+        virtualinvoke $r2.<android.view.View: boolean dispatchTouchEvent(android.view.MotionEvent)>($r1);
+
+        $i2_2 = $i2_1 + 1;
+
+(2)     goto label1;
+
+     label2:
+        virtualinvoke $r1.<android.view.MotionEvent: void recycle()>();
+
+(3)     $r0.<android.support.v4.widget.DrawerLayout: boolean mChildrenCanceledTouch> = 1;
+
+     label3:
+        $i2_3 = Phi($i2 #0, $i2_1 #3);
+
+        return;
+    }
+
+    boolean checkDrawerViewAbsoluteGravity(android.view.View, int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        int $i0, $i1, $i1_1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getDrawerViewAbsoluteGravity(android.view.View)>($r1);
+
+        $i1_1 = $i1 & $i0;
+
+        if $i1_1 != $i0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    protected boolean checkLayoutParams(android.view.ViewGroup$LayoutParams)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.ViewGroup$LayoutParams $r1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.ViewGroup$LayoutParams;
+
+        $z0 = $r1 instanceof android.support.v4.widget.DrawerLayout$LayoutParams;
+
+(0)     if $z0 == 0 goto label1;
+
+        $z0_1 = specialinvoke $r0.<android.view.ViewGroup: boolean checkLayoutParams(android.view.ViewGroup$LayoutParams)>($r1);
+
+(1)     if $z0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 0;
+    }
+
+    public void closeDrawer(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0;
+        java.lang.IllegalArgumentException $r1;
+        android.view.View $r2;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2;
+        java.lang.String $r4, $r4_1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findDrawerWithGravity(int)>($i0);
+
+        if $r2 != null goto label1;
+
+        $r1 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("No drawer view found with gravity ");
+
+        $r4 = staticinvoke <android.support.v4.widget.DrawerLayout: java.lang.String gravityToString(int)>($i0);
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4_1 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4_1);
+
+        throw $r1;
+
+     label1:
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void closeDrawer(android.view.View)>($r2);
+
+        return;
+    }
+
+    public void closeDrawer(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        java.lang.IllegalArgumentException $r2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.String $r4;
+        android.view.ViewGroup$LayoutParams $r5;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r6;
+        android.support.v4.widget.ViewDragHelper $r7, $r7_1, $r7_2;
+        int $i0, $i1, $i0_1, $i0_2, $i1_1, $i0_3, $i1_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("View ");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" is not a sliding drawer");
+
+        $r4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label1:
+        $z0_1 = $r0.<android.support.v4.widget.DrawerLayout: boolean mFirstLayout>;
+
+        if $z0_1 == 0 goto label3;
+
+        $r5 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r6 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r5;
+
+        $r6.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen> = 0.0F;
+
+(0)     $r6.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean knownOpen> = 0;
+
+     label2:
+        $i0 = Phi($i0 #0, $i0_2 #1, $i0_3 #2);
+
+        $r7 = Phi($r7 #0, $r7_1 #1, $r7_2 #2);
+
+        $z0_2 = Phi($z0_1 #0, $z0_3 #1, $z0_3 #2);
+
+        $i1 = Phi($i1 #0, $i1_1 #1, $i1_2 #2);
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void invalidate()>();
+
+        return;
+
+     label3:
+        $z0_3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean checkDrawerViewAbsoluteGravity(android.view.View,int)>($r1, 3);
+
+        if $z0_3 == 0 goto label4;
+
+        $r7_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $i0_1 = virtualinvoke $r1.<android.view.View: int getWidth()>();
+
+        $i0_2 = neg $i0_1;
+
+        $i1_1 = virtualinvoke $r1.<android.view.View: int getTop()>();
+
+        virtualinvoke $r7_1.<android.support.v4.widget.ViewDragHelper: boolean smoothSlideViewTo(android.view.View,int,int)>($r1, $i0_2, $i1_1);
+
+(1)     goto label2;
+
+     label4:
+        $r7_2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        $i0_3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getWidth()>();
+
+        $i1_2 = virtualinvoke $r1.<android.view.View: int getTop()>();
+
+        virtualinvoke $r7_2.<android.support.v4.widget.ViewDragHelper: boolean smoothSlideViewTo(android.view.View,int,int)>($r1, $i0_3, $i1_2);
+
+(2)     goto label2;
+    }
+
+    public void closeDrawers()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void closeDrawers(boolean)>(0);
+
+        return;
+    }
+
+    void closeDrawers(boolean)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        boolean $z0, $z1, $z2, $z1_1, $z2_1, $z2_2, $z2_3, $z2_4, $z2_5, $z1_2, $z1_3, $z2_6, $z2_7, $z1_4, $z1_5, $z2_8;
+        int $i0, $i1, $i2, $i3, $i1_1, $i2_1, $i2_2, $i3_1, $i3_2, $i2_3, $i2_4, $i3_3, $i3_4, $i2_5, $i1_2;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+        android.support.v4.widget.ViewDragHelper $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        android.support.v4.widget.DrawerLayout$ViewDragCallback $r5, $r5_1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = 0;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #4);
+
+        $z1_1 = Phi($z1 #0, $z1_5 #4);
+
+        $z2 = Phi($z2 #0, $z2_8 #4);
+
+        $r4 = Phi($r4 #0, $r4_4 #4);
+
+        $i3 = Phi($i3 #0, $i3_4 #4);
+
+        $i2 = Phi($i2 #0, $i2_5 #4);
+
+        if $i1_1 >= $i0 goto label6;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i1_1);
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $z2_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r1);
+
+(1)     if $z2_1 == 0 goto label2;
+
+(2)     if $z0 == 0 goto label3;
+
+        $z2_2 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean isPeeking>;
+
+(3)     if $z2_2 != 0 goto label3;
+
+     label2:
+        $z1_5 = Phi($z1_1 #1, $z1_1 #3, $z1_3 #6);
+
+        $z2_8 = Phi($z2_1 #1, $z2_2 #3, $z2_6 #6);
+
+        $r4_4 = Phi($r4 #1, $r4 #3, $r4_2 #6);
+
+        $i3_4 = Phi($i3 #1, $i3 #3, $i3_2 #6);
+
+        $i2_5 = Phi($i2 #1, $i2 #3, $i2_3 #6);
+
+        $i1_2 = $i1_1 + 1;
+
+(4)     goto label1;
+
+     label3:
+        $z2_3 = Phi($z2_1 #2, $z2_2 #3);
+
+        $i2_1 = virtualinvoke $r1.<android.view.View: int getWidth()>();
+
+        $z2_4 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean checkDrawerViewAbsoluteGravity(android.view.View,int)>($r1, 3);
+
+        if $z2_4 == 0 goto label5;
+
+        $r4_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $i2_2 = neg $i2_1;
+
+        $i3_1 = virtualinvoke $r1.<android.view.View: int getTop()>();
+
+        $z2_5 = virtualinvoke $r4_1.<android.support.v4.widget.ViewDragHelper: boolean smoothSlideViewTo(android.view.View,int,int)>($r1, $i2_2, $i3_1);
+
+(5)     $z1_2 = $z1_1 | $z2_5;
+
+     label4:
+        $z1_3 = Phi($z1_2 #5, $z1_4 #7);
+
+        $z2_6 = Phi($z2_5 #5, $z2_7 #7);
+
+        $r4_2 = Phi($r4_1 #5, $r4_3 #7);
+
+        $i3_2 = Phi($i3_1 #5, $i3_3 #7);
+
+        $i2_3 = Phi($i2_2 #5, $i2_4 #7);
+
+        $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean isPeeking> = 0;
+
+(6)     goto label2;
+
+     label5:
+        $r4_3 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        $i2_4 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getWidth()>();
+
+        $i3_3 = virtualinvoke $r1.<android.view.View: int getTop()>();
+
+        $z2_7 = virtualinvoke $r4_3.<android.support.v4.widget.ViewDragHelper: boolean smoothSlideViewTo(android.view.View,int,int)>($r1, $i2_4, $i3_3);
+
+        $z1_4 = $z1_1 | $z2_7;
+
+(7)     goto label4;
+
+     label6:
+        $r5 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ViewDragCallback mLeftCallback>;
+
+        virtualinvoke $r5.<android.support.v4.widget.DrawerLayout$ViewDragCallback: void removeCallbacks()>();
+
+        $r5_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ViewDragCallback mRightCallback>;
+
+        virtualinvoke $r5_1.<android.support.v4.widget.DrawerLayout$ViewDragCallback: void removeCallbacks()>();
+
+        if $z1_1 == 0 goto label7;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void invalidate()>();
+
+     label7:
+        return;
+    }
+
+    public void computeScroll()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        float $f0, $f1, $f1_1, $f1_2;
+        boolean $z0, $z1, $z0_1;
+        int $i0, $i1, $i1_1, $i1_2;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+        android.support.v4.widget.ViewDragHelper $r4, $r4_1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+        $f1 = 0.0F;
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $f1_1 = Phi($f1 #0, $f1_2 #1);
+
+        if $i1_1 >= $i0 goto label2;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i1_1);
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $f0 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen>;
+
+        $f1_2 = staticinvoke <java.lang.Math: float max(float,float)>($f1_1, $f0);
+
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        $r0.<android.support.v4.widget.DrawerLayout: float mScrimOpacity> = $f1_1;
+
+        $r4 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $z0 = virtualinvoke $r4.<android.support.v4.widget.ViewDragHelper: boolean continueSettling(boolean)>(1);
+
+        $r4_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        $z1 = virtualinvoke $r4_1.<android.support.v4.widget.ViewDragHelper: boolean continueSettling(boolean)>(1);
+
+        $z0_1 = $z0 | $z1;
+
+        if $z0_1 == 0 goto label3;
+
+        staticinvoke <android.support.v4.view.ViewCompat: void postInvalidateOnAnimation(android.view.View)>($r0);
+
+     label3:
+        return;
+    }
+
+    void dispatchOnDrawerClosed(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1, $r1_1, $r1_2;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+        boolean $z0, $z0_1, $z0_2;
+        android.support.v4.widget.DrawerLayout$DrawerListener $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $z0 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean knownOpen>;
+
+(0)     if $z0 == 0 goto label2;
+
+        $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean knownOpen> = 0;
+
+        $r4 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerListener mListener>;
+
+(1)     if $r4 == null goto label1;
+
+        $r4_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerListener mListener>;
+
+(2)     interfaceinvoke $r4_1.<android.support.v4.widget.DrawerLayout$DrawerListener: void onDrawerClosed(android.view.View)>($r1);
+
+     label1:
+        $r4_2 = Phi($r4 #1, $r4_1 #2);
+
+        specialinvoke $r0.<android.support.v4.widget.DrawerLayout: void updateChildrenImportantForAccessibility(android.view.View,boolean)>($r1, 0);
+
+        $z0_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean hasWindowFocus()>();
+
+(3)     if $z0_1 == 0 goto label2;
+
+        $r1_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getRootView()>();
+
+(4)     if $r1_1 == null goto label2;
+
+(5)     virtualinvoke $r1_1.<android.view.View: void sendAccessibilityEvent(int)>(32);
+
+     label2:
+        $r4_3 = Phi($r4 #0, $r4_2 #3, $r4_2 #4, $r4_2 #5);
+
+        $r1_2 = Phi($r1 #0, $r1 #3, $r1_1 #4, $r1_1 #5);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #3, $z0_1 #4, $z0_1 #5);
+
+        return;
+    }
+
+    void dispatchOnDrawerOpened(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+        boolean $z0, $z0_1, $z0_2;
+        android.support.v4.widget.DrawerLayout$DrawerListener $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $z0 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean knownOpen>;
+
+(0)     if $z0 != 0 goto label3;
+
+        $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean knownOpen> = 1;
+
+        $r4 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerListener mListener>;
+
+(1)     if $r4 == null goto label1;
+
+        $r4_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerListener mListener>;
+
+(2)     interfaceinvoke $r4_1.<android.support.v4.widget.DrawerLayout$DrawerListener: void onDrawerOpened(android.view.View)>($r1);
+
+     label1:
+        $r4_2 = Phi($r4 #1, $r4_1 #2);
+
+        specialinvoke $r0.<android.support.v4.widget.DrawerLayout: void updateChildrenImportantForAccessibility(android.view.View,boolean)>($r1, 1);
+
+        $z0_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean hasWindowFocus()>();
+
+        if $z0_1 == 0 goto label2;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void sendAccessibilityEvent(int)>(32);
+
+     label2:
+(3)     virtualinvoke $r1.<android.view.View: boolean requestFocus()>();
+
+     label3:
+        $r4_3 = Phi($r4 #0, $r4_2 #3);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #3);
+
+        return;
+    }
+
+    void dispatchOnDrawerSlide(android.view.View, float)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        float $f0;
+        android.support.v4.widget.DrawerLayout$DrawerListener $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $f0 := @parameter1: float;
+
+        $r2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerListener mListener>;
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerListener mListener>;
+
+(1)     interfaceinvoke $r2_1.<android.support.v4.widget.DrawerLayout$DrawerListener: void onDrawerSlide(android.view.View,float)>($r1, $f0);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    protected boolean drawChild(android.graphics.Canvas, android.view.View, long)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.graphics.Canvas $r1;
+        android.view.View $r2, $r3;
+        long $l0;
+        byte $b1;
+        int $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i4_1, $i7_1, $i3_1, $i8_1, $i8_2, $i8_3, $i3_2, $i8_4, $i4_2, $i8_5, $i4_3, $i3_3, $i7_2, $i2_1, $i2_2, $i8_6, $i4_4, $i7_3, $i3_4, $i2_3, $i2_4, $i2_5, $i2_6, $i2_7, $i5_1, $i5_2, $i2_8, $i3_5, $i2_9, $i3_6, $i4_5, $i4_6, $i2_10, $i5_3, $i3_7, $i4_7, $i3_8, $i2_11, $i2_12, $i5_4, $i4_8, $i2_13, $i5_5, $i3_9, $i2_14, $i4_9, $i5_6, $i3_10;
+        boolean $z0, $z1, $z1_1, $z1_2, $z1_3, $z1_4, $z1_5, $z1_6, $z0_1, $z0_2, $z0_3, $z0_4;
+        float $f0, $f1, $f2, $f0_1, $f0_2, $f0_3, $f1_1, $f0_4, $f1_2, $f0_5, $f0_6, $f0_7, $f0_8, $f0_9, $f1_3, $f0_10, $f0_11, $f0_12, $f0_13, $f1_4, $f0_14;
+        android.graphics.Paint $r4, $r4_1;
+        android.graphics.drawable.Drawable $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8, $r5_9, $r5_10;
+        android.support.v4.widget.ViewDragHelper $r6, $r6_1, $r6_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        $r2 := @parameter1: android.view.View;
+
+        $l0 := @parameter2: long;
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getHeight()>();
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isContentView(android.view.View)>($r2);
+
+        $i3 = 0;
+
+        $i4 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getWidth()>();
+
+        $i5 = virtualinvoke $r1.<android.graphics.Canvas: int save()>();
+
+(0)     if $z0 == 0 goto label6;
+
+        $i6 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+(1)     $i7 = 0;
+
+     label1:
+        $i8 = Phi($i8 #1, $i8_5 #7);
+
+        $i4_1 = Phi($i4 #1, $i4_3 #7);
+
+        $i7_1 = Phi($i7 #1, $i7_2 #7);
+
+        $z1 = Phi($z1 #1, $z1_4 #7);
+
+        $i3_1 = Phi($i3 #1, $i3_3 #7);
+
+        if $i7_1 >= $i6 goto label5;
+
+        $r3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i7_1);
+
+(2)     if $r3 == $r2 goto label2;
+
+        $i8_1 = virtualinvoke $r3.<android.view.View: int getVisibility()>();
+
+(3)     if $i8_1 != 0 goto label2;
+
+        $z1_1 = staticinvoke <android.support.v4.widget.DrawerLayout: boolean hasOpaqueBackground(android.view.View)>($r3);
+
+(4)     if $z1_1 == 0 goto label2;
+
+        $z1_2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r3);
+
+(5)     if $z1_2 == 0 goto label2;
+
+        $i8_2 = virtualinvoke $r3.<android.view.View: int getHeight()>();
+
+(6)     if $i8_2 >= $i2 goto label3;
+
+     label2:
+        $i8_5 = Phi($i8 #2, $i8_1 #3, $i8_1 #4, $i8_1 #5, $i8_2 #6, $i8_3 #8, $i8_3 #9, $i8_4 #10, $i8_4 #11);
+
+        $i4_3 = Phi($i4_1 #2, $i4_1 #3, $i4_1 #4, $i4_1 #5, $i4_1 #6, $i4_1 #8, $i4_1 #9, $i4_1 #10, $i4_2 #11);
+
+        $z1_4 = Phi($z1 #2, $z1 #3, $z1_1 #4, $z1_2 #5, $z1_2 #6, $z1_3 #8, $z1_3 #9, $z1_3 #10, $z1_3 #11);
+
+        $i3_3 = Phi($i3_1 #2, $i3_1 #3, $i3_1 #4, $i3_1 #5, $i3_1 #6, $i3_1 #8, $i3_2 #9, $i3_1 #10, $i3_1 #11);
+
+        $i7_2 = $i7_1 + 1;
+
+(7)     goto label1;
+
+     label3:
+        $z1_3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean checkDrawerViewAbsoluteGravity(android.view.View,int)>($r3, 3);
+
+        if $z1_3 == 0 goto label4;
+
+        $i8_3 = virtualinvoke $r3.<android.view.View: int getRight()>();
+
+(8)     if $i8_3 <= $i3_1 goto label2;
+
+        $i3_2 = $i8_3;
+
+(9)     goto label2;
+
+     label4:
+        $i8_4 = virtualinvoke $r3.<android.view.View: int getLeft()>();
+
+(10)    if $i8_4 >= $i4_1 goto label2;
+
+        $i4_2 = $i8_4;
+
+(11)    goto label2;
+
+     label5:
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getHeight()>();
+
+(12)    virtualinvoke $r1.<android.graphics.Canvas: boolean clipRect(int,int,int,int)>($i3_1, 0, $i4_1, $i2_1);
+
+     label6:
+        $i2_2 = Phi($i2 #0, $i2_1 #12);
+
+        $i8_6 = Phi($i8 #0, $i8 #12);
+
+        $i4_4 = Phi($i4 #0, $i4_1 #12);
+
+        $i7_3 = Phi($i7 #0, $i7_1 #12);
+
+        $z1_5 = Phi($z1 #0, $z1 #12);
+
+        $i3_4 = Phi($i3 #0, $i3_1 #12);
+
+        $z1_6 = specialinvoke $r0.<android.view.ViewGroup: boolean drawChild(android.graphics.Canvas,android.view.View,long)>($r1, $r2, $l0);
+
+        virtualinvoke $r1.<android.graphics.Canvas: void restoreToCount(int)>($i5);
+
+        $f0 = $r0.<android.support.v4.widget.DrawerLayout: float mScrimOpacity>;
+
+        $b1 = $f0 cmpl 0.0F;
+
+        if $b1 <= 0 goto label7;
+
+        if $z0 == 0 goto label7;
+
+        $i2_3 = $r0.<android.support.v4.widget.DrawerLayout: int mScrimColor>;
+
+        $i2_4 = $i2_3 & -16777216;
+
+        $i2_5 = $i2_4 >>> 24;
+
+        $f0_1 = (float) $i2_5;
+
+        $f1 = $r0.<android.support.v4.widget.DrawerLayout: float mScrimOpacity>;
+
+        $f0_2 = $f0_1 * $f1;
+
+        $i2_6 = (int) $f0_2;
+
+        $i2_7 = $i2_6 << 24;
+
+        $i5_1 = $r0.<android.support.v4.widget.DrawerLayout: int mScrimColor>;
+
+        $i5_2 = $i5_1 & 16777215;
+
+        $i2_8 = $i2_7 | $i5_2;
+
+        $r4 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.Paint mScrimPaint>;
+
+        virtualinvoke $r4.<android.graphics.Paint: void setColor(int)>($i2_8);
+
+        $f0_3 = (float) $i3_4;
+
+        $f1_1 = (float) $i4_4;
+
+        $i3_5 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getHeight()>();
+
+        $f2 = (float) $i3_5;
+
+        $r4_1 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.Paint mScrimPaint>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawRect(float,float,float,float,android.graphics.Paint)>($f0_3, 0.0F, $f1_1, $f2, $r4_1);
+
+        return $z1_6;
+
+     label7:
+        $r5 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowLeft>;
+
+(13)    if $r5 == null goto label8;
+
+        $z0_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean checkDrawerViewAbsoluteGravity(android.view.View,int)>($r2, 3);
+
+(14)    if $z0_1 == 0 goto label8;
+
+        $r5_1 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowLeft>;
+
+        $i2_9 = virtualinvoke $r5_1.<android.graphics.drawable.Drawable: int getIntrinsicWidth()>();
+
+        $i3_6 = virtualinvoke $r2.<android.view.View: int getRight()>();
+
+        $r6 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $i4_5 = virtualinvoke $r6.<android.support.v4.widget.ViewDragHelper: int getEdgeSize()>();
+
+        $f0_4 = (float) $i3_6;
+
+        $f1_2 = (float) $i4_5;
+
+        $f0_5 = $f0_4 / $f1_2;
+
+        $f0_6 = staticinvoke <java.lang.Math: float min(float,float)>($f0_5, 1.0F);
+
+        $f0_7 = staticinvoke <java.lang.Math: float max(float,float)>(0.0F, $f0_6);
+
+        $r5_2 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowLeft>;
+
+        $i4_6 = virtualinvoke $r2.<android.view.View: int getTop()>();
+
+        $i2_10 = $i3_6 + $i2_9;
+
+        $i5_3 = virtualinvoke $r2.<android.view.View: int getBottom()>();
+
+        virtualinvoke $r5_2.<android.graphics.drawable.Drawable: void setBounds(int,int,int,int)>($i3_6, $i4_6, $i2_10, $i5_3);
+
+        $r5_3 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowLeft>;
+
+        $f0_8 = 255.0F * $f0_7;
+
+        $i3_7 = (int) $f0_8;
+
+        virtualinvoke $r5_3.<android.graphics.drawable.Drawable: void setAlpha(int)>($i3_7);
+
+        $r5_4 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowLeft>;
+
+        virtualinvoke $r5_4.<android.graphics.drawable.Drawable: void draw(android.graphics.Canvas)>($r1);
+
+        return $z1_6;
+
+     label8:
+        $z0_2 = Phi($z0 #13, $z0_1 #14);
+
+        $r5_5 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowRight>;
+
+(15)    if $r5_5 == null goto label9;
+
+        $z0_3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean checkDrawerViewAbsoluteGravity(android.view.View,int)>($r2, 5);
+
+(16)    if $z0_3 == 0 goto label9;
+
+        $r5_6 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowRight>;
+
+        $i4_7 = virtualinvoke $r5_6.<android.graphics.drawable.Drawable: int getIntrinsicWidth()>();
+
+        $i3_8 = virtualinvoke $r2.<android.view.View: int getLeft()>();
+
+        $i2_11 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getWidth()>();
+
+        $i2_12 = $i2_11 - $i3_8;
+
+        $r6_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        $i5_4 = virtualinvoke $r6_1.<android.support.v4.widget.ViewDragHelper: int getEdgeSize()>();
+
+        $f0_9 = (float) $i2_12;
+
+        $f1_3 = (float) $i5_4;
+
+        $f0_10 = $f0_9 / $f1_3;
+
+        $f0_11 = staticinvoke <java.lang.Math: float min(float,float)>($f0_10, 1.0F);
+
+        $f0_12 = staticinvoke <java.lang.Math: float max(float,float)>(0.0F, $f0_11);
+
+        $r5_7 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowRight>;
+
+        $i4_8 = $i3_8 - $i4_7;
+
+        $i2_13 = virtualinvoke $r2.<android.view.View: int getTop()>();
+
+        $i5_5 = virtualinvoke $r2.<android.view.View: int getBottom()>();
+
+        virtualinvoke $r5_7.<android.graphics.drawable.Drawable: void setBounds(int,int,int,int)>($i4_8, $i2_13, $i3_8, $i5_5);
+
+        $r5_8 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowRight>;
+
+        $f0_13 = 255.0F * $f0_12;
+
+        $i3_9 = (int) $f0_13;
+
+        virtualinvoke $r5_8.<android.graphics.drawable.Drawable: void setAlpha(int)>($i3_9);
+
+        $r5_9 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowRight>;
+
+(17)    virtualinvoke $r5_9.<android.graphics.drawable.Drawable: void draw(android.graphics.Canvas)>($r1);
+
+     label9:
+        $r6_2 = Phi($r6 #15, $r6 #16, $r6_1 #17);
+
+        $i2_14 = Phi($i2_2 #15, $i2_2 #16, $i2_13 #17);
+
+        $i4_9 = Phi($i4_4 #15, $i4_4 #16, $i4_8 #17);
+
+        $z0_4 = Phi($z0_2 #15, $z0_3 #16, $z0_3 #17);
+
+        $i5_6 = Phi($i5 #15, $i5 #16, $i5_5 #17);
+
+        $f1_4 = Phi($f1 #15, $f1 #16, $f1_3 #17);
+
+        $i3_10 = Phi($i3_4 #15, $i3_4 #16, $i3_9 #17);
+
+        $f0_14 = Phi($f0 #15, $f0 #16, $f0_13 #17);
+
+        $r5_10 = Phi($r5_5 #15, $r5_5 #16, $r5_9 #17);
+
+        return $z1_6;
+    }
+
+    android.view.View findDrawerWithGravity(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0, $i1, $i2, $i3, $i0_1, $i0_2, $i1_1, $i2_1, $i3_1, $i3_2, $i2_2;
+        android.view.View $r1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $i1 = staticinvoke <android.support.v4.view.ViewCompat: int getLayoutDirection(android.view.View)>($r0);
+
+        $i0_1 = staticinvoke <android.support.v4.view.GravityCompat: int getAbsoluteGravity(int,int)>($i0, $i1);
+
+        $i0_2 = $i0_1 & 7;
+
+        $i1_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+(0)     $i2 = 0;
+
+     label1:
+        $i3 = Phi($i3 #0, $i3_2 #1);
+
+        $i2_1 = Phi($i2 #0, $i2_2 #1);
+
+        if $i2_1 >= $i1_1 goto label3;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i2_1);
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getDrawerViewAbsoluteGravity(android.view.View)>($r1);
+
+        $i3_2 = $i3_1 & 7;
+
+        if $i3_2 != $i0_2 goto label2;
+
+        return $r1;
+
+     label2:
+        $i2_2 = $i2_1 + 1;
+
+(1)     goto label1;
+
+     label3:
+        return null;
+    }
+
+    android.view.View findOpenDrawer()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        boolean $z0;
+        int $i0, $i1, $i1_1, $i1_2;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        if $i1_1 >= $i0 goto label3;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i1_1);
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $z0 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean knownOpen>;
+
+        if $z0 == 0 goto label2;
+
+        return $r1;
+
+     label2:
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label3:
+        return null;
+    }
+
+    protected android.view.ViewGroup$LayoutParams generateDefaultLayoutParams()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 = new android.support.v4.widget.DrawerLayout$LayoutParams;
+
+        specialinvoke $r1.<android.support.v4.widget.DrawerLayout$LayoutParams: void <init>(int,int)>(-1, -1);
+
+        return $r1;
+    }
+
+    public android.view.ViewGroup$LayoutParams generateLayoutParams(android.util.AttributeSet)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.util.AttributeSet $r1;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r2;
+        android.content.Context $r3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.util.AttributeSet;
+
+        $r2 = new android.support.v4.widget.DrawerLayout$LayoutParams;
+
+        $r3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.content.Context getContext()>();
+
+        specialinvoke $r2.<android.support.v4.widget.DrawerLayout$LayoutParams: void <init>(android.content.Context,android.util.AttributeSet)>($r3, $r1);
+
+        return $r2;
+    }
+
+    protected android.view.ViewGroup$LayoutParams generateLayoutParams(android.view.ViewGroup$LayoutParams)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.ViewGroup$LayoutParams $r1;
+        boolean $z0, $z0_1;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r2, $r3, $r2_1, $r2_2;
+        android.view.ViewGroup$MarginLayoutParams $r4;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.ViewGroup$LayoutParams;
+
+        $z0 = $r1 instanceof android.support.v4.widget.DrawerLayout$LayoutParams;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new android.support.v4.widget.DrawerLayout$LayoutParams;
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r1;
+
+        specialinvoke $r2.<android.support.v4.widget.DrawerLayout$LayoutParams: void <init>(android.support.v4.widget.DrawerLayout$LayoutParams)>($r3);
+
+        return $r2;
+
+     label1:
+        $z0_1 = $r1 instanceof android.view.ViewGroup$MarginLayoutParams;
+
+        if $z0_1 == 0 goto label2;
+
+        $r2_1 = new android.support.v4.widget.DrawerLayout$LayoutParams;
+
+        $r4 = (android.view.ViewGroup$MarginLayoutParams) $r1;
+
+        specialinvoke $r2_1.<android.support.v4.widget.DrawerLayout$LayoutParams: void <init>(android.view.ViewGroup$MarginLayoutParams)>($r4);
+
+        return $r2_1;
+
+     label2:
+        $r2_2 = new android.support.v4.widget.DrawerLayout$LayoutParams;
+
+        specialinvoke $r2_2.<android.support.v4.widget.DrawerLayout$LayoutParams: void <init>(android.view.ViewGroup$LayoutParams)>($r1);
+
+        return $r2_2;
+    }
+
+    public int getDrawerLockMode(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $i1 = staticinvoke <android.support.v4.view.ViewCompat: int getLayoutDirection(android.view.View)>($r0);
+
+        $i0_1 = staticinvoke <android.support.v4.view.GravityCompat: int getAbsoluteGravity(int,int)>($i0, $i1);
+
+        if $i0_1 != 3 goto label1;
+
+        $i0_2 = $r0.<android.support.v4.widget.DrawerLayout: int mLockModeLeft>;
+
+        return $i0_2;
+
+     label1:
+        if $i0_1 != 5 goto label2;
+
+        $i0_3 = $r0.<android.support.v4.widget.DrawerLayout: int mLockModeRight>;
+
+        return $i0_3;
+
+     label2:
+        return 0;
+    }
+
+    public int getDrawerLockMode(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getDrawerViewAbsoluteGravity(android.view.View)>($r1);
+
+        if $i0 != 3 goto label1;
+
+        $i0_1 = $r0.<android.support.v4.widget.DrawerLayout: int mLockModeLeft>;
+
+        return $i0_1;
+
+     label1:
+        if $i0 != 5 goto label2;
+
+        $i0_2 = $r0.<android.support.v4.widget.DrawerLayout: int mLockModeRight>;
+
+        return $i0_2;
+
+     label2:
+        return 0;
+    }
+
+    public java.lang.CharSequence getDrawerTitle(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0, $i1, $i0_1;
+        java.lang.CharSequence r1, r1_1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $i1 = staticinvoke <android.support.v4.view.ViewCompat: int getLayoutDirection(android.view.View)>($r0);
+
+        $i0_1 = staticinvoke <android.support.v4.view.GravityCompat: int getAbsoluteGravity(int,int)>($i0, $i1);
+
+        if $i0_1 != 3 goto label1;
+
+        r1 = $r0.<android.support.v4.widget.DrawerLayout: java.lang.CharSequence mTitleLeft>;
+
+        return r1;
+
+     label1:
+        if $i0_1 != 5 goto label2;
+
+        r1_1 = $r0.<android.support.v4.widget.DrawerLayout: java.lang.CharSequence mTitleRight>;
+
+        return r1_1;
+
+     label2:
+        return null;
+    }
+
+    int getDrawerViewAbsoluteGravity(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+        int $i0, $i1, $i0_1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $i0 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: int gravity>;
+
+        $i1 = staticinvoke <android.support.v4.view.ViewCompat: int getLayoutDirection(android.view.View)>($r0);
+
+        $i0_1 = staticinvoke <android.support.v4.view.GravityCompat: int getAbsoluteGravity(int,int)>($i0, $i1);
+
+        return $i0_1;
+    }
+
+    float getDrawerViewOffset(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+        float f0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        f0 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen>;
+
+        return f0;
+    }
+
+    public android.graphics.drawable.Drawable getStatusBarBackgroundDrawable()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.graphics.drawable.Drawable r1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        r1 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mStatusBarBackground>;
+
+        return r1;
+    }
+
+    boolean isContentView(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        int $i0;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $i0 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: int gravity>;
+
+        if $i0 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isDrawerOpen(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0;
+        android.view.View $r1;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findDrawerWithGravity(int)>($i0);
+
+        if $r1 == null goto label1;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerOpen(android.view.View)>($r1);
+
+        return $z0;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isDrawerOpen(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        java.lang.IllegalArgumentException $r2;
+        boolean $z0, $z0_1;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.String $r4;
+        android.view.ViewGroup$LayoutParams $r5;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r6;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("View ");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" is not a drawer");
+
+        $r4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label1:
+        $r5 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r6 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r5;
+
+        $z0_1 = $r6.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean knownOpen>;
+
+        return $z0_1;
+    }
+
+    boolean isDrawerView(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+        int $i0, $i1, $i0_1, $i0_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $i0 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: int gravity>;
+
+        $i1 = staticinvoke <android.support.v4.view.ViewCompat: int getLayoutDirection(android.view.View)>($r1);
+
+        $i0_1 = staticinvoke <android.support.v4.view.GravityCompat: int getAbsoluteGravity(int,int)>($i0, $i1);
+
+        $i0_2 = $i0_1 & 7;
+
+        if $i0_2 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isDrawerVisible(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0;
+        android.view.View $r1;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findDrawerWithGravity(int)>($i0);
+
+        if $r1 == null goto label1;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerVisible(android.view.View)>($r1);
+
+        return $z0;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isDrawerVisible(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        java.lang.IllegalArgumentException $r2;
+        float $f0;
+        byte $b0;
+        boolean $z0;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.String $r4;
+        android.view.ViewGroup$LayoutParams $r5;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r6;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("View ");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" is not a drawer");
+
+        $r4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label1:
+        $r5 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r6 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r5;
+
+        $f0 = $r6.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen>;
+
+        $b0 = $f0 cmpl 0.0F;
+
+        if $b0 <= 0 goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    void moveDrawerToOffset(android.view.View, float)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        float $f0, $f1, $f2, $f1_1, $f1_2, $f1_3;
+        int $i0, $i1, $i0_1, $i1_1, $i1_2, $i1_3;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $f0 := @parameter1: float;
+
+        $f2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: float getDrawerViewOffset(android.view.View)>($r1);
+
+        $i0 = virtualinvoke $r1.<android.view.View: int getWidth()>();
+
+        $f1 = (float) $i0;
+
+        $f1_1 = $f1 * $f2;
+
+        $i1 = (int) $f1_1;
+
+        $f1_2 = (float) $i0;
+
+        $f1_3 = $f1_2 * $f0;
+
+        $i0_1 = (int) $f1_3;
+
+        $i1_1 = $i0_1 - $i1;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean checkDrawerViewAbsoluteGravity(android.view.View,int)>($r1, 3);
+
+(0)     if $z0 == 0 goto label2;
+
+     label1:
+        $i1_2 = Phi($i1_1 #0, $i1_3 #1);
+
+        virtualinvoke $r1.<android.view.View: void offsetLeftAndRight(int)>($i1_2);
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setDrawerViewOffset(android.view.View,float)>($r1, $f0);
+
+        return;
+
+     label2:
+        $i1_3 = neg $i1_1;
+
+(1)     goto label1;
+    }
+
+    protected void onAttachedToWindow()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        specialinvoke $r0.<android.view.ViewGroup: void onAttachedToWindow()>();
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mFirstLayout> = 1;
+
+        return;
+    }
+
+    protected void onDetachedFromWindow()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        specialinvoke $r0.<android.view.ViewGroup: void onDetachedFromWindow()>();
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mFirstLayout> = 1;
+
+        return;
+    }
+
+    public void onDraw(android.graphics.Canvas)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.graphics.Canvas $r1;
+        boolean $z0;
+        android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl $r2;
+        java.lang.Object $r3;
+        android.graphics.drawable.Drawable $r4, $r4_1, $r4_2, $r4_3;
+        int $i0, $i1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        specialinvoke $r0.<android.view.ViewGroup: void onDraw(android.graphics.Canvas)>($r1);
+
+        $z0 = $r0.<android.support.v4.widget.DrawerLayout: boolean mDrawStatusBarBackground>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r4 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mStatusBarBackground>;
+
+(1)     if $r4 == null goto label1;
+
+        $r2 = <android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl IMPL>;
+
+        $r3 = $r0.<android.support.v4.widget.DrawerLayout: java.lang.Object mLastInsets>;
+
+        $i0 = interfaceinvoke $r2.<android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl: int getTopInset(java.lang.Object)>($r3);
+
+(2)     if $i0 <= 0 goto label1;
+
+        $r4_1 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mStatusBarBackground>;
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getWidth()>();
+
+        virtualinvoke $r4_1.<android.graphics.drawable.Drawable: void setBounds(int,int,int,int)>(0, 0, $i1, $i0);
+
+        $r4_2 = $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mStatusBarBackground>;
+
+(3)     virtualinvoke $r4_2.<android.graphics.drawable.Drawable: void draw(android.graphics.Canvas)>($r1);
+
+     label1:
+        $r4_3 = Phi($r4 #0, $r4 #1, $r4 #2, $r4_2 #3);
+
+        return;
+    }
+
+    public boolean onInterceptTouchEvent(android.view.MotionEvent)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.MotionEvent $r1;
+        boolean $z0, $z1, $z2, $z0_1, $z1_1, $z1_2, $z0_2, $z0_3, $z0_4, $z2_1, $z1_3, $z1_4, $z2_2, $z2_3;
+        float $f0, $f1, $f2;
+        byte $b0;
+        int $i1, $i2, $i1_1, $i1_2, $i1_3;
+        android.support.v4.widget.ViewDragHelper $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+        android.view.View $r3;
+        android.support.v4.widget.DrawerLayout$ViewDragCallback $r4, $r4_1, $r4_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $i1 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionMasked(android.view.MotionEvent)>($r1);
+
+        $r2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $z0 = virtualinvoke $r2.<android.support.v4.widget.ViewDragHelper: boolean shouldInterceptTouchEvent(android.view.MotionEvent)>($r1);
+
+        $r2_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        $z1 = virtualinvoke $r2_1.<android.support.v4.widget.ViewDragHelper: boolean shouldInterceptTouchEvent(android.view.MotionEvent)>($r1);
+
+        $z0_1 = $z0 | $z1;
+
+        $z1_1 = 0;
+
+        lookupswitch($i1)
+        {
+            case 0: goto label4;
+            case 1: goto label7;
+            case 2: goto label6;
+            case 3: goto label7;
+            default: goto label1;
+        };
+
+     label1:
+(0)     goto label2;
+
+     label2:
+        $z1_2 = Phi($z1_1 #0, $z1_4 #9, $z1_1 #10, $z1_1 #11, $z1_1 #12);
+
+        $r4 = Phi($r4 #0, $r4 #9, $r4 #10, $r4_2 #11, $r4 #12);
+
+        $r2_2 = Phi($r2_1 #0, $r2_4 #9, $r2_5 #10, $r2_5 #11, $r2_1 #12);
+
+        $i1_1 = Phi($i1 #0, $i1_3 #9, $i1 #10, $i1 #11, $i1 #12);
+
+        $z2 = Phi($z2 #0, $z2_2 #9, $z2_3 #10, $z2_3 #11, $z2 #12);
+
+(1)     if $z0_1 != 0 goto label3;
+
+(2)     if $z1_2 != 0 goto label3;
+
+        $z0_2 = specialinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean hasPeekingDrawer()>();
+
+(3)     if $z0_2 != 0 goto label3;
+
+        $z0_3 = $r0.<android.support.v4.widget.DrawerLayout: boolean mChildrenCanceledTouch>;
+
+(4)     if $z0_3 == 0 goto label8;
+
+     label3:
+        $z0_4 = Phi($z0_1 #1, $z0_1 #2, $z0_2 #3, $z0_3 #4);
+
+        return 1;
+
+     label4:
+        $f1 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f2 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $r0.<android.support.v4.widget.DrawerLayout: float mInitialMotionX> = $f1;
+
+        $r0.<android.support.v4.widget.DrawerLayout: float mInitialMotionY> = $f2;
+
+        $f0 = $r0.<android.support.v4.widget.DrawerLayout: float mScrimOpacity>;
+
+        $b0 = $f0 cmpl 0.0F;
+
+(5)     if $b0 <= 0 goto label5;
+
+        $r2_3 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $i1_2 = (int) $f1;
+
+        $i2 = (int) $f2;
+
+        $r3 = virtualinvoke $r2_3.<android.support.v4.widget.ViewDragHelper: android.view.View findTopChildUnder(int,int)>($i1_2, $i2);
+
+(6)     if $r3 == null goto label5;
+
+        $z2_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isContentView(android.view.View)>($r3);
+
+(7)     if $z2_1 == 0 goto label5;
+
+(8)     $z1_3 = 1;
+
+     label5:
+        $z1_4 = Phi($z1_1 #5, $z1_1 #6, $z1_1 #7, $z1_3 #8);
+
+        $r2_4 = Phi($r2_1 #5, $r2_3 #6, $r2_3 #7, $r2_3 #8);
+
+        $i1_3 = Phi($i1 #5, $i1_2 #6, $i1_2 #7, $i1_2 #8);
+
+        $z2_2 = Phi($z2 #5, $z2 #6, $z2_1 #7, $z2_1 #8);
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mDisallowInterceptRequested> = 0;
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mChildrenCanceledTouch> = 0;
+
+(9)     goto label2;
+
+     label6:
+        $r2_5 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $z2_3 = virtualinvoke $r2_5.<android.support.v4.widget.ViewDragHelper: boolean checkTouchSlop(int)>(3);
+
+(10)    if $z2_3 == 0 goto label2;
+
+        $r4_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ViewDragCallback mLeftCallback>;
+
+        virtualinvoke $r4_1.<android.support.v4.widget.DrawerLayout$ViewDragCallback: void removeCallbacks()>();
+
+        $r4_2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$ViewDragCallback mRightCallback>;
+
+        virtualinvoke $r4_2.<android.support.v4.widget.DrawerLayout$ViewDragCallback: void removeCallbacks()>();
+
+(11)    goto label2;
+
+     label7:
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void closeDrawers(boolean)>(1);
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mDisallowInterceptRequested> = 0;
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mChildrenCanceledTouch> = 0;
+
+(12)    goto label2;
+
+     label8:
+        return 0;
+    }
+
+    public boolean onKeyDown(int, android.view.KeyEvent)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0;
+        android.view.KeyEvent $r1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.view.KeyEvent;
+
+(0)     if $i0 != 4 goto label1;
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean hasVisibleDrawer()>();
+
+(1)     if $z0 == 0 goto label1;
+
+        staticinvoke <android.support.v4.view.KeyEventCompat: void startTracking(android.view.KeyEvent)>($r1);
+
+        return 1;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0 #1);
+
+        $z0_2 = specialinvoke $r0.<android.view.ViewGroup: boolean onKeyDown(int,android.view.KeyEvent)>($i0, $r1);
+
+        return $z0_2;
+    }
+
+    public boolean onKeyUp(int, android.view.KeyEvent)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.KeyEvent $r1;
+        int $i0, $i0_1, $i0_2;
+        android.view.View $r2;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.view.KeyEvent;
+
+        if $i0 != 4 goto label3;
+
+        $r2 = specialinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findVisibleDrawer()>();
+
+(0)     if $r2 == null goto label1;
+
+        $i0_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getDrawerLockMode(android.view.View)>($r2);
+
+(1)     if $i0_1 != 0 goto label1;
+
+(2)     virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void closeDrawers()>();
+
+     label1:
+        $i0_2 = Phi($i0 #0, $i0_1 #1, $i0_1 #2);
+
+        if $r2 == null goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+
+     label3:
+        $z0 = specialinvoke $r0.<android.view.ViewGroup: boolean onKeyUp(int,android.view.KeyEvent)>($i0, $r1);
+
+        return $z0;
+    }
+
+    protected void onLayout(boolean, int, int, int, int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i9, $i11, $i12, $i2_1, $i3_1, $i4_1, $i5_1, $i6_1, $i5_2, $i9_1, $i12_1, $i11_1, $i7_1, $i8_1, $i4_2, $i5_3, $i6_2, $i7_2, $i8_2, $i7_3, $i8_3, $i9_2, $i8_4, $i6_3, $i7_4, $i5_4, $i8_5, $i5_5, $i8_6, $i5_6, $i8_7, $i8_8, $i8_9, $i8_10, $i6_4, $i9_3, $i7_5, $i6_5, $i9_4, $i12_2, $i11_2, $i7_6, $i8_11, $i5_7, $i7_7, $i8_12, $i8_13, $i9_5, $i8_14, $i6_6, $i9_6, $i7_8, $i8_15, $i9_7, $i9_8, $i11_3, $i9_9, $i9_10, $i12_3, $i11_4, $i8_16, $i6_7, $i7_9, $i11_5, $i12_4, $i12_5, $i9_11, $i8_17, $i9_12, $i5_8, $i5_9, $i8_18;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+        android.view.View $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+        float $f0, $f1, $f1_1, $f0_1, $f0_2, $f1_2, $f0_3, $f0_4, $f1_3, $f0_5, $f1_4, $f0_6, $f1_5, $f0_7, $f0_8, $f1_6, $f0_9, $f0_10, $f1_7, $f0_11;
+        byte $b10, $b10_1, $b10_2, $b10_3, $b10_4, $b10_5, $b10_6;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $z0 := @parameter0: boolean;
+
+        $i2 := @parameter1: int;
+
+        $i0 := @parameter2: int;
+
+        $i3 := @parameter3: int;
+
+        $i1 := @parameter4: int;
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mInLayout> = 1;
+
+        $i2_1 = $i3 - $i2;
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+(0)     $i4 = 0;
+
+     label01:
+        $i6 = Phi($i6 #0, $i6_1 #2);
+
+        $b10 = Phi($b10 #0, $b10_1 #2);
+
+        $z0_1 = Phi($z0 #0, $z0_2 #2);
+
+        $f1 = Phi($f1 #0, $f1_1 #2);
+
+        $i5 = Phi($i5 #0, $i5_2 #2);
+
+        $i9 = Phi($i9 #0, $i9_1 #2);
+
+        $f0 = Phi($f0 #0, $f0_1 #2);
+
+        $i4_1 = Phi($i4 #0, $i4_2 #2);
+
+        $i12 = Phi($i12 #0, $i12_1 #2);
+
+        $i11 = Phi($i11 #0, $i11_1 #2);
+
+        $i7 = Phi($i7 #0, $i7_1 #2);
+
+        $i8 = Phi($i8 #0, $i8_1 #2);
+
+        if $i4_1 >= $i3_1 goto label19;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i4_1);
+
+        $i5_1 = virtualinvoke $r1.<android.view.View: int getVisibility()>();
+
+(1)     if $i5_1 != 8 goto label03;
+
+     label02:
+        $i6_1 = Phi($i6 #1, $i6_2 #3, $i6_5 #8, $i6_5 #9);
+
+        $b10_1 = Phi($b10 #1, $b10 #3, $b10_5 #8, $b10_5 #9);
+
+        $z0_2 = Phi($z0_1 #1, $z0_3 #3, $z0_6 #8, $z0_6 #9);
+
+        $f1_1 = Phi($f1 #1, $f1 #3, $f1_5 #8, $f1_5 #9);
+
+        $i5_2 = Phi($i5_1 #1, $i5_3 #3, $i5_7 #8, $i5_7 #9);
+
+        $i9_1 = Phi($i9 #1, $i9_2 #3, $i9_4 #8, $i9_4 #9);
+
+        $f0_1 = Phi($f0 #1, $f0 #3, $f0_7 #8, $f0_7 #9);
+
+        $i12_1 = Phi($i12 #1, $i12 #3, $i12_2 #8, $i12_2 #9);
+
+        $i11_1 = Phi($i11 #1, $i11 #3, $i11_2 #8, $i11_2 #9);
+
+        $i7_1 = Phi($i7 #1, $i7_3 #3, $i7_6 #8, $i7_6 #9);
+
+        $i8_1 = Phi($i8 #1, $i8_4 #3, $i8_11 #8, $i8_11 #9);
+
+        $i4_2 = $i4_1 + 1;
+
+(2)     goto label01;
+
+     label03:
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $z0_3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isContentView(android.view.View)>($r1);
+
+        if $z0_3 == 0 goto label04;
+
+        $i5_3 = $r3.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+        $i6_2 = $r3.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+        $i7_2 = $r3.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+        $i8_2 = virtualinvoke $r1.<android.view.View: int getMeasuredWidth()>();
+
+        $i7_3 = $i7_2 + $i8_2;
+
+        $i8_3 = $r3.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+        $i9_2 = virtualinvoke $r1.<android.view.View: int getMeasuredHeight()>();
+
+        $i8_4 = $i8_3 + $i9_2;
+
+        virtualinvoke $r1.<android.view.View: void layout(int,int,int,int)>($i5_3, $i6_2, $i7_3, $i8_4);
+
+(3)     goto label02;
+
+     label04:
+        $i6_3 = virtualinvoke $r1.<android.view.View: int getMeasuredWidth()>();
+
+        $i7_4 = virtualinvoke $r1.<android.view.View: int getMeasuredHeight()>();
+
+        $z0_4 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean checkDrawerViewAbsoluteGravity(android.view.View,int)>($r1, 3);
+
+        if $z0_4 == 0 goto label12;
+
+        $i5_4 = neg $i6_3;
+
+        $f0_2 = (float) $i6_3;
+
+        $f1_2 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen>;
+
+        $f0_3 = $f0_2 * $f1_2;
+
+        $i8_5 = (int) $f0_3;
+
+        $i5_5 = $i5_4 + $i8_5;
+
+        $i8_6 = $i6_3 + $i5_5;
+
+        $f0_4 = (float) $i8_6;
+
+        $f1_3 = (float) $i6_3;
+
+(4)     $f0_5 = $f0_4 / $f1_3;
+
+     label05:
+        $f1_4 = Phi($f1_3 #4, $f1_7 #10);
+
+        $i5_6 = Phi($i5_5 #4, $i5_9 #10);
+
+        $f0_6 = Phi($f0_5 #4, $f0_11 #10);
+
+        $i8_7 = Phi($i8_6 #4, $i8_18 #10);
+
+        $f1_5 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen>;
+
+        $b10_2 = $f0_6 cmpl $f1_5;
+
+        if $b10_2 == 0 goto label13;
+
+(5)     $z0_5 = 1;
+
+     label06:
+        $z0_6 = Phi($z0_5 #5, $z0_7 #11);
+
+        $i8_8 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: int gravity>;
+
+        $i8_9 = $i8_8 & 112;
+
+        lookupswitch($i8_9)
+        {
+            case 16: goto label15;
+            case 80: goto label14;
+            default: goto label07;
+        };
+
+     label07:
+        goto label08;
+
+     label08:
+        $i8_10 = $r3.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+        $i6_4 = $i5_6 + $i6_3;
+
+        $i9_3 = $r3.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+        $i7_5 = $i9_3 + $i7_4;
+
+(6)     virtualinvoke $r1.<android.view.View: void layout(int,int,int,int)>($i5_6, $i8_10, $i6_4, $i7_5);
+
+     label09:
+        $i6_5 = Phi($i6_4 #6, $i6_6 #12, $i6_7 #14);
+
+        $i9_4 = Phi($i9_3 #6, $i9_6 #12, $i9_10 #14);
+
+        $i12_2 = Phi($i12 #6, $i12 #12, $i12_3 #14);
+
+        $i11_2 = Phi($i11 #6, $i11 #12, $i11_4 #14);
+
+        $i7_6 = Phi($i7_5 #6, $i7_8 #12, $i7_9 #14);
+
+        $i8_11 = Phi($i8_10 #6, $i8_14 #12, $i8_16 #14);
+
+        if $z0_6 == 0 goto label10;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setDrawerViewOffset(android.view.View,float)>($r1, $f0_6);
+
+     label10:
+        $f0_7 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen>;
+
+        $b10_3 = $f0_7 cmpl 0.0F;
+
+        if $b10_3 <= 0 goto label18;
+
+(7)     $b10_4 = 0;
+
+     label11:
+        $b10_5 = Phi($b10_4 #7, $b10_6 #17);
+
+        $i5_7 = virtualinvoke $r1.<android.view.View: int getVisibility()>();
+
+(8)     if $i5_7 == $b10_5 goto label02;
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>($b10_5);
+
+(9)     goto label02;
+
+     label12:
+        $f0_8 = (float) $i6_3;
+
+        $f1_6 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen>;
+
+        $f0_9 = $f0_8 * $f1_6;
+
+        $i5_8 = (int) $f0_9;
+
+        $i5_9 = $i2_1 - $i5_8;
+
+        $i8_18 = $i2_1 - $i5_9;
+
+        $f0_10 = (float) $i8_18;
+
+        $f1_7 = (float) $i6_3;
+
+        $f0_11 = $f0_10 / $f1_7;
+
+(10)    goto label05;
+
+     label13:
+        $z0_7 = 0;
+
+(11)    goto label06;
+
+     label14:
+        $i7_7 = $i1 - $i0;
+
+        $i8_12 = $r3.<android.view.ViewGroup$MarginLayoutParams: int bottomMargin>;
+
+        $i8_13 = $i7_7 - $i8_12;
+
+        $i9_5 = virtualinvoke $r1.<android.view.View: int getMeasuredHeight()>();
+
+        $i8_14 = $i8_13 - $i9_5;
+
+        $i6_6 = $i5_6 + $i6_3;
+
+        $i9_6 = $r3.<android.view.ViewGroup$MarginLayoutParams: int bottomMargin>;
+
+        $i7_8 = $i7_7 - $i9_6;
+
+        virtualinvoke $r1.<android.view.View: void layout(int,int,int,int)>($i5_6, $i8_14, $i6_6, $i7_8);
+
+(12)    goto label09;
+
+     label15:
+        $i8_15 = $i1 - $i0;
+
+        $i9_7 = $i8_15 - $i7_4;
+
+        $i9_8 = $i9_7 / 2;
+
+        $i11_3 = $r3.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+        if $i9_8 >= $i11_3 goto label17;
+
+(13)    $i9_9 = $r3.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+     label16:
+        $i9_10 = Phi($i9_9 #13, $i9_8 #15, $i9_12 #16);
+
+        $i12_3 = Phi($i12 #13, $i12_5 #15, $i12_5 #16);
+
+        $i11_4 = Phi($i11_3 #13, $i11_5 #15, $i11_5 #16);
+
+        $i8_16 = Phi($i8_15 #13, $i8_15 #15, $i8_17 #16);
+
+        $i6_7 = $i5_6 + $i6_3;
+
+        $i7_9 = $i9_10 + $i7_4;
+
+        virtualinvoke $r1.<android.view.View: void layout(int,int,int,int)>($i5_6, $i9_10, $i6_7, $i7_9);
+
+(14)    goto label09;
+
+     label17:
+        $i11_5 = $i9_8 + $i7_4;
+
+        $i12_4 = $r3.<android.view.ViewGroup$MarginLayoutParams: int bottomMargin>;
+
+        $i12_5 = $i8_15 - $i12_4;
+
+(15)    if $i11_5 <= $i12_5 goto label16;
+
+        $i9_11 = $r3.<android.view.ViewGroup$MarginLayoutParams: int bottomMargin>;
+
+        $i8_17 = $i8_15 - $i9_11;
+
+        $i9_12 = $i8_17 - $i7_4;
+
+(16)    goto label16;
+
+     label18:
+        $b10_6 = 4;
+
+(17)    goto label11;
+
+     label19:
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mInLayout> = 0;
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mFirstLayout> = 0;
+
+        return;
+    }
+
+    protected void onMeasure(int, int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i9, $i4_1, $i5_1, $i4_2, $i5_2, $i4_3, $i2_1, $i3_1, $i6_1, $i7_1, $i9_1, $i8_1, $i7_2, $i6_2, $i7_3, $i7_4, $i7_5, $i7_6, $i7_7, $i8_2, $i7_8, $i7_9, $i8_3, $i8_4, $i9_2, $i8_5, $i8_6, $i7_10, $i7_11, $i8_7, $i7_12, $i8_8, $i7_13, $i8_9, $i7_14, $i8_10, $i7_15, $i8_11, $i9_3, $i8_12, $i9_4, $i8_13;
+        java.lang.IllegalArgumentException $r1;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4, $z1_1, $z1_2, $z1_3, $z1_4, $z1_5, $z0_5, $z0_6;
+        java.lang.Object $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+        android.view.View $r3;
+        android.view.ViewGroup$LayoutParams $r4;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r5;
+        android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        java.lang.IllegalStateException $r7, $r7_1;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8, $r8_9, $r8_10, $r8_11, $r8_12, $r8_13;
+        java.lang.String $r9, $r9_1, $r9_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 = staticinvoke <android.view.View$MeasureSpec: int getMode(int)>($i0);
+
+        $i3 = staticinvoke <android.view.View$MeasureSpec: int getMode(int)>($i1);
+
+        $i4 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i0);
+
+        $i5 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i1);
+
+        if $i2 != 1073741824 goto label01;
+
+(0)     if $i3 == 1073741824 goto label03;
+
+     label01:
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isInEditMode()>();
+
+        if $z0 == 0 goto label09;
+
+(1)     if $i2 != -2147483648 goto label07;
+
+     label02:
+        $i4_1 = Phi($i4 #1, $i4 #9, $i4_2 #10);
+
+(2)     if $i3 != -2147483648 goto label08;
+
+     label03:
+        $i5_2 = Phi($i5 #0, $i5 #2, $i5 #11, $i5_1 #12);
+
+        $z0_1 = Phi($z0 #0, $z0 #2, $z0 #11, $z0 #12);
+
+        $i4_3 = Phi($i4 #0, $i4_1 #2, $i4_1 #11, $i4_1 #12);
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setMeasuredDimension(int,int)>($i4_3, $i5_2);
+
+        $r2 = $r0.<android.support.v4.widget.DrawerLayout: java.lang.Object mLastInsets>;
+
+(3)     if $r2 == null goto label10;
+
+        $z0_2 = staticinvoke <android.support.v4.view.ViewCompat: boolean getFitsSystemWindows(android.view.View)>($r0);
+
+(4)     if $z0_2 == 0 goto label10;
+
+(5)     $z0_3 = 1;
+
+     label04:
+        $z0_4 = Phi($z0_3 #5, $z0_6 #13);
+
+        $i2_1 = staticinvoke <android.support.v4.view.ViewCompat: int getLayoutDirection(android.view.View)>($r0);
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getChildCount()>();
+
+(6)     $i6 = 0;
+
+     label05:
+        $r6 = Phi($r6 #6, $r6_1 #8);
+
+        $z1 = Phi($z1 #6, $z1_1 #8);
+
+        $i9 = Phi($i9 #6, $i9_1 #8);
+
+        $r2_1 = Phi($r2 #6, $r2_2 #8);
+
+        $i8 = Phi($i8 #6, $i8_1 #8);
+
+        $i6_1 = Phi($i6 #6, $i6_2 #8);
+
+        $i7 = Phi($i7 #6, $i7_2 #8);
+
+        if $i6_1 >= $i3_1 goto label17;
+
+        $r3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View getChildAt(int)>($i6_1);
+
+        $i7_1 = virtualinvoke $r3.<android.view.View: int getVisibility()>();
+
+(7)     if $i7_1 != 8 goto label11;
+
+     label06:
+        $r6_1 = Phi($r6 #7, $r6_4 #16, $r6_4 #18);
+
+        $z1_1 = Phi($z1 #7, $z1_4 #16, $z1_5 #18);
+
+        $i9_1 = Phi($i9 #7, $i9_2 #16, $i9_4 #18);
+
+        $r2_2 = Phi($r2_1 #7, $r2_5 #16, $r2_5 #18);
+
+        $i8_1 = Phi($i8 #7, $i8_6 #16, $i8_13 #18);
+
+        $i7_2 = Phi($i7_1 #7, $i7_9 #16, $i7_15 #18);
+
+        $i6_2 = $i6_1 + 1;
+
+(8)     goto label05;
+
+     label07:
+(9)     if $i2 != 0 goto label02;
+
+        $i4_2 = 300;
+
+(10)    goto label02;
+
+     label08:
+(11)    if $i3 != 0 goto label03;
+
+        $i5_1 = 300;
+
+(12)    goto label03;
+
+     label09:
+        $r1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("DrawerLayout must be measured with MeasureSpec.EXACTLY.");
+
+        throw $r1;
+
+     label10:
+        $z0_5 = Phi($z0_1 #3, $z0_2 #4);
+
+        $z0_6 = 0;
+
+(13)    goto label04;
+
+     label11:
+        $r4 = virtualinvoke $r3.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r5 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r4;
+
+(14)    if $z0_4 == 0 goto label12;
+
+        $i7_3 = $r5.<android.support.v4.widget.DrawerLayout$LayoutParams: int gravity>;
+
+        $i7_4 = staticinvoke <android.support.v4.view.GravityCompat: int getAbsoluteGravity(int,int)>($i7_3, $i2_1);
+
+        $z1_2 = staticinvoke <android.support.v4.view.ViewCompat: boolean getFitsSystemWindows(android.view.View)>($r3);
+
+        if $z1_2 == 0 goto label13;
+
+        $r6_2 = <android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl IMPL>;
+
+        $r2_3 = $r0.<android.support.v4.widget.DrawerLayout: java.lang.Object mLastInsets>;
+
+(15)    interfaceinvoke $r6_2.<android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl: void dispatchChildInsets(android.view.View,java.lang.Object,int)>($r3, $r2_3, $i7_4);
+
+     label12:
+        $r6_4 = Phi($r6 #14, $r6_2 #15, $r6_3 #17);
+
+        $z1_3 = Phi($z1 #14, $z1_2 #15, $z1_2 #17);
+
+        $r2_5 = Phi($r2_1 #14, $r2_3 #15, $r2_4 #17);
+
+        $i7_5 = Phi($i7_1 #14, $i7_4 #15, $i7_4 #17);
+
+        $z1_4 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isContentView(android.view.View)>($r3);
+
+        if $z1_4 == 0 goto label14;
+
+        $i7_6 = $r5.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+        $i7_7 = $i4_3 - $i7_6;
+
+        $i8_2 = $r5.<android.view.ViewGroup$MarginLayoutParams: int rightMargin>;
+
+        $i7_8 = $i7_7 - $i8_2;
+
+        $i7_9 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i7_8, 1073741824);
+
+        $i8_3 = $r5.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+        $i8_4 = $i5_2 - $i8_3;
+
+        $i9_2 = $r5.<android.view.ViewGroup$MarginLayoutParams: int bottomMargin>;
+
+        $i8_5 = $i8_4 - $i9_2;
+
+        $i8_6 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i8_5, 1073741824);
+
+        virtualinvoke $r3.<android.view.View: void measure(int,int)>($i7_9, $i8_6);
+
+(16)    goto label06;
+
+     label13:
+        $r6_3 = <android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl IMPL>;
+
+        $r2_4 = $r0.<android.support.v4.widget.DrawerLayout: java.lang.Object mLastInsets>;
+
+        interfaceinvoke $r6_3.<android.support.v4.widget.DrawerLayout$DrawerLayoutCompatImpl: void applyMarginInsets(android.view.ViewGroup$MarginLayoutParams,java.lang.Object,int)>($r5, $r2_4, $i7_4);
+
+(17)    goto label12;
+
+     label14:
+        $z1_5 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r3);
+
+        if $z1_5 == 0 goto label16;
+
+        $i7_10 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getDrawerViewAbsoluteGravity(android.view.View)>($r3);
+
+        $i7_11 = $i7_10 & 7;
+
+        $i8_7 = 0 & $i7_11;
+
+        if $i8_7 == 0 goto label15;
+
+        $r7 = new java.lang.IllegalStateException;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Child drawer has absolute gravity ");
+
+        $r9 = staticinvoke <android.support.v4.widget.DrawerLayout: java.lang.String gravityToString(int)>($i7_11);
+
+        $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r8_3 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" but this ");
+
+        $r8_4 = virtualinvoke $r8_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("DrawerLayout");
+
+        $r8_5 = virtualinvoke $r8_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" already has a ");
+
+        $r8_6 = virtualinvoke $r8_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("drawer view along that edge");
+
+        $r9_1 = virtualinvoke $r8_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r9_1);
+
+        throw $r7;
+
+     label15:
+        $i7_12 = $r0.<android.support.v4.widget.DrawerLayout: int mMinDrawerMargin>;
+
+        $i8_8 = $r5.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+        $i7_13 = $i7_12 + $i8_8;
+
+        $i8_9 = $r5.<android.view.ViewGroup$MarginLayoutParams: int rightMargin>;
+
+        $i7_14 = $i7_13 + $i8_9;
+
+        $i8_10 = $r5.<android.view.ViewGroup$LayoutParams: int width>;
+
+        $i7_15 = staticinvoke <android.support.v4.widget.DrawerLayout: int getChildMeasureSpec(int,int,int)>($i0, $i7_14, $i8_10);
+
+        $i8_11 = $r5.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+        $i9_3 = $r5.<android.view.ViewGroup$MarginLayoutParams: int bottomMargin>;
+
+        $i8_12 = $i8_11 + $i9_3;
+
+        $i9_4 = $r5.<android.view.ViewGroup$LayoutParams: int height>;
+
+        $i8_13 = staticinvoke <android.support.v4.widget.DrawerLayout: int getChildMeasureSpec(int,int,int)>($i1, $i8_12, $i9_4);
+
+        virtualinvoke $r3.<android.view.View: void measure(int,int)>($i7_15, $i8_13);
+
+(18)    goto label06;
+
+     label16:
+        $r7_1 = new java.lang.IllegalStateException;
+
+        $r8_7 = new java.lang.StringBuilder;
+
+        specialinvoke $r8_7.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_8 = virtualinvoke $r8_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Child ");
+
+        $r8_9 = virtualinvoke $r8_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+        $r8_10 = virtualinvoke $r8_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at index ");
+
+        $r8_11 = virtualinvoke $r8_10.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i6_1);
+
+        $r8_12 = virtualinvoke $r8_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" does not have a valid layout_gravity - must be Gravity.LEFT, ");
+
+        $r8_13 = virtualinvoke $r8_12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Gravity.RIGHT or Gravity.NO_GRAVITY");
+
+        $r9_2 = virtualinvoke $r8_13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r9_2);
+
+        throw $r7_1;
+
+     label17:
+        return;
+    }
+
+    protected void onRestoreInstanceState(android.os.Parcelable)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.os.Parcelable $r1, $r1_1;
+        android.support.v4.widget.DrawerLayout$SavedState $r2;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4;
+        android.view.View $r3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.os.Parcelable;
+
+        $r2 = (android.support.v4.widget.DrawerLayout$SavedState) $r1;
+
+        $r1_1 = virtualinvoke $r2.<android.support.v4.widget.DrawerLayout$SavedState: android.os.Parcelable getSuperState()>();
+
+        specialinvoke $r0.<android.view.ViewGroup: void onRestoreInstanceState(android.os.Parcelable)>($r1_1);
+
+        $i0 = $r2.<android.support.v4.widget.DrawerLayout$SavedState: int openDrawerGravity>;
+
+(0)     if $i0 == 0 goto label1;
+
+        $i0_1 = $r2.<android.support.v4.widget.DrawerLayout$SavedState: int openDrawerGravity>;
+
+        $r3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findDrawerWithGravity(int)>($i0_1);
+
+(1)     if $r3 == null goto label1;
+
+(2)     virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void openDrawer(android.view.View)>($r3);
+
+     label1:
+        $i0_2 = Phi($i0 #0, $i0_1 #1, $i0_1 #2);
+
+        $i0_3 = $r2.<android.support.v4.widget.DrawerLayout$SavedState: int lockModeLeft>;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setDrawerLockMode(int,int)>($i0_3, 3);
+
+        $i0_4 = $r2.<android.support.v4.widget.DrawerLayout$SavedState: int lockModeRight>;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setDrawerLockMode(int,int)>($i0_4, 5);
+
+        return;
+    }
+
+    protected android.os.Parcelable onSaveInstanceState()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.support.v4.widget.DrawerLayout$SavedState $r1;
+        android.os.Parcelable $r2;
+        android.view.View $r3;
+        android.view.ViewGroup$LayoutParams $r4;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r5;
+        int $i0, $i0_1, $i0_2, $i0_3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r2 = specialinvoke $r0.<android.view.ViewGroup: android.os.Parcelable onSaveInstanceState()>();
+
+        $r1 = new android.support.v4.widget.DrawerLayout$SavedState;
+
+        specialinvoke $r1.<android.support.v4.widget.DrawerLayout$SavedState: void <init>(android.os.Parcelable)>($r2);
+
+        $r3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findOpenDrawer()>();
+
+(0)     if $r3 == null goto label1;
+
+        $r4 = virtualinvoke $r3.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r5 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r4;
+
+        $i0 = $r5.<android.support.v4.widget.DrawerLayout$LayoutParams: int gravity>;
+
+(1)     $r1.<android.support.v4.widget.DrawerLayout$SavedState: int openDrawerGravity> = $i0;
+
+     label1:
+        $i0_1 = Phi($i0 #0, $i0 #1);
+
+        $i0_2 = $r0.<android.support.v4.widget.DrawerLayout: int mLockModeLeft>;
+
+        $r1.<android.support.v4.widget.DrawerLayout$SavedState: int lockModeLeft> = $i0_2;
+
+        $i0_3 = $r0.<android.support.v4.widget.DrawerLayout: int mLockModeRight>;
+
+        $r1.<android.support.v4.widget.DrawerLayout$SavedState: int lockModeRight> = $i0_3;
+
+        return $r1;
+    }
+
+    public boolean onTouchEvent(android.view.MotionEvent)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.MotionEvent $r1;
+        int $i0, $i2, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6;
+        byte $b1;
+        android.support.v4.widget.ViewDragHelper $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        float $f0, $f1, $f2, $f1_1, $f0_1, $f1_2, $f2_1, $f0_2, $f1_3, $f0_3, $f0_4, $f1_4, $f2_2, $f1_5, $f0_5;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3;
+        android.view.View $r3, $r3_1, $r3_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $r2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        virtualinvoke $r2.<android.support.v4.widget.ViewDragHelper: void processTouchEvent(android.view.MotionEvent)>($r1);
+
+        $r2_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        virtualinvoke $r2_1.<android.support.v4.widget.ViewDragHelper: void processTouchEvent(android.view.MotionEvent)>($r1);
+
+        $i0 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+        $i0_1 = $i0 & 255;
+
+        lookupswitch($i0_1)
+        {
+            case 0: goto label3;
+            case 1: goto label4;
+            case 2: goto label2;
+            case 3: goto label7;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        return 1;
+
+     label3:
+        $f0 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f1 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $r0.<android.support.v4.widget.DrawerLayout: float mInitialMotionX> = $f0;
+
+        $r0.<android.support.v4.widget.DrawerLayout: float mInitialMotionY> = $f1;
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mDisallowInterceptRequested> = 0;
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mChildrenCanceledTouch> = 0;
+
+        return 1;
+
+     label4:
+        $f1_1 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f0_1 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $z0 = 1;
+
+        $r2_2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $i0_2 = (int) $f1_1;
+
+        $i2 = (int) $f0_1;
+
+        $r3 = virtualinvoke $r2_2.<android.support.v4.widget.ViewDragHelper: android.view.View findTopChildUnder(int,int)>($i0_2, $i2);
+
+(0)     if $r3 == null goto label5;
+
+        $z1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isContentView(android.view.View)>($r3);
+
+(1)     if $z1 == 0 goto label5;
+
+        $f2 = $r0.<android.support.v4.widget.DrawerLayout: float mInitialMotionX>;
+
+        $f1_2 = $f1_1 - $f2;
+
+        $f2_1 = $r0.<android.support.v4.widget.DrawerLayout: float mInitialMotionY>;
+
+        $f0_2 = $f0_1 - $f2_1;
+
+        $r2_3 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $i0_3 = virtualinvoke $r2_3.<android.support.v4.widget.ViewDragHelper: int getTouchSlop()>();
+
+        $f1_3 = $f1_2 * $f1_2;
+
+        $f0_3 = $f0_2 * $f0_2;
+
+        $f0_4 = $f1_3 + $f0_3;
+
+        $i0_4 = $i0_3 * $i0_3;
+
+        $f1_4 = (float) $i0_4;
+
+        $b1 = $f0_4 cmpg $f1_4;
+
+(2)     if $b1 >= 0 goto label5;
+
+        $r3_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findOpenDrawer()>();
+
+(3)     if $r3_1 == null goto label5;
+
+        $i0_5 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getDrawerLockMode(android.view.View)>($r3_1);
+
+        if $i0_5 != 2 goto label6;
+
+(4)     $z0_1 = 1;
+
+     label5:
+        $f2_2 = Phi($f2 #0, $f2 #1, $f2_1 #2, $f2_1 #3, $f2_1 #4, $f2_1 #5);
+
+        $r2_4 = Phi($r2_2 #0, $r2_2 #1, $r2_3 #2, $r2_3 #3, $r2_3 #4, $r2_3 #5);
+
+        $z0_3 = Phi($z0 #0, $z0 #1, $z0 #2, $z0 #3, $z0_1 #4, $z0_2 #5);
+
+        $r3_2 = Phi($r3 #0, $r3 #1, $r3 #2, $r3_1 #3, $r3_1 #4, $r3_1 #5);
+
+        $i0_6 = Phi($i0_2 #0, $i0_2 #1, $i0_4 #2, $i0_4 #3, $i0_5 #4, $i0_5 #5);
+
+        $f1_5 = Phi($f1_1 #0, $f1_1 #1, $f1_4 #2, $f1_4 #3, $f1_4 #4, $f1_4 #5);
+
+        $f0_5 = Phi($f0_1 #0, $f0_1 #1, $f0_4 #2, $f0_4 #3, $f0_4 #4, $f0_4 #5);
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void closeDrawers(boolean)>($z0_3);
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mDisallowInterceptRequested> = 0;
+
+        return 1;
+
+     label6:
+        $z0_2 = 0;
+
+(5)     goto label5;
+
+     label7:
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void closeDrawers(boolean)>(1);
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mDisallowInterceptRequested> = 0;
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mChildrenCanceledTouch> = 0;
+
+        return 1;
+    }
+
+    public void openDrawer(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0;
+        java.lang.IllegalArgumentException $r1;
+        android.view.View $r2;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2;
+        java.lang.String $r4, $r4_1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findDrawerWithGravity(int)>($i0);
+
+        if $r2 != null goto label1;
+
+        $r1 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("No drawer view found with gravity ");
+
+        $r4 = staticinvoke <android.support.v4.widget.DrawerLayout: java.lang.String gravityToString(int)>($i0);
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4_1 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4_1);
+
+        throw $r1;
+
+     label1:
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void openDrawer(android.view.View)>($r2);
+
+        return;
+    }
+
+    public void openDrawer(android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        java.lang.IllegalArgumentException $r2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.String $r4;
+        android.view.ViewGroup$LayoutParams $r5;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r6;
+        android.support.v4.widget.ViewDragHelper $r7, $r7_1, $r7_2;
+        int $i0, $i1, $i0_1, $i0_2, $i1_1, $i0_3, $i1_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("View ");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" is not a sliding drawer");
+
+        $r4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label1:
+        $z0_1 = $r0.<android.support.v4.widget.DrawerLayout: boolean mFirstLayout>;
+
+        if $z0_1 == 0 goto label3;
+
+        $r5 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r6 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r5;
+
+        $r6.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen> = 1.0F;
+
+        $r6.<android.support.v4.widget.DrawerLayout$LayoutParams: boolean knownOpen> = 1;
+
+(0)     specialinvoke $r0.<android.support.v4.widget.DrawerLayout: void updateChildrenImportantForAccessibility(android.view.View,boolean)>($r1, 1);
+
+     label2:
+        $z0_2 = Phi($z0_1 #0, $z0_3 #1, $z0_3 #2);
+
+        $r7 = Phi($r7 #0, $r7_1 #1, $r7_2 #2);
+
+        $i1 = Phi($i1 #0, $i1 #1, $i1_2 #2);
+
+        $i0 = Phi($i0 #0, $i0_1 #1, $i0_3 #2);
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void invalidate()>();
+
+        return;
+
+     label3:
+        $z0_3 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean checkDrawerViewAbsoluteGravity(android.view.View,int)>($r1, 3);
+
+        if $z0_3 == 0 goto label4;
+
+        $r7_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $i0_1 = virtualinvoke $r1.<android.view.View: int getTop()>();
+
+        virtualinvoke $r7_1.<android.support.v4.widget.ViewDragHelper: boolean smoothSlideViewTo(android.view.View,int,int)>($r1, 0, $i0_1);
+
+(1)     goto label2;
+
+     label4:
+        $r7_2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        $i0_2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: int getWidth()>();
+
+        $i1_1 = virtualinvoke $r1.<android.view.View: int getWidth()>();
+
+        $i0_3 = $i0_2 - $i1_1;
+
+        $i1_2 = virtualinvoke $r1.<android.view.View: int getTop()>();
+
+        virtualinvoke $r7_2.<android.support.v4.widget.ViewDragHelper: boolean smoothSlideViewTo(android.view.View,int,int)>($r1, $i0_3, $i1_2);
+
+(2)     goto label2;
+    }
+
+    public void requestDisallowInterceptTouchEvent(boolean)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $z0 := @parameter0: boolean;
+
+        specialinvoke $r0.<android.view.ViewGroup: void requestDisallowInterceptTouchEvent(boolean)>($z0);
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mDisallowInterceptRequested> = $z0;
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void closeDrawers(boolean)>(1);
+
+     label1:
+        return;
+    }
+
+    public void requestLayout()
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $z0 = $r0.<android.support.v4.widget.DrawerLayout: boolean mInLayout>;
+
+        if $z0 != 0 goto label1;
+
+        specialinvoke $r0.<android.view.ViewGroup: void requestLayout()>();
+
+     label1:
+        return;
+    }
+
+    public void setChildInsets(java.lang.Object, boolean)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        java.lang.Object $r1;
+        android.graphics.drawable.Drawable $r2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<android.support.v4.widget.DrawerLayout: java.lang.Object mLastInsets> = $r1;
+
+        $r0.<android.support.v4.widget.DrawerLayout: boolean mDrawStatusBarBackground> = $z0;
+
+        if $z0 != 0 goto label2;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable getBackground()>();
+
+        if $r2 != null goto label2;
+
+(0)     $z0_1 = 1;
+
+     label1:
+        $z0_2 = Phi($z0_1 #0, $z0_3 #1);
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setWillNotDraw(boolean)>($z0_2);
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void requestLayout()>();
+
+        return;
+
+     label2:
+        $z0_3 = 0;
+
+(1)     goto label1;
+    }
+
+    public void setDrawerListener(android.support.v4.widget.DrawerLayout$DrawerListener)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.support.v4.widget.DrawerLayout$DrawerListener $r1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.support.v4.widget.DrawerLayout$DrawerListener;
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerListener mListener> = $r1;
+
+        return;
+    }
+
+    public void setDrawerLockMode(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setDrawerLockMode(int,int)>($i0, 3);
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setDrawerLockMode(int,int)>($i0, 5);
+
+        return;
+    }
+
+    public void setDrawerLockMode(int, int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0, $i1, $i2, $i1_1;
+        android.support.v4.widget.ViewDragHelper $r1, $r1_1, $r1_2, $r1_3;
+        android.view.View $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 = staticinvoke <android.support.v4.view.ViewCompat: int getLayoutDirection(android.view.View)>($r0);
+
+        $i1_1 = staticinvoke <android.support.v4.view.GravityCompat: int getAbsoluteGravity(int,int)>($i1, $i2);
+
+        if $i1_1 != 3 goto label5;
+
+        $r0.<android.support.v4.widget.DrawerLayout: int mLockModeLeft> = $i0;
+
+     label1:
+(0)     if $i0 == 0 goto label3;
+
+        if $i1_1 != 3 goto label6;
+
+(1)     $r1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+     label2:
+        $r1_1 = Phi($r1 #1, $r1_2 #3);
+
+(2)     virtualinvoke $r1_1.<android.support.v4.widget.ViewDragHelper: void cancel()>();
+
+     label3:
+        $r1_3 = Phi($r1 #0, $r1_1 #2);
+
+        lookupswitch($i0)
+        {
+            case 1: goto label8;
+            case 2: goto label7;
+            default: goto label4;
+        };
+
+     label4:
+        return;
+
+     label5:
+        if $i1_1 != 5 goto label1;
+
+        $r0.<android.support.v4.widget.DrawerLayout: int mLockModeRight> = $i0;
+
+        goto label1;
+
+     label6:
+        $r1_2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+(3)     goto label2;
+
+     label7:
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findDrawerWithGravity(int)>($i1_1);
+
+(4)     if $r2 == null goto label9;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void openDrawer(android.view.View)>($r2);
+
+        return;
+
+     label8:
+        $r2_1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.view.View findDrawerWithGravity(int)>($i1_1);
+
+(5)     if $r2_1 == null goto label9;
+
+(6)     virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void closeDrawer(android.view.View)>($r2_1);
+
+     label9:
+        $r2_2 = Phi($r2 #4, $r2_1 #5, $r2_1 #6);
+
+        return;
+    }
+
+    public void setDrawerLockMode(int, android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0, $i1;
+        android.view.View $r1;
+        java.lang.IllegalArgumentException $r2;
+        boolean $z0;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        java.lang.String $r4;
+        android.view.ViewGroup$LayoutParams $r5;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r6;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.view.View;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: boolean isDrawerView(android.view.View)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("View ");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" is not a ");
+
+        $r3_4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("drawer with appropriate layout_gravity");
+
+        $r4 = virtualinvoke $r3_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label1:
+        $r5 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r6 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r5;
+
+        $i1 = $r6.<android.support.v4.widget.DrawerLayout$LayoutParams: int gravity>;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setDrawerLockMode(int,int)>($i0, $i1);
+
+        return;
+    }
+
+    public void setDrawerShadow(int, int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0, $i1;
+        android.content.res.Resources $r1;
+        android.graphics.drawable.Drawable $r2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.content.res.Resources getResources()>();
+
+        $r2 = virtualinvoke $r1.<android.content.res.Resources: android.graphics.drawable.Drawable getDrawable(int)>($i0);
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void setDrawerShadow(android.graphics.drawable.Drawable,int)>($r2, $i1);
+
+        return;
+    }
+
+    public void setDrawerShadow(android.graphics.drawable.Drawable, int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.graphics.drawable.Drawable $r1;
+        int $i0, $i1, $i0_1, $i1_1, $i0_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.graphics.drawable.Drawable;
+
+        $i0 := @parameter1: int;
+
+        $i1 = staticinvoke <android.support.v4.view.ViewCompat: int getLayoutDirection(android.view.View)>($r0);
+
+        $i0_1 = staticinvoke <android.support.v4.view.GravityCompat: int getAbsoluteGravity(int,int)>($i0, $i1);
+
+        $i1_1 = $i0_1 & 3;
+
+        if $i1_1 != 3 goto label1;
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowLeft> = $r1;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void invalidate()>();
+
+     label1:
+        $i0_2 = $i0_1 & 5;
+
+        if $i0_2 != 5 goto label2;
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mShadowRight> = $r1;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void invalidate()>();
+
+     label2:
+        return;
+    }
+
+    public void setDrawerTitle(int, java.lang.CharSequence)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        java.lang.CharSequence $r1;
+        int $i0, $i1, $i0_1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.CharSequence;
+
+        $i1 = staticinvoke <android.support.v4.view.ViewCompat: int getLayoutDirection(android.view.View)>($r0);
+
+        $i0_1 = staticinvoke <android.support.v4.view.GravityCompat: int getAbsoluteGravity(int,int)>($i0, $i1);
+
+        if $i0_1 != 3 goto label1;
+
+        $r0.<android.support.v4.widget.DrawerLayout: java.lang.CharSequence mTitleLeft> = $r1;
+
+        return;
+
+     label1:
+        if $i0_1 != 5 goto label2;
+
+        $r0.<android.support.v4.widget.DrawerLayout: java.lang.CharSequence mTitleRight> = $r1;
+
+     label2:
+        return;
+    }
+
+    void setDrawerViewOffset(android.view.View, float)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.view.View $r1;
+        float $f0, $f1;
+        byte $b0;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r3;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $f0 := @parameter1: float;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r2;
+
+        $f1 = $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen>;
+
+        $b0 = $f0 cmpl $f1;
+
+        if $b0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $r3.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen> = $f0;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void dispatchOnDrawerSlide(android.view.View,float)>($r1, $f0);
+
+        return;
+    }
+
+    public void setScrimColor(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $r0.<android.support.v4.widget.DrawerLayout: int mScrimColor> = $i0;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void invalidate()>();
+
+        return;
+    }
+
+    public void setStatusBarBackground(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0;
+        android.content.Context $r1;
+        android.graphics.drawable.Drawable $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        if $i0 == 0 goto label2;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: android.content.Context getContext()>();
+
+(0)     $r2 = staticinvoke <android.support.v4.content.ContextCompat: android.graphics.drawable.Drawable getDrawable(android.content.Context,int)>($r1, $i0);
+
+     label1:
+        $r2_1 = Phi($r2 #0, $r2_2 #1);
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mStatusBarBackground> = $r2_1;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void invalidate()>();
+
+        return;
+
+     label2:
+        $r2_2 = null;
+
+(1)     goto label1;
+    }
+
+    public void setStatusBarBackground(android.graphics.drawable.Drawable)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        android.graphics.drawable.Drawable $r1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $r1 := @parameter0: android.graphics.drawable.Drawable;
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mStatusBarBackground> = $r1;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void invalidate()>();
+
+        return;
+    }
+
+    public void setStatusBarBackgroundColor(int)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0;
+        android.graphics.drawable.ColorDrawable $r1;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 = new android.graphics.drawable.ColorDrawable;
+
+        specialinvoke $r1.<android.graphics.drawable.ColorDrawable: void <init>(int)>($i0);
+
+        $r0.<android.support.v4.widget.DrawerLayout: android.graphics.drawable.Drawable mStatusBarBackground> = $r1;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void invalidate()>();
+
+        return;
+    }
+
+    void updateDrawerState(int, int, android.view.View)
+    {
+        android.support.v4.widget.DrawerLayout $r0;
+        int $i0, $i1, $i2, $i1_1, $i1_2;
+        android.view.View $r1;
+        android.support.v4.widget.ViewDragHelper $r2, $r2_1;
+        byte $b3, $b4, $b3_1, $b3_2, $b3_3, $b4_1, $b4_2;
+        android.view.ViewGroup$LayoutParams $r3;
+        android.support.v4.widget.DrawerLayout$LayoutParams $r4;
+        float $f0, $f0_1, $f0_2;
+        android.support.v4.widget.DrawerLayout$DrawerListener $r5, $r5_1, $r5_2;
+
+        $r0 := @this: android.support.v4.widget.DrawerLayout;
+
+        $i1 := @parameter0: int;
+
+        $i0 := @parameter1: int;
+
+        $r1 := @parameter2: android.view.View;
+
+        $r2 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mLeftDragger>;
+
+        $i1_1 = virtualinvoke $r2.<android.support.v4.widget.ViewDragHelper: int getViewDragState()>();
+
+        $r2_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.ViewDragHelper mRightDragger>;
+
+        $i2 = virtualinvoke $r2_1.<android.support.v4.widget.ViewDragHelper: int getViewDragState()>();
+
+        if $i1_1 == 1 goto label1;
+
+        if $i2 != 1 goto label4;
+
+     label1:
+(0)     $b3_2 = 1;
+
+     label2:
+        $b3_3 = Phi($b3_2 #0, $b3_1 #6, $b3 #7);
+
+(1)     if $r1 == null goto label3;
+
+(2)     if $i0 != 0 goto label3;
+
+        $r3 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r4 = (android.support.v4.widget.DrawerLayout$LayoutParams) $r3;
+
+        $f0 = $r4.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen>;
+
+        $b4 = $f0 cmpl 0.0F;
+
+        if $b4 != 0 goto label7;
+
+(3)     virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void dispatchOnDrawerClosed(android.view.View)>($r1);
+
+     label3:
+        $b4_2 = Phi($b4 #1, $b4 #2, $b4 #3, $b4_1 #8, $b4_1 #9);
+
+        $f0_2 = Phi($f0 #1, $f0 #2, $f0 #3, $f0_1 #8, $f0_1 #9);
+
+        $i1_2 = $r0.<android.support.v4.widget.DrawerLayout: int mDrawerState>;
+
+(4)     if $b3_3 == $i1_2 goto label8;
+
+        $r0.<android.support.v4.widget.DrawerLayout: int mDrawerState> = $b3_3;
+
+        $r5 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerListener mListener>;
+
+(5)     if $r5 == null goto label8;
+
+        $r5_1 = $r0.<android.support.v4.widget.DrawerLayout: android.support.v4.widget.DrawerLayout$DrawerListener mListener>;
+
+        interfaceinvoke $r5_1.<android.support.v4.widget.DrawerLayout$DrawerListener: void onDrawerStateChanged(int)>($b3_3);
+
+        return;
+
+     label4:
+        if $i1_1 == 2 goto label5;
+
+        if $i2 != 2 goto label6;
+
+     label5:
+        $b3_1 = 2;
+
+(6)     goto label2;
+
+     label6:
+        $b3 = 0;
+
+(7)     goto label2;
+
+     label7:
+        $f0_1 = $r4.<android.support.v4.widget.DrawerLayout$LayoutParams: float onScreen>;
+
+        $b4_1 = $f0_1 cmpl 1.0F;
+
+(8)     if $b4_1 != 0 goto label3;
+
+        virtualinvoke $r0.<android.support.v4.widget.DrawerLayout: void dispatchOnDrawerOpened(android.view.View)>($r1);
+
+(9)     goto label3;
+
+     label8:
+        $r5_2 = Phi($r5 #4, $r5 #5);
+
+        return;
+    }
+}

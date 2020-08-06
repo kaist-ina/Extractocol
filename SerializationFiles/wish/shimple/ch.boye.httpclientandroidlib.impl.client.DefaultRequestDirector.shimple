@@ -1,0 +1,3389 @@
+public class ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector extends java.lang.Object implements ch.boye.httpclientandroidlib.client.RequestDirector
+{
+    private final ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator authenticator;
+    protected final ch.boye.httpclientandroidlib.conn.ClientConnectionManager connManager;
+    private int execCount;
+    protected final ch.boye.httpclientandroidlib.protocol.HttpProcessor httpProcessor;
+    protected final ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy keepAliveStrategy;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+    protected ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn;
+    private int maxRedirects;
+    protected final ch.boye.httpclientandroidlib.params.HttpParams params;
+    protected final ch.boye.httpclientandroidlib.client.AuthenticationHandler proxyAuthHandler;
+    protected final ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState;
+    protected final ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy;
+    private int redirectCount;
+    protected final ch.boye.httpclientandroidlib.client.RedirectHandler redirectHandler;
+    protected final ch.boye.httpclientandroidlib.client.RedirectStrategy redirectStrategy;
+    protected final ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec;
+    protected final ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler retryHandler;
+    protected final ch.boye.httpclientandroidlib.ConnectionReuseStrategy reuseStrategy;
+    protected final ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner routePlanner;
+    protected final ch.boye.httpclientandroidlib.client.AuthenticationHandler targetAuthHandler;
+    protected final ch.boye.httpclientandroidlib.auth.AuthState targetAuthState;
+    protected final ch.boye.httpclientandroidlib.client.AuthenticationStrategy targetAuthStrategy;
+    protected final ch.boye.httpclientandroidlib.client.UserTokenHandler userTokenHandler;
+    private ch.boye.httpclientandroidlib.HttpHost virtualHost;
+
+    public void <init>(ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog, ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor, ch.boye.httpclientandroidlib.conn.ClientConnectionManager, ch.boye.httpclientandroidlib.ConnectionReuseStrategy, ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy, ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner, ch.boye.httpclientandroidlib.protocol.HttpProcessor, ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler, ch.boye.httpclientandroidlib.client.RedirectStrategy, ch.boye.httpclientandroidlib.client.AuthenticationHandler, ch.boye.httpclientandroidlib.client.AuthenticationHandler, ch.boye.httpclientandroidlib.client.UserTokenHandler, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r1;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r2;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r3;
+        ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy $r4;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner $r5;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r6;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r7;
+        ch.boye.httpclientandroidlib.client.RedirectStrategy $r8;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r9, $r10;
+        ch.boye.httpclientandroidlib.client.UserTokenHandler $r11;
+        ch.boye.httpclientandroidlib.params.HttpParams $r12;
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r13, $r14;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r15, $r15_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r15 := @parameter0: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r1 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.conn.ClientConnectionManager;
+
+        $r3 := @parameter3: ch.boye.httpclientandroidlib.ConnectionReuseStrategy;
+
+        $r4 := @parameter4: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy;
+
+        $r5 := @parameter5: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner;
+
+        $r6 := @parameter6: ch.boye.httpclientandroidlib.protocol.HttpProcessor;
+
+        $r7 := @parameter7: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler;
+
+        $r8 := @parameter8: ch.boye.httpclientandroidlib.client.RedirectStrategy;
+
+        $r9 := @parameter9: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        $r10 := @parameter10: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        $r11 := @parameter11: ch.boye.httpclientandroidlib.client.UserTokenHandler;
+
+        $r12 := @parameter12: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r15_1 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        specialinvoke $r15_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>(class "ch/boye/httpclientandroidlib/impl/client/DefaultRequestDirector");
+
+        $r13 = new ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        specialinvoke $r13.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: void <init>(ch.boye.httpclientandroidlib.client.AuthenticationHandler)>($r9);
+
+        $r14 = new ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        specialinvoke $r14.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: void <init>(ch.boye.httpclientandroidlib.client.AuthenticationHandler)>($r10);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void <init>(ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog,ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor,ch.boye.httpclientandroidlib.conn.ClientConnectionManager,ch.boye.httpclientandroidlib.ConnectionReuseStrategy,ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy,ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner,ch.boye.httpclientandroidlib.protocol.HttpProcessor,ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler,ch.boye.httpclientandroidlib.client.RedirectStrategy,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.client.UserTokenHandler,ch.boye.httpclientandroidlib.params.HttpParams)>($r15_1, $r1, $r2, $r3, $r4, $r5, $r6, $r7, $r8, $r13, $r14, $r11, $r12);
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog, ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor, ch.boye.httpclientandroidlib.conn.ClientConnectionManager, ch.boye.httpclientandroidlib.ConnectionReuseStrategy, ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy, ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner, ch.boye.httpclientandroidlib.protocol.HttpProcessor, ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler, ch.boye.httpclientandroidlib.client.RedirectStrategy, ch.boye.httpclientandroidlib.client.AuthenticationStrategy, ch.boye.httpclientandroidlib.client.AuthenticationStrategy, ch.boye.httpclientandroidlib.client.UserTokenHandler, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r2;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r3;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r4;
+        ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy $r5;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner $r6;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r7;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r8;
+        ch.boye.httpclientandroidlib.client.RedirectStrategy $r9;
+        ch.boye.httpclientandroidlib.client.AuthenticationStrategy $r10, $r11;
+        ch.boye.httpclientandroidlib.client.UserTokenHandler $r12;
+        ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator $r13;
+        ch.boye.httpclientandroidlib.params.HttpParams $r14, $r14_1;
+        java.lang.IllegalArgumentException $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6, $r15_7, $r15_8, $r15_9, $r15_10, $r15_11, $r15_12;
+        boolean $z0, $z0_1, $z0_2;
+        ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategyAdaptor $r16;
+        ch.boye.httpclientandroidlib.client.RedirectHandler $r17;
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r18, $r18_1, $r18_2, $r18_3;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r19, $r19_1, $r19_2, $r19_3;
+        ch.boye.httpclientandroidlib.auth.AuthState $r20, $r20_1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.conn.ClientConnectionManager;
+
+        $r4 := @parameter3: ch.boye.httpclientandroidlib.ConnectionReuseStrategy;
+
+        $r5 := @parameter4: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy;
+
+        $r6 := @parameter5: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner;
+
+        $r7 := @parameter6: ch.boye.httpclientandroidlib.protocol.HttpProcessor;
+
+        $r8 := @parameter7: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler;
+
+        $r9 := @parameter8: ch.boye.httpclientandroidlib.client.RedirectStrategy;
+
+        $r10 := @parameter9: ch.boye.httpclientandroidlib.client.AuthenticationStrategy;
+
+        $r11 := @parameter10: ch.boye.httpclientandroidlib.client.AuthenticationStrategy;
+
+        $r12 := @parameter11: ch.boye.httpclientandroidlib.client.UserTokenHandler;
+
+        $r14 := @parameter12: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r1 != null goto label01;
+
+        $r15 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Log may not be null.");
+
+        throw $r15;
+
+     label01:
+        if $r2 != null goto label02;
+
+        $r15_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Request executor may not be null.");
+
+        throw $r15_1;
+
+     label02:
+        if $r3 != null goto label03;
+
+        $r15_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Client connection manager may not be null.");
+
+        throw $r15_2;
+
+     label03:
+        if $r4 != null goto label04;
+
+        $r15_3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Connection reuse strategy may not be null.");
+
+        throw $r15_3;
+
+     label04:
+        if $r5 != null goto label05;
+
+        $r15_4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Connection keep alive strategy may not be null.");
+
+        throw $r15_4;
+
+     label05:
+        if $r6 != null goto label06;
+
+        $r15_5 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Route planner may not be null.");
+
+        throw $r15_5;
+
+     label06:
+        if $r7 != null goto label07;
+
+        $r15_6 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_6.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP protocol processor may not be null.");
+
+        throw $r15_6;
+
+     label07:
+        if $r8 != null goto label08;
+
+        $r15_7 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_7.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request retry handler may not be null.");
+
+        throw $r15_7;
+
+     label08:
+        if $r9 != null goto label09;
+
+        $r15_8 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_8.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Redirect strategy may not be null.");
+
+        throw $r15_8;
+
+     label09:
+        if $r10 != null goto label10;
+
+        $r15_9 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_9.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Target authentication strategy may not be null.");
+
+        throw $r15_9;
+
+     label10:
+        if $r11 != null goto label11;
+
+        $r15_10 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_10.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Proxy authentication strategy may not be null.");
+
+        throw $r15_10;
+
+     label11:
+        if $r12 != null goto label12;
+
+        $r15_11 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_11.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("User token handler may not be null.");
+
+        throw $r15_11;
+
+     label12:
+        if $r14 != null goto label13;
+
+        $r15_12 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r15_12.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP parameters may not be null");
+
+        throw $r15_12;
+
+     label13:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r1;
+
+        $r13 = new ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator;
+
+        specialinvoke $r13.<ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator: void <init>(ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator authenticator> = $r13;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec> = $r2;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ClientConnectionManager connManager> = $r3;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.ConnectionReuseStrategy reuseStrategy> = $r4;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy keepAliveStrategy> = $r5;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner routePlanner> = $r6;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpProcessor httpProcessor> = $r7;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler retryHandler> = $r8;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.RedirectStrategy redirectStrategy> = $r9;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationStrategy targetAuthStrategy> = $r10;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy> = $r11;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.UserTokenHandler userTokenHandler> = $r12;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params> = $r14;
+
+        $z0 = $r9 instanceof ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategyAdaptor;
+
+        if $z0 == 0 goto label17;
+
+        $r16 = (ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategyAdaptor) $r9;
+
+        $r17 = virtualinvoke $r16.<ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategyAdaptor: ch.boye.httpclientandroidlib.client.RedirectHandler getHandler()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.RedirectHandler redirectHandler> = $r17;
+
+     label14:
+        $z0_1 = $r10 instanceof ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        if $z0_1 == 0 goto label18;
+
+        $r18 = (ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor) $r10;
+
+        $r19 = virtualinvoke $r18.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.client.AuthenticationHandler getHandler()>();
+
+(0)     $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationHandler targetAuthHandler> = $r19;
+
+     label15:
+        $r18_1 = Phi($r18 #0, $r18 #2);
+
+        $r19_1 = Phi($r19 #0, $r19 #2);
+
+        $z0_2 = $r11 instanceof ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        if $z0_2 == 0 goto label19;
+
+        $r18_2 = (ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor) $r11;
+
+        $r19_2 = virtualinvoke $r18_2.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: ch.boye.httpclientandroidlib.client.AuthenticationHandler getHandler()>();
+
+(1)     $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationHandler proxyAuthHandler> = $r19_2;
+
+     label16:
+        $r18_3 = Phi($r18_2 #1, $r18_1 #3);
+
+        $r19_3 = Phi($r19_2 #1, $r19_1 #3);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn> = null;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int execCount> = 0;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int redirectCount> = 0;
+
+        $r20 = new ch.boye.httpclientandroidlib.auth.AuthState;
+
+        specialinvoke $r20.<ch.boye.httpclientandroidlib.auth.AuthState: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState targetAuthState> = $r20;
+
+        $r20_1 = new ch.boye.httpclientandroidlib.auth.AuthState;
+
+        specialinvoke $r20_1.<ch.boye.httpclientandroidlib.auth.AuthState: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState> = $r20_1;
+
+        $r14_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+        $i0 = interfaceinvoke $r14_1.<ch.boye.httpclientandroidlib.params.HttpParams: int getIntParameter(java.lang.String,int)>("http.protocol.max-redirects", 100);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int maxRedirects> = $i0;
+
+        return;
+
+     label17:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.RedirectHandler redirectHandler> = null;
+
+        goto label14;
+
+     label18:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationHandler targetAuthHandler> = null;
+
+(2)     goto label15;
+
+     label19:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationHandler proxyAuthHandler> = null;
+
+(3)     goto label16;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor, ch.boye.httpclientandroidlib.conn.ClientConnectionManager, ch.boye.httpclientandroidlib.ConnectionReuseStrategy, ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy, ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner, ch.boye.httpclientandroidlib.protocol.HttpProcessor, ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler, ch.boye.httpclientandroidlib.client.RedirectHandler, ch.boye.httpclientandroidlib.client.AuthenticationHandler, ch.boye.httpclientandroidlib.client.AuthenticationHandler, ch.boye.httpclientandroidlib.client.UserTokenHandler, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r1;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r2;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r3;
+        ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy $r4;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner $r5;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r6;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r7;
+        ch.boye.httpclientandroidlib.client.RedirectHandler $r8;
+        ch.boye.httpclientandroidlib.client.AuthenticationHandler $r9, $r10;
+        ch.boye.httpclientandroidlib.client.UserTokenHandler $r11;
+        ch.boye.httpclientandroidlib.params.HttpParams $r12;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r13;
+        ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategyAdaptor $r14;
+        ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor $r15, $r16;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.conn.ClientConnectionManager;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.ConnectionReuseStrategy;
+
+        $r4 := @parameter3: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy;
+
+        $r5 := @parameter4: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner;
+
+        $r6 := @parameter5: ch.boye.httpclientandroidlib.protocol.HttpProcessor;
+
+        $r7 := @parameter6: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler;
+
+        $r8 := @parameter7: ch.boye.httpclientandroidlib.client.RedirectHandler;
+
+        $r9 := @parameter8: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        $r10 := @parameter9: ch.boye.httpclientandroidlib.client.AuthenticationHandler;
+
+        $r11 := @parameter10: ch.boye.httpclientandroidlib.client.UserTokenHandler;
+
+        $r12 := @parameter11: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r13 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        specialinvoke $r13.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>(class "ch/boye/httpclientandroidlib/impl/client/DefaultRequestDirector");
+
+        $r14 = new ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategyAdaptor;
+
+        specialinvoke $r14.<ch.boye.httpclientandroidlib.impl.client.DefaultRedirectStrategyAdaptor: void <init>(ch.boye.httpclientandroidlib.client.RedirectHandler)>($r8);
+
+        $r15 = new ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        specialinvoke $r15.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: void <init>(ch.boye.httpclientandroidlib.client.AuthenticationHandler)>($r9);
+
+        $r16 = new ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor;
+
+        specialinvoke $r16.<ch.boye.httpclientandroidlib.impl.client.AuthenticationStrategyAdaptor: void <init>(ch.boye.httpclientandroidlib.client.AuthenticationHandler)>($r10);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void <init>(ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog,ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor,ch.boye.httpclientandroidlib.conn.ClientConnectionManager,ch.boye.httpclientandroidlib.ConnectionReuseStrategy,ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy,ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner,ch.boye.httpclientandroidlib.protocol.HttpProcessor,ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler,ch.boye.httpclientandroidlib.client.RedirectStrategy,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.client.UserTokenHandler,ch.boye.httpclientandroidlib.params.HttpParams)>($r13, $r1, $r2, $r3, $r4, $r5, $r6, $r7, $r14, $r15, $r16, $r11, $r12);
+
+        return;
+    }
+
+    private void abortConnection()
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r1;
+        java.io.IOException $r2, $r3;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        boolean $z0;
+        java.lang.String $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(0)     if $r1 == null goto label6;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn> = null;
+
+     label1:
+(1)     interfaceinvoke $r1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void abortConnection()>();
+
+     label2:
+        $r4 = Phi($r4 #1, $r4_1 #3, $r4_2 #4);
+
+(2)     interfaceinvoke $r1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void releaseConnection()>();
+
+     label3:
+        return;
+
+     label4:
+        $r2 := @caughtexception;
+
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r4_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(3)     if $z0 == 0 goto label2;
+
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r5 = virtualinvoke $r2.<java.io.IOException: java.lang.String getMessage()>();
+
+        virtualinvoke $r4_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>($r5, $r2);
+
+(4)     goto label2;
+
+     label5:
+        $r3 := @caughtexception;
+
+        $r4_3 = Phi($r4 #1, $r4_1 #3, $r4_2 #4, $r4 #2);
+
+        $r4_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(5)     virtualinvoke $r4_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>("Error releasing connection", $r3);
+
+     label6:
+        $r4_5 = Phi($r4 #0, $r4_4 #5);
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label4;
+        catch java.io.IOException from label2 to label3 with label5;
+    }
+
+    private void tryConnect(ch.boye.httpclientandroidlib.impl.client.RoutedRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.impl.client.RoutedRequest $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        java.io.IOException $r3, $r5;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r4;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r6;
+        ch.boye.httpclientandroidlib.impl.client.RequestWrapper $r7;
+        int $i0, $i1, $i0_1, $i0_2;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        ch.boye.httpclientandroidlib.params.HttpParams $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6;
+        java.lang.StringBuilder $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5;
+        java.lang.Class $r12;
+        java.lang.String $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.impl.client.RoutedRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r6 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: ch.boye.httpclientandroidlib.conn.routing.HttpRoute getRoute()>();
+
+        $r7 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: ch.boye.httpclientandroidlib.impl.client.RequestWrapper getRequest()>();
+
+(0)     $i0 = 0;
+
+     label01:
+        $i0_1 = Phi($i0 #0, $i0_2 #8, $i0_2 #11);
+
+        $r10 = Phi($r10 #0, $r10_1 #8, $r10_6 #11);
+
+        $z0 = Phi($z0 #0, $z0_4 #8, $z0_5 #11);
+
+        $r13 = Phi($r13 #0, $r13 #8, $r13_5 #11);
+
+        $r9 = Phi($r9 #0, $r9_4 #8, $r9_4 #11);
+
+        $r8 = Phi($r8 #0, $r8_6 #8, $r8_6 #11);
+
+        $r11 = Phi($r11 #0, $r11 #8, $r11_5 #11);
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.request", $r7);
+
+        $i0_2 = $i0_1 + 1;
+
+(1)     $r8_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label02:
+(2)     $z0_1 = interfaceinvoke $r8_1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: boolean isOpen()>();
+
+     label03:
+        if $z0_1 != 0 goto label07;
+
+        $r8_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(3)     $r9_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+     label04:
+(4)     interfaceinvoke $r8_2.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void open(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,ch.boye.httpclientandroidlib.protocol.HttpContext,ch.boye.httpclientandroidlib.params.HttpParams)>($r6, $r2, $r9_1);
+
+     label05:
+        $r9_2 = Phi($r9_1 #4, $r9_3 #7);
+
+        $r8_3 = Phi($r8_2 #4, $r8_4 #7);
+
+(5)     virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void establishRoute(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r6, $r2);
+
+     label06:
+        return;
+
+     label07:
+        $r8_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(6)     $r9_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+     label08:
+        $i1 = staticinvoke <ch.boye.httpclientandroidlib.params.HttpConnectionParams: int getSoTimeout(ch.boye.httpclientandroidlib.params.HttpParams)>($r9_3);
+
+        interfaceinvoke $r8_4.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void setSocketTimeout(int)>($i1);
+
+     label09:
+(7)     goto label05;
+
+     label10:
+        $r3 := @caughtexception;
+
+        $z0_2 = Phi($z0 #1, $z0_1 #2);
+
+        $r9_4 = Phi($r9 #1, $r9_1 #3, $r9_2 #5, $r9_3 #6);
+
+        $r8_5 = Phi($r8_1 #1, $r8_2 #3, $r8_3 #5, $r8_4 #6);
+
+        $r8_6 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label11:
+        interfaceinvoke $r8_6.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void close()>();
+
+     label12:
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler retryHandler>;
+
+        $z0_3 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler: boolean retryRequest(java.io.IOException,int,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r3, $i0_2, $r2);
+
+        if $z0_3 == 0 goto label14;
+
+        $r10_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0_4 = virtualinvoke $r10_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isInfoEnabled()>();
+
+(8)     if $z0_4 == 0 goto label01;
+
+        $r10_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r11_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r11_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_2 = virtualinvoke $r11_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("I/O exception (");
+
+        $r12 = virtualinvoke $r3.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r13_1 = virtualinvoke $r12.<java.lang.Class: java.lang.String getName()>();
+
+        $r11_3 = virtualinvoke $r11_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13_1);
+
+        $r11_4 = virtualinvoke $r11_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(") caught when connecting to the target host: ");
+
+        $r13_2 = virtualinvoke $r3.<java.io.IOException: java.lang.String getMessage()>();
+
+        $r11_5 = virtualinvoke $r11_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13_2);
+
+        $r13_3 = virtualinvoke $r11_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r10_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void info(java.lang.Object)>($r13_3);
+
+        $r10_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0_5 = virtualinvoke $r10_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(9)     if $z0_5 == 0 goto label13;
+
+        $r10_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r13_4 = virtualinvoke $r3.<java.io.IOException: java.lang.String getMessage()>();
+
+(10)    virtualinvoke $r10_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>($r13_4, $r3);
+
+     label13:
+        $r10_5 = Phi($r10_3 #9, $r10_4 #10);
+
+        $r13_5 = Phi($r13_3 #9, $r13_4 #10);
+
+        $r10_6 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r10_6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void info(java.lang.Object)>("Retrying connect");
+
+(11)    goto label01;
+
+     label14:
+        throw $r3;
+
+     label15:
+        $r5 := @caughtexception;
+
+        goto label12;
+
+        catch java.io.IOException from label02 to label03 with label10;
+        catch java.io.IOException from label04 to label06 with label10;
+        catch java.io.IOException from label08 to label09 with label10;
+        catch java.io.IOException from label11 to label12 with label15;
+    }
+
+    private ch.boye.httpclientandroidlib.HttpResponse tryExecute(ch.boye.httpclientandroidlib.impl.client.RoutedRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.impl.client.RoutedRequest $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r3;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r4;
+        java.io.IOException $r5, $r8, $r8_1, $r8_2;
+        ch.boye.httpclientandroidlib.impl.client.RequestWrapper $r6;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r7;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r9_11, $r9_12, $r9_13, $r9_14, $r9_15, $r9_16;
+        ch.boye.httpclientandroidlib.client.NonRepeatableRequestException $r10, $r10_1;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6;
+        java.lang.StringBuilder $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8, $r12_9, $r12_10, $r12_11, $r12_12;
+        java.lang.String $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7, $r13_8, $r13_9;
+        ch.boye.httpclientandroidlib.HttpResponse $r14;
+        ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler $r15;
+        java.lang.Class $r16;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.impl.client.RoutedRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r6 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: ch.boye.httpclientandroidlib.impl.client.RequestWrapper getRequest()>();
+
+        $r7 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: ch.boye.httpclientandroidlib.conn.routing.HttpRoute getRoute()>();
+
+(0)     $r8 = null;
+
+     label01:
+        $r12 = Phi($r12 #0, $r12_12 #24);
+
+        $z0 = Phi($z0 #0, $z0_9 #24);
+
+        $r9 = Phi($r9 #0, $r9_16 #24);
+
+        $i0 = Phi($i0 #0, $i0_6 #24);
+
+        $r8_1 = Phi($r8 #0, $r8_2 #24);
+
+        $r11 = Phi($r11 #0, $r11_6 #24);
+
+        $r13 = Phi($r13 #0, $r13_9 #24);
+
+        $i0_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int execCount>;
+
+        $i0_2 = $i0_1 + 1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int execCount> = $i0_2;
+
+        virtualinvoke $r6.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: void incrementExecCount()>();
+
+        $z0_1 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: boolean isRepeatable()>();
+
+        if $z0_1 != 0 goto label03;
+
+        $r9_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r9_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Cannot retry non-repeatable request");
+
+        if $r8_1 == null goto label02;
+
+        $r10 = new ch.boye.httpclientandroidlib.client.NonRepeatableRequestException;
+
+        specialinvoke $r10.<ch.boye.httpclientandroidlib.client.NonRepeatableRequestException: void <init>(java.lang.String,java.lang.Throwable)>("Cannot retry request with a non-repeatable request entity.  The cause lists the reason the original request failed.", $r8_1);
+
+        throw $r10;
+
+     label02:
+        $r10_1 = new ch.boye.httpclientandroidlib.client.NonRepeatableRequestException;
+
+        specialinvoke $r10_1.<ch.boye.httpclientandroidlib.client.NonRepeatableRequestException: void <init>(java.lang.String)>("Cannot retry request with a non-repeatable request entity.");
+
+        throw $r10_1;
+
+     label03:
+(1)     $r11_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label04:
+(2)     $z0_2 = interfaceinvoke $r11_1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: boolean isOpen()>();
+
+     label05:
+(3)     if $z0_2 != 0 goto label11;
+
+     label06:
+(4)     $z0_3 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: boolean isTunnelled()>();
+
+     label07:
+        if $z0_3 != 0 goto label20;
+
+(5)     $r9_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label08:
+        virtualinvoke $r9_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Reopening the direct connection.");
+
+     label09:
+        $r11_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+(6)     $r3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+     label10:
+(7)     interfaceinvoke $r11_2.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void open(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,ch.boye.httpclientandroidlib.protocol.HttpContext,ch.boye.httpclientandroidlib.params.HttpParams)>($r7, $r2, $r3);
+
+     label11:
+        $z0_4 = Phi($z0_2 #3, $z0_3 #7);
+
+        $r9_4 = Phi($r9 #3, $r9_2 #7);
+
+        $r11_3 = Phi($r11_1 #3, $r11_2 #7);
+
+(8)     $r9_5 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label12:
+(9)     $z0_5 = virtualinvoke $r9_5.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+     label13:
+(10)    if $z0_5 == 0 goto label17;
+
+        $r9_6 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(11)    $r12_1 = new java.lang.StringBuilder;
+
+     label14:
+        specialinvoke $r12_1.<java.lang.StringBuilder: void <init>()>();
+
+(12)    $r12_2 = virtualinvoke $r12_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Attempt ");
+
+     label15:
+(13)    $i0_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int execCount>;
+
+     label16:
+(14)    $r12_3 = virtualinvoke $r12_2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_3);
+
+(15)    $r12_4 = virtualinvoke $r12_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" to execute request");
+
+(16)    $r13_1 = virtualinvoke $r12_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(17)    virtualinvoke $r9_6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r13_1);
+
+     label17:
+        $r12_5 = Phi($r12 #10, $r12_4 #17);
+
+        $r9_7 = Phi($r9_5 #10, $r9_6 #17);
+
+        $i0_4 = Phi($i0_2 #10, $i0_3 #17);
+
+        $r13_2 = Phi($r13 #10, $r13_1 #17);
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec>;
+
+(18)    $r11_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label18:
+        $r14 = virtualinvoke $r4.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.HttpClientConnection,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r6, $r11_4, $r2);
+
+     label19:
+        return $r14;
+
+     label20:
+(19)    $r9_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label21:
+        virtualinvoke $r9_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Proxied connection. Need to start over.");
+
+     label22:
+        return null;
+
+     label23:
+        $r8_2 := @caughtexception;
+
+        $r12_6 = Phi($r12 #1, $r12_1 #11, $r12_2 #12, $r12_3 #14, $r12_4 #15, $r12_5 #18);
+
+        $z0_6 = Phi($z0_1 #1, $z0_2 #2, $z0_3 #4, $z0_4 #8, $z0_5 #9);
+
+        $r9_8 = Phi($r9 #1, $r9_2 #5, $r9_5 #8, $r9_6 #11, $r9_7 #18, $r9_3 #19);
+
+        $i0_5 = Phi($i0_2 #1, $i0_3 #13, $i0_4 #18);
+
+        $r11_5 = Phi($r11_1 #1, $r11_2 #6, $r11_3 #8, $r11_4 #18);
+
+        $r13_3 = Phi($r13 #1, $r13_1 #16, $r13_2 #18);
+
+        $r9_9 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r9_9.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Closing the connection.");
+
+        $r11_6 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label24:
+        interfaceinvoke $r11_6.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void close()>();
+
+     label25:
+        $r15 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler retryHandler>;
+
+        $i0_6 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: int getExecCount()>();
+
+        $z0_7 = interfaceinvoke $r15.<ch.boye.httpclientandroidlib.client.HttpRequestRetryHandler: boolean retryRequest(java.io.IOException,int,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r8_2, $i0_6, $r2);
+
+        if $z0_7 == 0 goto label28;
+
+        $r9_10 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0_8 = virtualinvoke $r9_10.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isInfoEnabled()>();
+
+(20)    if $z0_8 == 0 goto label26;
+
+        $r9_11 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r12_7 = new java.lang.StringBuilder;
+
+        specialinvoke $r12_7.<java.lang.StringBuilder: void <init>()>();
+
+        $r12_8 = virtualinvoke $r12_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("I/O exception (");
+
+        $r16 = virtualinvoke $r8_2.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r13_4 = virtualinvoke $r16.<java.lang.Class: java.lang.String getName()>();
+
+        $r12_9 = virtualinvoke $r12_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13_4);
+
+        $r12_10 = virtualinvoke $r12_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(") caught when processing request: ");
+
+        $r13_5 = virtualinvoke $r8_2.<java.io.IOException: java.lang.String getMessage()>();
+
+        $r12_11 = virtualinvoke $r12_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13_5);
+
+        $r13_6 = virtualinvoke $r12_11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(21)    virtualinvoke $r9_11.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void info(java.lang.Object)>($r13_6);
+
+     label26:
+        $r12_12 = Phi($r12_6 #20, $r12_11 #21);
+
+        $r9_12 = Phi($r9_10 #20, $r9_11 #21);
+
+        $r13_7 = Phi($r13_3 #20, $r13_6 #21);
+
+        $r9_13 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0_9 = virtualinvoke $r9_13.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(22)    if $z0_9 == 0 goto label27;
+
+        $r9_14 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r13_8 = virtualinvoke $r8_2.<java.io.IOException: java.lang.String getMessage()>();
+
+(23)    virtualinvoke $r9_14.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>($r13_8, $r8_2);
+
+     label27:
+        $r9_15 = Phi($r9_13 #22, $r9_14 #23);
+
+        $r13_9 = Phi($r13_7 #22, $r13_8 #23);
+
+        $r9_16 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r9_16.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void info(java.lang.Object)>("Retrying request");
+
+(24)    goto label01;
+
+     label28:
+        throw $r8_2;
+
+     label29:
+        $r5 := @caughtexception;
+
+        goto label25;
+
+        catch java.io.IOException from label04 to label05 with label23;
+        catch java.io.IOException from label06 to label07 with label23;
+        catch java.io.IOException from label08 to label09 with label23;
+        catch java.io.IOException from label10 to label11 with label23;
+        catch java.io.IOException from label12 to label13 with label23;
+        catch java.io.IOException from label14 to label15 with label23;
+        catch java.io.IOException from label16 to label17 with label23;
+        catch java.io.IOException from label18 to label19 with label23;
+        catch java.io.IOException from label21 to label22 with label23;
+        catch java.io.IOException from label24 to label25 with label29;
+    }
+
+    private ch.boye.httpclientandroidlib.impl.client.RequestWrapper wrapRequest(ch.boye.httpclientandroidlib.HttpRequest) throws ch.boye.httpclientandroidlib.ProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.impl.client.EntityEnclosingRequestWrapper $r2;
+        ch.boye.httpclientandroidlib.impl.client.RequestWrapper $r3;
+        ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $z0 = $r1 instanceof ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.client.EntityEnclosingRequestWrapper;
+
+        $r4 = (ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest) $r1;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.EntityEnclosingRequestWrapper: void <init>(ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest)>($r4);
+
+        return $r2;
+
+     label1:
+        $r3 = new ch.boye.httpclientandroidlib.impl.client.RequestWrapper;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: void <init>(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        return $r3;
+    }
+
+    protected ch.boye.httpclientandroidlib.HttpRequest createConnectRequest(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, ch.boye.httpclientandroidlib.protocol.HttpContext)
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r3;
+        java.lang.StringBuilder $r4;
+        ch.boye.httpclientandroidlib.params.HttpParams $r5;
+        ch.boye.httpclientandroidlib.message.BasicHttpRequest $r6;
+        ch.boye.httpclientandroidlib.HttpHost $r7;
+        java.lang.String $r8, $r10, $r8_1, $r8_2;
+        int $i0, $i1, $i1_1, $i1_2, $i0_1, $i0_2;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r9;
+        ch.boye.httpclientandroidlib.conn.scheme.Scheme $r11;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r12;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r7 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getTargetHost()>();
+
+        $r8 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.HttpHost: java.lang.String getHostName()>();
+
+        $i0 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.HttpHost: int getPort()>();
+
+        $i1 = $i0;
+
+(0)     if $i0 >= 0 goto label1;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ClientConnectionManager connManager>;
+
+        $r9 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.conn.ClientConnectionManager: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry getSchemeRegistry()>();
+
+        $r10 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.HttpHost: java.lang.String getSchemeName()>();
+
+        $r11 = virtualinvoke $r9.<ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry: ch.boye.httpclientandroidlib.conn.scheme.Scheme getScheme(java.lang.String)>($r10);
+
+(1)     $i1_1 = virtualinvoke $r11.<ch.boye.httpclientandroidlib.conn.scheme.Scheme: int getDefaultPort()>();
+
+     label1:
+        $i1_2 = Phi($i1 #0, $i1_1 #1);
+
+        $r4 = new java.lang.StringBuilder;
+
+        $i0_1 = virtualinvoke $r8.<java.lang.String: int length()>();
+
+        $i0_2 = $i0_1 + 6;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(int)>($i0_2);
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r8_1 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i1_2);
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_1);
+
+        $r8_2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+        $r12 = staticinvoke <ch.boye.httpclientandroidlib.params.HttpProtocolParams: ch.boye.httpclientandroidlib.ProtocolVersion getVersion(ch.boye.httpclientandroidlib.params.HttpParams)>($r5);
+
+        $r6 = new ch.boye.httpclientandroidlib.message.BasicHttpRequest;
+
+        specialinvoke $r6.<ch.boye.httpclientandroidlib.message.BasicHttpRequest: void <init>(java.lang.String,java.lang.String,ch.boye.httpclientandroidlib.ProtocolVersion)>("CONNECT", $r8_2, $r12);
+
+        return $r6;
+    }
+
+    protected boolean createTunnelToProxy(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, int, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        int $i0;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        ch.boye.httpclientandroidlib.HttpException $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r3 = new ch.boye.httpclientandroidlib.HttpException;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.HttpException: void <init>(java.lang.String)>("Proxy chains are not supported.");
+
+        throw $r3;
+    }
+
+    protected boolean createTunnelToTarget(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        ch.boye.httpclientandroidlib.HttpException $r3;
+        ch.boye.httpclientandroidlib.entity.BufferedHttpEntity $r4;
+        ch.boye.httpclientandroidlib.impl.client.TunnelRefusedException $r5;
+        ch.boye.httpclientandroidlib.HttpHost $r6, $r7;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        ch.boye.httpclientandroidlib.params.HttpParams $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5;
+        ch.boye.httpclientandroidlib.HttpRequest $r10;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r11, $r11_1, $r11_2, $r11_3;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r12, $r12_1, $r12_2;
+        ch.boye.httpclientandroidlib.HttpResponse $r13;
+        ch.boye.httpclientandroidlib.StatusLine $r14, $r14_1, $r14_2, $r14_3, $r14_4;
+        int $i0, $i0_1, $i0_2;
+        java.lang.StringBuilder $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5;
+        java.lang.String $r16, $r16_1;
+        ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator $r17, $r17_1, $r17_2, $r17_3;
+        ch.boye.httpclientandroidlib.client.AuthenticationStrategy $r18, $r18_1, $r18_2, $r18_3;
+        ch.boye.httpclientandroidlib.auth.AuthState $r19, $r19_1, $r19_2, $r19_3;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r20;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r21;
+        ch.boye.httpclientandroidlib.HttpEntity $r22, $r22_1, $r22_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r6 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getProxyHost()>();
+
+(0)     $r7 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getTargetHost()>();
+
+     label1:
+        $r12 = Phi($r12 #0, $r12_2 #3, $r12_2 #6, $r12_2 #7);
+
+        $r14 = Phi($r14 #0, $r14_1 #3, $r14_1 #6, $r14_1 #7);
+
+        $r11 = Phi($r11 #0, $r11_3 #3, $r11_3 #6, $r11_3 #7);
+
+        $r22 = Phi($r22 #0, $r22 #3, $r22_1 #6, $r22 #7);
+
+        $r19 = Phi($r19 #0, $r19 #3, $r19_2 #6, $r19_2 #7);
+
+        $r9 = Phi($r9 #0, $r9_5 #3, $r9_5 #6, $r9_5 #7);
+
+        $r8 = Phi($r8 #0, $r8_5 #3, $r8_5 #6, $r8_6 #7);
+
+        $r18 = Phi($r18 #0, $r18 #3, $r18_2 #6, $r18_2 #7);
+
+        $r17 = Phi($r17 #0, $r17 #3, $r17_2 #6, $r17_2 #7);
+
+        $i0 = Phi($i0 #0, $i0_1 #3, $i0_1 #6, $i0_1 #7);
+
+        $z0 = Phi($z0 #0, $z0_2 #3, $z0_5 #6, $z0_5 #7);
+
+        $r8_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        $z0_1 = interfaceinvoke $r8_1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: boolean isOpen()>();
+
+(1)     if $z0_1 != 0 goto label2;
+
+        $r8_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        $r9_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+(2)     interfaceinvoke $r8_2.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void open(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,ch.boye.httpclientandroidlib.protocol.HttpContext,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $r2, $r9_1);
+
+     label2:
+        $r9_2 = Phi($r9 #1, $r9_1 #2);
+
+        $r8_3 = Phi($r8_1 #1, $r8_2 #2);
+
+        $r10 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.HttpRequest createConnectRequest(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2);
+
+        $r9_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+        interfaceinvoke $r10.<ch.boye.httpclientandroidlib.HttpRequest: void setParams(ch.boye.httpclientandroidlib.params.HttpParams)>($r9_3);
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.target_host", $r7);
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.proxy_host", $r6);
+
+        $r8_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.connection", $r8_4);
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.request", $r10);
+
+        $r11_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec>;
+
+        $r12_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpProcessor httpProcessor>;
+
+        virtualinvoke $r11_1.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: void preProcess(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpProcessor,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r10, $r12_1, $r2);
+
+        $r11_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec>;
+
+        $r8_5 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        $r13 = virtualinvoke $r11_2.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.HttpClientConnection,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r10, $r8_5, $r2);
+
+        $r9_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+        interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpResponse: void setParams(ch.boye.httpclientandroidlib.params.HttpParams)>($r9_4);
+
+        $r11_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec>;
+
+        $r12_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpProcessor httpProcessor>;
+
+        virtualinvoke $r11_3.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: void postProcess(ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpProcessor,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r13, $r12_2, $r2);
+
+        $r14_1 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i0_1 = interfaceinvoke $r14_1.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+        if $i0_1 >= 200 goto label3;
+
+        $r3 = new ch.boye.httpclientandroidlib.HttpException;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r15_1 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unexpected response to CONNECT request: ");
+
+        $r14_2 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $r15_2 = virtualinvoke $r15_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r14_2);
+
+        $r16 = virtualinvoke $r15_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.HttpException: void <init>(java.lang.String)>($r16);
+
+        throw $r3;
+
+     label3:
+        $r9_5 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+        $z0_2 = staticinvoke <ch.boye.httpclientandroidlib.client.params.HttpClientParams: boolean isAuthenticating(ch.boye.httpclientandroidlib.params.HttpParams)>($r9_5);
+
+(3)     if $z0_2 == 0 goto label1;
+
+        $r17_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator authenticator>;
+
+        $r18_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy>;
+
+        $r19_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+        $z0_3 = virtualinvoke $r17_1.<ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator: boolean isAuthenticationRequested(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.auth.AuthState,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r6, $r13, $r18_1, $r19_1, $r2);
+
+(4)     if $z0_3 == 0 goto label5;
+
+        $r17_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator authenticator>;
+
+        $r18_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy>;
+
+        $r19_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+        $z0_4 = virtualinvoke $r17_2.<ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator: boolean authenticate(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.auth.AuthState,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r6, $r13, $r18_2, $r19_2, $r2);
+
+(5)     if $z0_4 == 0 goto label5;
+
+        $r20 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.ConnectionReuseStrategy reuseStrategy>;
+
+        $z0_5 = interfaceinvoke $r20.<ch.boye.httpclientandroidlib.ConnectionReuseStrategy: boolean keepAlive(ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r13, $r2);
+
+        if $z0_5 == 0 goto label4;
+
+        $r21 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r21.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Connection kept alive");
+
+        $r22_1 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+        staticinvoke <ch.boye.httpclientandroidlib.util.EntityUtils: void consume(ch.boye.httpclientandroidlib.HttpEntity)>($r22_1);
+
+(6)     goto label1;
+
+     label4:
+        $r8_6 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        interfaceinvoke $r8_6.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void close()>();
+
+(7)     goto label1;
+
+     label5:
+        $r19_3 = Phi($r19_1 #4, $r19_2 #5);
+
+        $r18_3 = Phi($r18_1 #4, $r18_2 #5);
+
+        $r17_3 = Phi($r17_1 #4, $r17_2 #5);
+
+        $z0_6 = Phi($z0_3 #4, $z0_4 #5);
+
+        $r14_3 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i0_2 = interfaceinvoke $r14_3.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+        if $i0_2 <= 299 goto label7;
+
+        $r22_2 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+        if $r22_2 == null goto label6;
+
+        $r4 = new ch.boye.httpclientandroidlib.entity.BufferedHttpEntity;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.entity.BufferedHttpEntity: void <init>(ch.boye.httpclientandroidlib.HttpEntity)>($r22_2);
+
+        interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpResponse: void setEntity(ch.boye.httpclientandroidlib.HttpEntity)>($r4);
+
+     label6:
+        $r8_7 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        interfaceinvoke $r8_7.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void close()>();
+
+        $r5 = new ch.boye.httpclientandroidlib.impl.client.TunnelRefusedException;
+
+        $r15_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r15_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r15_4 = virtualinvoke $r15_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("CONNECT refused by proxy: ");
+
+        $r14_4 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $r15_5 = virtualinvoke $r15_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r14_4);
+
+        $r16_1 = virtualinvoke $r15_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.impl.client.TunnelRefusedException: void <init>(java.lang.String,ch.boye.httpclientandroidlib.HttpResponse)>($r16_1, $r13);
+
+        throw $r5;
+
+     label7:
+        $r8_8 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        interfaceinvoke $r8_8.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void markReusable()>();
+
+        return 0;
+    }
+
+    protected ch.boye.httpclientandroidlib.conn.routing.HttpRoute determineRoute(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        java.lang.IllegalStateException $r3;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner $r4;
+        ch.boye.httpclientandroidlib.HttpHost $r5, $r5_1, $r5_2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r6;
+        java.lang.Object $r7;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r8;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r5 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r1 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+(0)     if $r5 != null goto label1;
+
+        $r6 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        $r7 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.params.HttpParams: java.lang.Object getParameter(java.lang.String)>("http.default-host");
+
+(1)     $r5_1 = (ch.boye.httpclientandroidlib.HttpHost) $r7;
+
+     label1:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        if $r5_2 != null goto label2;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Target host must not be null, or set in parameters.");
+
+        throw $r3;
+
+     label2:
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner routePlanner>;
+
+        $r8 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.conn.routing.HttpRoutePlanner: ch.boye.httpclientandroidlib.conn.routing.HttpRoute determineRoute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r5_2, $r1, $r2);
+
+        return $r8;
+    }
+
+    protected void establishRoute(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1, $r7;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        ch.boye.httpclientandroidlib.conn.routing.BasicRouteDirector $r3;
+        java.lang.IllegalStateException $r4;
+        ch.boye.httpclientandroidlib.HttpException $r5;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8;
+        java.lang.String $r9, $r9_1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r11, $r11_1, $r11_2, $r11_3;
+        ch.boye.httpclientandroidlib.HttpHost $r12;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r3 = new ch.boye.httpclientandroidlib.conn.routing.BasicRouteDirector;
+
+(0)     specialinvoke $r3.<ch.boye.httpclientandroidlib.conn.routing.BasicRouteDirector: void <init>()>();
+
+     label1:
+        $r6 = Phi($r6 #0, $r6_3 #3);
+
+        $r11 = Phi($r11 #0, $r11_1 #3);
+
+        $i1 = Phi($i1 #0, $i1_1 #3);
+
+        $z0 = Phi($z0 #0, $z0_1 #3);
+
+        $r10 = Phi($r10 #0, $r10_2 #3);
+
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        $r7 = interfaceinvoke $r6_1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: ch.boye.httpclientandroidlib.conn.routing.HttpRoute getRoute()>();
+
+        $i0 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.conn.routing.HttpRouteDirector: int nextStep(ch.boye.httpclientandroidlib.conn.routing.RouteInfo,ch.boye.httpclientandroidlib.conn.routing.RouteInfo)>($r1, $r7);
+
+(1)     lookupswitch($i0)
+        {
+            case -1: goto label9;
+            case 0: goto label5;
+            case 1: goto label4;
+            case 2: goto label4;
+            case 3: goto label6;
+            case 4: goto label7;
+            case 5: goto label8;
+            default: goto label2;
+        };
+
+     label2:
+        goto label3;
+
+     label3:
+        $r4 = new java.lang.IllegalStateException;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unknown step indicator ");
+
+        $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8_3 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" from RouteDirector.");
+
+        $r9 = virtualinvoke $r8_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r9);
+
+        throw $r4;
+
+     label4:
+        $r6_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        $r10_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+(2)     interfaceinvoke $r6_2.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void open(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,ch.boye.httpclientandroidlib.protocol.HttpContext,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $r2, $r10_1);
+
+     label5:
+        $r6_3 = Phi($r6_1 #1, $r6_2 #2, $r6_4 #4, $r6_5 #5, $r6_6 #6);
+
+        $r11_1 = Phi($r11 #1, $r11 #2, $r11_2 #4, $r11_3 #5, $r11 #6);
+
+        $i1_1 = Phi($i1 #1, $i1 #2, $i1 #4, $i1_3 #5, $i1 #6);
+
+        $z0_1 = Phi($z0 #1, $z0 #2, $z0_2 #4, $z0_3 #5, $z0 #6);
+
+        $r10_2 = Phi($r10 #1, $r10_1 #2, $r10_3 #4, $r10_4 #5, $r10_5 #6);
+
+(3)     if $i0 > 0 goto label1;
+
+        return;
+
+     label6:
+        $z0_2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: boolean createTunnelToTarget(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2);
+
+        $r11_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r11_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Tunnel to target created.");
+
+        $r6_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        $r10_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+        interfaceinvoke $r6_4.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void tunnelTarget(boolean,ch.boye.httpclientandroidlib.params.HttpParams)>($z0_2, $r10_3);
+
+(4)     goto label5;
+
+     label7:
+        $i1_2 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: int getHopCount()>();
+
+        $i1_3 = $i1_2 + -1;
+
+        $z0_3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: boolean createTunnelToProxy(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,int,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $i1_3, $r2);
+
+        $r11_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r11_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Tunnel to proxy created.");
+
+        $r6_5 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        $r12 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getHopTarget(int)>($i1_3);
+
+        $r10_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+        interfaceinvoke $r6_5.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void tunnelProxy(ch.boye.httpclientandroidlib.HttpHost,boolean,ch.boye.httpclientandroidlib.params.HttpParams)>($r12, $z0_3, $r10_4);
+
+(5)     goto label5;
+
+     label8:
+        $r6_6 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+        $r10_5 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+        interfaceinvoke $r6_6.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void layerProtocol(ch.boye.httpclientandroidlib.protocol.HttpContext,ch.boye.httpclientandroidlib.params.HttpParams)>($r2, $r10_5);
+
+(6)     goto label5;
+
+     label9:
+        $r5 = new ch.boye.httpclientandroidlib.HttpException;
+
+        $r8_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r8_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_5 = virtualinvoke $r8_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unable to establish route: planned = ");
+
+        $r8_6 = virtualinvoke $r8_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r8_7 = virtualinvoke $r8_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("; current = ");
+
+        $r8_8 = virtualinvoke $r8_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r7);
+
+        $r9_1 = virtualinvoke $r8_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.HttpException: void <init>(java.lang.String)>($r9_1);
+
+        throw $r5;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        ch.boye.httpclientandroidlib.impl.auth.BasicScheme $r3;
+        ch.boye.httpclientandroidlib.auth.UsernamePasswordCredentials $r4;
+        byte $b0;
+        ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException $r5;
+        java.lang.InterruptedException $r6;
+        ch.boye.httpclientandroidlib.HttpException $r7;
+        ch.boye.httpclientandroidlib.impl.client.TunnelRefusedException $r8;
+        java.io.IOException $r9;
+        ch.boye.httpclientandroidlib.conn.BasicManagedEntity $r10;
+        java.lang.RuntimeException $r11;
+        ch.boye.httpclientandroidlib.HttpHost $r12, $r18, $r18_1, $r18_2, $r12_1, $r18_3, $r18_4, $r18_5, $r12_2, $r18_6, $r12_3, $r18_7, $r12_4, $r12_5, $r12_6, $r18_8, $r18_9, $r12_7, $r18_10, $r12_8, $r18_11, $r12_9, $r18_12, $r12_10;
+        ch.boye.httpclientandroidlib.auth.AuthState $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7, $r13_8, $r13_9, $r13_10, $r13_11, $r13_12, $r13_13, $r13_14, $r13_15, $r13_16, $r13_17, $r13_18, $r13_19;
+        ch.boye.httpclientandroidlib.impl.client.RequestWrapper $r14, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5, $r14_6, $r14_7;
+        ch.boye.httpclientandroidlib.params.HttpParams $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6, $r15_7, $r15_8, $r15_9, $r15_10, $r15_11;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r16, $r41, $r16_1, $r16_2, $r16_3, $r16_4, $r16_5, $r16_6, $r16_7, $r16_8, $r16_9;
+        java.lang.Object $r17, $r23, $r17_1, $r23_1, $r17_2, $r23_2, $r17_3, $r17_4, $r23_3, $r17_5, $r23_4, $r17_6, $r23_5, $r17_7, $r23_6, $r17_8, $r23_7, $r17_9, $r23_8;
+        int $i1, $i1_1, $i1_2;
+        java.lang.String $r19, $r20, $r19_1, $r19_2, $r19_3, $r19_4, $r19_5, $r19_6, $r19_7, $r19_8, $r19_9, $r19_10, $r19_11, $r19_12, $r19_13, $r19_14, $r19_15, $r19_16;
+        ch.boye.httpclientandroidlib.impl.client.RoutedRequest $r21, $r37, $r21_1, $r21_2, $r21_3, $r21_4, $r21_5, $r21_6, $r21_7;
+        boolean $z0, $z1, $z2, $z3, $z1_1, $z0_1, $z2_1, $z2_2, $z2_3, $z2_4, $z2_5, $z2_6, $z2_7, $z0_2, $z1_2, $z2_8, $z1_3, $z2_9, $z2_10, $z2_11, $z2_12, $z2_13, $z1_4, $z2_14, $z1_5, $z0_3, $z2_15, $z1_6, $z0_4, $z2_16, $z1_7, $z1_8, $z1_9, $z2_17, $z1_10, $z0_5, $z2_18, $z1_11, $z0_6;
+        ch.boye.httpclientandroidlib.HttpResponse $r22, $r33, $r22_1, $r22_2, $r22_3, $r22_4, $r22_5, $r22_6, $r22_7, $r22_8;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r24, $r24_1, $r24_2, $r24_3, $r24_4, $r24_5, $r24_6, $r24_7, $r24_8, $r24_9, $r24_10, $r24_11, $r24_12, $r24_13, $r24_14, $r24_15, $r24_16, $r24_17, $r24_18, $r24_19, $r24_20, $r24_21, $r24_22, $r24_23, $r24_24, $r24_25, $r24_26, $r24_27;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r25;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionRequest $r26;
+        ch.boye.httpclientandroidlib.client.methods.AbortableHttpRequest $r27, $r27_1, $r27_2, $r27_3, $r27_4, $r27_5, $r27_6, $r27_7, $r27_8, $r27_9, $r27_10, $r27_11;
+        long $l2, $l2_1, $l2_2, $l2_3, $l2_4, $l2_5, $l2_6, $l2_7, $l2_8, $l2_9;
+        java.util.concurrent.TimeUnit $r28, $r28_1, $r28_2, $r28_3, $r28_4, $r28_5, $r28_6, $r28_7, $r28_8, $r28_9, $r28_10, $r28_11, $r28_12;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r29, $r29_1, $r29_2, $r29_3, $r29_4, $r29_5, $r29_6, $r29_7, $r29_8, $r29_9, $r29_10, $r29_11, $r29_12, $r29_13, $r29_14, $r29_15, $r29_16, $r29_17, $r29_18, $r29_19, $r29_20;
+        java.net.URI $r30;
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r31, $r31_1, $r31_2, $r31_3, $r31_4, $r31_5, $r31_6;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r32, $r32_1, $r32_2, $r32_3, $r32_4, $r32_5, $r32_6;
+        ch.boye.httpclientandroidlib.ConnectionReuseStrategy $r34;
+        ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy $r35;
+        java.lang.StringBuilder $r36, $r36_1, $r36_2, $r36_3, $r36_4, $r36_5, $r36_6, $r36_7, $r36_8, $r36_9, $r36_10, $r36_11, $r36_12, $r36_13, $r36_14, $r36_15;
+        ch.boye.httpclientandroidlib.client.UserTokenHandler $r38;
+        java.io.InterruptedIOException $r39, $r39_1, $r39_2, $r39_3, $r39_4, $r39_5;
+        ch.boye.httpclientandroidlib.HttpEntity $r40, $r40_1, $r40_2, $r40_3, $r40_4, $r40_5, $r40_6, $r40_7, $r40_8, $r40_9, $r40_10, $r40_11;
+        ch.boye.httpclientandroidlib.auth.AuthProtocolState $r42, $r43, $r43_1, $r42_1, $r43_2, $r42_2, $r42_3, $r43_3, $r42_4, $r43_4, $r43_5, $r42_5, $r43_6, $r42_6, $r43_7, $r42_7, $r43_8, $r42_8;
+        ch.boye.httpclientandroidlib.auth.AuthScheme $r44, $r44_1, $r44_2, $r44_3, $r44_4, $r44_5, $r44_6, $r44_7, $r44_8, $r44_9, $r44_10, $r44_11;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r12 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r1 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r13 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState targetAuthState>;
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.auth.target-scope", $r13);
+
+        $r13_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.auth.proxy-scope", $r13_1);
+
+        $r14 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.impl.client.RequestWrapper wrapRequest(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        $r15 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+        virtualinvoke $r14.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: void setParams(ch.boye.httpclientandroidlib.params.HttpParams)>($r15);
+
+        $r16 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.routing.HttpRoute determineRoute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r12, $r14, $r2);
+
+        $r15_1 = virtualinvoke $r14.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        $r17 = interfaceinvoke $r15_1.<ch.boye.httpclientandroidlib.params.HttpParams: java.lang.Object getParameter(java.lang.String)>("http.virtual-host");
+
+        $r18 = (ch.boye.httpclientandroidlib.HttpHost) $r17;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.HttpHost virtualHost> = $r18;
+
+        $r18_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.HttpHost virtualHost>;
+
+(0)     if $r18_1 == null goto label001;
+
+        $r18_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.HttpHost virtualHost>;
+
+        $i1 = virtualinvoke $r18_2.<ch.boye.httpclientandroidlib.HttpHost: int getPort()>();
+
+(1)     if $i1 != -1 goto label001;
+
+        $i1_1 = virtualinvoke $r12.<ch.boye.httpclientandroidlib.HttpHost: int getPort()>();
+
+(2)     if $i1_1 == -1 goto label001;
+
+        $r12_1 = new ch.boye.httpclientandroidlib.HttpHost;
+
+        $r18_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.HttpHost virtualHost>;
+
+        $r19 = virtualinvoke $r18_3.<ch.boye.httpclientandroidlib.HttpHost: java.lang.String getHostName()>();
+
+        $r18_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.HttpHost virtualHost>;
+
+        $r20 = virtualinvoke $r18_4.<ch.boye.httpclientandroidlib.HttpHost: java.lang.String getSchemeName()>();
+
+        specialinvoke $r12_1.<ch.boye.httpclientandroidlib.HttpHost: void <init>(java.lang.String,int,java.lang.String)>($r19, $i1_1, $r20);
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.HttpHost virtualHost> = $r12_1;
+
+     label001:
+        $r18_5 = Phi($r18_1 #0, $r18_2 #1, $r18_2 #2, $r18_4 #3);
+
+        $r12_2 = Phi($r12 #0, $r12 #1, $r12 #2, $r12_1 #3);
+
+        $r19_1 = Phi($r19 #0, $r19 #1, $r19 #2, $r19 #3);
+
+        $i1_2 = Phi($i1 #0, $i1 #1, $i1_1 #2, $i1_1 #3);
+
+        $r21 = new ch.boye.httpclientandroidlib.impl.client.RoutedRequest;
+
+        specialinvoke $r21.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: void <init>(ch.boye.httpclientandroidlib.impl.client.RequestWrapper,ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r14, $r16);
+
+        $z0 = 0;
+
+        $z1 = 0;
+
+(4)     $r22 = null;
+
+     label002:
+        $r24 = Phi($r24 #4, $r24_10 #49, $r24_14 #77, $r24_14 #83, $r24_15 #85);
+
+        $r32 = Phi($r32 #4, $r32_1 #49, $r32_2 #77, $r32_2 #83, $r32_2 #85);
+
+        $r21_1 = Phi($r21 #4, $r21_1 #49, $r21_2 #77, $r21_2 #83, $r21_2 #85);
+
+        $z2 = Phi($z2 #4, $z2_6 #49, $z2_8 #77, $z2_8 #83, $z2_8 #85);
+
+        $r18_6 = Phi($r18_5 #4, $r18_8 #49, $r18_8 #77, $r18_8 #83, $r18_8 #85);
+
+        $r28 = Phi($r28 #4, $r28_2 #49, $r28_7 #77, $r28_7 #83, $r28_7 #85);
+
+        $z1_1 = Phi($z1 #4, $z1_1 #49, $z1_3 #77, $z1_3 #83, $z1_3 #85);
+
+        $r43 = Phi($r43 #4, $r43 #49, $r43_1 #77, $r43_1 #83, $r43_1 #85);
+
+        $r36 = Phi($r36 #4, $r36 #49, $r36_11 #77, $r36_11 #83, $r36_11 #85);
+
+        $r29 = Phi($r29 #4, $r29_3 #49, $r29_8 #77, $r29_8 #83, $r29_8 #85);
+
+        $r13_2 = Phi($r13_1 #4, $r13_4 #49, $r13_5 #77, $r13_5 #83, $r13_5 #85);
+
+        $r27 = Phi($r27 #4, $r27_5 #49, $r27_5 #77, $r27_5 #83, $r27_5 #85);
+
+        $r42 = Phi($r42 #4, $r42 #49, $r42_1 #77, $r42_1 #83, $r42_1 #85);
+
+        $r14_1 = Phi($r14 #4, $r14_2 #49, $r14_2 #77, $r14_2 #83, $r14_2 #85);
+
+        $r17_1 = Phi($r17 #4, $r17_2 #49, $r17_2 #77, $r17_4 #83, $r17_4 #85);
+
+        $r31 = Phi($r31 #4, $r31_1 #49, $r31_2 #77, $r31_2 #83, $r31_2 #85);
+
+        $r12_3 = Phi($r12_2 #4, $r12_6 #49, $r12_6 #77, $r12_6 #83, $r12_6 #85);
+
+        $r19_2 = Phi($r19_1 #4, $r19_3 #49, $r19_9 #77, $r19_9 #83, $r19_9 #85);
+
+        $l2 = Phi($l2 #4, $l2_2 #49, $l2_4 #77, $l2_4 #83, $l2_4 #85);
+
+        $r22_1 = Phi($r22 #4, $r22_2 #49, $r22_2 #77, $r22_2 #83, $r22_2 #85);
+
+        $r44 = Phi($r44 #4, $r44 #49, $r44_1 #77, $r44_1 #83, $r44_1 #85);
+
+        $r16_1 = Phi($r16 #4, $r16_2 #49, $r16_3 #77, $r16_3 #83, $r16_3 #85);
+
+        $z0_1 = Phi($z0 #4, $z0_1 #49, $z0_2 #77, $z0_2 #83, $z0_2 #85);
+
+        $r15_2 = Phi($r15_1 #4, $r15_5 #49, $r15_6 #77, $r15_6 #83, $r15_6 #85);
+
+        $r40 = Phi($r40 #4, $r40 #49, $r40_1 #77, $r40_1 #83, $r40_1 #85);
+
+        $r23 = Phi($r23 #4, $r23_1 #49, $r23_1 #77, $r23_3 #83, $r23_3 #85);
+
+(5)     if $z1_1 != 0 goto label091;
+
+     label003:
+(6)     $r14_2 = virtualinvoke $r21_1.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: ch.boye.httpclientandroidlib.impl.client.RequestWrapper getRequest()>();
+
+(7)     $r16_2 = virtualinvoke $r21_1.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: ch.boye.httpclientandroidlib.conn.routing.HttpRoute getRoute()>();
+
+(8)     $r23_1 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: java.lang.Object getAttribute(java.lang.String)>("http.user-token");
+
+     label004:
+(9)     $r17_2 = $r23_1;
+
+     label005:
+(10)    $r24_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label006:
+(11)    if $r24_1 != null goto label030;
+
+(12)    $r25 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ClientConnectionManager connManager>;
+
+     label007:
+        $r26 = interfaceinvoke $r25.<ch.boye.httpclientandroidlib.conn.ClientConnectionManager: ch.boye.httpclientandroidlib.conn.ClientConnectionRequest requestConnection(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,java.lang.Object)>($r16_2, $r23_1);
+
+     label008:
+        $z2_1 = $r1 instanceof ch.boye.httpclientandroidlib.client.methods.AbortableHttpRequest;
+
+(13)    if $z2_1 == 0 goto label011;
+
+     label009:
+(14)    $r27_1 = (ch.boye.httpclientandroidlib.client.methods.AbortableHttpRequest) $r1;
+
+     label010:
+(15)    interfaceinvoke $r27_1.<ch.boye.httpclientandroidlib.client.methods.AbortableHttpRequest: void setConnectionRequest(ch.boye.httpclientandroidlib.conn.ClientConnectionRequest)>($r26);
+
+     label011:
+        $r27_2 = Phi($r27 #13, $r27_1 #15);
+
+(16)    $r15_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+     label012:
+(17)    $l2_1 = staticinvoke <ch.boye.httpclientandroidlib.client.params.HttpClientParams: long getConnectionManagerTimeout(ch.boye.httpclientandroidlib.params.HttpParams)>($r15_3);
+
+     label013:
+(18)    $r28_1 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit MILLISECONDS>;
+
+     label014:
+(19)    $r24_2 = interfaceinvoke $r26.<ch.boye.httpclientandroidlib.conn.ClientConnectionRequest: ch.boye.httpclientandroidlib.conn.ManagedClientConnection getConnection(long,java.util.concurrent.TimeUnit)>($l2_1, $r28_1);
+
+     label015:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn> = $r24_2;
+
+     label016:
+(20)    $r15_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+     label017:
+(21)    $z2_2 = staticinvoke <ch.boye.httpclientandroidlib.params.HttpConnectionParams: boolean isStaleCheckingEnabled(ch.boye.httpclientandroidlib.params.HttpParams)>($r15_4);
+
+     label018:
+(22)    if $z2_2 == 0 goto label030;
+
+(23)    $r24_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label019:
+(24)    $z2_3 = interfaceinvoke $r24_3.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: boolean isOpen()>();
+
+     label020:
+(25)    if $z2_3 == 0 goto label030;
+
+     label021:
+(26)    $r29_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label022:
+        virtualinvoke $r29_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Stale connection check");
+
+     label023:
+(27)    $r24_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label024:
+(28)    $z2_4 = interfaceinvoke $r24_4.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: boolean isStale()>();
+
+     label025:
+(29)    if $z2_4 == 0 goto label030;
+
+     label026:
+(30)    $r29_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label027:
+        virtualinvoke $r29_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Stale connection detected");
+
+     label028:
+(31)    $r24_5 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label029:
+(32)    interfaceinvoke $r24_5.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void close()>();
+
+     label030:
+        $r24_7 = Phi($r24_1 #11, $r24_2 #22, $r24_3 #25, $r24_4 #29, $r24_5 #32);
+
+        $z2_5 = Phi($z2 #11, $z2_2 #22, $z2_3 #25, $z2_4 #29, $z2_4 #32);
+
+        $r28_2 = Phi($r28 #11, $r28_1 #22, $r28_1 #25, $r28_1 #29, $r28_1 #32);
+
+        $r29_3 = Phi($r29 #11, $r29 #22, $r29 #25, $r29_1 #29, $r29_2 #32);
+
+        $r27_3 = Phi($r27 #11, $r27_2 #22, $r27_2 #25, $r27_2 #29, $r27_2 #32);
+
+        $l2_2 = Phi($l2 #11, $l2_1 #22, $l2_1 #25, $l2_1 #29, $l2_1 #32);
+
+        $r15_5 = Phi($r15_2 #11, $r15_4 #22, $r15_4 #25, $r15_4 #29, $r15_4 #32);
+
+        $z2_6 = $r1 instanceof ch.boye.httpclientandroidlib.client.methods.AbortableHttpRequest;
+
+(33)    if $z2_6 == 0 goto label032;
+
+        $r27_4 = (ch.boye.httpclientandroidlib.client.methods.AbortableHttpRequest) $r1;
+
+(34)    $r24_8 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label031:
+(35)    interfaceinvoke $r27_4.<ch.boye.httpclientandroidlib.client.methods.AbortableHttpRequest: void setReleaseTrigger(ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger)>($r24_8);
+
+     label032:
+        $r24_9 = Phi($r24_7 #33, $r24_8 #35);
+
+        $r27_5 = Phi($r27_3 #33, $r27_4 #35);
+
+(36)    specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void tryConnect(ch.boye.httpclientandroidlib.impl.client.RoutedRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r21_1, $r2);
+
+     label033:
+        $r30 = virtualinvoke $r14_2.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: java.net.URI getURI()>();
+
+(37)    $r19_3 = virtualinvoke $r30.<java.net.URI: java.lang.String getUserInfo()>();
+
+     label034:
+(38)    if $r19_3 == null goto label040;
+
+     label035:
+(39)    $r13_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState targetAuthState>;
+
+     label036:
+(40)    $r3 = new ch.boye.httpclientandroidlib.impl.auth.BasicScheme;
+
+     label037:
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.auth.BasicScheme: void <init>()>();
+
+     label038:
+        $r4 = new ch.boye.httpclientandroidlib.auth.UsernamePasswordCredentials;
+
+     label039:
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.auth.UsernamePasswordCredentials: void <init>(java.lang.String)>($r19_3);
+
+(41)    virtualinvoke $r13_3.<ch.boye.httpclientandroidlib.auth.AuthState: void update(ch.boye.httpclientandroidlib.auth.AuthScheme,ch.boye.httpclientandroidlib.auth.Credentials)>($r3, $r4);
+
+     label040:
+        $r13_4 = Phi($r13_2 #38, $r13_3 #41);
+
+(42)    virtualinvoke $r14_2.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: void resetHeaders()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void rewriteRequestURI(ch.boye.httpclientandroidlib.impl.client.RequestWrapper,ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r14_2, $r16_2);
+
+     label041:
+(43)    $r18_7 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.HttpHost virtualHost>;
+
+     label042:
+        $r12_4 = $r18_7;
+
+(44)    if $r18_7 != null goto label044;
+
+     label043:
+(45)    $r12_5 = virtualinvoke $r16_2.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getTargetHost()>();
+
+     label044:
+        $r12_6 = Phi($r12_4 #44, $r12_5 #45);
+
+(46)    $r18_8 = virtualinvoke $r16_2.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getProxyHost()>();
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.target_host", $r12_6);
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.proxy_host", $r18_8);
+
+     label045:
+(47)    $r24_10 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label046:
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.connection", $r24_10);
+
+     label047:
+        $r31_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec>;
+
+(48)    $r32_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpProcessor httpProcessor>;
+
+     label048:
+        virtualinvoke $r31_1.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: void preProcess(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpProcessor,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r14_2, $r32_1, $r2);
+
+        $r33 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.HttpResponse tryExecute(ch.boye.httpclientandroidlib.impl.client.RoutedRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r21_1, $r2);
+
+     label049:
+        $r22_2 = $r33;
+
+(49)    if $r33 == null goto label002;
+
+     label050:
+(50)    $r15_6 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+     label051:
+        interfaceinvoke $r33.<ch.boye.httpclientandroidlib.HttpResponse: void setParams(ch.boye.httpclientandroidlib.params.HttpParams)>($r15_6);
+
+     label052:
+(51)    $r31_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor requestExec>;
+
+(52)    $r32_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.protocol.HttpProcessor httpProcessor>;
+
+     label053:
+        virtualinvoke $r31_2.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: void postProcess(ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpProcessor,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r33, $r32_2, $r2);
+
+     label054:
+        $r34 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.ConnectionReuseStrategy reuseStrategy>;
+
+     label055:
+(53)    $z2_7 = interfaceinvoke $r34.<ch.boye.httpclientandroidlib.ConnectionReuseStrategy: boolean keepAlive(ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r33, $r2);
+
+     label056:
+        $z0_2 = $z2_7;
+
+(54)    if $z2_7 == 0 goto label071;
+
+     label057:
+        $r35 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy keepAliveStrategy>;
+
+     label058:
+(55)    $l2_3 = interfaceinvoke $r35.<ch.boye.httpclientandroidlib.conn.ConnectionKeepAliveStrategy: long getKeepAliveDuration(ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r33, $r2);
+
+     label059:
+(56)    $r29_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label060:
+        $z3 = virtualinvoke $r29_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+     label061:
+(57)    if $z3 == 0 goto label068;
+
+        $b0 = $l2_3 cmp 0L;
+
+        if $b0 <= 0 goto label100;
+
+(58)    $r36_1 = new java.lang.StringBuilder;
+
+     label062:
+        specialinvoke $r36_1.<java.lang.StringBuilder: void <init>()>();
+
+(59)    $r36_2 = virtualinvoke $r36_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("for ");
+
+(60)    $r36_3 = virtualinvoke $r36_2.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l2_3);
+
+(61)    $r36_4 = virtualinvoke $r36_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+     label063:
+(62)    $r28_3 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit MILLISECONDS>;
+
+     label064:
+(63)    $r36_5 = virtualinvoke $r36_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r28_3);
+
+(64)    $r19_4 = virtualinvoke $r36_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label065:
+        $r28_4 = Phi($r28_3 #64, $r28_2 #104);
+
+        $r36_6 = Phi($r36_5 #64, $r36 #104);
+
+        $r19_5 = Phi($r19_4 #64, $r19_7 #104);
+
+(65)    $r29_5 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label066:
+(66)    $r36_7 = new java.lang.StringBuilder;
+
+     label067:
+        specialinvoke $r36_7.<java.lang.StringBuilder: void <init>()>();
+
+(67)    $r36_8 = virtualinvoke $r36_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Connection can be kept alive ");
+
+(68)    $r36_9 = virtualinvoke $r36_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r19_5);
+
+(69)    $r19_6 = virtualinvoke $r36_9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(70)    virtualinvoke $r29_5.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r19_6);
+
+     label068:
+        $r28_5 = Phi($r28_2 #57, $r28_4 #70);
+
+        $r36_10 = Phi($r36 #57, $r36_9 #70);
+
+        $r29_6 = Phi($r29_4 #57, $r29_5 #70);
+
+        $r19_8 = Phi($r19_3 #57, $r19_6 #70);
+
+(71)    $r24_11 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label069:
+(72)    $r28_6 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit MILLISECONDS>;
+
+     label070:
+(73)    interfaceinvoke $r24_11.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void setIdleDuration(long,java.util.concurrent.TimeUnit)>($l2_3, $r28_6);
+
+     label071:
+        $r24_12 = Phi($r24_10 #54, $r24_11 #73);
+
+        $r28_7 = Phi($r28_2 #54, $r28_6 #73);
+
+        $r36_11 = Phi($r36 #54, $r36_10 #73);
+
+        $r29_7 = Phi($r29_3 #54, $r29_6 #73);
+
+        $r19_9 = Phi($r19_3 #54, $r19_8 #73);
+
+        $l2_4 = Phi($l2_2 #54, $l2_3 #73);
+
+(74)    $r37 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.impl.client.RoutedRequest handleResponse(ch.boye.httpclientandroidlib.impl.client.RoutedRequest,ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r21_1, $r33, $r2);
+
+     label072:
+        if $r37 != null goto label101;
+
+(75)    $z1_2 = 1;
+
+     label073:
+        $r24_13 = Phi($r24_12 #75, $r24_17 #110);
+
+        $r21_2 = Phi($r21_1 #75, $r21_3 #110);
+
+        $z2_8 = Phi($z2_7 #75, $z2_10 #110);
+
+        $z1_3 = Phi($z1_2 #75, $z1_1 #110);
+
+        $r43_1 = Phi($r43 #75, $r43_2 #110);
+
+        $r29_8 = Phi($r29_7 #75, $r29_9 #110);
+
+        $r13_5 = Phi($r13_4 #75, $r13_6 #110);
+
+        $r42_1 = Phi($r42 #75, $r42_2 #110);
+
+        $r44_1 = Phi($r44 #75, $r44_2 #110);
+
+        $r16_3 = Phi($r16_2 #75, $r16_4 #110);
+
+        $r40_1 = Phi($r40 #75, $r40_3 #110);
+
+(76)    $r24_14 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label074:
+(77)    if $r24_14 == null goto label002;
+
+(78)    if $r23_1 != null goto label078;
+
+(79)    $r38 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.UserTokenHandler userTokenHandler>;
+
+     label075:
+(80)    $r23_2 = interfaceinvoke $r38.<ch.boye.httpclientandroidlib.client.UserTokenHandler: java.lang.Object getUserToken(ch.boye.httpclientandroidlib.protocol.HttpContext)>($r2);
+
+     label076:
+(81)    $r17_3 = $r23_2;
+
+     label077:
+(82)    interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.user-token", $r23_2);
+
+     label078:
+        $r17_4 = Phi($r17_2 #78, $r17_3 #82);
+
+        $r23_3 = Phi($r23_1 #78, $r23_2 #82);
+
+(83)    if $r17_4 == null goto label002;
+
+(84)    $r24_15 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label079:
+        interfaceinvoke $r24_15.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void setState(java.lang.Object)>($r17_4);
+
+     label080:
+(85)    goto label002;
+
+     label081:
+        $r5 := @caughtexception;
+
+        $r24_20 = Phi($r24 #5, $r24_1 #12, $r24_2 #19, $r24_3 #23, $r24_4 #27, $r24_5 #31, $r24_8 #34, $r24_7 #33, $r24_9 #36, $r24_10 #47, $r24_11 #72, $r24_12 #74, $r24_14 #79, $r24_15 #84, $r24_6 #86, $r24_19 #87, $r24_22 #94, $r24_24 #101, $r24_25 #103, $r24_16 #106, $r24_17 #108, $r24_18 #111, $r24_23 #139);
+
+        $r32_3 = Phi($r32 #5, $r32_1 #48, $r32_2 #52);
+
+        $r21_4 = Phi($r21_1 #5, $r21_2 #79, $r21_2 #84);
+
+        $z2_14 = Phi($z2 #5, $z2_1 #14, $z2_1 #16, $z2_2 #21, $z2_3 #24, $z2_4 #28, $z2_6 #33, $z2_7 #53, $z2_8 #79, $z2_8 #84, $z2_16 #94, $z2_9 #108, $z2_10 #109, $z2_11 #120, $z2_12 #125, $z2_13 #133);
+
+        $r18_9 = Phi($r18_6 #5, $r18_7 #44, $r18_8 #46);
+
+        $r28_8 = Phi($r28 #5, $r28_1 #18, $r28_2 #33, $r28_3 #62, $r28_4 #66, $r28_6 #72, $r28_7 #74, $r28_10 #94);
+
+        $z1_5 = Phi($z1_1 #5, $z1_3 #79, $z1_3 #84, $z1_4 #88, $z1_7 #94, $z1_8 #98, $z1_9 #100);
+
+        $r43_5 = Phi($r43 #5, $r43_1 #79, $r43_1 #84, $r43_4 #127, $r43_2 #108, $r43_3 #115, $r43_3 #125);
+
+        $r36_12 = Phi($r36 #5, $r36_1 #58, $r36_2 #59, $r36_3 #60, $r36_4 #61, $r36_5 #63, $r36_7 #66, $r36_8 #67, $r36_9 #68, $r36_10 #72, $r36_11 #74);
+
+        $r29_16 = Phi($r29 #5, $r29_1 #26, $r29_2 #30, $r29_3 #33, $r29_4 #56, $r29_5 #66, $r29_6 #72, $r29_7 #74, $r29_8 #79, $r29_8 #84, $r29_13 #87, $r29_14 #90, $r29_15 #93, $r29_18 #94, $r29_9 #108, $r29_10 #122, $r29_11 #125, $r29_12 #135);
+
+        $r13_16 = Phi($r13_2 #5, $r13_3 #40, $r13_4 #42, $r13_5 #79, $r13_5 #84, $r13_6 #108, $r13_7 #112, $r13_8 #115, $r13_9 #118, $r13_10 #123, $r13_12 #125, $r13_13 #128, $r13_14 #131, $r13_15 #136);
+
+        $r39_1 = Phi($r39 #5);
+
+        $r27_7 = Phi($r27 #5, $r27_1 #14, $r27_2 #16, $r27_4 #34, $r27_3 #33, $r27_5 #36, $r27_6 #87, $r27_9 #94);
+
+        $r42_5 = Phi($r42 #5, $r42_1 #79, $r42_1 #84, $r42_2 #108, $r42_3 #113, $r42_4 #126);
+
+        $r14_3 = Phi($r14_1 #5, $r14_2 #6, $r14_5 #94);
+
+        $r17_5 = Phi($r17_1 #5, $r17_2 #12, $r17_2 #33, $r17_3 #81, $r17_4 #84, $r17_7 #94);
+
+        $r31_3 = Phi($r31 #5, $r31_1 #48, $r31_2 #52);
+
+        $r12_7 = Phi($r12_3 #5, $r12_4 #44, $r12_5 #45, $r12_6 #46);
+
+        $r19_12 = Phi($r19_2 #5, $r19_3 #37, $r19_4 #64, $r19_5 #66, $r19_6 #69, $r19_8 #72, $r19_9 #74, $r19_10 #91, $r19_11 #93, $r19_14 #94);
+
+        $l2_5 = Phi($l2 #5, $l2_1 #17, $l2_2 #33, $l2_3 #55, $l2_4 #74, $l2_7 #94);
+
+        $r22_4 = Phi($r22_1 #5, $r22_2 #50, $r22_3 #93, $r22_6 #94);
+
+        $r44_8 = Phi($r44 #5, $r44_1 #79, $r44_1 #84, $r44_2 #108, $r44_3 #116, $r44_4 #119, $r44_5 #125, $r44_6 #129, $r44_7 #132);
+
+        $r16_5 = Phi($r16_1 #5, $r16_2 #7, $r16_3 #79, $r16_3 #84, $r16_7 #94, $r16_4 #108);
+
+        $z0_3 = Phi($z0_1 #5, $z0_2 #54);
+
+        $r15_7 = Phi($r15_2 #5, $r15_3 #16, $r15_4 #20, $r15_5 #33, $r15_6 #50, $r15_9 #94);
+
+        $r40_4 = Phi($r40 #5, $r40_1 #79, $r40_1 #84, $r40_6 #95, $r40_7 #97, $r40_9 #100, $r40_2 #105, $r40_3 #108, $r40_8 #138);
+
+        $r23_4 = Phi($r23 #5, $r23_1 #8, $r23_2 #80, $r23_3 #84, $r23_6 #94);
+
+        $r39_2 = new java.io.InterruptedIOException;
+
+        specialinvoke $r39_2.<java.io.InterruptedIOException: void <init>(java.lang.String)>("Connection has been shut down");
+
+        virtualinvoke $r39_2.<java.io.InterruptedIOException: java.lang.Throwable initCause(java.lang.Throwable)>($r5);
+
+        throw $r39_2;
+
+     label082:
+        $r6 := @caughtexception;
+
+        $r24_6 = Phi($r24_1 #18, $r24_2 #19);
+
+(86)    $r39 = new java.io.InterruptedIOException;
+
+     label083:
+        specialinvoke $r39.<java.io.InterruptedIOException: void <init>()>();
+
+        virtualinvoke $r39.<java.io.InterruptedIOException: java.lang.Throwable initCause(java.lang.Throwable)>($r6);
+
+     label084:
+        throw $r39;
+
+     label085:
+        $r7 := @caughtexception;
+
+        $r24_21 = Phi($r24 #5, $r24_1 #12, $r24_2 #19, $r24_3 #23, $r24_4 #27, $r24_5 #31, $r24_8 #34, $r24_7 #33, $r24_9 #36, $r24_10 #47, $r24_11 #72, $r24_12 #74, $r24_14 #79, $r24_15 #84, $r24_6 #86, $r24_19 #87, $r24_22 #94, $r24_24 #101, $r24_25 #103, $r24_16 #106, $r24_17 #108, $r24_18 #111, $r24_23 #139);
+
+        $r32_4 = Phi($r32 #5, $r32_1 #48, $r32_2 #52);
+
+        $r21_5 = Phi($r21_1 #5, $r21_2 #79, $r21_2 #84);
+
+        $z2_15 = Phi($z2 #5, $z2_1 #14, $z2_1 #16, $z2_2 #21, $z2_3 #24, $z2_4 #28, $z2_6 #33, $z2_7 #53, $z2_8 #79, $z2_8 #84, $z2_16 #94, $z2_9 #108, $z2_10 #109, $z2_11 #120, $z2_12 #125, $z2_13 #133);
+
+        $r18_10 = Phi($r18_6 #5, $r18_7 #44, $r18_8 #46);
+
+        $r28_9 = Phi($r28 #5, $r28_1 #18, $r28_2 #33, $r28_3 #62, $r28_4 #66, $r28_6 #72, $r28_7 #74, $r28_10 #94);
+
+        $z1_6 = Phi($z1_1 #5, $z1_3 #79, $z1_3 #84, $z1_4 #88, $z1_7 #94, $z1_8 #98, $z1_9 #100);
+
+        $r43_6 = Phi($r43 #5, $r43_1 #79, $r43_1 #84, $r43_4 #127, $r43_2 #108, $r43_3 #115, $r43_3 #125);
+
+        $r36_13 = Phi($r36 #5, $r36_1 #58, $r36_2 #59, $r36_3 #60, $r36_4 #61, $r36_5 #63, $r36_7 #66, $r36_8 #67, $r36_9 #68, $r36_10 #72, $r36_11 #74);
+
+        $r29_17 = Phi($r29 #5, $r29_1 #26, $r29_2 #30, $r29_3 #33, $r29_4 #56, $r29_5 #66, $r29_6 #72, $r29_7 #74, $r29_8 #79, $r29_8 #84, $r29_13 #87, $r29_14 #90, $r29_15 #93, $r29_18 #94, $r29_9 #108, $r29_10 #122, $r29_11 #125, $r29_12 #135);
+
+        $r13_17 = Phi($r13_2 #5, $r13_3 #40, $r13_4 #42, $r13_5 #79, $r13_5 #84, $r13_6 #108, $r13_7 #112, $r13_8 #115, $r13_9 #118, $r13_10 #123, $r13_12 #125, $r13_13 #128, $r13_14 #131, $r13_15 #136);
+
+        $r39_3 = Phi($r39 #5);
+
+        $r27_8 = Phi($r27 #5, $r27_1 #14, $r27_2 #16, $r27_4 #34, $r27_3 #33, $r27_5 #36, $r27_6 #87, $r27_9 #94);
+
+        $r42_6 = Phi($r42 #5, $r42_1 #79, $r42_1 #84, $r42_2 #108, $r42_3 #113, $r42_4 #126);
+
+        $r14_4 = Phi($r14_1 #5, $r14_2 #6, $r14_5 #94);
+
+        $r17_6 = Phi($r17_1 #5, $r17_2 #12, $r17_2 #33, $r17_3 #81, $r17_4 #84, $r17_7 #94);
+
+        $r31_4 = Phi($r31 #5, $r31_1 #48, $r31_2 #52);
+
+        $r12_8 = Phi($r12_3 #5, $r12_4 #44, $r12_5 #45, $r12_6 #46);
+
+        $r19_13 = Phi($r19_2 #5, $r19_3 #37, $r19_4 #64, $r19_5 #66, $r19_6 #69, $r19_8 #72, $r19_9 #74, $r19_10 #91, $r19_11 #93, $r19_14 #94);
+
+        $l2_6 = Phi($l2 #5, $l2_1 #17, $l2_2 #33, $l2_3 #55, $l2_4 #74, $l2_7 #94);
+
+        $r22_5 = Phi($r22_1 #5, $r22_2 #50, $r22_3 #93, $r22_6 #94);
+
+        $r44_9 = Phi($r44 #5, $r44_1 #79, $r44_1 #84, $r44_2 #108, $r44_3 #116, $r44_4 #119, $r44_5 #125, $r44_6 #129, $r44_7 #132);
+
+        $r16_6 = Phi($r16_1 #5, $r16_2 #7, $r16_3 #79, $r16_3 #84, $r16_7 #94, $r16_4 #108);
+
+        $z0_4 = Phi($z0_1 #5, $z0_2 #54);
+
+        $r15_8 = Phi($r15_2 #5, $r15_3 #16, $r15_4 #20, $r15_5 #33, $r15_6 #50, $r15_9 #94);
+
+        $r40_5 = Phi($r40 #5, $r40_1 #79, $r40_1 #84, $r40_6 #95, $r40_7 #97, $r40_9 #100, $r40_2 #105, $r40_3 #108, $r40_8 #138);
+
+        $r23_5 = Phi($r23 #5, $r23_1 #8, $r23_2 #80, $r23_3 #84, $r23_6 #94);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void abortConnection()>();
+
+        throw $r7;
+
+     label086:
+        $r8 := @caughtexception;
+
+        $r24_19 = Phi($r24_7 #33, $r24_8 #35, $r24_9 #36);
+
+        $r27_6 = Phi($r27_3 #33, $r27_4 #35, $r27_5 #36);
+
+(87)    $r29_13 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label087:
+(88)    $z1_4 = virtualinvoke $r29_13.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+     label088:
+(89)    if $z1_4 == 0 goto label090;
+
+(90)    $r29_14 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label089:
+(91)    $r19_10 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.impl.client.TunnelRefusedException: java.lang.String getMessage()>();
+
+(92)    virtualinvoke $r29_14.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r19_10);
+
+     label090:
+        $r29_15 = Phi($r29_13 #89, $r29_14 #92);
+
+        $r19_11 = Phi($r19_2 #89, $r19_10 #92);
+
+(93)    $r22_3 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.impl.client.TunnelRefusedException: ch.boye.httpclientandroidlib.HttpResponse getResponse()>();
+
+     label091:
+        $r24_22 = Phi($r24 #5, $r24_19 #93);
+
+        $z2_16 = Phi($z2 #5, $z2_6 #93);
+
+        $r28_10 = Phi($r28 #5, $r28_2 #93);
+
+        $z1_7 = Phi($z1_1 #5, $z1_4 #93);
+
+        $r29_18 = Phi($r29 #5, $r29_15 #93);
+
+        $r27_9 = Phi($r27 #5, $r27_6 #93);
+
+        $r14_5 = Phi($r14_1 #5, $r14_2 #93);
+
+        $r17_7 = Phi($r17_1 #5, $r17_2 #93);
+
+        $r19_14 = Phi($r19_2 #5, $r19_11 #93);
+
+        $l2_7 = Phi($l2 #5, $l2_2 #93);
+
+        $r22_6 = Phi($r22_1 #5, $r22_3 #93);
+
+        $r16_7 = Phi($r16_1 #5, $r16_2 #93);
+
+        $r15_9 = Phi($r15_2 #5, $r15_5 #93);
+
+        $r23_6 = Phi($r23 #5, $r23_1 #93);
+
+(94)    if $r22_6 == null goto label096;
+
+     label092:
+(95)    $r40_6 = interfaceinvoke $r22_6.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+     label093:
+(96)    if $r40_6 == null goto label096;
+
+     label094:
+(97)    $r40_7 = interfaceinvoke $r22_6.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+(98)    $z1_8 = interfaceinvoke $r40_7.<ch.boye.httpclientandroidlib.HttpEntity: boolean isStreaming()>();
+
+     label095:
+(99)    if $z1_8 != 0 goto label135;
+
+     label096:
+        $z1_9 = Phi($z1_7 #94, $z1_7 #96, $z1_8 #99);
+
+        $r40_9 = Phi($r40 #94, $r40_6 #96, $r40_7 #99);
+
+(100)   if $z0_1 == 0 goto label098;
+
+(101)   $r24_24 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label097:
+(102)   interfaceinvoke $r24_24.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void markReusable()>();
+
+     label098:
+        $r24_25 = Phi($r24_22 #100, $r24_24 #102);
+
+(103)   virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void releaseConnection()>();
+
+     label099:
+        return $r22_6;
+
+     label100:
+        $r19_7 = "indefinitely";
+
+(104)   goto label065;
+
+     label101:
+        if $z2_7 == 0 goto label109;
+
+     label102:
+(105)   $r40_2 = interfaceinvoke $r33.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+        staticinvoke <ch.boye.httpclientandroidlib.util.EntityUtils: void consume(ch.boye.httpclientandroidlib.HttpEntity)>($r40_2);
+
+     label103:
+(106)   $r24_16 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label104:
+(107)   interfaceinvoke $r24_16.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void markReusable()>();
+
+     label105:
+        $r24_17 = Phi($r24_16 #107, $r24_18 #127, $r24_18 #130, $r24_18 #134, $r24_18 #137);
+
+        $z2_9 = Phi($z2_7 #107, $z2_12 #127, $z2_12 #130, $z2_13 #134, $z2_13 #137);
+
+        $r43_2 = Phi($r43 #107, $r43_4 #127, $r43_4 #130, $r43_4 #134, $r43_4 #137);
+
+        $r29_9 = Phi($r29_7 #107, $r29_11 #127, $r29_11 #130, $r29_11 #134, $r29_12 #137);
+
+        $r13_6 = Phi($r13_4 #107, $r13_12 #127, $r13_13 #130, $r13_14 #134, $r13_15 #137);
+
+        $r42_2 = Phi($r42 #107, $r42_4 #127, $r42_4 #130, $r42_4 #134, $r42_4 #137);
+
+        $r44_2 = Phi($r44 #107, $r44_5 #127, $r44_6 #130, $r44_7 #134, $r44_7 #137);
+
+        $r40_3 = Phi($r40_2 #107, $r40 #127, $r40 #130, $r40 #134, $r40 #137);
+
+(108)   $r16_4 = virtualinvoke $r37.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: ch.boye.httpclientandroidlib.conn.routing.HttpRoute getRoute()>();
+
+        $r41 = virtualinvoke $r21_1.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: ch.boye.httpclientandroidlib.conn.routing.HttpRoute getRoute()>();
+
+(109)   $z2_10 = virtualinvoke $r16_4.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: boolean equals(java.lang.Object)>($r41);
+
+     label106:
+        if $z2_10 != 0 goto label108;
+
+     label107:
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void releaseConnection()>();
+
+     label108:
+        $r21_3 = $r37;
+
+(110)   goto label073;
+
+     label109:
+(111)   $r24_18 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label110:
+        interfaceinvoke $r24_18.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void close()>();
+
+     label111:
+(112)   $r13_7 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+     label112:
+(113)   $r42_3 = virtualinvoke $r13_7.<ch.boye.httpclientandroidlib.auth.AuthState: ch.boye.httpclientandroidlib.auth.AuthProtocolState getState()>();
+
+     label113:
+        $r43_3 = <ch.boye.httpclientandroidlib.auth.AuthProtocolState: ch.boye.httpclientandroidlib.auth.AuthProtocolState SUCCESS>;
+
+(114)   if $r42_3 != $r43_3 goto label122;
+
+(115)   $r13_8 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+     label114:
+(116)   $r44_3 = virtualinvoke $r13_8.<ch.boye.httpclientandroidlib.auth.AuthState: ch.boye.httpclientandroidlib.auth.AuthScheme getAuthScheme()>();
+
+     label115:
+(117)   if $r44_3 == null goto label122;
+
+(118)   $r13_9 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+     label116:
+(119)   $r44_4 = virtualinvoke $r13_9.<ch.boye.httpclientandroidlib.auth.AuthState: ch.boye.httpclientandroidlib.auth.AuthScheme getAuthScheme()>();
+
+(120)   $z2_11 = interfaceinvoke $r44_4.<ch.boye.httpclientandroidlib.auth.AuthScheme: boolean isConnectionBased()>();
+
+     label117:
+(121)   if $z2_11 == 0 goto label122;
+
+     label118:
+(122)   $r29_10 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label119:
+        virtualinvoke $r29_10.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Resetting proxy auth state");
+
+     label120:
+(123)   $r13_10 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+     label121:
+(124)   virtualinvoke $r13_10.<ch.boye.httpclientandroidlib.auth.AuthState: void reset()>();
+
+     label122:
+        $z2_12 = Phi($z2_7 #114, $z2_7 #117, $z2_11 #121, $z2_11 #124);
+
+        $r29_11 = Phi($r29_7 #114, $r29_7 #117, $r29_7 #121, $r29_10 #124);
+
+        $r13_11 = Phi($r13_7 #114, $r13_8 #117, $r13_9 #121, $r13_10 #124);
+
+        $r44_5 = Phi($r44 #114, $r44_3 #117, $r44_4 #121, $r44_4 #124);
+
+(125)   $r13_12 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState targetAuthState>;
+
+     label123:
+(126)   $r42_4 = virtualinvoke $r13_12.<ch.boye.httpclientandroidlib.auth.AuthState: ch.boye.httpclientandroidlib.auth.AuthProtocolState getState()>();
+
+     label124:
+        $r43_4 = <ch.boye.httpclientandroidlib.auth.AuthProtocolState: ch.boye.httpclientandroidlib.auth.AuthProtocolState SUCCESS>;
+
+(127)   if $r42_4 != $r43_4 goto label105;
+
+(128)   $r13_13 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState targetAuthState>;
+
+     label125:
+(129)   $r44_6 = virtualinvoke $r13_13.<ch.boye.httpclientandroidlib.auth.AuthState: ch.boye.httpclientandroidlib.auth.AuthScheme getAuthScheme()>();
+
+     label126:
+(130)   if $r44_6 == null goto label105;
+
+(131)   $r13_14 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState targetAuthState>;
+
+     label127:
+(132)   $r44_7 = virtualinvoke $r13_14.<ch.boye.httpclientandroidlib.auth.AuthState: ch.boye.httpclientandroidlib.auth.AuthScheme getAuthScheme()>();
+
+(133)   $z2_13 = interfaceinvoke $r44_7.<ch.boye.httpclientandroidlib.auth.AuthScheme: boolean isConnectionBased()>();
+
+     label128:
+(134)   if $z2_13 == 0 goto label105;
+
+     label129:
+(135)   $r29_12 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label130:
+        virtualinvoke $r29_12.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Resetting target auth state");
+
+     label131:
+(136)   $r13_15 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState targetAuthState>;
+
+     label132:
+        virtualinvoke $r13_15.<ch.boye.httpclientandroidlib.auth.AuthState: void reset()>();
+
+     label133:
+(137)   goto label105;
+
+     label134:
+        $r9 := @caughtexception;
+
+        $r24_26 = Phi($r24 #5, $r24_1 #12, $r24_2 #19, $r24_3 #23, $r24_4 #27, $r24_5 #31, $r24_8 #34, $r24_7 #33, $r24_9 #36, $r24_10 #47, $r24_11 #72, $r24_12 #74, $r24_14 #79, $r24_15 #84, $r24_6 #86, $r24_19 #87, $r24_22 #94, $r24_24 #101, $r24_25 #103, $r24_16 #106, $r24_17 #108, $r24_18 #111, $r24_23 #139);
+
+        $r32_5 = Phi($r32 #5, $r32_1 #48, $r32_2 #52);
+
+        $r21_6 = Phi($r21_1 #5, $r21_2 #79, $r21_2 #84);
+
+        $z2_17 = Phi($z2 #5, $z2_1 #14, $z2_1 #16, $z2_2 #21, $z2_3 #24, $z2_4 #28, $z2_6 #33, $z2_7 #53, $z2_8 #79, $z2_8 #84, $z2_16 #94, $z2_9 #108, $z2_10 #109, $z2_11 #120, $z2_12 #125, $z2_13 #133);
+
+        $r18_11 = Phi($r18_6 #5, $r18_7 #44, $r18_8 #46);
+
+        $r28_11 = Phi($r28 #5, $r28_1 #18, $r28_2 #33, $r28_3 #62, $r28_4 #66, $r28_6 #72, $r28_7 #74, $r28_10 #94);
+
+        $z1_10 = Phi($z1_1 #5, $z1_3 #79, $z1_3 #84, $z1_4 #88, $z1_7 #94, $z1_8 #98, $z1_9 #100);
+
+        $r43_7 = Phi($r43 #5, $r43_1 #79, $r43_1 #84, $r43_4 #127, $r43_2 #108, $r43_3 #115, $r43_3 #125);
+
+        $r36_14 = Phi($r36 #5, $r36_1 #58, $r36_2 #59, $r36_3 #60, $r36_4 #61, $r36_5 #63, $r36_7 #66, $r36_8 #67, $r36_9 #68, $r36_10 #72, $r36_11 #74);
+
+        $r29_19 = Phi($r29 #5, $r29_1 #26, $r29_2 #30, $r29_3 #33, $r29_4 #56, $r29_5 #66, $r29_6 #72, $r29_7 #74, $r29_8 #79, $r29_8 #84, $r29_13 #87, $r29_14 #90, $r29_15 #93, $r29_18 #94, $r29_9 #108, $r29_10 #122, $r29_11 #125, $r29_12 #135);
+
+        $r13_18 = Phi($r13_2 #5, $r13_3 #40, $r13_4 #42, $r13_5 #79, $r13_5 #84, $r13_6 #108, $r13_7 #112, $r13_8 #115, $r13_9 #118, $r13_10 #123, $r13_12 #125, $r13_13 #128, $r13_14 #131, $r13_15 #136);
+
+        $r39_4 = Phi($r39 #5);
+
+        $r27_10 = Phi($r27 #5, $r27_1 #14, $r27_2 #16, $r27_4 #34, $r27_3 #33, $r27_5 #36, $r27_6 #87, $r27_9 #94);
+
+        $r42_7 = Phi($r42 #5, $r42_1 #79, $r42_1 #84, $r42_2 #108, $r42_3 #113, $r42_4 #126);
+
+        $r14_6 = Phi($r14_1 #5, $r14_2 #6, $r14_5 #94);
+
+        $r17_8 = Phi($r17_1 #5, $r17_2 #12, $r17_2 #33, $r17_3 #81, $r17_4 #84, $r17_7 #94);
+
+        $r31_5 = Phi($r31 #5, $r31_1 #48, $r31_2 #52);
+
+        $r12_9 = Phi($r12_3 #5, $r12_4 #44, $r12_5 #45, $r12_6 #46);
+
+        $r19_15 = Phi($r19_2 #5, $r19_3 #37, $r19_4 #64, $r19_5 #66, $r19_6 #69, $r19_8 #72, $r19_9 #74, $r19_10 #91, $r19_11 #93, $r19_14 #94);
+
+        $l2_8 = Phi($l2 #5, $l2_1 #17, $l2_2 #33, $l2_3 #55, $l2_4 #74, $l2_7 #94);
+
+        $r22_7 = Phi($r22_1 #5, $r22_2 #50, $r22_3 #93, $r22_6 #94);
+
+        $r44_10 = Phi($r44 #5, $r44_1 #79, $r44_1 #84, $r44_2 #108, $r44_3 #116, $r44_4 #119, $r44_5 #125, $r44_6 #129, $r44_7 #132);
+
+        $r16_8 = Phi($r16_1 #5, $r16_2 #7, $r16_3 #79, $r16_3 #84, $r16_7 #94, $r16_4 #108);
+
+        $z0_5 = Phi($z0_1 #5, $z0_2 #54);
+
+        $r15_10 = Phi($r15_2 #5, $r15_3 #16, $r15_4 #20, $r15_5 #33, $r15_6 #50, $r15_9 #94);
+
+        $r40_10 = Phi($r40 #5, $r40_1 #79, $r40_1 #84, $r40_6 #95, $r40_7 #97, $r40_9 #100, $r40_2 #105, $r40_3 #108, $r40_8 #138);
+
+        $r23_7 = Phi($r23 #5, $r23_1 #8, $r23_2 #80, $r23_3 #84, $r23_6 #94);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void abortConnection()>();
+
+        throw $r9;
+
+     label135:
+(138)   $r40_8 = interfaceinvoke $r22_6.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+     label136:
+        $r10 = new ch.boye.httpclientandroidlib.conn.BasicManagedEntity;
+
+(139)   $r24_23 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label137:
+        specialinvoke $r10.<ch.boye.httpclientandroidlib.conn.BasicManagedEntity: void <init>(ch.boye.httpclientandroidlib.HttpEntity,ch.boye.httpclientandroidlib.conn.ManagedClientConnection,boolean)>($r40_8, $r24_23, $z0_1);
+
+        interfaceinvoke $r22_6.<ch.boye.httpclientandroidlib.HttpResponse: void setEntity(ch.boye.httpclientandroidlib.HttpEntity)>($r10);
+
+     label138:
+        return $r22_6;
+
+     label139:
+        $r11 := @caughtexception;
+
+        $r24_27 = Phi($r24 #5, $r24_1 #10, $r24_2 #19, $r24_3 #23, $r24_4 #27, $r24_5 #31, $r24_8 #34, $r24_7 #33, $r24_9 #36, $r24_10 #47, $r24_11 #71, $r24_12 #74, $r24_14 #76, $r24_15 #84, $r24_6 #86, $r24_19 #87, $r24_22 #94, $r24_24 #101, $r24_25 #103, $r24_16 #106, $r24_17 #108, $r24_18 #111, $r24_23 #139);
+
+        $r32_6 = Phi($r32 #5, $r32_1 #48, $r32_2 #52);
+
+        $r21_7 = Phi($r21_1 #5, $r21_3 #110, $r21_2 #76);
+
+        $z2_18 = Phi($z2 #5, $z2_1 #13, $z2_2 #21, $z2_3 #24, $z2_4 #28, $z2_6 #33, $z2_7 #53, $z2_8 #76, $z2_16 #94, $z2_9 #108, $z2_10 #109, $z2_11 #120, $z2_12 #125, $z2_13 #133);
+
+        $r18_12 = Phi($r18_6 #5, $r18_7 #43, $r18_8 #46);
+
+        $r28_12 = Phi($r28 #5, $r28_1 #18, $r28_2 #33, $r28_3 #62, $r28_4 #65, $r28_5 #71, $r28_6 #72, $r28_7 #74, $r28_10 #94);
+
+        $z1_11 = Phi($z1_1 #5, $z1_2 #75, $z1_3 #76, $z1_4 #88, $z1_7 #94, $z1_8 #98, $z1_9 #100);
+
+        $r43_8 = Phi($r43 #5, $r43_1 #76, $r43_4 #127, $r43_2 #108, $r43_3 #115, $r43_3 #125);
+
+        $r36_15 = Phi($r36 #5, $r36_1 #58, $r36_2 #59, $r36_3 #60, $r36_4 #61, $r36_5 #63, $r36_6 #65, $r36_7 #66, $r36_8 #67, $r36_9 #68, $r36_10 #71, $r36_11 #74);
+
+        $r29_20 = Phi($r29 #5, $r29_1 #26, $r29_2 #30, $r29_3 #33, $r29_4 #56, $r29_5 #65, $r29_6 #71, $r29_7 #74, $r29_8 #76, $r29_13 #87, $r29_14 #90, $r29_15 #93, $r29_18 #94, $r29_9 #108, $r29_10 #122, $r29_11 #125, $r29_12 #135);
+
+        $r13_19 = Phi($r13_2 #5, $r13_3 #39, $r13_4 #42, $r13_5 #76, $r13_6 #108, $r13_7 #112, $r13_8 #115, $r13_9 #118, $r13_10 #123, $r13_12 #125, $r13_13 #128, $r13_14 #131, $r13_15 #136);
+
+        $r39_5 = Phi($r39 #5);
+
+        $r27_11 = Phi($r27 #5, $r27_1 #14, $r27_2 #16, $r27_4 #34, $r27_3 #33, $r27_5 #36, $r27_6 #87, $r27_9 #94);
+
+        $r42_8 = Phi($r42 #5, $r42_1 #76, $r42_2 #108, $r42_3 #113, $r42_4 #126);
+
+        $r14_7 = Phi($r14_1 #5, $r14_2 #6, $r14_5 #94);
+
+        $r17_9 = Phi($r17_1 #5, $r17_2 #9, $r17_3 #81, $r17_4 #84, $r17_7 #94);
+
+        $r31_6 = Phi($r31 #5, $r31_1 #48, $r31_2 #51);
+
+        $r12_10 = Phi($r12_3 #5, $r12_4 #44, $r12_5 #45, $r12_6 #46);
+
+        $r19_16 = Phi($r19_2 #5, $r19_3 #37, $r19_4 #64, $r19_7 #104, $r19_5 #65, $r19_6 #69, $r19_8 #71, $r19_9 #74, $r19_10 #91, $r19_11 #93, $r19_14 #94);
+
+        $l2_9 = Phi($l2 #5, $l2_1 #17, $l2_2 #33, $l2_3 #55, $l2_4 #74, $l2_7 #94);
+
+        $r22_8 = Phi($r22_1 #5, $r22_2 #49, $r22_3 #93, $r22_6 #94);
+
+        $r44_11 = Phi($r44 #5, $r44_1 #76, $r44_2 #108, $r44_3 #116, $r44_4 #119, $r44_5 #125, $r44_6 #129, $r44_7 #132);
+
+        $r16_9 = Phi($r16_1 #5, $r16_2 #7, $r16_3 #76, $r16_7 #94, $r16_4 #108);
+
+        $z0_6 = Phi($z0_1 #5, $z0_2 #54);
+
+        $r15_11 = Phi($r15_2 #5, $r15_3 #16, $r15_4 #20, $r15_5 #33, $r15_6 #50, $r15_9 #94);
+
+        $r40_11 = Phi($r40 #5, $r40_1 #76, $r40_6 #95, $r40_7 #97, $r40_9 #100, $r40_2 #105, $r40_3 #108, $r40_8 #138);
+
+        $r23_8 = Phi($r23 #5, $r23_1 #8, $r23_2 #80, $r23_3 #84, $r23_6 #94);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: void abortConnection()>();
+
+        throw $r11;
+
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label003 to label004 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label003 to label004 with label085;
+        catch java.io.IOException from label003 to label004 with label134;
+        catch java.lang.RuntimeException from label003 to label004 with label139;
+        catch java.lang.RuntimeException from label005 to label006 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label007 to label008 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label007 to label008 with label085;
+        catch java.io.IOException from label007 to label008 with label134;
+        catch java.lang.RuntimeException from label007 to label008 with label139;
+        catch java.lang.RuntimeException from label009 to label010 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label010 to label011 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label010 to label011 with label085;
+        catch java.io.IOException from label010 to label011 with label134;
+        catch java.lang.RuntimeException from label010 to label011 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label012 to label013 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label012 to label013 with label085;
+        catch java.io.IOException from label012 to label013 with label134;
+        catch java.lang.RuntimeException from label012 to label013 with label139;
+        catch java.lang.InterruptedException from label014 to label015 with label082;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label014 to label015 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label014 to label015 with label085;
+        catch java.io.IOException from label014 to label015 with label134;
+        catch java.lang.RuntimeException from label014 to label015 with label139;
+        catch java.lang.RuntimeException from label015 to label016 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label017 to label018 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label017 to label018 with label085;
+        catch java.io.IOException from label017 to label018 with label134;
+        catch java.lang.RuntimeException from label017 to label018 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label019 to label020 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label019 to label020 with label085;
+        catch java.io.IOException from label019 to label020 with label134;
+        catch java.lang.RuntimeException from label019 to label020 with label139;
+        catch java.lang.RuntimeException from label021 to label022 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label022 to label023 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label022 to label023 with label085;
+        catch java.io.IOException from label022 to label023 with label134;
+        catch java.lang.RuntimeException from label022 to label023 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label024 to label025 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label024 to label025 with label085;
+        catch java.io.IOException from label024 to label025 with label134;
+        catch java.lang.RuntimeException from label024 to label025 with label139;
+        catch java.lang.RuntimeException from label026 to label027 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label027 to label028 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label027 to label028 with label085;
+        catch java.io.IOException from label027 to label028 with label134;
+        catch java.lang.RuntimeException from label027 to label028 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label029 to label030 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label029 to label030 with label085;
+        catch java.io.IOException from label029 to label030 with label134;
+        catch java.lang.RuntimeException from label029 to label030 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label031 to label032 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label031 to label032 with label085;
+        catch java.io.IOException from label031 to label032 with label134;
+        catch java.lang.RuntimeException from label031 to label032 with label139;
+        catch ch.boye.httpclientandroidlib.impl.client.TunnelRefusedException from label032 to label033 with label086;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label032 to label033 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label032 to label033 with label085;
+        catch java.io.IOException from label032 to label033 with label134;
+        catch java.lang.RuntimeException from label032 to label033 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label033 to label034 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label033 to label034 with label085;
+        catch java.io.IOException from label033 to label034 with label134;
+        catch java.lang.RuntimeException from label033 to label034 with label139;
+        catch java.lang.RuntimeException from label035 to label036 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label037 to label038 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label037 to label038 with label085;
+        catch java.io.IOException from label037 to label038 with label134;
+        catch java.lang.RuntimeException from label037 to label038 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label039 to label041 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label039 to label041 with label085;
+        catch java.io.IOException from label039 to label041 with label134;
+        catch java.lang.RuntimeException from label039 to label041 with label139;
+        catch java.lang.RuntimeException from label041 to label042 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label043 to label044 with label081;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label044 to label045 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label043 to label044 with label085;
+        catch ch.boye.httpclientandroidlib.HttpException from label044 to label045 with label085;
+        catch java.io.IOException from label043 to label044 with label134;
+        catch java.io.IOException from label044 to label045 with label134;
+        catch java.lang.RuntimeException from label043 to label044 with label139;
+        catch java.lang.RuntimeException from label044 to label045 with label139;
+        catch java.lang.RuntimeException from label045 to label046 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label046 to label047 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label046 to label047 with label085;
+        catch java.io.IOException from label046 to label047 with label134;
+        catch java.lang.RuntimeException from label046 to label047 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label048 to label049 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label048 to label049 with label085;
+        catch java.io.IOException from label048 to label049 with label134;
+        catch java.lang.RuntimeException from label048 to label049 with label139;
+        catch java.lang.RuntimeException from label050 to label051 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label051 to label052 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label051 to label052 with label085;
+        catch java.io.IOException from label051 to label052 with label134;
+        catch java.lang.RuntimeException from label051 to label052 with label139;
+        catch java.lang.RuntimeException from label052 to label053 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label053 to label054 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label053 to label054 with label085;
+        catch java.io.IOException from label053 to label054 with label134;
+        catch java.lang.RuntimeException from label053 to label054 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label055 to label056 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label055 to label056 with label085;
+        catch java.io.IOException from label055 to label056 with label134;
+        catch java.lang.RuntimeException from label055 to label056 with label139;
+        catch java.lang.RuntimeException from label057 to label058 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label058 to label059 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label058 to label059 with label085;
+        catch java.io.IOException from label058 to label059 with label134;
+        catch java.lang.RuntimeException from label058 to label059 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label060 to label061 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label060 to label061 with label085;
+        catch java.io.IOException from label060 to label061 with label134;
+        catch java.lang.RuntimeException from label060 to label061 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label062 to label063 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label062 to label063 with label085;
+        catch java.io.IOException from label062 to label063 with label134;
+        catch java.lang.RuntimeException from label062 to label063 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label064 to label065 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label064 to label065 with label085;
+        catch java.io.IOException from label064 to label065 with label134;
+        catch java.lang.RuntimeException from label064 to label065 with label139;
+        catch java.lang.RuntimeException from label065 to label066 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label067 to label068 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label067 to label068 with label085;
+        catch java.io.IOException from label067 to label068 with label134;
+        catch java.lang.RuntimeException from label067 to label068 with label139;
+        catch java.lang.RuntimeException from label068 to label069 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label070 to label072 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label070 to label072 with label085;
+        catch java.io.IOException from label070 to label072 with label134;
+        catch java.lang.RuntimeException from label070 to label072 with label139;
+        catch java.lang.RuntimeException from label073 to label074 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label075 to label076 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label075 to label076 with label085;
+        catch java.io.IOException from label075 to label076 with label134;
+        catch java.lang.RuntimeException from label075 to label076 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label077 to label078 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label077 to label078 with label085;
+        catch java.io.IOException from label077 to label078 with label134;
+        catch java.lang.RuntimeException from label077 to label078 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label079 to label080 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label079 to label080 with label085;
+        catch java.io.IOException from label079 to label080 with label134;
+        catch java.lang.RuntimeException from label079 to label080 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label083 to label084 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label083 to label084 with label085;
+        catch java.io.IOException from label083 to label084 with label134;
+        catch java.lang.RuntimeException from label083 to label084 with label139;
+        catch java.io.IOException from label084 to label085 with label134;
+        catch java.lang.RuntimeException from label084 to label085 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label087 to label088 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label087 to label088 with label085;
+        catch java.io.IOException from label087 to label088 with label134;
+        catch java.lang.RuntimeException from label087 to label088 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label089 to label091 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label089 to label091 with label085;
+        catch java.io.IOException from label089 to label091 with label134;
+        catch java.lang.RuntimeException from label089 to label091 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label092 to label093 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label092 to label093 with label085;
+        catch java.io.IOException from label092 to label093 with label134;
+        catch java.lang.RuntimeException from label092 to label093 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label094 to label095 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label094 to label095 with label085;
+        catch java.io.IOException from label094 to label095 with label134;
+        catch java.lang.RuntimeException from label094 to label095 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label097 to label099 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label097 to label099 with label085;
+        catch java.io.IOException from label097 to label099 with label134;
+        catch java.lang.RuntimeException from label097 to label099 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label102 to label103 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label102 to label103 with label085;
+        catch java.io.IOException from label102 to label103 with label134;
+        catch java.lang.RuntimeException from label102 to label103 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label104 to label106 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label104 to label106 with label085;
+        catch java.io.IOException from label104 to label106 with label134;
+        catch java.lang.RuntimeException from label104 to label106 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label107 to label108 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label107 to label108 with label085;
+        catch java.io.IOException from label107 to label108 with label134;
+        catch java.lang.RuntimeException from label107 to label108 with label139;
+        catch java.lang.RuntimeException from label109 to label110 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label110 to label111 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label110 to label111 with label085;
+        catch java.io.IOException from label110 to label111 with label134;
+        catch java.lang.RuntimeException from label110 to label111 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label112 to label113 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label112 to label113 with label085;
+        catch java.io.IOException from label112 to label113 with label134;
+        catch java.lang.RuntimeException from label112 to label113 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label114 to label115 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label114 to label115 with label085;
+        catch java.io.IOException from label114 to label115 with label134;
+        catch java.lang.RuntimeException from label114 to label115 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label116 to label117 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label116 to label117 with label085;
+        catch java.io.IOException from label116 to label117 with label134;
+        catch java.lang.RuntimeException from label116 to label117 with label139;
+        catch java.lang.RuntimeException from label118 to label119 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label119 to label120 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label119 to label120 with label085;
+        catch java.io.IOException from label119 to label120 with label134;
+        catch java.lang.RuntimeException from label119 to label120 with label139;
+        catch java.lang.RuntimeException from label120 to label121 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label121 to label122 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label121 to label122 with label085;
+        catch java.io.IOException from label121 to label122 with label134;
+        catch java.lang.RuntimeException from label121 to label122 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label123 to label124 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label123 to label124 with label085;
+        catch java.io.IOException from label123 to label124 with label134;
+        catch java.lang.RuntimeException from label123 to label124 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label125 to label126 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label125 to label126 with label085;
+        catch java.io.IOException from label125 to label126 with label134;
+        catch java.lang.RuntimeException from label125 to label126 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label127 to label128 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label127 to label128 with label085;
+        catch java.io.IOException from label127 to label128 with label134;
+        catch java.lang.RuntimeException from label127 to label128 with label139;
+        catch java.lang.RuntimeException from label129 to label130 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label130 to label131 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label130 to label131 with label085;
+        catch java.io.IOException from label130 to label131 with label134;
+        catch java.lang.RuntimeException from label130 to label131 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label132 to label133 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label132 to label133 with label085;
+        catch java.io.IOException from label132 to label133 with label134;
+        catch java.lang.RuntimeException from label132 to label133 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label135 to label136 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label135 to label136 with label085;
+        catch java.io.IOException from label135 to label136 with label134;
+        catch java.lang.RuntimeException from label135 to label136 with label139;
+        catch ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException from label137 to label138 with label081;
+        catch ch.boye.httpclientandroidlib.HttpException from label137 to label138 with label085;
+        catch java.io.IOException from label137 to label138 with label134;
+        catch java.lang.RuntimeException from label137 to label138 with label139;
+    }
+
+    protected ch.boye.httpclientandroidlib.impl.client.RoutedRequest handleResponse(ch.boye.httpclientandroidlib.impl.client.RoutedRequest, ch.boye.httpclientandroidlib.HttpResponse, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7, $i0_8, $i0_9;
+        ch.boye.httpclientandroidlib.client.RedirectException $r3;
+        ch.boye.httpclientandroidlib.ProtocolException $r4;
+        ch.boye.httpclientandroidlib.impl.client.RoutedRequest $r5, $r5_1, $r5_2;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r6, $r6_1, $r6_2;
+        ch.boye.httpclientandroidlib.impl.client.RequestWrapper $r7, $r7_1, $r7_2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r8;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11, $z0_12, $z0_13;
+        ch.boye.httpclientandroidlib.client.RedirectStrategy $r9, $r9_1, $r9_2, $r9_3;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8, $r10_9, $r10_10, $r10_11;
+        java.lang.String $r11, $r17, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r17_1, $r17_2, $r11_6, $r17_3, $r11_7, $r17_4, $r11_8;
+        ch.boye.httpclientandroidlib.client.methods.HttpUriRequest $r12;
+        ch.boye.httpclientandroidlib.HttpRequest $r13;
+        ch.boye.httpclientandroidlib.Header[] $r14;
+        java.net.URI $r15;
+        ch.boye.httpclientandroidlib.HttpHost $r16, $r18, $r18_1, $r16_1, $r16_2, $r16_3, $r18_2, $r16_4, $r18_3, $r16_5, $r16_6, $r18_4, $r16_7, $r18_5, $r16_8;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r19, $r19_1, $r19_2, $r19_3, $r19_4, $r19_5;
+        ch.boye.httpclientandroidlib.auth.AuthState $r20, $r20_1, $r20_2, $r20_3, $r20_4, $r20_5, $r20_6, $r20_7, $r20_8, $r20_9;
+        ch.boye.httpclientandroidlib.auth.AuthScheme $r21;
+        java.lang.Object $r22;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r23;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r24;
+        ch.boye.httpclientandroidlib.conn.scheme.Scheme $r25;
+        ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator $r26, $r26_1, $r26_2, $r26_3, $r26_4, $r26_5;
+        ch.boye.httpclientandroidlib.client.AuthenticationStrategy $r27, $r27_1, $r27_2, $r27_3, $r27_4, $r27_5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r5 := @parameter0: ch.boye.httpclientandroidlib.impl.client.RoutedRequest;
+
+        $r1 := @parameter1: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r6 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: ch.boye.httpclientandroidlib.conn.routing.HttpRoute getRoute()>();
+
+        $r7 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: ch.boye.httpclientandroidlib.impl.client.RequestWrapper getRequest()>();
+
+        $r8 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        $z0 = staticinvoke <ch.boye.httpclientandroidlib.client.params.HttpClientParams: boolean isRedirecting(ch.boye.httpclientandroidlib.params.HttpParams)>($r8);
+
+(0)     if $z0 == 0 goto label4;
+
+        $r9 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.RedirectStrategy redirectStrategy>;
+
+        $z0_1 = interfaceinvoke $r9.<ch.boye.httpclientandroidlib.client.RedirectStrategy: boolean isRedirected(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r7, $r1, $r2);
+
+(1)     if $z0_1 == 0 goto label4;
+
+        $i1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int redirectCount>;
+
+        $i0 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int maxRedirects>;
+
+        if $i1 < $i0 goto label1;
+
+        $r3 = new ch.boye.httpclientandroidlib.client.RedirectException;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Maximum redirects (");
+
+        $i0_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int maxRedirects>;
+
+        $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_1);
+
+        $r10_3 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(") exceeded");
+
+        $r11 = virtualinvoke $r10_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.client.RedirectException: void <init>(java.lang.String)>($r11);
+
+        throw $r3;
+
+     label1:
+        $i0_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int redirectCount>;
+
+        $i0_3 = $i0_2 + 1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: int redirectCount> = $i0_3;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.HttpHost virtualHost> = null;
+
+        $r9_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.RedirectStrategy redirectStrategy>;
+
+        $r12 = interfaceinvoke $r9_1.<ch.boye.httpclientandroidlib.client.RedirectStrategy: ch.boye.httpclientandroidlib.client.methods.HttpUriRequest getRedirect(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r7, $r1, $r2);
+
+        $r13 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: ch.boye.httpclientandroidlib.HttpRequest getOriginal()>();
+
+        $r14 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getAllHeaders()>();
+
+        interfaceinvoke $r12.<ch.boye.httpclientandroidlib.client.methods.HttpUriRequest: void setHeaders(ch.boye.httpclientandroidlib.Header[])>($r14);
+
+        $r15 = interfaceinvoke $r12.<ch.boye.httpclientandroidlib.client.methods.HttpUriRequest: java.net.URI getURI()>();
+
+        $r11_1 = virtualinvoke $r15.<java.net.URI: java.lang.String getHost()>();
+
+        if $r11_1 != null goto label2;
+
+        $r4 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        $r10_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_5 = virtualinvoke $r10_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Redirect URI does not specify a valid host name: ");
+
+        $r10_6 = virtualinvoke $r10_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r15);
+
+        $r11_2 = virtualinvoke $r10_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>($r11_2);
+
+        throw $r4;
+
+     label2:
+        $r16 = new ch.boye.httpclientandroidlib.HttpHost;
+
+        $r11_3 = virtualinvoke $r15.<java.net.URI: java.lang.String getHost()>();
+
+        $i0_4 = virtualinvoke $r15.<java.net.URI: int getPort()>();
+
+        $r17 = virtualinvoke $r15.<java.net.URI: java.lang.String getScheme()>();
+
+        specialinvoke $r16.<ch.boye.httpclientandroidlib.HttpHost: void <init>(java.lang.String,int,java.lang.String)>($r11_3, $i0_4, $r17);
+
+        $r18 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getTargetHost()>();
+
+        $z0_2 = virtualinvoke $r18.<ch.boye.httpclientandroidlib.HttpHost: boolean equals(java.lang.Object)>($r16);
+
+(2)     if $z0_2 != 0 goto label3;
+
+        $r19 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r19.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Resetting target auth state");
+
+        $r20 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState targetAuthState>;
+
+        virtualinvoke $r20.<ch.boye.httpclientandroidlib.auth.AuthState: void reset()>();
+
+        $r20_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+        $r21 = virtualinvoke $r20_1.<ch.boye.httpclientandroidlib.auth.AuthState: ch.boye.httpclientandroidlib.auth.AuthScheme getAuthScheme()>();
+
+(3)     if $r21 == null goto label3;
+
+        $z0_3 = interfaceinvoke $r21.<ch.boye.httpclientandroidlib.auth.AuthScheme: boolean isConnectionBased()>();
+
+(4)     if $z0_3 == 0 goto label3;
+
+        $r19_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r19_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Resetting proxy auth state");
+
+        $r20_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+(5)     virtualinvoke $r20_2.<ch.boye.httpclientandroidlib.auth.AuthState: void reset()>();
+
+     label3:
+        $r19_2 = Phi($r19 #2, $r19 #3, $r19 #4, $r19_1 #5);
+
+        $z0_4 = Phi($z0_2 #2, $z0_2 #3, $z0_3 #4, $z0_3 #5);
+
+        $r20_3 = Phi($r20 #2, $r20_1 #3, $r20_1 #4, $r20_2 #5);
+
+        $r7_1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.impl.client.RequestWrapper wrapRequest(ch.boye.httpclientandroidlib.HttpRequest)>($r12);
+
+        virtualinvoke $r7_1.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: void setParams(ch.boye.httpclientandroidlib.params.HttpParams)>($r8);
+
+        $r6_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.routing.HttpRoute determineRoute(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r16, $r7_1, $r2);
+
+        $r5_1 = new ch.boye.httpclientandroidlib.impl.client.RoutedRequest;
+
+        specialinvoke $r5_1.<ch.boye.httpclientandroidlib.impl.client.RoutedRequest: void <init>(ch.boye.httpclientandroidlib.impl.client.RequestWrapper,ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r7_1, $r6_1);
+
+        $r19_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0_5 = virtualinvoke $r19_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(6)     if $z0_5 == 0 goto label9;
+
+        $r19_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r10_7 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_7.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_8 = virtualinvoke $r10_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Redirecting to \'");
+
+        $r10_9 = virtualinvoke $r10_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r15);
+
+        $r10_10 = virtualinvoke $r10_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\' via ");
+
+        $r10_11 = virtualinvoke $r10_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6_1);
+
+        $r11_4 = virtualinvoke $r10_11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r19_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r11_4);
+
+        return $r5_1;
+
+     label4:
+        $r9_2 = Phi($r9 #0, $r9 #1);
+
+        $z0_6 = Phi($z0 #0, $z0_1 #1);
+
+        $z0_7 = staticinvoke <ch.boye.httpclientandroidlib.client.params.HttpClientParams: boolean isAuthenticating(ch.boye.httpclientandroidlib.params.HttpParams)>($r8);
+
+(7)     if $z0_7 == 0 goto label8;
+
+        $r22 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: java.lang.Object getAttribute(java.lang.String)>("http.target_host");
+
+        $r18_1 = (ch.boye.httpclientandroidlib.HttpHost) $r22;
+
+        $r16_1 = $r18_1;
+
+(8)     if $r18_1 != null goto label5;
+
+(9)     $r16_2 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getTargetHost()>();
+
+     label5:
+        $r16_3 = Phi($r16_1 #8, $r16_2 #9);
+
+        $i0_5 = virtualinvoke $r16_3.<ch.boye.httpclientandroidlib.HttpHost: int getPort()>();
+
+(10)    if $i0_5 >= 0 goto label6;
+
+        $r23 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ClientConnectionManager connManager>;
+
+        $r24 = interfaceinvoke $r23.<ch.boye.httpclientandroidlib.conn.ClientConnectionManager: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry getSchemeRegistry()>();
+
+        $r25 = virtualinvoke $r24.<ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry: ch.boye.httpclientandroidlib.conn.scheme.Scheme getScheme(ch.boye.httpclientandroidlib.HttpHost)>($r16_3);
+
+        $r18_2 = new ch.boye.httpclientandroidlib.HttpHost;
+
+        $r11_5 = virtualinvoke $r16_3.<ch.boye.httpclientandroidlib.HttpHost: java.lang.String getHostName()>();
+
+        $i0_6 = virtualinvoke $r25.<ch.boye.httpclientandroidlib.conn.scheme.Scheme: int getDefaultPort()>();
+
+        $r17_1 = virtualinvoke $r16_3.<ch.boye.httpclientandroidlib.HttpHost: java.lang.String getSchemeName()>();
+
+        specialinvoke $r18_2.<ch.boye.httpclientandroidlib.HttpHost: void <init>(java.lang.String,int,java.lang.String)>($r11_5, $i0_6, $r17_1);
+
+(11)    $r16_4 = $r18_2;
+
+     label6:
+        $r17_2 = Phi($r17 #10, $r17_1 #11);
+
+        $r18_3 = Phi($r18_1 #10, $r18_2 #11);
+
+        $i0_7 = Phi($i0_5 #10, $i0_6 #11);
+
+        $r16_5 = Phi($r16_3 #10, $r16_4 #11);
+
+        $r11_6 = Phi($r11 #10, $r11_5 #11);
+
+        $r26 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator authenticator>;
+
+        $r27 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationStrategy targetAuthStrategy>;
+
+        $r20_4 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState targetAuthState>;
+
+        $z0_8 = virtualinvoke $r26.<ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator: boolean isAuthenticationRequested(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.auth.AuthState,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r16_5, $r1, $r27, $r20_4, $r2);
+
+        if $z0_8 == 0 goto label7;
+
+        $r26_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator authenticator>;
+
+        $r27_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationStrategy targetAuthStrategy>;
+
+        $r20_5 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState targetAuthState>;
+
+        $z0_9 = virtualinvoke $r26_1.<ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator: boolean authenticate(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.auth.AuthState,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r16_5, $r1, $r27_1, $r20_5, $r2);
+
+(12)    if $z0_9 != 0 goto label9;
+
+        return null;
+
+     label7:
+        $r16_6 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getProxyHost()>();
+
+        $r26_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator authenticator>;
+
+        $r27_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy>;
+
+        $r20_6 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+        $z0_10 = virtualinvoke $r26_2.<ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator: boolean isAuthenticationRequested(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.auth.AuthState,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r16_6, $r1, $r27_2, $r20_6, $r2);
+
+(13)    if $z0_10 == 0 goto label8;
+
+        $r26_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator authenticator>;
+
+        $r27_3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.client.AuthenticationStrategy proxyAuthStrategy>;
+
+        $r20_7 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.auth.AuthState proxyAuthState>;
+
+        $z0_11 = virtualinvoke $r26_3.<ch.boye.httpclientandroidlib.impl.client.HttpAuthenticator: boolean authenticate(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.client.AuthenticationStrategy,ch.boye.httpclientandroidlib.auth.AuthState,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r16_6, $r1, $r27_3, $r20_7, $r2);
+
+(14)    if $z0_11 != 0 goto label9;
+
+     label8:
+        $r17_3 = Phi($r17 #7, $r17_2 #13, $r17_2 #14);
+
+        $r18_4 = Phi($r18 #7, $r18_3 #13, $r18_3 #14);
+
+        $i0_8 = Phi($i0 #7, $i0_7 #13, $i0_7 #14);
+
+        $r16_7 = Phi($r16 #7, $r16_6 #13, $r16_6 #14);
+
+        $r26_4 = Phi($r26 #7, $r26_2 #13, $r26_3 #14);
+
+        $r27_4 = Phi($r27 #7, $r27_2 #13, $r27_3 #14);
+
+        $z0_12 = Phi($z0_7 #7, $z0_10 #13, $z0_11 #14);
+
+        $r20_8 = Phi($r20 #7, $r20_6 #13, $r20_7 #14);
+
+        $r11_7 = Phi($r11 #7, $r11_6 #13, $r11_6 #14);
+
+        return null;
+
+     label9:
+        $r17_4 = Phi($r17 #6, $r17_2 #12, $r17_2 #14);
+
+        $r18_5 = Phi($r18 #6, $r18_3 #12, $r18_3 #14);
+
+        $i0_9 = Phi($i0_4 #6, $i0_7 #12, $i0_7 #14);
+
+        $r16_8 = Phi($r16 #6, $r16_5 #12, $r16_6 #14);
+
+        $r9_3 = Phi($r9_1 #6, $r9_2 #12, $r9_2 #14);
+
+        $r6_2 = Phi($r6_1 #6, $r6 #12, $r6 #14);
+
+        $r7_2 = Phi($r7_1 #6, $r7 #12, $r7 #14);
+
+        $r26_5 = Phi($r26 #6, $r26_1 #12, $r26_3 #14);
+
+        $r27_5 = Phi($r27 #6, $r27_1 #12, $r27_3 #14);
+
+        $r19_5 = Phi($r19_3 #6, $r19 #12, $r19 #14);
+
+        $z0_13 = Phi($z0_5 #6, $z0_9 #12, $z0_11 #14);
+
+        $r20_9 = Phi($r20_3 #6, $r20_5 #12, $r20_7 #14);
+
+        $r5_2 = Phi($r5_1 #6, $r5 #12, $r5 #14);
+
+        $r11_8 = Phi($r11_3 #6, $r11_6 #12, $r11_6 #14);
+
+        return $r5_2;
+    }
+
+    protected void releaseConnection()
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r1;
+        java.io.IOException $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn>;
+
+     label1:
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.conn.ManagedClientConnection: void releaseConnection()>();
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.conn.ManagedClientConnection managedConn> = null;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>("IOException releasing connection", $r2);
+
+        goto label2;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    protected void rewriteRequestURI(ch.boye.httpclientandroidlib.impl.client.RequestWrapper, ch.boye.httpclientandroidlib.conn.routing.HttpRoute) throws ch.boye.httpclientandroidlib.ProtocolException
+    {
+        ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector $r0;
+        ch.boye.httpclientandroidlib.impl.client.RequestWrapper $r1;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r2;
+        java.net.URISyntaxException $r3;
+        ch.boye.httpclientandroidlib.ProtocolException $r4;
+        java.net.URI $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6;
+        ch.boye.httpclientandroidlib.HttpHost $r6, $r6_1, $r6_2, $r6_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2;
+        ch.boye.httpclientandroidlib.RequestLine $r8;
+        java.lang.String $r9, $r9_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.DefaultRequestDirector;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.impl.client.RequestWrapper;
+
+(0)     $r2 := @parameter1: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+     label01:
+        $r5 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: java.net.URI getURI()>();
+
+        $r6 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getProxyHost()>();
+
+     label02:
+(1)     if $r6 == null goto label12;
+
+     label03:
+        $z0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: boolean isTunnelled()>();
+
+     label04:
+(2)     if $z0 != 0 goto label12;
+
+     label05:
+(3)     $z0_1 = virtualinvoke $r5.<java.net.URI: boolean isAbsolute()>();
+
+     label06:
+        if $z0_1 != 0 goto label10;
+
+     label07:
+(4)     $r6_1 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getTargetHost()>();
+
+(5)     $r5_1 = staticinvoke <ch.boye.httpclientandroidlib.client.utils.URIUtils: java.net.URI rewriteURI(java.net.URI,ch.boye.httpclientandroidlib.HttpHost,boolean)>($r5, $r6_1, 1);
+
+     label08:
+        $r6_2 = Phi($r6_1 #5, $r6 #8, $r6 #11, $r6 #13);
+
+        $r5_3 = Phi($r5_1 #5, $r5_2 #8, $r5_4 #11, $r5_5 #13);
+
+        $z0_2 = Phi($z0_1 #5, $z0_1 #8, $z0_4 #11, $z0_4 #13);
+
+(6)     virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: void setURI(java.net.URI)>($r5_3);
+
+     label09:
+        return;
+
+     label10:
+(7)     $r5_2 = staticinvoke <ch.boye.httpclientandroidlib.client.utils.URIUtils: java.net.URI rewriteURI(java.net.URI)>($r5);
+
+     label11:
+(8)     goto label08;
+
+     label12:
+        $z0_3 = Phi($z0 #1, $z0 #2);
+
+(9)     $z0_4 = virtualinvoke $r5.<java.net.URI: boolean isAbsolute()>();
+
+     label13:
+        if $z0_4 == 0 goto label16;
+
+     label14:
+(10)    $r5_4 = staticinvoke <ch.boye.httpclientandroidlib.client.utils.URIUtils: java.net.URI rewriteURI(java.net.URI,ch.boye.httpclientandroidlib.HttpHost)>($r5, null);
+
+     label15:
+(11)    goto label08;
+
+     label16:
+(12)    $r5_5 = staticinvoke <ch.boye.httpclientandroidlib.client.utils.URIUtils: java.net.URI rewriteURI(java.net.URI)>($r5);
+
+     label17:
+(13)    goto label08;
+
+     label18:
+        $r3 := @caughtexception;
+
+        $r6_3 = Phi($r6 #0, $r6_1 #4, $r6_2 #6);
+
+        $r5_6 = Phi($r5 #0, $r5_1 #5, $r5_3 #6, $r5_2 #7, $r5_4 #10, $r5_5 #12);
+
+        $z0_5 = Phi($z0 #0, $z0_1 #3, $z0_2 #6, $z0_4 #9);
+
+        $r4 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Invalid URI: ");
+
+        $r8 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.client.RequestWrapper: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r9 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getUri()>();
+
+        $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9_1 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String,java.lang.Throwable)>($r9_1, $r3);
+
+        throw $r4;
+
+        catch java.net.URISyntaxException from label01 to label02 with label18;
+        catch java.net.URISyntaxException from label03 to label04 with label18;
+        catch java.net.URISyntaxException from label05 to label06 with label18;
+        catch java.net.URISyntaxException from label07 to label08 with label18;
+        catch java.net.URISyntaxException from label08 to label09 with label18;
+        catch java.net.URISyntaxException from label10 to label11 with label18;
+        catch java.net.URISyntaxException from label12 to label13 with label18;
+        catch java.net.URISyntaxException from label14 to label15 with label18;
+        catch java.net.URISyntaxException from label16 to label17 with label18;
+    }
+}

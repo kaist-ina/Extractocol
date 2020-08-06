@@ -1,0 +1,1844 @@
+public class com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment extends com.contextlogic.wish.ui.fragment.base.BaseContentFragment implements com.contextlogic.wish.api.core.ApiDataChangeNotificationListener
+{
+    private static final java.lang.String STORED_STATE_BUCKET_NUMBER;
+    private static final java.lang.String STORED_STATE_DATA;
+    private static final java.lang.String STORED_STATE_NO_MORE_DATA;
+    private int bucketNumber;
+    private java.lang.String dataStateStoreKey;
+    private android.view.View errorView;
+    public com.contextlogic.wish.api.service.FollowService followService;
+    private com.contextlogic.wish.api.service.GetNotificationsService getNotificationsService;
+    private com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter;
+    private android.widget.ListView listView;
+    private boolean loadingComplete;
+    private boolean loadingErrored;
+    private com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow;
+    private android.view.View loadingView;
+    private android.widget.TextView noItemsTextView;
+    private android.view.View noItemsView;
+    private boolean noMoreItems;
+    private java.util.ArrayList notifications;
+    private android.support.v4.widget.SwipeRefreshLayout refresherView;
+    public com.contextlogic.wish.api.service.UnfollowService unfollowService;
+    private boolean updatingList;
+
+    public void <init>()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void <init>()>();
+
+        return;
+    }
+
+    static void access$000(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void refresh()>();
+
+        return;
+    }
+
+    static void access$100(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment, int, int, int)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        int $i0, $i1, $i2;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 := @parameter3: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void handleScrollLoad(int,int,int)>($i0, $i1, $i2);
+
+        return;
+    }
+
+    static void access$200(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void loadNextPage()>();
+
+        return;
+    }
+
+    static boolean access$302(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment, boolean)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean updatingList> = $z0;
+
+        return $z0;
+    }
+
+    static void access$400(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment, java.util.ArrayList, int)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        java.util.ArrayList $r1;
+        int $i0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 := @parameter1: java.util.ArrayList;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void handleLoadingSuccess(java.util.ArrayList,int)>($r1, $i0);
+
+        return;
+    }
+
+    static void access$500(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void handleLoadingFailure()>();
+
+        return;
+    }
+
+    private void handleLoadingFailure()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        android.support.v4.app.FragmentActivity $r1, $r2, $r2_1;
+        java.lang.String $r3, $r4;
+        android.support.v4.widget.SwipeRefreshLayout $r5, $r5_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingErrored> = 1;
+
+        $r1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r2 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r3 = virtualinvoke $r2.<android.support.v4.app.FragmentActivity: java.lang.String getString(int)>(2131100488);
+
+        $r2_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r4 = virtualinvoke $r2_1.<android.support.v4.app.FragmentActivity: java.lang.String getString(int)>(2131100077);
+
+        staticinvoke <com.contextlogic.wish.ui.components.alert.PopupAlertDialog: void showError(android.content.Context,java.lang.String,java.lang.String)>($r1, $r3, $r4);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void refreshViewState()>();
+
+        $r5 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r5.<android.support.v4.widget.SwipeRefreshLayout: void setRefreshing(boolean)>(0);
+
+        $r5_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r5_1.<android.support.v4.widget.SwipeRefreshLayout: void setEnabled(boolean)>(1);
+
+        return;
+    }
+
+    private void handleLoadingSuccess(java.util.ArrayList, int)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter $r1;
+        android.widget.ListView $r2;
+        java.util.ArrayList $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3, $i0_1, $i0_2;
+        java.util.Iterator $r4;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.lang.Object $r5;
+        com.contextlogic.wish.api.data.WishNotification $r6;
+        android.support.v4.widget.SwipeRefreshLayout $r7, $r7_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r3 := @parameter0: java.util.ArrayList;
+
+        $i0 := @parameter1: int;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingComplete> = 1;
+
+(0)     $r4 = virtualinvoke $r3.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = Phi($z0 #0, $z0_1 #1);
+
+        $r3_1 = Phi($r3 #0, $r3_2 #1);
+
+        $z0_1 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label2;
+
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (com.contextlogic.wish.api.data.WishNotification) $r5;
+
+        $r3_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications>;
+
+        virtualinvoke $r3_2.<java.util.ArrayList: boolean add(java.lang.Object)>($r6);
+
+(1)     goto label1;
+
+     label2:
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void notifyDataSetChanged()>();
+
+        $i1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber>;
+
+        if $i1 != 0 goto label3;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView>;
+
+        virtualinvoke $r2.<android.widget.ListView: void setSelectionAfterHeaderView()>();
+
+     label3:
+        $i1_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber>;
+
+        $i1_2 = $i1_1 + 1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber> = $i1_2;
+
+        $i1_3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber>;
+
+        if $i1_3 < $i0 goto label6;
+
+(2)     $z0_2 = 1;
+
+     label4:
+        $z0_3 = Phi($z0_2 #2, $z0_5 #6);
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean noMoreItems> = $z0_3;
+
+        $z0_4 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean noMoreItems>;
+
+(3)     if $z0_4 != 0 goto label5;
+
+        $r3_3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications>;
+
+        $i0_1 = virtualinvoke $r3_3.<java.util.ArrayList: int size()>();
+
+(4)     if $i0_1 >= 10 goto label5;
+
+(5)     specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void loadNextPage()>();
+
+     label5:
+        $i0_2 = Phi($i0 #3, $i0_1 #4, $i0_1 #5);
+
+        $r3_4 = Phi($r3_1 #3, $r3_3 #4, $r3_3 #5);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void refreshViewState()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean updatingList> = 0;
+
+        $r7 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r7.<android.support.v4.widget.SwipeRefreshLayout: void setRefreshing(boolean)>(0);
+
+        $r7_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r7_1.<android.support.v4.widget.SwipeRefreshLayout: void setEnabled(boolean)>(1);
+
+        return;
+
+     label6:
+        $z0_5 = 0;
+
+(6)     goto label4;
+    }
+
+    private void handleScrollLoad(int, int, int)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        int $i0, $i1, $i2, $i2_1, $i2_2, $i2_3;
+        com.contextlogic.wish.api.service.GetNotificationsService $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $i0 := @parameter0: int;
+
+        $i2 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingErrored>;
+
+(0)     if $z0 != 0 goto label2;
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean noMoreItems>;
+
+(1)     if $z0_1 != 0 goto label2;
+
+        $z0_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean updatingList>;
+
+(2)     if $z0_2 != 0 goto label2;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.GetNotificationsService getNotificationsService>;
+
+        $z0_3 = virtualinvoke $r1.<com.contextlogic.wish.api.service.GetNotificationsService: boolean isPending()>();
+
+(3)     if $z0_3 != 0 goto label2;
+
+        $z0_4 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingComplete>;
+
+(4)     if $z0_4 == 0 goto label2;
+
+(5)     $z0_5 = 1;
+
+     label1:
+        $z0_6 = Phi($z0_5 #5, $z0_8 #8);
+
+(6)     if $z0_6 == 0 goto label3;
+
+        $i2_1 = $i2 * 2;
+
+        $i2_2 = $i1 - $i2_1;
+
+(7)     if $i0 <= $i2_2 goto label3;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void loadNextPage()>();
+
+        return;
+
+     label2:
+        $z0_7 = Phi($z0 #0, $z0_1 #1, $z0_2 #2, $z0_3 #3, $z0_4 #4);
+
+        $z0_8 = 0;
+
+(8)     goto label1;
+
+     label3:
+        $i2_3 = Phi($i2 #6, $i2_2 #7);
+
+        return;
+    }
+
+    private void hideAllUiElements()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        android.support.v4.widget.SwipeRefreshLayout $r1;
+        android.widget.ListView $r2;
+        android.view.View $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r1.<android.support.v4.widget.SwipeRefreshLayout: void setVisibility(int)>(8);
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView>;
+
+        virtualinvoke $r2.<android.widget.ListView: void setVisibility(int)>(8);
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.view.View errorView>;
+
+        virtualinvoke $r3.<android.view.View: void setVisibility(int)>(8);
+
+        $r3_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.view.View noItemsView>;
+
+        virtualinvoke $r3_1.<android.view.View: void setVisibility(int)>(8);
+
+        $r3_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.view.View loadingView>;
+
+        virtualinvoke $r3_2.<android.view.View: void setVisibility(int)>(8);
+
+        return;
+    }
+
+    private void loadNextPage()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.api.service.GetNotificationsService $r1;
+        int $i0;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$6 $r2;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$7 $r3;
+        com.contextlogic.wish.WishApplication $r4;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r4 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        virtualinvoke $r4.<com.contextlogic.wish.WishApplication: void clearAllPushNotifications()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingErrored> = 0;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.GetNotificationsService getNotificationsService>;
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber>;
+
+        $r2 = new com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$6;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$6: void <init>(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)>($r0);
+
+        $r3 = new com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$7;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$7: void <init>(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)>($r0);
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.GetNotificationsService: void requestService(int,java.lang.String,com.contextlogic.wish.api.service.GetNotificationsService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($i0, null, $r2, $r3);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void refreshViewState()>();
+
+        return;
+    }
+
+    private void refresh()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.api.service.GetNotificationsService $r1;
+        java.util.ArrayList $r2;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.GetNotificationsService getNotificationsService>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.GetNotificationsService: void cancelAllRequests()>();
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications>;
+
+        virtualinvoke $r2.<java.util.ArrayList: void clear()>();
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void notifyDataSetChanged()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean noMoreItems> = 0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber> = 0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingComplete> = 0;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void loadNextPage()>();
+
+        return;
+    }
+
+    private void refreshRowTimestamps()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void refreshTimestamps()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    private void refreshViewState()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        android.widget.TextView $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9;
+        java.util.ArrayList $r2, $r2_1, $r2_2;
+        int $i0, $i0_1, $i0_2;
+        android.support.v4.widget.SwipeRefreshLayout $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        android.widget.ListView $r4, $r4_1;
+        com.contextlogic.wish.ui.components.list.LoadingListRow $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        com.contextlogic.wish.api.service.GetNotificationsService $r7, $r7_1, $r7_2;
+        android.view.View $r8, $r8_1, $r8_2;
+        java.lang.String $r9;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void hideAllUiElements()>();
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingErrored>;
+
+        if $z0 == 0 goto label04;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications>;
+
+        $i0 = virtualinvoke $r2.<java.util.ArrayList: int size()>();
+
+        if $i0 <= 0 goto label03;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r3.<android.support.v4.widget.SwipeRefreshLayout: void setVisibility(int)>(0);
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView>;
+
+        virtualinvoke $r4.<android.widget.ListView: void setVisibility(int)>(0);
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean noMoreItems>;
+
+        if $z0_1 == 0 goto label01;
+
+        $r5 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode NoMoreItems>;
+
+        virtualinvoke $r5.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6);
+
+        return;
+
+     label01:
+        $r7 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.GetNotificationsService getNotificationsService>;
+
+        $z0_2 = virtualinvoke $r7.<com.contextlogic.wish.api.service.GetNotificationsService: boolean isPending()>();
+
+        if $z0_2 == 0 goto label02;
+
+        $r5_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6_1 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode Loading>;
+
+        virtualinvoke $r5_1.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6_1);
+
+        return;
+
+     label02:
+        $r5_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6_2 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode ClickToLoad>;
+
+        virtualinvoke $r5_2.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6_2);
+
+        return;
+
+     label03:
+        $r8 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.view.View errorView>;
+
+        virtualinvoke $r8.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label04:
+        $z0_3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingComplete>;
+
+(0)     if $z0_3 == 0 goto label05;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications>;
+
+        $i0_1 = virtualinvoke $r2_1.<java.util.ArrayList: int size()>();
+
+(1)     if $i0_1 != 0 goto label05;
+
+        $r8_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.view.View noItemsView>;
+
+        virtualinvoke $r8_1.<android.view.View: void setVisibility(int)>(0);
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.TextView noItemsTextView>;
+
+        $r9 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.lang.String getString(int)>(2131100080);
+
+        virtualinvoke $r1.<android.widget.TextView: void setText(java.lang.CharSequence)>($r9);
+
+        return;
+
+     label05:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $z0_4 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingComplete>;
+
+        if $z0_4 == 0 goto label08;
+
+        $r3_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r3_1.<android.support.v4.widget.SwipeRefreshLayout: void setVisibility(int)>(0);
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView>;
+
+        virtualinvoke $r4_1.<android.widget.ListView: void setVisibility(int)>(0);
+
+        $z0_5 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean noMoreItems>;
+
+        if $z0_5 == 0 goto label06;
+
+        $r5_3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6_3 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode NoMoreItems>;
+
+        virtualinvoke $r5_3.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6_3);
+
+        return;
+
+     label06:
+        $r7_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.GetNotificationsService getNotificationsService>;
+
+        $z0_6 = virtualinvoke $r7_1.<com.contextlogic.wish.api.service.GetNotificationsService: boolean isPending()>();
+
+        if $z0_6 == 0 goto label07;
+
+        $r5_4 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6_4 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode Loading>;
+
+        virtualinvoke $r5_4.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6_4);
+
+        return;
+
+     label07:
+        $r5_5 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6_5 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode ClickToLoad>;
+
+        virtualinvoke $r5_5.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6_5);
+
+        return;
+
+     label08:
+        $r7_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.GetNotificationsService getNotificationsService>;
+
+        $z0_7 = virtualinvoke $r7_2.<com.contextlogic.wish.api.service.GetNotificationsService: boolean isPending()>();
+
+(2)     if $z0_7 == 0 goto label10;
+
+        $r3_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        $z0_8 = virtualinvoke $r3_2.<android.support.v4.widget.SwipeRefreshLayout: boolean isRefreshing()>();
+
+        if $z0_8 != 0 goto label09;
+
+        $r8_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.view.View loadingView>;
+
+        virtualinvoke $r8_2.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label09:
+        $r3_3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+(3)     virtualinvoke $r3_3.<android.support.v4.widget.SwipeRefreshLayout: void setVisibility(int)>(0);
+
+     label10:
+        $r3_4 = Phi($r3 #2, $r3_3 #3);
+
+        $z0_9 = Phi($z0_7 #2, $z0_8 #3);
+
+        return;
+    }
+
+    protected com.contextlogic.wish.analytics.Analytics$PageViewType getAnalyticsPageViewType()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.analytics.Analytics$PageViewType r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        r1 = <com.contextlogic.wish.analytics.Analytics$PageViewType: com.contextlogic.wish.analytics.Analytics$PageViewType AllNotifications>;
+
+        return r1;
+    }
+
+    public int getLayoutResourceId()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        return 2130903157;
+    }
+
+    public com.contextlogic.wish.ui.fragment.menu.MainMenuItem getTopLevelMenuItem()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.ui.fragment.menu.MainMenuItem r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        r1 = <com.contextlogic.wish.ui.fragment.menu.MainMenuItem: com.contextlogic.wish.ui.fragment.menu.MainMenuItem NOTIFICATIONS>;
+
+        return r1;
+    }
+
+    public void handleNotificationClick(int)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        int $i0;
+        java.util.ArrayList $r1;
+        java.lang.Object $r2;
+        com.contextlogic.wish.api.data.WishNotification $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r3 = (com.contextlogic.wish.api.data.WishNotification) $r2;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void handleNotificationClick(com.contextlogic.wish.api.data.WishNotification)>($r3);
+
+        return;
+    }
+
+    public void handleNotificationClick(com.contextlogic.wish.api.data.WishNotification)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.api.data.WishNotification $r1;
+        com.contextlogic.wish.api.service.ClickNotificationService $r2;
+        int[] $r3;
+        com.contextlogic.wish.ui.fragment.embeddedbrowser.EmbeddedBrowserFragment $r4;
+        java.lang.ClassCastException $r5, $r6, $r7, $r8, $r12, $r13, $r14;
+        com.contextlogic.wish.ui.fragment.profile.ProfileFragment $r9;
+        android.app.AlertDialog$Builder $r10;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$5 $r11;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter $r15, $r15_1, $r15_2;
+        com.contextlogic.wish.api.data.WishNotification$NotificationTargetType $r16;
+        java.lang.Object $r17, $r17_1, $r17_2, $r17_3, $r17_4, $r17_5, $r17_6, $r17_7, $r17_8, $r17_9, $r17_10, $r17_11, $r17_12, $r17_13, $r17_14, $r17_15, $r17_16, $r17_17, $r17_18, $r17_19, $r17_20, $r17_21, $r17_22, $r17_23, $r17_24, $r17_25;
+        java.lang.String $r18, $r26, $r18_1, $r18_2, $r18_3, $r18_4, $r18_5, $r18_6, $r18_7, $r18_8, $r18_9, $r18_10, $r18_11, $r18_12, $r18_13, $r18_14, $r18_15, $r18_16, $r18_17, $r18_18;
+        android.os.Bundle $r19, $r19_1, $r19_2, $r19_3, $r19_4, $r19_5, $r19_6, $r19_7, $r19_8, $r19_9;
+        android.support.v4.app.FragmentActivity $r20, $r20_1, $r20_2, $r20_3, $r20_4, $r20_5, $r20_6, $r20_7, $r20_8, $r20_9, $r20_10, $r20_11, $r20_12, $r20_13, $r20_14, $r20_15, $r20_16, $r20_17, $r20_18, $r20_19, $r20_20;
+        com.contextlogic.wish.ui.activity.root.RootActivity $r21, $r21_1, $r21_2, $r21_3, $r21_4, $r21_5, $r21_6, $r21_7, $r21_8, $r21_9, $r21_10, $r21_11, $r21_12, $r21_13, $r21_14, $r21_15;
+        com.contextlogic.wish.api.data.WishProduct $r22;
+        java.util.HashMap $r23, $r23_1, $r23_2, $r23_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9;
+        com.contextlogic.wish.ui.fragment.base.BaseContentFragment $r24, $r24_1, $r24_2;
+        com.contextlogic.wish.user.UserStatusManager $r25, $r25_1;
+        com.contextlogic.wish.api.data.WishTag $r27;
+        com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment $r28, $r28_1, $r28_2, $r28_3;
+        com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode $r29, $r29_1, $r29_2, $r29_3;
+        com.contextlogic.wish.api.data.WishBrandFilter $r30;
+        com.contextlogic.wish.api.data.WishUser $r31, $r31_1, $r31_2, $r31_3, $r31_4, $r31_5;
+        com.contextlogic.wish.cache.RuntimeStateStore $r32;
+        com.contextlogic.wish.user.LoggedInUser $r33;
+        com.contextlogic.wish.WishApplication $r34;
+        android.net.Uri $r35;
+        com.contextlogic.wish.ApplicationDeepLinkConfig $r36;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.WishNotification;
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: void markClicked()>();
+
+        $r2 = new com.contextlogic.wish.api.service.ClickNotificationService;
+
+        specialinvoke $r2.<com.contextlogic.wish.api.service.ClickNotificationService: void <init>()>();
+
+        $i0 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: int getNotificationNumber()>();
+
+        $i1 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: int getBucketNumber()>();
+
+        virtualinvoke $r2.<com.contextlogic.wish.api.service.ClickNotificationService: void requestService(int,int,boolean,com.contextlogic.wish.api.service.ClickNotificationService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($i0, $i1, 0, null, null);
+
+        $r15 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(0)     if $r15 == null goto label01;
+
+        $r15_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(1)     virtualinvoke $r15_1.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void refreshNewState()>();
+
+     label01:
+        $r15_2 = Phi($r15 #0, $r15_1 #1);
+
+        $r3 = <com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$8: int[] $SwitchMap$com$contextlogic$wish$api$data$WishNotification$NotificationTargetType>;
+
+        $r16 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: com.contextlogic.wish.api.data.WishNotification$NotificationTargetType getTargetType()>();
+
+        $i0_1 = virtualinvoke $r16.<com.contextlogic.wish.api.data.WishNotification$NotificationTargetType: int ordinal()>();
+
+        $i0_2 = $r3[$i0_1];
+
+(2)     lookupswitch($i0_2)
+        {
+            case 1: goto label03;
+            case 2: goto label10;
+            case 3: goto label18;
+            case 4: goto label19;
+            case 5: goto label30;
+            case 6: goto label40;
+            case 7: goto label49;
+            case 8: goto label57;
+            case 9: goto label58;
+            default: goto label02;
+        };
+
+     label02:
+        return;
+
+     label03:
+        $r17 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+        $r18 = (java.lang.String) $r17;
+
+     label04:
+        $r4 = new com.contextlogic.wish.ui.fragment.embeddedbrowser.EmbeddedBrowserFragment;
+
+     label05:
+        specialinvoke $r4.<com.contextlogic.wish.ui.fragment.embeddedbrowser.EmbeddedBrowserFragment: void <init>()>();
+
+     label06:
+        $r19 = new android.os.Bundle;
+
+     label07:
+        specialinvoke $r19.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke $r19.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("ArgInitialUrl", $r18);
+
+        virtualinvoke $r4.<com.contextlogic.wish.ui.fragment.embeddedbrowser.EmbeddedBrowserFragment: void setArguments(android.os.Bundle)>($r19);
+
+        $r20 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r21 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r20;
+
+        virtualinvoke $r21.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r4, 0);
+
+     label08:
+        return;
+
+     label09:
+        $r5 := @caughtexception;
+
+        $r20_1 = Phi($r20 #2);
+
+        $r18_1 = Phi($r18 #2);
+
+        $r17_1 = Phi($r17 #2);
+
+        $r19_1 = Phi($r19 #2);
+
+        $r21_1 = Phi($r21 #2);
+
+        return;
+
+     label10:
+(3)     $r17_2 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+        $r22 = (com.contextlogic.wish.api.data.WishProduct) $r17_2;
+
+     label11:
+(4)     $r18_2 = null;
+
+     label12:
+        $r23 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.util.HashMap getExtraInfo()>();
+
+        $z0 = virtualinvoke $r23.<java.util.HashMap: boolean containsKey(java.lang.Object)>("recommended_by");
+
+     label13:
+(5)     if $z0 == 0 goto label15;
+
+     label14:
+(6)     $r23_1 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.util.HashMap getExtraInfo()>();
+
+(7)     $r17_3 = virtualinvoke $r23_1.<java.util.HashMap: java.lang.Object get(java.lang.Object)>("recommended_by");
+
+(8)     $r18_3 = (java.lang.String) $r17_3;
+
+     label15:
+        $r23_2 = Phi($r23 #5, $r23_1 #8);
+
+        $r18_4 = Phi($r18_2 #5, $r18_3 #8);
+
+        $r17_4 = Phi($r17_2 #5, $r17_3 #8);
+
+(9)     $r20_2 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+(10)    $r21_2 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r20_2;
+
+        $r24 = staticinvoke <com.contextlogic.wish.ui.activity.root.RootActivity: com.contextlogic.wish.ui.fragment.base.BaseContentFragment getProductDetailFragment(com.contextlogic.wish.api.data.WishProduct,java.lang.String,java.lang.String,com.contextlogic.wish.api.data.WishUserProductBucket)>($r22, null, $r18_4, null);
+
+        virtualinvoke $r21_2.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r24, 0);
+
+     label16:
+        return;
+
+     label17:
+        $r6 := @caughtexception;
+
+        $r23_3 = Phi($r23 #2, $r23_1 #6, $r23_2 #9);
+
+        $z0_1 = Phi($z0 #2);
+
+        $r20_3 = Phi($r20 #2, $r20_2 #9);
+
+        $r18_5 = Phi($r18 #2, $r18_2 #4, $r18_3 #8, $r18_4 #9);
+
+        $r17_5 = Phi($r17 #2, $r17_2 #3, $r17_3 #7, $r17_4 #9);
+
+        $r21_3 = Phi($r21 #2, $r21_2 #10);
+
+        $r24_1 = Phi($r24 #2);
+
+        return;
+
+     label18:
+        $r20_4 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+(11)    if $r20_4 == null goto label67;
+
+        $r20_5 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r21_4 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r20_5;
+
+        $r25 = staticinvoke <com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager getInstance()>();
+
+        $r18_6 = virtualinvoke $r25.<com.contextlogic.wish.user.UserStatusManager: java.lang.String getInviteSubject()>();
+
+        $r25_1 = staticinvoke <com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager getInstance()>();
+
+        $r26 = virtualinvoke $r25_1.<com.contextlogic.wish.user.UserStatusManager: java.lang.String getInviteMessage()>();
+
+        virtualinvoke $r21_4.<com.contextlogic.wish.ui.activity.root.RootActivity: void showShareDialog(java.lang.String,java.lang.String)>($r18_6, $r26);
+
+        return;
+
+     label19:
+        $r17_6 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+(12)    if $r17_6 == null goto label29;
+
+     label20:
+(13)    $r17_7 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+        $r27 = (com.contextlogic.wish.api.data.WishTag) $r17_7;
+
+     label21:
+        $r28 = new com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment;
+
+     label22:
+        specialinvoke $r28.<com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment: void <init>()>();
+
+     label23:
+(14)    $r19_2 = new android.os.Bundle;
+
+     label24:
+        specialinvoke $r19_2.<android.os.Bundle: void <init>()>();
+
+(15)    $r18_7 = virtualinvoke $r27.<com.contextlogic.wish.api.data.WishTag: java.lang.String getTagId()>();
+
+        virtualinvoke $r19_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("ArgDataValue", $r18_7);
+
+     label25:
+        $r29 = <com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode: com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode Tag>;
+
+     label26:
+(16)    $i0_3 = virtualinvoke $r29.<com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode: int ordinal()>();
+
+        virtualinvoke $r19_2.<android.os.Bundle: void putInt(java.lang.String,int)>("ArgDataMode", $i0_3);
+
+(17)    $r18_8 = virtualinvoke $r27.<com.contextlogic.wish.api.data.WishTag: java.lang.String getName()>();
+
+        virtualinvoke $r19_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("ArgDataTitle", $r18_8);
+
+        virtualinvoke $r28.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void setArguments(android.os.Bundle)>($r19_2);
+
+(18)    $r20_6 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+(19)    $r21_5 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r20_6;
+
+        virtualinvoke $r21_5.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r28, 0);
+
+     label27:
+        return;
+
+     label28:
+        $r7 := @caughtexception;
+
+        $r28_1 = Phi($r28 #12);
+
+        $r29_1 = Phi($r29 #12);
+
+        $r20_7 = Phi($r20 #12, $r20_6 #18);
+
+        $r18_9 = Phi($r18 #12, $r18_7 #15, $r18_8 #17);
+
+        $i0_4 = Phi($i0_2 #12, $i0_3 #16);
+
+        $r17_8 = Phi($r17_6 #12, $r17_7 #13);
+
+        $r19_3 = Phi($r19 #12, $r19_2 #14);
+
+        $r21_6 = Phi($r21 #12, $r21_5 #19);
+
+        return;
+
+     label29:
+        $r20_8 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r24_2 = staticinvoke <com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment: com.contextlogic.wish.ui.fragment.base.BaseContentFragment createEverythingFeedFragment(android.content.Context)>($r20_8);
+
+        $r20_9 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r21_7 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r20_9;
+
+        virtualinvoke $r21_7.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r24_2, 0);
+
+        return;
+
+     label30:
+        $r17_9 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+(20)    if $r17_9 == null goto label67;
+
+     label31:
+(21)    $r17_10 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+        $r30 = (com.contextlogic.wish.api.data.WishBrandFilter) $r17_10;
+
+     label32:
+(22)    $r28_2 = new com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment;
+
+     label33:
+        specialinvoke $r28_2.<com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment: void <init>()>();
+
+     label34:
+(23)    $r19_4 = new android.os.Bundle;
+
+     label35:
+        specialinvoke $r19_4.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke $r19_4.<android.os.Bundle: void putSerializable(java.lang.String,java.io.Serializable)>("ArgDataValue", $r30);
+
+     label36:
+(24)    $r29_2 = <com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode: com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode Brand>;
+
+     label37:
+(25)    $i0_5 = virtualinvoke $r29_2.<com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode: int ordinal()>();
+
+        virtualinvoke $r19_4.<android.os.Bundle: void putInt(java.lang.String,int)>("ArgDataMode", $i0_5);
+
+        virtualinvoke $r28_2.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void setArguments(android.os.Bundle)>($r19_4);
+
+(26)    $r20_10 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+(27)    $r21_8 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r20_10;
+
+        virtualinvoke $r21_8.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r28_2, 0);
+
+     label38:
+        return;
+
+     label39:
+        $r8 := @caughtexception;
+
+        $r28_3 = Phi($r28 #20, $r28_2 #22);
+
+        $r29_3 = Phi($r29 #20, $r29_2 #24);
+
+        $r20_11 = Phi($r20 #20, $r20_10 #26);
+
+        $i0_6 = Phi($i0_2 #20, $i0_5 #25);
+
+        $r17_11 = Phi($r17_9 #20, $r17_10 #21);
+
+        $r19_5 = Phi($r19 #20, $r19_4 #23);
+
+        $r21_9 = Phi($r21 #20, $r21_8 #27);
+
+        return;
+
+     label40:
+(28)    $r17_12 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+     label41:
+(29)    if $r17_12 == null goto label55;
+
+     label42:
+(30)    $r17_13 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+     label43:
+        $z0_2 = $r17_13 instanceof com.contextlogic.wish.api.data.WishUser;
+
+(31)    if $z0_2 == 0 goto label55;
+
+     label44:
+(32)    $r17_14 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+(33)    $r31 = (com.contextlogic.wish.api.data.WishUser) $r17_14;
+
+     label45:
+        $r31_1 = Phi($r31 #33, $r31_2 #48);
+
+        $z0_3 = Phi($z0_2 #33, $z0_4 #48);
+
+        $r17_15 = Phi($r17_14 #33, $r17_16 #48);
+
+(34)    $r9 = new com.contextlogic.wish.ui.fragment.profile.ProfileFragment;
+
+     label46:
+        specialinvoke $r9.<com.contextlogic.wish.ui.fragment.profile.ProfileFragment: void <init>()>();
+
+     label47:
+(35)    $r19_6 = new android.os.Bundle;
+
+     label48:
+        specialinvoke $r19_6.<android.os.Bundle: void <init>()>();
+
+        $r32 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+(36)    $r18_10 = virtualinvoke $r32.<com.contextlogic.wish.cache.RuntimeStateStore: java.lang.String storeState(java.lang.Object,java.lang.String)>($r31_1, null);
+
+        virtualinvoke $r19_6.<android.os.Bundle: void putSerializable(java.lang.String,java.io.Serializable)>("ArgUser", $r18_10);
+
+        virtualinvoke $r9.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void setArguments(android.os.Bundle)>($r19_6);
+
+(37)    $r20_12 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+(38)    $r21_10 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r20_12;
+
+(39)    virtualinvoke $r21_10.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r9, 0);
+
+     label49:
+        $r31_3 = Phi($r31 #2, $r31_1 #39, $r31_4 #57);
+
+        $z0_5 = Phi($z0 #2, $z0_3 #39, $z0_8 #57);
+
+        $r20_13 = Phi($r20 #2, $r20_12 #39, $r20_19 #57);
+
+        $r18_11 = Phi($r18 #2, $r18_10 #39, $r18_17 #57);
+
+        $r17_17 = Phi($r17 #2, $r17_15 #39, $r17_24 #57);
+
+        $r19_7 = Phi($r19 #2, $r19_6 #39, $r19_8 #57);
+
+        $r21_11 = Phi($r21 #2, $r21_10 #39, $r21_14 #57);
+
+        $r17_18 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+(40)    if $r17_18 == null goto label67;
+
+(41)    $r10 = new android.app.AlertDialog$Builder;
+
+     label50:
+(42)    $r20_14 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        specialinvoke $r10.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>($r20_14);
+
+(43)    $r17_19 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+(44)    $r18_12 = (java.lang.String) $r17_19;
+
+        virtualinvoke $r10.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(java.lang.CharSequence)>($r18_12);
+
+(45)    $r18_13 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.lang.String getString(int)>(2131100478);
+
+     label51:
+        $r11 = new com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$5;
+
+     label52:
+        specialinvoke $r11.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$5: void <init>(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)>($r0);
+
+        virtualinvoke $r10.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>($r18_13, $r11);
+
+        virtualinvoke $r10.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+     label53:
+        return;
+
+     label54:
+        $r12 := @caughtexception;
+
+        $r20_15 = Phi($r20_13 #41, $r20_14 #42);
+
+        $r18_14 = Phi($r18_11 #41, $r18_12 #44, $r18_13 #45);
+
+        $r17_20 = Phi($r17_18 #41, $r17_19 #43);
+
+        return;
+
+     label55:
+        $z0_4 = Phi($z0 #29, $z0_2 #31);
+
+        $r17_16 = Phi($r17_12 #29, $r17_13 #31);
+
+(46)    $r33 = staticinvoke <com.contextlogic.wish.user.LoggedInUser: com.contextlogic.wish.user.LoggedInUser getInstance()>();
+
+(47)    $r31_2 = virtualinvoke $r33.<com.contextlogic.wish.user.LoggedInUser: com.contextlogic.wish.api.data.WishUser getCurrentUser()>();
+
+     label56:
+(48)    goto label45;
+
+     label57:
+        staticinvoke <com.contextlogic.wish.prompt.RateAppPrompt: void markPromptShown()>();
+
+        $r34 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r20_16 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        virtualinvoke $r34.<com.contextlogic.wish.WishApplication: void goToMarketListing(android.app.Activity)>($r20_16);
+
+        return;
+
+     label58:
+        $r17_21 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+(49)    if $r17_21 == null goto label67;
+
+     label59:
+(50)    $r17_22 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishNotification: java.lang.Object getTarget()>();
+
+(51)    $r18_15 = (java.lang.String) $r17_22;
+
+        $r35 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r18_15);
+
+        $r36 = staticinvoke <com.contextlogic.wish.activity.link.WishDeepLinkActivity: com.contextlogic.wish.ApplicationDeepLinkConfig getDeepLinkTarget(android.net.Uri)>($r35);
+
+     label60:
+(52)    if $r36 == null goto label67;
+
+     label61:
+(53)    $r20_17 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+     label62:
+(54)    if $r20_17 == null goto label67;
+
+        $z0_6 = $r20_17 instanceof com.contextlogic.wish.ui.activity.root.RootActivity;
+
+(55)    if $z0_6 == 0 goto label67;
+
+     label63:
+(56)    $r21_12 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r20_17;
+
+        virtualinvoke $r21_12.<com.contextlogic.wish.ui.activity.root.RootActivity: void processDeepLink(com.contextlogic.wish.ApplicationDeepLinkConfig,boolean)>($r36, 0);
+
+     label64:
+        return;
+
+     label65:
+        $r13 := @caughtexception;
+
+        $z0_7 = Phi($z0 #49, $z0_6 #55);
+
+        $r20_18 = Phi($r20 #49, $r20_17 #53);
+
+        $r18_16 = Phi($r18 #49, $r18_15 #51);
+
+        $r17_23 = Phi($r17_21 #49, $r17_22 #50);
+
+        $r21_13 = Phi($r21 #49, $r21_12 #56);
+
+        return;
+
+     label66:
+        $r14 := @caughtexception;
+
+        $r31_4 = Phi($r31 #2, $r31_1 #34, $r31_2 #47);
+
+        $z0_8 = Phi($z0 #2, $z0_2 #31, $z0_3 #34, $z0_4 #46);
+
+        $r20_19 = Phi($r20 #2, $r20_12 #37);
+
+        $r18_17 = Phi($r18 #2, $r18_10 #36);
+
+        $r17_24 = Phi($r17 #2, $r17_12 #28, $r17_13 #30, $r17_14 #32, $r17_15 #34, $r17_16 #46);
+
+        $r19_8 = Phi($r19 #2, $r19_6 #35);
+
+        $r21_14 = Phi($r21 #2, $r21_10 #38);
+
+(57)    goto label49;
+
+     label67:
+        $r31_5 = Phi($r31 #11, $r31 #20, $r31_3 #40, $r31 #49, $r31 #52, $r31 #54, $r31 #55);
+
+        $z0_9 = Phi($z0 #11, $z0 #20, $z0_5 #40, $z0 #49, $z0 #52, $z0 #54, $z0_6 #55);
+
+        $r20_20 = Phi($r20_4 #11, $r20 #20, $r20_13 #40, $r20 #49, $r20 #52, $r20_17 #54, $r20_17 #55);
+
+        $r18_18 = Phi($r18 #11, $r18 #20, $r18_11 #40, $r18 #49, $r18_15 #52, $r18_15 #54, $r18_15 #55);
+
+        $r17_25 = Phi($r17 #11, $r17_9 #20, $r17_18 #40, $r17_21 #49, $r17_22 #52, $r17_22 #54, $r17_22 #55);
+
+        $r19_9 = Phi($r19 #11, $r19 #20, $r19_7 #40, $r19 #49, $r19 #52, $r19 #54, $r19 #55);
+
+        $r21_15 = Phi($r21 #11, $r21 #20, $r21_11 #40, $r21 #49, $r21 #52, $r21 #54, $r21 #55);
+
+        return;
+
+        catch java.lang.ClassCastException from label03 to label04 with label09;
+        catch java.lang.ClassCastException from label05 to label06 with label09;
+        catch java.lang.ClassCastException from label07 to label08 with label09;
+        catch java.lang.ClassCastException from label10 to label11 with label17;
+        catch java.lang.ClassCastException from label12 to label13 with label17;
+        catch java.lang.ClassCastException from label14 to label15 with label17;
+        catch java.lang.ClassCastException from label15 to label16 with label17;
+        catch java.lang.ClassCastException from label20 to label21 with label28;
+        catch java.lang.ClassCastException from label22 to label23 with label28;
+        catch java.lang.ClassCastException from label24 to label25 with label28;
+        catch java.lang.ClassCastException from label26 to label27 with label28;
+        catch java.lang.ClassCastException from label31 to label32 with label39;
+        catch java.lang.ClassCastException from label33 to label34 with label39;
+        catch java.lang.ClassCastException from label35 to label36 with label39;
+        catch java.lang.ClassCastException from label37 to label38 with label39;
+        catch java.lang.ClassCastException from label40 to label41 with label66;
+        catch java.lang.ClassCastException from label42 to label43 with label66;
+        catch java.lang.ClassCastException from label44 to label45 with label66;
+        catch java.lang.ClassCastException from label46 to label47 with label66;
+        catch java.lang.ClassCastException from label48 to label49 with label66;
+        catch java.lang.ClassCastException from label50 to label51 with label54;
+        catch java.lang.ClassCastException from label52 to label53 with label54;
+        catch java.lang.ClassCastException from label55 to label56 with label66;
+        catch java.lang.ClassCastException from label59 to label60 with label65;
+        catch java.lang.ClassCastException from label61 to label62 with label65;
+        catch java.lang.ClassCastException from label63 to label64 with label65;
+    }
+
+    public void handleResume()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        int $i0;
+        boolean $z0;
+        com.contextlogic.wish.user.UserStatusManager $r1;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter $r2, $r2_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void handleResume()>();
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber>;
+
+        if $i0 == -1 goto label1;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingComplete>;
+
+        if $z0 != 0 goto label3;
+
+     label1:
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber> = 0;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void loadNextPage()>();
+
+     label2:
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void refreshViewState()>();
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: void refreshRowTimestamps()>();
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+        if $r2 == null goto label4;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+        virtualinvoke $r2_1.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void resumeCacheWarming()>();
+
+        return;
+
+     label3:
+        $r1 = staticinvoke <com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager getInstance()>();
+
+        virtualinvoke $r1.<com.contextlogic.wish.user.UserStatusManager: void refreshStatus()>();
+
+        goto label2;
+
+     label4:
+        return;
+    }
+
+    public void initializeUi(android.view.View)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        int[] $r1;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$1 $r2;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$2 $r3;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$3 $r4;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$4 $r5;
+        android.view.View $r6, $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r6_1;
+        com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper $r7;
+        android.support.v4.app.FragmentActivity $r8, $r8_1, $r8_2;
+        java.lang.String $r9;
+        android.support.v4.widget.SwipeRefreshLayout $r11, $r11_1, $r11_2, $r11_3;
+        android.widget.ListView $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6;
+        android.widget.TextView $r13;
+        com.contextlogic.wish.ui.components.list.LoadingListRow $r14, $r14_1, $r14_2;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter $r15, $r15_1, $r15_2;
+        java.util.ArrayList $r16;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r6 := @parameter0: android.view.View;
+
+        $r7 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper getNavigationBar()>();
+
+        $r8 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r9 = virtualinvoke $r8.<android.support.v4.app.FragmentActivity: java.lang.String getString(int)>(2131100470);
+
+        virtualinvoke $r7.<com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper: void setTitle(java.lang.String)>($r9);
+
+        $r10 = virtualinvoke $r6.<android.view.View: android.view.View findViewById(int)>(2131558970);
+
+        $r11 = (android.support.v4.widget.SwipeRefreshLayout) $r10;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView> = $r11;
+
+        $r11_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        $r1 = newarray (int)[1];
+
+        $r1[0] = 2131493070;
+
+        virtualinvoke $r11_1.<android.support.v4.widget.SwipeRefreshLayout: void setColorSchemeResources(int[])>($r1);
+
+        $r11_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r11_2.<android.support.v4.widget.SwipeRefreshLayout: void setEnabled(boolean)>(0);
+
+        $r11_3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        $r2 = new com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$1;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$1: void <init>(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)>($r0);
+
+        virtualinvoke $r11_3.<android.support.v4.widget.SwipeRefreshLayout: void setOnRefreshListener(android.support.v4.widget.SwipeRefreshLayout$OnRefreshListener)>($r2);
+
+        $r10_1 = virtualinvoke $r6.<android.view.View: android.view.View findViewById(int)>(2131558971);
+
+        $r12 = (android.widget.ListView) $r10_1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView> = $r12;
+
+        $r10_2 = virtualinvoke $r6.<android.view.View: android.view.View findViewById(int)>(2131558972);
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.view.View loadingView> = $r10_2;
+
+        $r10_3 = virtualinvoke $r6.<android.view.View: android.view.View findViewById(int)>(2131558973);
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.view.View noItemsView> = $r10_3;
+
+        $r10_4 = virtualinvoke $r6.<android.view.View: android.view.View findViewById(int)>(2131558975);
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.view.View errorView> = $r10_4;
+
+        $r6_1 = virtualinvoke $r6.<android.view.View: android.view.View findViewById(int)>(2131558974);
+
+        $r13 = (android.widget.TextView) $r6_1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.TextView noItemsTextView> = $r13;
+
+        $r12_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView>;
+
+        $r3 = new com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$2;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$2: void <init>(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)>($r0);
+
+        virtualinvoke $r12_1.<android.widget.ListView: void setOnItemClickListener(android.widget.AdapterView$OnItemClickListener)>($r3);
+
+        $r12_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView>;
+
+        $r4 = new com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$3;
+
+        specialinvoke $r4.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$3: void <init>(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)>($r0);
+
+        virtualinvoke $r12_2.<android.widget.ListView: void setOnScrollListener(android.widget.AbsListView$OnScrollListener)>($r4);
+
+        $r14 = new com.contextlogic.wish.ui.components.list.LoadingListRow;
+
+        $r8_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        specialinvoke $r14.<com.contextlogic.wish.ui.components.list.LoadingListRow: void <init>(android.content.Context)>($r8_1);
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow> = $r14;
+
+        $r14_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r5 = new com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$4;
+
+        specialinvoke $r5.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment$4: void <init>(com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)>($r0);
+
+        virtualinvoke $r14_1.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setOnClickListener(android.view.View$OnClickListener)>($r5);
+
+        $r12_3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView>;
+
+        $r14_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        virtualinvoke $r12_3.<android.widget.ListView: void addFooterView(android.view.View)>($r14_2);
+
+        $r15 = new com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter;
+
+        $r8_2 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r16 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications>;
+
+        $r12_4 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView>;
+
+        specialinvoke $r15.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void <init>(android.content.Context,java.util.ArrayList,android.widget.ListView,com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment)>($r8_2, $r16, $r12_4, $r0);
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter> = $r15;
+
+        $r12_5 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView>;
+
+        $r15_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+        virtualinvoke $r12_5.<android.widget.ListView: void setAdapter(android.widget.ListAdapter)>($r15_1);
+
+        $r15_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+        virtualinvoke $r15_2.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void notifyDataSetChanged()>();
+
+        $r12_6 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: android.widget.ListView listView>;
+
+        virtualinvoke $r12_6.<android.widget.ListView: void setFadingEdgeLength(int)>(0);
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        android.os.Bundle $r1;
+        com.contextlogic.wish.api.service.GetNotificationsService $r2;
+        com.contextlogic.wish.api.service.FollowService $r3;
+        com.contextlogic.wish.api.service.UnfollowService $r4;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager $r5, $r5_1;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType $r6, $r6_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onCreate(android.os.Bundle)>($r1);
+
+        $r2 = new com.contextlogic.wish.api.service.GetNotificationsService;
+
+        specialinvoke $r2.<com.contextlogic.wish.api.service.GetNotificationsService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.GetNotificationsService getNotificationsService> = $r2;
+
+        $r3 = new com.contextlogic.wish.api.service.FollowService;
+
+        specialinvoke $r3.<com.contextlogic.wish.api.service.FollowService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.FollowService followService> = $r3;
+
+        $r4 = new com.contextlogic.wish.api.service.UnfollowService;
+
+        specialinvoke $r4.<com.contextlogic.wish.api.service.UnfollowService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.UnfollowService unfollowService> = $r4;
+
+        $r5 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $r6 = <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType UserFollowed>;
+
+        virtualinvoke $r5.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void addListener(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType,com.contextlogic.wish.api.core.ApiDataChangeNotificationListener)>($r6, $r0);
+
+        $r5_1 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $r6_1 = <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType UserUnfollowed>;
+
+        virtualinvoke $r5_1.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void addListener(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType,com.contextlogic.wish.api.core.ApiDataChangeNotificationListener)>($r6_1, $r0);
+
+        return;
+    }
+
+    public void onDestroy()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.cache.RuntimeStateStore $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onDestroy()>();
+
+        $r2 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.lang.String dataStateStoreKey>;
+
+        virtualinvoke $r2.<com.contextlogic.wish.cache.RuntimeStateStore: void clearState(java.lang.String)>($r1);
+
+        return;
+    }
+
+    public void onNotificationReceived(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType, android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType $r1;
+        android.os.Bundle $r2;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(0)     if $r3 == null goto label1;
+
+        $r3_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(1)     virtualinvoke $r3_1.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void refreshFollowButtonStates()>();
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void onPause()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.api.service.GetNotificationsService $r1;
+        com.contextlogic.wish.api.service.FollowService $r2;
+        com.contextlogic.wish.api.service.UnfollowService $r3;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter $r4, $r4_1, $r4_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onPause()>();
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(0)     if $r4 == null goto label1;
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(1)     virtualinvoke $r4_1.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void pauseCacheWarming()>();
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.GetNotificationsService getNotificationsService>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.GetNotificationsService: void cancelAllRequests()>();
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.FollowService followService>;
+
+        virtualinvoke $r2.<com.contextlogic.wish.api.service.FollowService: void cancelAllRequests()>();
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.api.service.UnfollowService unfollowService>;
+
+        virtualinvoke $r3.<com.contextlogic.wish.api.service.UnfollowService: void cancelAllRequests()>();
+
+        return;
+    }
+
+    public void onSaveInstanceState(android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        android.os.Bundle $r1;
+        boolean $z0, $z0_1, $z0_2;
+        java.util.ArrayList $r2, $r2_1, $r2_2;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        com.contextlogic.wish.cache.RuntimeStateStore $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onSaveInstanceState(android.os.Bundle)>($r1);
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingComplete>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications>;
+
+        $i0 = virtualinvoke $r2.<java.util.ArrayList: int size()>();
+
+(1)     if $i0 <= 0 goto label1;
+
+        $i0_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber>;
+
+(2)     if $i0_1 < 0 goto label1;
+
+        $r3 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications>;
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.lang.String dataStateStoreKey>;
+
+        $r4_1 = virtualinvoke $r3.<com.contextlogic.wish.cache.RuntimeStateStore: java.lang.String storeState(java.lang.Object,java.lang.String)>($r2_1, $r4);
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.lang.String dataStateStoreKey> = $r4_1;
+
+        $r4_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.lang.String dataStateStoreKey>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putSerializable(java.lang.String,java.io.Serializable)>("StoredStateData", $r4_2);
+
+        $i0_2 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putInt(java.lang.String,int)>("StoredStateBucketNumber", $i0_2);
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean noMoreItems>;
+
+(3)     virtualinvoke $r1.<android.os.Bundle: void putBoolean(java.lang.String,boolean)>("StoredStateNoMoreData", $z0_1);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2 #1, $r2 #2, $r2_1 #3);
+
+        $i0_3 = Phi($i0 #0, $i0 #1, $i0_1 #2, $i0_2 #3);
+
+        $z0_2 = Phi($z0 #0, $z0 #1, $z0 #2, $z0_1 #3);
+
+        $r4_3 = Phi($r4 #0, $r4 #1, $r4 #2, $r4_2 #3);
+
+        return;
+    }
+
+    protected void releaseImages()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void releaseImages()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    protected void restoreImages()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter listAdapter>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.fragment.notifications.NotificationsAdapter: void restoreImages()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void restoreState(android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+        android.os.Bundle $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8;
+        java.lang.String $r2, $r2_1, $r2_2;
+        com.contextlogic.wish.cache.RuntimeStateStore $r3;
+        java.lang.Object $r4;
+        java.util.ArrayList $r5, $r5_1, $r5_2, $r5_3;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void restoreState(android.os.Bundle)>($r1);
+
+(0)     if $r1 == null goto label2;
+
+        $z0 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("StoredStateData");
+
+(1)     if $z0 == 0 goto label2;
+
+        $z0_1 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("StoredStateNoMoreData");
+
+(2)     if $z0_1 == 0 goto label2;
+
+        $z0_2 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("StoredStateBucketNumber");
+
+(3)     if $z0_2 == 0 goto label2;
+
+        $r2 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("StoredStateData");
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.lang.String dataStateStoreKey> = $r2;
+
+        $r3 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.lang.String dataStateStoreKey>;
+
+        $r4 = virtualinvoke $r3.<com.contextlogic.wish.cache.RuntimeStateStore: java.lang.Object getState(java.lang.String)>($r2_1);
+
+        $r5 = (java.util.ArrayList) $r4;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications> = $r5;
+
+        $i0 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String)>("StoredStateBucketNumber");
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber> = $i0;
+
+        $z0_3 = virtualinvoke $r1.<android.os.Bundle: boolean getBoolean(java.lang.String)>("StoredStateNoMoreData");
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean noMoreItems> = $z0_3;
+
+        $r5_1 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications>;
+
+        if $r5_1 == null goto label3;
+
+(4)     $z0_4 = 1;
+
+     label1:
+        $z0_5 = Phi($z0_4 #4, $z0_6 #6);
+
+(5)     $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingComplete> = $z0_5;
+
+     label2:
+        $r5_2 = Phi($r5 #0, $r5 #1, $r5 #2, $r5 #3, $r5_1 #5);
+
+        $r2_2 = Phi($r2 #0, $r2 #1, $r2 #2, $r2 #3, $r2_1 #5);
+
+        $z0_7 = Phi($z0 #0, $z0 #1, $z0_1 #2, $z0_2 #3, $z0_5 #5);
+
+        $z0_8 = $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingComplete>;
+
+        if $z0_8 != 0 goto label4;
+
+        $r5_3 = new java.util.ArrayList;
+
+        specialinvoke $r5_3.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: java.util.ArrayList notifications> = $r5_3;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean noMoreItems> = 0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: int bucketNumber> = -1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment: boolean loadingComplete> = 0;
+
+        return;
+
+     label3:
+        $z0_6 = 0;
+
+(6)     goto label1;
+
+     label4:
+        return;
+    }
+
+    public boolean useCanvasBackground()
+    {
+        com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.notifications.NotificationsFragment;
+
+        return 1;
+    }
+}

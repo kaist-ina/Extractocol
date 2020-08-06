@@ -1,0 +1,184 @@
+public abstract class io.fabric.sdk.android.services.events.EventsHandler extends java.lang.Object implements io.fabric.sdk.android.services.events.EventsStorageListener
+{
+    protected final android.content.Context context;
+    protected final java.util.concurrent.ScheduledExecutorService executor;
+    protected io.fabric.sdk.android.services.events.EventsStrategy strategy;
+
+    public void <init>(android.content.Context, io.fabric.sdk.android.services.events.EventsStrategy, io.fabric.sdk.android.services.events.EventsFilesManager, java.util.concurrent.ScheduledExecutorService)
+    {
+        io.fabric.sdk.android.services.events.EventsHandler $r0;
+        io.fabric.sdk.android.services.events.EventsStrategy $r1;
+        io.fabric.sdk.android.services.events.EventsFilesManager $r2;
+        java.util.concurrent.ScheduledExecutorService $r3;
+        android.content.Context $r4, $r4_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EventsHandler;
+
+        $r4 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: io.fabric.sdk.android.services.events.EventsStrategy;
+
+        $r2 := @parameter2: io.fabric.sdk.android.services.events.EventsFilesManager;
+
+        $r3 := @parameter3: java.util.concurrent.ScheduledExecutorService;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r0.<io.fabric.sdk.android.services.events.EventsHandler: android.content.Context context> = $r4_1;
+
+        $r0.<io.fabric.sdk.android.services.events.EventsHandler: java.util.concurrent.ScheduledExecutorService executor> = $r3;
+
+        $r0.<io.fabric.sdk.android.services.events.EventsHandler: io.fabric.sdk.android.services.events.EventsStrategy strategy> = $r1;
+
+        virtualinvoke $r2.<io.fabric.sdk.android.services.events.EventsFilesManager: void registerRollOverListener(io.fabric.sdk.android.services.events.EventsStorageListener)>($r0);
+
+        return;
+    }
+
+    public void disable()
+    {
+        io.fabric.sdk.android.services.events.EventsHandler $r0;
+        io.fabric.sdk.android.services.events.EventsHandler$4 $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EventsHandler;
+
+        $r1 = new io.fabric.sdk.android.services.events.EventsHandler$4;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.events.EventsHandler$4: void <init>(io.fabric.sdk.android.services.events.EventsHandler)>($r0);
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.events.EventsHandler: void executeAsync(java.lang.Runnable)>($r1);
+
+        return;
+    }
+
+    protected void executeAsync(java.lang.Runnable)
+    {
+        io.fabric.sdk.android.services.events.EventsHandler $r0;
+        java.lang.Runnable $r1;
+        java.util.concurrent.ScheduledExecutorService $r2;
+        java.lang.Exception $r3;
+        android.content.Context $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EventsHandler;
+
+        $r1 := @parameter0: java.lang.Runnable;
+
+     label1:
+        $r2 = $r0.<io.fabric.sdk.android.services.events.EventsHandler: java.util.concurrent.ScheduledExecutorService executor>;
+
+        interfaceinvoke $r2.<java.util.concurrent.ScheduledExecutorService: java.util.concurrent.Future submit(java.lang.Runnable)>($r1);
+
+     label2:
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r4 = $r0.<io.fabric.sdk.android.services.events.EventsHandler: android.content.Context context>;
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlledError(android.content.Context,java.lang.String,java.lang.Throwable)>($r4, "Failed to submit events task", $r3);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    protected void executeSync(java.lang.Runnable)
+    {
+        io.fabric.sdk.android.services.events.EventsHandler $r0;
+        java.lang.Runnable $r1;
+        java.util.concurrent.ScheduledExecutorService $r2;
+        java.lang.Exception $r3;
+        android.content.Context $r4;
+        java.util.concurrent.Future $r5;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EventsHandler;
+
+        $r1 := @parameter0: java.lang.Runnable;
+
+     label1:
+        $r2 = $r0.<io.fabric.sdk.android.services.events.EventsHandler: java.util.concurrent.ScheduledExecutorService executor>;
+
+        $r5 = interfaceinvoke $r2.<java.util.concurrent.ScheduledExecutorService: java.util.concurrent.Future submit(java.lang.Runnable)>($r1);
+
+        interfaceinvoke $r5.<java.util.concurrent.Future: java.lang.Object get()>();
+
+     label2:
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r4 = $r0.<io.fabric.sdk.android.services.events.EventsHandler: android.content.Context context>;
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void logControlledError(android.content.Context,java.lang.String,java.lang.Throwable)>($r4, "Failed to run events task", $r3);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    protected abstract io.fabric.sdk.android.services.events.EventsStrategy getDisabledEventsStrategy();
+
+    public void onRollOver(java.lang.String)
+    {
+        io.fabric.sdk.android.services.events.EventsHandler $r0;
+        java.lang.String $r1;
+        io.fabric.sdk.android.services.events.EventsHandler$3 $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EventsHandler;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new io.fabric.sdk.android.services.events.EventsHandler$3;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.events.EventsHandler$3: void <init>(io.fabric.sdk.android.services.events.EventsHandler)>($r0);
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.events.EventsHandler: void executeAsync(java.lang.Runnable)>($r2);
+
+        return;
+    }
+
+    public void recordEventAsync(java.lang.Object, boolean)
+    {
+        io.fabric.sdk.android.services.events.EventsHandler $r0;
+        java.lang.Object $r1;
+        boolean $z0;
+        io.fabric.sdk.android.services.events.EventsHandler$1 $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EventsHandler;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 = new io.fabric.sdk.android.services.events.EventsHandler$1;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.events.EventsHandler$1: void <init>(io.fabric.sdk.android.services.events.EventsHandler,java.lang.Object,boolean)>($r0, $r1, $z0);
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.events.EventsHandler: void executeAsync(java.lang.Runnable)>($r2);
+
+        return;
+    }
+
+    public void recordEventSync(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.events.EventsHandler $r0;
+        java.lang.Object $r1;
+        io.fabric.sdk.android.services.events.EventsHandler$2 $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.events.EventsHandler;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = new io.fabric.sdk.android.services.events.EventsHandler$2;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.events.EventsHandler$2: void <init>(io.fabric.sdk.android.services.events.EventsHandler,java.lang.Object)>($r0, $r1);
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.events.EventsHandler: void executeSync(java.lang.Runnable)>($r2);
+
+        return;
+    }
+}

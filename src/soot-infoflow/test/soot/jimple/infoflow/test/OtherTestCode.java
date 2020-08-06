@@ -482,7 +482,8 @@ public class OtherTestCode {
 	}
 	
 	private String id(String data) {
-		return data;
+		String foo = data;
+		return foo;
 	}
 	
 	public void pathSkipTest3() {
@@ -626,7 +627,7 @@ public class OtherTestCode {
 
 	private void doLeak(String imei) {
 		ConnectionManager cm = new ConnectionManager();
-		cm.publish(imei);		
+		cm.publish(imei);
 	}
-	
+		
 }

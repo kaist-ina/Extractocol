@@ -1,0 +1,502 @@
+public abstract class android.support.v4.content.AsyncTaskLoader extends android.support.v4.content.Loader
+{
+    static final boolean DEBUG;
+    static final java.lang.String TAG;
+    volatile android.support.v4.content.AsyncTaskLoader$LoadTask mCancellingTask;
+    android.os.Handler mHandler;
+    long mLastLoadCompleteTime;
+    volatile android.support.v4.content.AsyncTaskLoader$LoadTask mTask;
+    long mUpdateThrottle;
+
+    public void <init>(android.content.Context)
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<android.support.v4.content.Loader: void <init>(android.content.Context)>($r1);
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: long mLastLoadCompleteTime> = -10000L;
+
+        return;
+    }
+
+    public boolean cancelLoad()
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        boolean $z0, $z0_1, $z0_2;
+        android.support.v4.content.AsyncTaskLoader$LoadTask $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5, $r1_6, $r1_7, $r1_8, $r1_9, $r1_10, $r1_11;
+        android.os.Handler $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        $r1 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        if $r1 == null goto label5;
+
+        $r1_1 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mCancellingTask>;
+
+        if $r1_1 == null goto label2;
+
+        $r1_2 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $z0 = $r1_2.<android.support.v4.content.AsyncTaskLoader$LoadTask: boolean waiting>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r1_3 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $r1_3.<android.support.v4.content.AsyncTaskLoader$LoadTask: boolean waiting> = 0;
+
+        $r2 = $r0.<android.support.v4.content.AsyncTaskLoader: android.os.Handler mHandler>;
+
+        $r1_4 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+(1)     virtualinvoke $r2.<android.os.Handler: void removeCallbacks(java.lang.Runnable)>($r1_4);
+
+     label1:
+        $r1_5 = Phi($r1_2 #0, $r1_4 #1);
+
+        $r2_1 = Phi($r2 #0, $r2 #1);
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask> = null;
+
+        return 0;
+
+     label2:
+        $r1_6 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $z0_1 = $r1_6.<android.support.v4.content.AsyncTaskLoader$LoadTask: boolean waiting>;
+
+        if $z0_1 == 0 goto label3;
+
+        $r1_7 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $r1_7.<android.support.v4.content.AsyncTaskLoader$LoadTask: boolean waiting> = 0;
+
+        $r2_2 = $r0.<android.support.v4.content.AsyncTaskLoader: android.os.Handler mHandler>;
+
+        $r1_8 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        virtualinvoke $r2_2.<android.os.Handler: void removeCallbacks(java.lang.Runnable)>($r1_8);
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask> = null;
+
+        return 0;
+
+     label3:
+        $r1_9 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $z0_2 = virtualinvoke $r1_9.<android.support.v4.content.AsyncTaskLoader$LoadTask: boolean cancel(boolean)>(0);
+
+(2)     if $z0_2 == 0 goto label4;
+
+        $r1_10 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+(3)     $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mCancellingTask> = $r1_10;
+
+     label4:
+        $r1_11 = Phi($r1_9 #2, $r1_10 #3);
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask> = null;
+
+        return $z0_2;
+
+     label5:
+        return 0;
+    }
+
+    void dispatchOnCancelled(android.support.v4.content.AsyncTaskLoader$LoadTask, java.lang.Object)
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        android.support.v4.content.AsyncTaskLoader$LoadTask $r1, $r3;
+        java.lang.Object $r2;
+        long $l0;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        $r1 := @parameter0: android.support.v4.content.AsyncTaskLoader$LoadTask;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: void onCanceled(java.lang.Object)>($r2);
+
+        $r3 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mCancellingTask>;
+
+        if $r3 != $r1 goto label1;
+
+        virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: void rollbackContentChanged()>();
+
+        $l0 = staticinvoke <android.os.SystemClock: long uptimeMillis()>();
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: long mLastLoadCompleteTime> = $l0;
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mCancellingTask> = null;
+
+        virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: void executePendingTask()>();
+
+     label1:
+        return;
+    }
+
+    void dispatchOnLoadComplete(android.support.v4.content.AsyncTaskLoader$LoadTask, java.lang.Object)
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        android.support.v4.content.AsyncTaskLoader$LoadTask $r1, $r3;
+        java.lang.Object $r2;
+        boolean $z0;
+        long $l0;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        $r1 := @parameter0: android.support.v4.content.AsyncTaskLoader$LoadTask;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        if $r3 == $r1 goto label1;
+
+        virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: void dispatchOnCancelled(android.support.v4.content.AsyncTaskLoader$LoadTask,java.lang.Object)>($r1, $r2);
+
+        return;
+
+     label1:
+        $z0 = virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: boolean isAbandoned()>();
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: void onCanceled(java.lang.Object)>($r2);
+
+        return;
+
+     label2:
+        virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: void commitContentChanged()>();
+
+        $l0 = staticinvoke <android.os.SystemClock: long uptimeMillis()>();
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: long mLastLoadCompleteTime> = $l0;
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask> = null;
+
+        virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: void deliverResult(java.lang.Object)>($r2);
+
+        return;
+    }
+
+    public void dump(java.lang.String, java.io.FileDescriptor, java.io.PrintWriter, java.lang.String[])
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        java.lang.String $r1;
+        java.io.FileDescriptor $r2;
+        java.io.PrintWriter $r3;
+        java.lang.String[] $r4;
+        byte $b0;
+        long $l1, $l2, $l1_1, $l1_2, $l1_3;
+        android.support.v4.content.AsyncTaskLoader$LoadTask $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.io.FileDescriptor;
+
+        $r3 := @parameter2: java.io.PrintWriter;
+
+        $r4 := @parameter3: java.lang.String[];
+
+        specialinvoke $r0.<android.support.v4.content.Loader: void dump(java.lang.String,java.io.FileDescriptor,java.io.PrintWriter,java.lang.String[])>($r1, $r2, $r3, $r4);
+
+        $r5 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+(0)     if $r5 == null goto label1;
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>($r1);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>("mTask=");
+
+        $r5_1 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.Object)>($r5_1);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>(" waiting=");
+
+        $r5_2 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $z0 = $r5_2.<android.support.v4.content.AsyncTaskLoader$LoadTask: boolean waiting>;
+
+(1)     virtualinvoke $r3.<java.io.PrintWriter: void println(boolean)>($z0);
+
+     label1:
+        $r5_3 = Phi($r5 #0, $r5_2 #1);
+
+        $z0_1 = Phi($z0 #0, $z0 #1);
+
+        $r5_4 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mCancellingTask>;
+
+(2)     if $r5_4 == null goto label2;
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>($r1);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>("mCancellingTask=");
+
+        $r5_5 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mCancellingTask>;
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.Object)>($r5_5);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>(" waiting=");
+
+        $r5_6 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mCancellingTask>;
+
+        $z0_2 = $r5_6.<android.support.v4.content.AsyncTaskLoader$LoadTask: boolean waiting>;
+
+(3)     virtualinvoke $r3.<java.io.PrintWriter: void println(boolean)>($z0_2);
+
+     label2:
+        $r5_7 = Phi($r5_4 #2, $r5_6 #3);
+
+        $z0_3 = Phi($z0_1 #2, $z0_2 #3);
+
+        $l1 = $r0.<android.support.v4.content.AsyncTaskLoader: long mUpdateThrottle>;
+
+        $b0 = $l1 cmp 0L;
+
+(4)     if $b0 == 0 goto label3;
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>($r1);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>("mUpdateThrottle=");
+
+        $l1_1 = $r0.<android.support.v4.content.AsyncTaskLoader: long mUpdateThrottle>;
+
+        staticinvoke <android.support.v4.util.TimeUtils: void formatDuration(long,java.io.PrintWriter)>($l1_1, $r3);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>(" mLastLoadCompleteTime=");
+
+        $l1_2 = $r0.<android.support.v4.content.AsyncTaskLoader: long mLastLoadCompleteTime>;
+
+        $l2 = staticinvoke <android.os.SystemClock: long uptimeMillis()>();
+
+        staticinvoke <android.support.v4.util.TimeUtils: void formatDuration(long,long,java.io.PrintWriter)>($l1_2, $l2, $r3);
+
+(5)     virtualinvoke $r3.<java.io.PrintWriter: void println()>();
+
+     label3:
+        $l1_3 = Phi($l1 #4, $l1_2 #5);
+
+        return;
+    }
+
+    void executePendingTask()
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        boolean $z0;
+        long $l0, $l1, $l3, $l1_1, $l0_1, $l1_2, $l0_2, $l1_3, $l1_4, $l0_3, $l1_5, $l0_4;
+        java.util.concurrent.Executor $r1;
+        android.support.v4.content.AsyncTaskLoader$LoadTask $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6, $r2_7, $r2_8, $r2_9;
+        android.os.Handler $r3, $r3_1, $r3_2, $r3_3;
+        byte $b2, $b2_1, $b2_2, $b2_3;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        $r2 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mCancellingTask>;
+
+(0)     if $r2 != null goto label3;
+
+        $r2_1 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+(1)     if $r2_1 == null goto label3;
+
+        $r2_2 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $z0 = $r2_2.<android.support.v4.content.AsyncTaskLoader$LoadTask: boolean waiting>;
+
+(2)     if $z0 == 0 goto label1;
+
+        $r2_3 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $r2_3.<android.support.v4.content.AsyncTaskLoader$LoadTask: boolean waiting> = 0;
+
+        $r3 = $r0.<android.support.v4.content.AsyncTaskLoader: android.os.Handler mHandler>;
+
+        $r2_4 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+(3)     virtualinvoke $r3.<android.os.Handler: void removeCallbacks(java.lang.Runnable)>($r2_4);
+
+     label1:
+        $r3_1 = Phi($r3 #2, $r3 #3);
+
+        $r2_5 = Phi($r2_2 #2, $r2_4 #3);
+
+        $l1 = $r0.<android.support.v4.content.AsyncTaskLoader: long mUpdateThrottle>;
+
+        $b2 = $l1 cmp 0L;
+
+(4)     if $b2 <= 0 goto label2;
+
+        $l1_1 = staticinvoke <android.os.SystemClock: long uptimeMillis()>();
+
+        $l3 = $r0.<android.support.v4.content.AsyncTaskLoader: long mLastLoadCompleteTime>;
+
+        $l0 = $r0.<android.support.v4.content.AsyncTaskLoader: long mUpdateThrottle>;
+
+        $l0_1 = $l3 + $l0;
+
+        $b2_1 = $l1_1 cmp $l0_1;
+
+(5)     if $b2_1 >= 0 goto label2;
+
+        $r2_6 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $r2_6.<android.support.v4.content.AsyncTaskLoader$LoadTask: boolean waiting> = 1;
+
+        $r3_2 = $r0.<android.support.v4.content.AsyncTaskLoader: android.os.Handler mHandler>;
+
+        $r2_7 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $l1_2 = $r0.<android.support.v4.content.AsyncTaskLoader: long mLastLoadCompleteTime>;
+
+        $l0_2 = $r0.<android.support.v4.content.AsyncTaskLoader: long mUpdateThrottle>;
+
+        $l1_3 = $l1_2 + $l0_2;
+
+        virtualinvoke $r3_2.<android.os.Handler: boolean postAtTime(java.lang.Runnable,long)>($r2_7, $l1_3);
+
+        return;
+
+     label2:
+        $b2_2 = Phi($b2 #4, $b2_1 #5);
+
+        $l1_4 = Phi($l1 #4, $l1_1 #5);
+
+        $l0_3 = Phi($l0 #4, $l0_1 #5);
+
+        $r2_8 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        $r1 = <android.support.v4.content.ModernAsyncTask: java.util.concurrent.Executor THREAD_POOL_EXECUTOR>;
+
+(6)     virtualinvoke $r2_8.<android.support.v4.content.AsyncTaskLoader$LoadTask: android.support.v4.content.ModernAsyncTask executeOnExecutor(java.util.concurrent.Executor,java.lang.Object[])>($r1, null);
+
+     label3:
+        $b2_3 = Phi($b2 #0, $b2 #1, $b2_2 #6);
+
+        $r3_3 = Phi($r3 #0, $r3 #1, $r3_1 #6);
+
+        $r2_9 = Phi($r2 #0, $r2_1 #1, $r2_8 #6);
+
+        $l1_5 = Phi($l1 #0, $l1 #1, $l1_4 #6);
+
+        $l0_4 = Phi($l0 #0, $l0 #1, $l0_3 #6);
+
+        return;
+    }
+
+    public abstract java.lang.Object loadInBackground();
+
+    public void onCanceled(java.lang.Object)
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        java.lang.Object $r1;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        return;
+    }
+
+    protected void onForceLoad()
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        android.support.v4.content.AsyncTaskLoader$LoadTask $r1;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        specialinvoke $r0.<android.support.v4.content.Loader: void onForceLoad()>();
+
+        virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: boolean cancelLoad()>();
+
+        $r1 = new android.support.v4.content.AsyncTaskLoader$LoadTask;
+
+        specialinvoke $r1.<android.support.v4.content.AsyncTaskLoader$LoadTask: void <init>(android.support.v4.content.AsyncTaskLoader)>($r0);
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask> = $r1;
+
+        virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: void executePendingTask()>();
+
+        return;
+    }
+
+    protected java.lang.Object onLoadInBackground()
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        java.lang.Object $r1;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.content.AsyncTaskLoader: java.lang.Object loadInBackground()>();
+
+        return $r1;
+    }
+
+    public void setUpdateThrottle(long)
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        long $l0;
+        byte $b1;
+        android.os.Handler $r1;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        $l0 := @parameter0: long;
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: long mUpdateThrottle> = $l0;
+
+        $b1 = $l0 cmp 0L;
+
+        if $b1 == 0 goto label1;
+
+        $r1 = new android.os.Handler;
+
+        specialinvoke $r1.<android.os.Handler: void <init>()>();
+
+        $r0.<android.support.v4.content.AsyncTaskLoader: android.os.Handler mHandler> = $r1;
+
+     label1:
+        return;
+    }
+
+    public void waitForLoader()
+    {
+        android.support.v4.content.AsyncTaskLoader $r0;
+        android.support.v4.content.AsyncTaskLoader$LoadTask $r1;
+        java.lang.InterruptedException $r2;
+        java.util.concurrent.CountDownLatch $r3;
+
+        $r0 := @this: android.support.v4.content.AsyncTaskLoader;
+
+        $r1 = $r0.<android.support.v4.content.AsyncTaskLoader: android.support.v4.content.AsyncTaskLoader$LoadTask mTask>;
+
+        if $r1 == null goto label4;
+
+     label1:
+        $r3 = staticinvoke <android.support.v4.content.AsyncTaskLoader$LoadTask: java.util.concurrent.CountDownLatch access$000(android.support.v4.content.AsyncTaskLoader$LoadTask)>($r1);
+
+        virtualinvoke $r3.<java.util.concurrent.CountDownLatch: void await()>();
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+     label4:
+        return;
+
+        catch java.lang.InterruptedException from label1 to label2 with label3;
+    }
+}

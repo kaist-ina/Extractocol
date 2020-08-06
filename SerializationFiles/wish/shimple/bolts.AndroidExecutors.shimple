@@ -1,0 +1,150 @@
+final class bolts.AndroidExecutors extends java.lang.Object
+{
+    static final int CORE_POOL_SIZE;
+    private static final int CPU_COUNT;
+    private static final bolts.AndroidExecutors INSTANCE;
+    static final long KEEP_ALIVE_TIME;
+    static final int MAX_POOL_SIZE;
+    static final int MAX_QUEUE_SIZE;
+    private final java.util.concurrent.Executor uiThread;
+
+    static void <clinit>()
+    {
+        bolts.AndroidExecutors $r0;
+        java.lang.Runtime $r1;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5;
+
+        $r0 = new bolts.AndroidExecutors;
+
+        specialinvoke $r0.<bolts.AndroidExecutors: void <init>()>();
+
+        <bolts.AndroidExecutors: bolts.AndroidExecutors INSTANCE> = $r0;
+
+        $r1 = staticinvoke <java.lang.Runtime: java.lang.Runtime getRuntime()>();
+
+        $i0 = virtualinvoke $r1.<java.lang.Runtime: int availableProcessors()>();
+
+        <bolts.AndroidExecutors: int CPU_COUNT> = $i0;
+
+        $i0_1 = <bolts.AndroidExecutors: int CPU_COUNT>;
+
+        $i0_2 = $i0_1 + 1;
+
+        <bolts.AndroidExecutors: int CORE_POOL_SIZE> = $i0_2;
+
+        $i0_3 = <bolts.AndroidExecutors: int CPU_COUNT>;
+
+        $i0_4 = $i0_3 * 2;
+
+        $i0_5 = $i0_4 + 1;
+
+        <bolts.AndroidExecutors: int MAX_POOL_SIZE> = $i0_5;
+
+        return;
+    }
+
+    private void <init>()
+    {
+        bolts.AndroidExecutors $r0;
+        bolts.AndroidExecutors$UIThreadExecutor $r1;
+
+        $r0 := @this: bolts.AndroidExecutors;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new bolts.AndroidExecutors$UIThreadExecutor;
+
+        specialinvoke $r1.<bolts.AndroidExecutors$UIThreadExecutor: void <init>(bolts.AndroidExecutors$1)>(null);
+
+        $r0.<bolts.AndroidExecutors: java.util.concurrent.Executor uiThread> = $r1;
+
+        return;
+    }
+
+    public static void allowCoreThreadTimeout(java.util.concurrent.ThreadPoolExecutor, boolean)
+    {
+        java.util.concurrent.ThreadPoolExecutor $r0;
+        boolean $z0;
+        int $i0;
+
+        $r0 := @parameter0: java.util.concurrent.ThreadPoolExecutor;
+
+        $z0 := @parameter1: boolean;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0 < 9 goto label1;
+
+        virtualinvoke $r0.<java.util.concurrent.ThreadPoolExecutor: void allowCoreThreadTimeOut(boolean)>($z0);
+
+     label1:
+        return;
+    }
+
+    public static java.util.concurrent.ExecutorService newCachedThreadPool()
+    {
+        java.util.concurrent.ThreadPoolExecutor $r0;
+        int $i0, $i1;
+        java.util.concurrent.TimeUnit $r1;
+        java.util.concurrent.LinkedBlockingQueue $r2;
+
+        $r0 = new java.util.concurrent.ThreadPoolExecutor;
+
+        $i0 = <bolts.AndroidExecutors: int CORE_POOL_SIZE>;
+
+        $i1 = <bolts.AndroidExecutors: int MAX_POOL_SIZE>;
+
+        $r1 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+        $r2 = new java.util.concurrent.LinkedBlockingQueue;
+
+        specialinvoke $r2.<java.util.concurrent.LinkedBlockingQueue: void <init>(int)>(128);
+
+        specialinvoke $r0.<java.util.concurrent.ThreadPoolExecutor: void <init>(int,int,long,java.util.concurrent.TimeUnit,java.util.concurrent.BlockingQueue)>($i0, $i1, 1L, $r1, $r2);
+
+        staticinvoke <bolts.AndroidExecutors: void allowCoreThreadTimeout(java.util.concurrent.ThreadPoolExecutor,boolean)>($r0, 1);
+
+        return $r0;
+    }
+
+    public static java.util.concurrent.ExecutorService newCachedThreadPool(java.util.concurrent.ThreadFactory)
+    {
+        java.util.concurrent.ThreadFactory $r0;
+        java.util.concurrent.ThreadPoolExecutor $r1;
+        int $i0, $i1;
+        java.util.concurrent.TimeUnit $r2;
+        java.util.concurrent.LinkedBlockingQueue $r3;
+
+        $r0 := @parameter0: java.util.concurrent.ThreadFactory;
+
+        $r1 = new java.util.concurrent.ThreadPoolExecutor;
+
+        $i0 = <bolts.AndroidExecutors: int CORE_POOL_SIZE>;
+
+        $i1 = <bolts.AndroidExecutors: int MAX_POOL_SIZE>;
+
+        $r2 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+        $r3 = new java.util.concurrent.LinkedBlockingQueue;
+
+        specialinvoke $r3.<java.util.concurrent.LinkedBlockingQueue: void <init>(int)>(128);
+
+        specialinvoke $r1.<java.util.concurrent.ThreadPoolExecutor: void <init>(int,int,long,java.util.concurrent.TimeUnit,java.util.concurrent.BlockingQueue,java.util.concurrent.ThreadFactory)>($i0, $i1, 1L, $r2, $r3, $r0);
+
+        staticinvoke <bolts.AndroidExecutors: void allowCoreThreadTimeout(java.util.concurrent.ThreadPoolExecutor,boolean)>($r1, 1);
+
+        return $r1;
+    }
+
+    public static java.util.concurrent.Executor uiThread()
+    {
+        bolts.AndroidExecutors $r0;
+        java.util.concurrent.Executor r1;
+
+        $r0 = <bolts.AndroidExecutors: bolts.AndroidExecutors INSTANCE>;
+
+        r1 = $r0.<bolts.AndroidExecutors: java.util.concurrent.Executor uiThread>;
+
+        return r1;
+    }
+}

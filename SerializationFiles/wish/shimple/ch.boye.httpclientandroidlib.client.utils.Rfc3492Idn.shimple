@@ -1,0 +1,402 @@
+public class ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn extends java.lang.Object implements ch.boye.httpclientandroidlib.client.utils.Idn
+{
+    private static final java.lang.String ACE_PREFIX;
+    private static final int base;
+    private static final int damp;
+    private static final char delimiter;
+    private static final int initial_bias;
+    private static final int initial_n;
+    private static final int skew;
+    private static final int tmax;
+    private static final int tmin;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private int adapt(int, int, boolean)
+    {
+        ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn $r0;
+        boolean $z0;
+        int $i0, $i1, $i2, $i0_1, $i0_2, $i1_1, $i0_3, $i2_1, $i0_4, $i2_2, $i0_5, $i1_2, $i2_3, $i1_3, $i0_6, $i0_7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $z0 := @parameter2: boolean;
+
+        if $z0 == 0 goto label3;
+
+(0)     $i0_1 = $i0 / 700;
+
+     label1:
+        $i0_2 = Phi($i0_1 #0, $i0_7 #3);
+
+        $i1_1 = $i0_2 / $i1;
+
+        $i2 = $i0_2 + $i1_1;
+
+(1)     $i0_3 = 0;
+
+     label2:
+        $i2_1 = Phi($i2 #1, $i2_2 #2);
+
+        $i0_4 = Phi($i0_3 #1, $i0_5 #2);
+
+        if $i2_1 <= 455 goto label4;
+
+        $i2_2 = $i2_1 / 35;
+
+        $i0_5 = $i0_4 + 36;
+
+(2)     goto label2;
+
+     label3:
+        $i0_7 = $i0 / 2;
+
+(3)     goto label1;
+
+     label4:
+        $i1_2 = $i2_1 * 36;
+
+        $i2_3 = $i2_1 + 38;
+
+        $i1_3 = $i1_2 / $i2_3;
+
+        $i0_6 = $i1_3 + $i0_4;
+
+        return $i0_6;
+    }
+
+    private int digit(char)
+    {
+        ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn $r0;
+        char $c0;
+        java.lang.IllegalArgumentException $r1;
+        int $i1, $i1_1, $i1_2, $i1_3;
+        java.lang.StringBuilder $r2, $r2_1, $r2_2;
+        java.lang.String $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn;
+
+        $c0 := @parameter0: char;
+
+        if $c0 < 65 goto label1;
+
+        if $c0 > 90 goto label1;
+
+        $i1 = $c0 + -65;
+
+        return $i1;
+
+     label1:
+        if $c0 < 97 goto label2;
+
+        if $c0 > 122 goto label2;
+
+        $i1_1 = $c0 + -97;
+
+        return $i1_1;
+
+     label2:
+        if $c0 < 48 goto label3;
+
+        if $c0 > 57 goto label3;
+
+        $i1_2 = $c0 + -48;
+
+        $i1_3 = $i1_2 + 26;
+
+        return $i1_3;
+
+     label3:
+        $r1 = new java.lang.IllegalArgumentException;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2_1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("illegal digit: ");
+
+        $r2_2 = virtualinvoke $r2_1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>($c0);
+
+        $r3 = virtualinvoke $r2_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r3);
+
+        throw $r1;
+    }
+
+    protected java.lang.String decode(java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn $r0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i8, $i3_1, $i3_2, $i1_1, $i0_1, $i2_1, $i3_3, $i3_4, $i3_5, $i4_1, $i5_1, $i1_2, $i5_2, $i8_1, $i4_2, $i6_1, $i6_2, $i1_3, $i8_2, $i6_3, $i2_2, $i4_3, $i4_4, $i2_3, $i3_6, $i3_7, $i3_8, $i0_2, $i3_9, $i3_10, $i1_4, $i1_5, $i6_4, $i8_3, $i1_6, $i8_4, $i8_5, $i8_6, $i6_5, $i4_5, $i5_3, $i8_7, $i8_8, $i8_9;
+        java.lang.CharSequence $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        char $c7, $c7_1, $c7_2, $c7_3, $c7_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $i0 = 128;
+
+        $i1 = 0;
+
+        $i2 = 72;
+
+        $r1 = new java.lang.StringBuilder;
+
+        $i3 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(int)>($i3);
+
+        $i3_1 = virtualinvoke $r2.<java.lang.String: int lastIndexOf(int)>(45);
+
+(0)     if $i3_1 == -1 goto label01;
+
+        $r3 = virtualinvoke $r2.<java.lang.String: java.lang.CharSequence subSequence(int,int)>(0, $i3_1);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.CharSequence)>($r3);
+
+        $i3_2 = $i3_1 + 1;
+
+(1)     $r2_1 = virtualinvoke $r2.<java.lang.String: java.lang.String substring(int)>($i3_2);
+
+     label01:
+        $i1_1 = Phi($i1 #0, $i1 #1, $i1_5 #5);
+
+        $z0 = Phi($z0 #0, $z0 #1, $z0_2 #5);
+
+        $i0_1 = Phi($i0 #0, $i0 #1, $i0_2 #5);
+
+        $i5 = Phi($i5 #0, $i5 #1, $i5_2 #5);
+
+        $c7 = Phi($c7 #0, $c7 #1, $c7_3 #5);
+
+        $i2_1 = Phi($i2 #0, $i2 #1, $i2_3 #5);
+
+        $i8 = Phi($i8 #0, $i8 #1, $i8_2 #5);
+
+        $i4 = Phi($i4 #0, $i4 #1, $i4_4 #5);
+
+        $r2_2 = Phi($r2 #0, $r2_1 #1, $r2_4 #5);
+
+        $i6 = Phi($i6 #0, $i6 #1, $i6_3 #5);
+
+        $i3_3 = Phi($i3_1 #0, $i3_2 #1, $i3_10 #5);
+
+        $i3_4 = virtualinvoke $r2_2.<java.lang.String: int length()>();
+
+        if $i3_4 <= 0 goto label10;
+
+        $i3_5 = $i1_1;
+
+        $i4_1 = 1;
+
+(2)     $i5_1 = 36;
+
+     label02:
+        $i1_2 = Phi($i1_1 #2, $i1_6 #8);
+
+        $i5_2 = Phi($i5_1 #2, $i5_3 #8);
+
+        $c7_1 = Phi($c7 #2, $c7_4 #8);
+
+        $i8_1 = Phi($i8 #2, $i8_6 #8);
+
+        $i4_2 = Phi($i4_1 #2, $i4_5 #8);
+
+        $r2_3 = Phi($r2_2 #2, $r2_5 #8);
+
+        $i6_1 = Phi($i6 #2, $i6_5 #8);
+
+        $i6_2 = virtualinvoke $r2_3.<java.lang.String: int length()>();
+
+(3)     if $i6_2 != 0 goto label05;
+
+     label03:
+        $i1_3 = Phi($i1_2 #3, $i1_6 #7);
+
+        $c7_2 = Phi($c7_1 #3, $c7_4 #7);
+
+        $i8_2 = Phi($i8_1 #3, $i8_6 #7);
+
+        $r2_4 = Phi($r2_3 #3, $r2_5 #7);
+
+        $i6_3 = Phi($i6_2 #3, $i6_4 #7);
+
+        $i2_2 = $i1_3 - $i3_5;
+
+        $i4_3 = virtualinvoke $r1.<java.lang.StringBuilder: int length()>();
+
+        $i4_4 = $i4_3 + 1;
+
+        if $i3_5 != 0 goto label09;
+
+(4)     $z0_1 = 1;
+
+     label04:
+        $z0_2 = Phi($z0_1 #4, $z0_3 #11);
+
+        $i2_3 = specialinvoke $r0.<ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn: int adapt(int,int,boolean)>($i2_2, $i4_4, $z0_2);
+
+        $i3_6 = virtualinvoke $r1.<java.lang.StringBuilder: int length()>();
+
+        $i3_7 = $i3_6 + 1;
+
+        $i3_8 = $i1_3 / $i3_7;
+
+        $i0_2 = $i0_1 + $i3_8;
+
+        $i3_9 = virtualinvoke $r1.<java.lang.StringBuilder: int length()>();
+
+        $i3_10 = $i3_9 + 1;
+
+        $i1_4 = $i1_3 % $i3_10;
+
+        $c7_3 = (char) $i0_2;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder insert(int,char)>($i1_4, $c7_3);
+
+        $i1_5 = $i1_4 + 1;
+
+(5)     goto label01;
+
+     label05:
+        $c7_4 = virtualinvoke $r2_3.<java.lang.String: char charAt(int)>(0);
+
+        $r2_5 = virtualinvoke $r2_3.<java.lang.String: java.lang.String substring(int)>(1);
+
+        $i6_4 = specialinvoke $r0.<ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn: int digit(char)>($c7_4);
+
+        $i8_3 = $i6_4 * $i4_2;
+
+        $i1_6 = $i1_2 + $i8_3;
+
+        $i8_4 = $i2_1 + 1;
+
+        if $i5_2 > $i8_4 goto label07;
+
+(6)     $i8_5 = 1;
+
+     label06:
+        $i8_6 = Phi($i8_5 #6, $i8_8 #9, $i8_9 #10);
+
+(7)     if $i6_4 < $i8_6 goto label03;
+
+        $i6_5 = 36 - $i8_6;
+
+        $i4_5 = $i4_2 * $i6_5;
+
+        $i5_3 = $i5_2 + 36;
+
+(8)     goto label02;
+
+     label07:
+        $i8_7 = $i2_1 + 26;
+
+        if $i5_2 < $i8_7 goto label08;
+
+        $i8_8 = 26;
+
+(9)     goto label06;
+
+     label08:
+        $i8_9 = $i5_2 - $i2_1;
+
+(10)    goto label06;
+
+     label09:
+        $z0_3 = 0;
+
+(11)    goto label04;
+
+     label10:
+        $r2_6 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r2_6;
+    }
+
+    public java.lang.String toUnicode(java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn $r0;
+        java.lang.StringBuilder $r1;
+        java.util.StringTokenizer $r2;
+        java.lang.String $r3, $r4, $r3_1, $r3_2, $r4_1, $r3_3, $r4_2, $r4_3, $r3_4, $r3_5;
+        int $i0, $i0_1, $i0_2;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r1 = new java.lang.StringBuilder;
+
+        $i0 = virtualinvoke $r3.<java.lang.String: int length()>();
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(int)>($i0);
+
+        $r2 = new java.util.StringTokenizer;
+
+(0)     specialinvoke $r2.<java.util.StringTokenizer: void <init>(java.lang.String,java.lang.String)>($r3, ".");
+
+     label1:
+        $z0 = Phi($z0 #0, $z0_2 #3);
+
+        $i0_1 = Phi($i0 #0, $i0_2 #3);
+
+        $r4 = Phi($r4 #0, $r4_3 #3);
+
+        $r3_1 = Phi($r3 #0, $r3_4 #3);
+
+        $z0_1 = virtualinvoke $r2.<java.util.StringTokenizer: boolean hasMoreTokens()>();
+
+        if $z0_1 == 0 goto label4;
+
+        $r3_2 = virtualinvoke $r2.<java.util.StringTokenizer: java.lang.String nextToken()>();
+
+        $r4_1 = $r3_2;
+
+        $i0_2 = virtualinvoke $r1.<java.lang.StringBuilder: int length()>();
+
+        if $i0_2 <= 0 goto label2;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(46);
+
+     label2:
+        $z0_2 = virtualinvoke $r3_2.<java.lang.String: boolean startsWith(java.lang.String)>("xn--");
+
+(1)     if $z0_2 == 0 goto label3;
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.String: java.lang.String substring(int)>(4);
+
+(2)     $r4_2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.utils.Rfc3492Idn: java.lang.String decode(java.lang.String)>($r3_3);
+
+     label3:
+        $r4_3 = Phi($r4_1 #1, $r4_2 #2);
+
+        $r3_4 = Phi($r3_2 #1, $r3_3 #2);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4_3);
+
+(3)     goto label1;
+
+     label4:
+        $r3_5 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3_5;
+    }
+}

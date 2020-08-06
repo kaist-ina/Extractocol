@@ -17,7 +17,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 
 /**
  * ontains test for functionality which is currently not supported by FlowDroid.
@@ -29,7 +29,7 @@ public class FutureTests extends JUnitTests {
 	// Subtraktions-Operator wird von soot nicht ausgewertet
 	@Test(timeout=300000)
 	public void mathTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OperationSemanticTestCode: void mathTestCode()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -39,7 +39,7 @@ public class FutureTests extends JUnitTests {
 	// static initialization is not performed correctly on Soot
 	@Test(timeout=300000)
 	public void staticInit1Test() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.StaticTestCode: void staticInitTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -49,7 +49,7 @@ public class FutureTests extends JUnitTests {
 	//deleting tainted aliases of memory locations requires must-alias analysis, which is not used by FlowDroid
 	@Test(timeout=300000)
 	public void returnOverwriteTest7() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void returnOverwrite7()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);

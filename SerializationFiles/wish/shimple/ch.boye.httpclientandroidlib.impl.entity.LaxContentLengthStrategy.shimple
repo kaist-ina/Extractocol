@@ -1,0 +1,330 @@
+public class ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy extends java.lang.Object implements ch.boye.httpclientandroidlib.entity.ContentLengthStrategy
+{
+    private final int implicitLen;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy: void <init>(int)>(-1);
+
+        return;
+    }
+
+    public void <init>(int)
+    {
+        ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy $r0;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy: int implicitLen> = $i0;
+
+        return;
+    }
+
+    public long determineLength(ch.boye.httpclientandroidlib.HttpMessage) throws ch.boye.httpclientandroidlib.HttpException
+    {
+        ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy $r0;
+        ch.boye.httpclientandroidlib.HttpMessage $r1;
+        java.lang.IllegalArgumentException $r2;
+        ch.boye.httpclientandroidlib.ParseException $r3;
+        byte $b0;
+        java.lang.NumberFormatException $r4;
+        ch.boye.httpclientandroidlib.params.HttpParams $r5;
+        boolean $z0, $z1, $z1_1, $z1_2, $z1_3, $z1_4, $z1_5, $z1_6, $z1_7;
+        ch.boye.httpclientandroidlib.Header $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        ch.boye.httpclientandroidlib.HeaderElement[] $r7;
+        int $i1, $i2, $i1_1, $i2_1, $i2_2, $i2_3, $i1_2, $i1_3, $i2_4, $i1_4, $i1_5, $i1_6, $i1_7, $i1_8, $i1_9, $i1_10, $i1_11, $i1_12, $i1_13, $i1_14;
+        ch.boye.httpclientandroidlib.HeaderElement $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        java.lang.String $r9, $r12, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r12_1, $r12_2, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r9_11, $r9_12, $r9_13, $r9_14;
+        ch.boye.httpclientandroidlib.ProtocolException $r10, $r10_1, $r10_2, $r10_3, $r10_4;
+        java.lang.StringBuilder $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8;
+        long $l3, $l3_1, $l3_2, $l3_3, $l3_4, $l3_5, $l3_6;
+        ch.boye.httpclientandroidlib.Header[] $r13;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpMessage;
+
+        if $r1 != null goto label01;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP message may not be null");
+
+        throw $r2;
+
+     label01:
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpMessage: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        $z0 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.params.HttpParams: boolean isParameterTrue(java.lang.String)>("http.protocol.strict-transfer-encoding");
+
+        $r6 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpMessage: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Transfer-Encoding");
+
+        if $r6 == null goto label11;
+
+     label02:
+        $r7 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.Header: ch.boye.httpclientandroidlib.HeaderElement[] getElements()>();
+
+     label03:
+(0)     if $z0 == 0 goto label07;
+
+(1)     $i1 = 0;
+
+     label04:
+        $i1_1 = Phi($i1 #1, $i1_2 #7);
+
+        $i2 = Phi($i2 #1, $i2_3 #7);
+
+        $r8 = Phi($r8 #1, $r8_1 #7);
+
+        $z1 = Phi($z1 #1, $z1_3 #7);
+
+        $r9 = Phi($r9 #1, $r9_1 #7);
+
+        $i2_1 = lengthof $r7;
+
+(2)     if $i1_1 >= $i2_1 goto label07;
+
+        $r8_1 = $r7[$i1_1];
+
+        $r9_1 = interfaceinvoke $r8_1.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+(3)     if $r9_1 == null goto label06;
+
+        $i2_2 = virtualinvoke $r9_1.<java.lang.String: int length()>();
+
+(4)     if $i2_2 <= 0 goto label06;
+
+        $z1_1 = virtualinvoke $r9_1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("chunked");
+
+(5)     if $z1_1 != 0 goto label06;
+
+        $z1_2 = virtualinvoke $r9_1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("identity");
+
+(6)     if $z1_2 != 0 goto label06;
+
+        $r10 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_1 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unsupported transfer encoding: ");
+
+        $r11_2 = virtualinvoke $r11_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9_1);
+
+        $r9_2 = virtualinvoke $r11_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r10.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>($r9_2);
+
+        throw $r10;
+
+     label05:
+        $r3 := @caughtexception;
+
+        $r10_2 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        $r11_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r11_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_4 = virtualinvoke $r11_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Invalid Transfer-Encoding header value: ");
+
+        $r11_5 = virtualinvoke $r11_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6);
+
+        $r9_7 = virtualinvoke $r11_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r10_2.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String,java.lang.Throwable)>($r9_7, $r3);
+
+        throw $r10_2;
+
+     label06:
+        $i2_3 = Phi($i2_1 #3, $i2_2 #4, $i2_2 #5, $i2_2 #6);
+
+        $z1_3 = Phi($z1 #3, $z1 #4, $z1_1 #5, $z1_2 #6);
+
+        $i1_2 = $i1_1 + 1;
+
+(7)     goto label04;
+
+     label07:
+        $i1_3 = Phi($i1 #0, $i1_1 #2);
+
+        $i2_4 = Phi($i2 #0, $i2_1 #2);
+
+        $r8_2 = Phi($r8 #0, $r8 #2);
+
+        $z1_4 = Phi($z1 #0, $z1 #2);
+
+        $r9_3 = Phi($r9 #0, $r9 #2);
+
+        $i1_4 = lengthof $r7;
+
+        $r9_4 = "identity";
+
+        $r12 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $z1_5 = virtualinvoke $r9_4.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r12);
+
+        if $z1_5 == 0 goto label08;
+
+        return -1L;
+
+     label08:
+(8)     if $i1_4 <= 0 goto label09;
+
+        $r9_5 = "chunked";
+
+        $i1_5 = $i1_4 + -1;
+
+        $r8_3 = $r7[$i1_5];
+
+        $r12_1 = interfaceinvoke $r8_3.<ch.boye.httpclientandroidlib.HeaderElement: java.lang.String getName()>();
+
+        $z1_6 = virtualinvoke $r9_5.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r12_1);
+
+(9)     if $z1_6 == 0 goto label09;
+
+        return -2L;
+
+     label09:
+        $i1_6 = Phi($i1_4 #8, $i1_5 #9);
+
+        $r12_2 = Phi($r12 #8, $r12_1 #9);
+
+        $r8_4 = Phi($r8_2 #8, $r8_3 #9);
+
+        $z1_7 = Phi($z1_5 #8, $z1_6 #9);
+
+        $r9_6 = Phi($r9_4 #8, $r9_5 #9);
+
+        if $z0 == 0 goto label10;
+
+        $r10_1 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        specialinvoke $r10_1.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>("Chunk-encoding must be the last one applied");
+
+        throw $r10_1;
+
+     label10:
+        return -1L;
+
+     label11:
+        $r6_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpMessage: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Content-Length");
+
+        if $r6_1 == null goto label18;
+
+        $l3 = -1L;
+
+        $r13 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpMessage: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Content-Length");
+
+(10)    if $z0 == 0 goto label12;
+
+        $i1_7 = lengthof $r13;
+
+(11)    if $i1_7 <= 1 goto label12;
+
+        $r10_3 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        specialinvoke $r10_3.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>("Multiple content length headers");
+
+        throw $r10_3;
+
+     label12:
+        $i1_8 = Phi($i1 #10, $i1_7 #11);
+
+        $i1_9 = lengthof $r13;
+
+(12)    $i1_10 = $i1_9 + -1;
+
+     label13:
+        $i1_11 = Phi($i1_10 #12, $i1_12 #18);
+
+        $r6_2 = Phi($r6_1 #12, $r6_3 #18);
+
+        $l3_1 = Phi($l3 #12, $l3_3 #18);
+
+        $r9_8 = Phi($r9 #12, $r9_10 #18);
+
+(13)    if $i1_11 < 0 goto label15;
+
+(14)    $r6_3 = $r13[$i1_11];
+
+     label14:
+(15)    $r9_9 = interfaceinvoke $r6_3.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+(16)    $l3_2 = staticinvoke <java.lang.Long: long parseLong(java.lang.String)>($r9_9);
+
+     label15:
+        $r6_4 = Phi($r6_2 #13, $r6_3 #16);
+
+        $l3_4 = Phi($l3_1 #13, $l3_2 #16);
+
+        $r9_13 = Phi($r9_8 #13, $r9_9 #16);
+
+        $b0 = $l3_4 cmp 0L;
+
+(17)    if $b0 >= 0 goto label19;
+
+        return -1L;
+
+     label16:
+        $r4 := @caughtexception;
+
+        $l3_3 = Phi($l3_1 #14, $l3_2 #16);
+
+        $r9_10 = Phi($r9_8 #14, $r9_9 #15);
+
+        if $z0 == 0 goto label17;
+
+        $r10_4 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        $r11_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r11_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_7 = virtualinvoke $r11_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Invalid content length: ");
+
+        $r9_11 = interfaceinvoke $r6_3.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $r11_8 = virtualinvoke $r11_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9_11);
+
+        $r9_12 = virtualinvoke $r11_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r10_4.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>($r9_12);
+
+        throw $r10_4;
+
+     label17:
+        $i1_12 = $i1_11 + -1;
+
+(18)    goto label13;
+
+     label18:
+        $i1_13 = $r0.<ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy: int implicitLen>;
+
+(19)    $l3_5 = (long) $i1_13;
+
+     label19:
+        $i1_14 = Phi($i1_11 #17, $i1_13 #19);
+
+        $r6_5 = Phi($r6_4 #17, $r6_1 #19);
+
+        $l3_6 = Phi($l3_4 #17, $l3_5 #19);
+
+        $r9_14 = Phi($r9_13 #17, $r9 #19);
+
+        return $l3_6;
+
+        catch ch.boye.httpclientandroidlib.ParseException from label02 to label03 with label05;
+        catch java.lang.NumberFormatException from label14 to label15 with label16;
+    }
+}

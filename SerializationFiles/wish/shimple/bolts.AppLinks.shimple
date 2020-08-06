@@ -1,0 +1,105 @@
+public final class bolts.AppLinks extends java.lang.Object
+{
+    static final java.lang.String KEY_NAME_APPLINK_DATA;
+    static final java.lang.String KEY_NAME_EXTRAS;
+    static final java.lang.String KEY_NAME_TARGET;
+
+    public void <init>()
+    {
+        bolts.AppLinks $r0;
+
+        $r0 := @this: bolts.AppLinks;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static android.os.Bundle getAppLinkData(android.content.Intent)
+    {
+        android.content.Intent $r0;
+        android.os.Bundle $r1;
+
+        $r0 := @parameter0: android.content.Intent;
+
+        $r1 = virtualinvoke $r0.<android.content.Intent: android.os.Bundle getBundleExtra(java.lang.String)>("al_applink_data");
+
+        return $r1;
+    }
+
+    public static android.os.Bundle getAppLinkExtras(android.content.Intent)
+    {
+        android.content.Intent $r0;
+        android.os.Bundle $r1, $r1_1;
+
+        $r0 := @parameter0: android.content.Intent;
+
+        $r1 = staticinvoke <bolts.AppLinks: android.os.Bundle getAppLinkData(android.content.Intent)>($r0);
+
+        if $r1 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1_1 = virtualinvoke $r1.<android.os.Bundle: android.os.Bundle getBundle(java.lang.String)>("extras");
+
+        return $r1_1;
+    }
+
+    public static android.net.Uri getTargetUrl(android.content.Intent)
+    {
+        android.content.Intent $r0;
+        android.os.Bundle $r1;
+        java.lang.String $r2;
+        android.net.Uri $r3, $r3_1;
+
+        $r0 := @parameter0: android.content.Intent;
+
+        $r1 = staticinvoke <bolts.AppLinks: android.os.Bundle getAppLinkData(android.content.Intent)>($r0);
+
+        if $r1 == null goto label1;
+
+        $r2 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("target_url");
+
+        if $r2 == null goto label1;
+
+        $r3 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r2);
+
+        return $r3;
+
+     label1:
+        $r3_1 = virtualinvoke $r0.<android.content.Intent: android.net.Uri getData()>();
+
+        return $r3_1;
+    }
+
+    public static android.net.Uri getTargetUrlFromInboundIntent(android.content.Context, android.content.Intent)
+    {
+        android.content.Context $r0;
+        android.content.Intent $r1;
+        android.os.Bundle $r2;
+        java.lang.String $r3;
+        android.net.Uri $r4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: android.content.Intent;
+
+        $r2 = staticinvoke <bolts.AppLinks: android.os.Bundle getAppLinkData(android.content.Intent)>($r1);
+
+        if $r2 == null goto label1;
+
+        $r3 = virtualinvoke $r2.<android.os.Bundle: java.lang.String getString(java.lang.String)>("target_url");
+
+        if $r3 == null goto label1;
+
+        staticinvoke <bolts.MeasurementEvent: void sendBroadcastEvent(android.content.Context,java.lang.String,android.content.Intent,java.util.Map)>($r0, "al_nav_in", $r1, null);
+
+        $r4 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r3);
+
+        return $r4;
+
+     label1:
+        return null;
+    }
+}

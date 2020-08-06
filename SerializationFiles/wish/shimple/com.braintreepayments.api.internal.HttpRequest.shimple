@@ -1,0 +1,849 @@
+public class com.braintreepayments.api.internal.HttpRequest extends java.lang.Object
+{
+    private static final java.lang.String AUTHORIZATION_FINGERPRINT_KEY;
+    public static boolean DEBUG;
+    private static final java.lang.String METHOD_GET;
+    private static final java.lang.String METHOD_POST;
+    public static final java.lang.String TAG;
+    private static final java.lang.String UTF_8;
+    private java.lang.String mAuthorizationFingerprint;
+    private java.lang.String mBaseUrl;
+    private int mConnectTimeout;
+
+    static void <clinit>()
+    {
+        <com.braintreepayments.api.internal.HttpRequest: boolean DEBUG> = 0;
+
+        return;
+    }
+
+    public void <init>(java.lang.String)
+    {
+        com.braintreepayments.api.internal.HttpRequest $r0;
+        java.lang.String $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.braintreepayments.api.internal.HttpRequest;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.braintreepayments.api.internal.HttpRequest: int mConnectTimeout> = 0;
+
+(0)     if $r1 != null goto label1;
+
+(1)     $r1_1 = "";
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $r0.<com.braintreepayments.api.internal.HttpRequest: java.lang.String mAuthorizationFingerprint> = $r1_2;
+
+        return;
+    }
+
+    private static javax.net.ssl.SSLSocketFactory getSslSocketFactory() throws com.braintreepayments.api.exceptions.BraintreeSslException
+    {
+        java.lang.Exception $r0;
+        com.braintreepayments.api.exceptions.BraintreeSslException $r1;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        java.security.KeyStore $r3;
+        java.security.cert.CertificateFactory $r4;
+        java.io.InputStream $r5;
+        java.util.Collection $r6;
+        java.util.Iterator $r7;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.Object $r8;
+        java.security.cert.Certificate $r9;
+        java.security.cert.X509Certificate $r10;
+        java.security.Principal $r11;
+        javax.net.ssl.TrustManagerFactory $r12;
+        javax.net.ssl.SSLContext $r13;
+        javax.net.ssl.TrustManager[] $r14;
+        javax.net.ssl.SSLSocketFactory $r15;
+
+     label01:
+(0)     $r2 = staticinvoke <java.security.KeyStore: java.lang.String getDefaultType()>();
+
+        $r3 = staticinvoke <java.security.KeyStore: java.security.KeyStore getInstance(java.lang.String)>($r2);
+
+        virtualinvoke $r3.<java.security.KeyStore: void load(java.io.InputStream,char[])>(null, null);
+
+        $r4 = staticinvoke <java.security.cert.CertificateFactory: java.security.cert.CertificateFactory getInstance(java.lang.String)>("X.509");
+
+        $r5 = staticinvoke <com.braintreepayments.api.internal.BraintreeGatewayCertificate: java.io.InputStream getCertInputStream()>();
+
+        $r6 = virtualinvoke $r4.<java.security.cert.CertificateFactory: java.util.Collection generateCertificates(java.io.InputStream)>($r5);
+
+(1)     $r7 = interfaceinvoke $r6.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label02:
+        $z0 = Phi($z0 #1, $z0_2 #3, $z0_2 #5);
+
+        $r2_1 = Phi($r2 #1, $r2_1 #3, $r2_2 #5);
+
+(2)     $z0_1 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+     label03:
+        if $z0_1 == 0 goto label09;
+
+     label04:
+        $r8 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r9 = (java.security.cert.Certificate) $r8;
+
+     label05:
+        $z0_2 = $r9 instanceof java.security.cert.X509Certificate;
+
+(3)     if $z0_2 == 0 goto label02;
+
+     label06:
+        $r10 = (java.security.cert.X509Certificate) $r9;
+
+        $r11 = virtualinvoke $r10.<java.security.cert.X509Certificate: java.security.Principal getSubjectDN()>();
+
+(4)     $r2_2 = interfaceinvoke $r11.<java.security.Principal: java.lang.String getName()>();
+
+        virtualinvoke $r3.<java.security.KeyStore: void setCertificateEntry(java.lang.String,java.security.cert.Certificate)>($r2_2, $r9);
+
+     label07:
+(5)     goto label02;
+
+     label08:
+        $r0 := @caughtexception;
+
+        $z0_3 = Phi($z0 #0, $z0_2 #3, $z0_1 #2);
+
+        $r2_4 = Phi($r2 #0, $r2_1 #2, $r2_2 #4, $r2_3 #6);
+
+        $r1 = new com.braintreepayments.api.exceptions.BraintreeSslException;
+
+        specialinvoke $r1.<com.braintreepayments.api.exceptions.BraintreeSslException: void <init>(java.lang.Exception)>($r0);
+
+        throw $r1;
+
+     label09:
+(6)     $r2_3 = staticinvoke <javax.net.ssl.TrustManagerFactory: java.lang.String getDefaultAlgorithm()>();
+
+        $r12 = staticinvoke <javax.net.ssl.TrustManagerFactory: javax.net.ssl.TrustManagerFactory getInstance(java.lang.String)>($r2_3);
+
+        virtualinvoke $r12.<javax.net.ssl.TrustManagerFactory: void init(java.security.KeyStore)>($r3);
+
+        $r13 = staticinvoke <javax.net.ssl.SSLContext: javax.net.ssl.SSLContext getInstance(java.lang.String)>("TLS");
+
+        $r14 = virtualinvoke $r12.<javax.net.ssl.TrustManagerFactory: javax.net.ssl.TrustManager[] getTrustManagers()>();
+
+        virtualinvoke $r13.<javax.net.ssl.SSLContext: void init(javax.net.ssl.KeyManager[],javax.net.ssl.TrustManager[],java.security.SecureRandom)>(null, $r14, null);
+
+        $r15 = virtualinvoke $r13.<javax.net.ssl.SSLContext: javax.net.ssl.SSLSocketFactory getSocketFactory()>();
+
+     label10:
+        return $r15;
+
+        catch java.lang.Exception from label01 to label03 with label08;
+        catch java.lang.Exception from label04 to label05 with label08;
+        catch java.lang.Exception from label06 to label07 with label08;
+        catch java.lang.Exception from label09 to label10 with label08;
+    }
+
+    public static java.lang.String getUserAgent()
+    {
+        return "braintree/android/1.6.5-paypal-browser-switch-3-SNAPSHOT";
+    }
+
+    private void log(java.lang.String)
+    {
+        com.braintreepayments.api.internal.HttpRequest $r0;
+        java.lang.String $r1;
+        boolean $z0;
+
+        $r0 := @this: com.braintreepayments.api.internal.HttpRequest;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = <com.braintreepayments.api.internal.HttpRequest: boolean DEBUG>;
+
+        if $z0 == 0 goto label1;
+
+     label1:
+        return;
+    }
+
+    private com.braintreepayments.api.internal.HttpResponse parseResponse(java.net.HttpURLConnection) throws com.braintreepayments.api.exceptions.ErrorWithResponse, java.io.IOException
+    {
+        com.braintreepayments.api.internal.HttpRequest $r0;
+        java.net.HttpURLConnection $r1;
+        com.braintreepayments.api.exceptions.UnexpectedException $r2;
+        com.braintreepayments.api.internal.HttpResponse $r3;
+        com.braintreepayments.api.exceptions.AuthenticationException $r4;
+        com.braintreepayments.api.exceptions.AuthorizationException $r5;
+        com.braintreepayments.api.exceptions.ErrorWithResponse $r6;
+        com.braintreepayments.api.exceptions.UpgradeRequiredException $r7;
+        com.braintreepayments.api.exceptions.ServerException $r8;
+        com.braintreepayments.api.exceptions.DownForMaintenanceException $r9;
+        int $i0;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8;
+        java.lang.String $r11, $r13, $r11_1, $r11_2, $r13_1;
+        java.io.InputStream $r12, $r12_1;
+
+        $r0 := @this: com.braintreepayments.api.internal.HttpRequest;
+
+        $r1 := @parameter0: java.net.HttpURLConnection;
+
+        $i0 = virtualinvoke $r1.<java.net.HttpURLConnection: int getResponseCode()>();
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Received response code: ");
+
+        $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r11 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: void log(java.lang.String)>($r11);
+
+        lookupswitch($i0)
+        {
+            case 200: goto label3;
+            case 201: goto label3;
+            case 202: goto label3;
+            case 401: goto label4;
+            case 403: goto label5;
+            case 422: goto label6;
+            case 426: goto label7;
+            case 500: goto label8;
+            case 503: goto label9;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        $r2 = new com.braintreepayments.api.exceptions.UnexpectedException;
+
+        specialinvoke $r2.<com.braintreepayments.api.exceptions.UnexpectedException: void <init>()>();
+
+        throw $r2;
+
+     label3:
+        $r12 = virtualinvoke $r1.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+        $r11_1 = specialinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: java.lang.String readStream(java.io.InputStream)>($r12);
+
+        $r10_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_4 = virtualinvoke $r10_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Received response body: ");
+
+        $r10_5 = virtualinvoke $r10_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r11_1);
+
+        $r13 = virtualinvoke $r10_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: void log(java.lang.String)>($r13);
+
+        $r3 = new com.braintreepayments.api.internal.HttpResponse;
+
+        specialinvoke $r3.<com.braintreepayments.api.internal.HttpResponse: void <init>(int,java.lang.String)>($i0, $r11_1);
+
+        return $r3;
+
+     label4:
+        $r4 = new com.braintreepayments.api.exceptions.AuthenticationException;
+
+        specialinvoke $r4.<com.braintreepayments.api.exceptions.AuthenticationException: void <init>()>();
+
+        throw $r4;
+
+     label5:
+        $r5 = new com.braintreepayments.api.exceptions.AuthorizationException;
+
+        specialinvoke $r5.<com.braintreepayments.api.exceptions.AuthorizationException: void <init>()>();
+
+        throw $r5;
+
+     label6:
+        $r12_1 = virtualinvoke $r1.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+        $r11_2 = specialinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: java.lang.String readStream(java.io.InputStream)>($r12_1);
+
+        $r10_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_7 = virtualinvoke $r10_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Received error response body: ");
+
+        $r10_8 = virtualinvoke $r10_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r11_2);
+
+        $r13_1 = virtualinvoke $r10_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: void log(java.lang.String)>($r13_1);
+
+        $r6 = new com.braintreepayments.api.exceptions.ErrorWithResponse;
+
+        specialinvoke $r6.<com.braintreepayments.api.exceptions.ErrorWithResponse: void <init>(int,java.lang.String)>($i0, $r11_2);
+
+        throw $r6;
+
+     label7:
+        $r7 = new com.braintreepayments.api.exceptions.UpgradeRequiredException;
+
+        specialinvoke $r7.<com.braintreepayments.api.exceptions.UpgradeRequiredException: void <init>()>();
+
+        throw $r7;
+
+     label8:
+        $r8 = new com.braintreepayments.api.exceptions.ServerException;
+
+        specialinvoke $r8.<com.braintreepayments.api.exceptions.ServerException: void <init>()>();
+
+        throw $r8;
+
+     label9:
+        $r9 = new com.braintreepayments.api.exceptions.DownForMaintenanceException;
+
+        specialinvoke $r9.<com.braintreepayments.api.exceptions.DownForMaintenanceException: void <init>()>();
+
+        throw $r9;
+    }
+
+    private java.lang.String readStream(java.io.InputStream) throws java.io.IOException
+    {
+        com.braintreepayments.api.internal.HttpRequest $r0;
+        java.io.InputStream $r1;
+        java.io.ByteArrayOutputStream $r2;
+        java.lang.String $r3;
+        byte[] $r4, $r4_1;
+        int $i0;
+
+        $r0 := @this: com.braintreepayments.api.internal.HttpRequest;
+
+        $r1 := @parameter0: java.io.InputStream;
+
+        $r2 = new java.io.ByteArrayOutputStream;
+
+        specialinvoke $r2.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        $r4 = newarray (byte)[1024];
+
+     label1:
+        $i0 = virtualinvoke $r1.<java.io.InputStream: int read(byte[])>($r4);
+
+        if $i0 == -1 goto label2;
+
+        virtualinvoke $r2.<java.io.ByteArrayOutputStream: void write(byte[],int,int)>($r4, 0, $i0);
+
+        goto label1;
+
+     label2:
+        $r3 = new java.lang.String;
+
+        $r4_1 = virtualinvoke $r2.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        specialinvoke $r3.<java.lang.String: void <init>(byte[],java.lang.String)>($r4_1, "UTF-8");
+
+        return $r3;
+    }
+
+    public com.braintreepayments.api.internal.HttpResponse get(java.lang.String) throws com.braintreepayments.api.exceptions.ErrorWithResponse, com.braintreepayments.api.exceptions.BraintreeException
+    {
+        com.braintreepayments.api.internal.HttpRequest $r0;
+        java.lang.String $r1, $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8;
+        com.braintreepayments.api.exceptions.BraintreeException $r2;
+        java.lang.Throwable $r3;
+        java.io.IOException $r4;
+        com.braintreepayments.api.exceptions.UnexpectedException $r5;
+        java.net.HttpURLConnection $r7, $r10, $r7_1, $r7_2, $r7_3, $r7_4;
+        boolean $z0;
+        android.net.Uri $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6;
+        android.net.Uri$Builder $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+        com.braintreepayments.api.internal.HttpResponse $r11;
+        java.lang.StringBuilder $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6;
+
+        $r0 := @this: com.braintreepayments.api.internal.HttpRequest;
+
+        $r6 := @parameter0: java.lang.String;
+
+(0)     $r7 = null;
+
+     label01:
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean startsWith(java.lang.String)>("http");
+
+     label02:
+        if $z0 == 0 goto label10;
+
+     label03:
+(1)     $r8 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r6);
+
+     label04:
+        $r8_1 = Phi($r8 #1, $r8_3 #13);
+
+        $r12 = Phi($r12 #1, $r12_3 #13);
+
+        $r6_1 = Phi($r6 #1, $r6_4 #13);
+
+(2)     $r9 = virtualinvoke $r8_1.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+     label05:
+(3)     $r6_2 = $r0.<com.braintreepayments.api.internal.HttpRequest: java.lang.String mAuthorizationFingerprint>;
+
+     label06:
+(4)     $r9_1 = virtualinvoke $r9.<android.net.Uri$Builder: android.net.Uri$Builder appendQueryParameter(java.lang.String,java.lang.String)>("authorizationFingerprint", $r6_2);
+
+(5)     $r8_2 = virtualinvoke $r9_1.<android.net.Uri$Builder: android.net.Uri build()>();
+
+(6)     $r6_3 = virtualinvoke $r8_2.<android.net.Uri: java.lang.String toString()>();
+
+        $r10 = virtualinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: java.net.HttpURLConnection init(java.lang.String)>($r6_3);
+
+     label07:
+(7)     $r7_1 = $r10;
+
+     label08:
+        virtualinvoke $r10.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("GET");
+
+        $r11 = specialinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: com.braintreepayments.api.internal.HttpResponse parseResponse(java.net.HttpURLConnection)>($r10);
+
+     label09:
+        if $r10 == null goto label21;
+
+        virtualinvoke $r10.<java.net.HttpURLConnection: void disconnect()>();
+
+        return $r11;
+
+     label10:
+(8)     $r12_1 = new java.lang.StringBuilder;
+
+     label11:
+        specialinvoke $r12_1.<java.lang.StringBuilder: void <init>()>();
+
+     label12:
+        $r1 = $r0.<com.braintreepayments.api.internal.HttpRequest: java.lang.String mBaseUrl>;
+
+     label13:
+(9)     $r12_2 = virtualinvoke $r12_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+(10)    $r12_3 = virtualinvoke $r12_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+(11)    $r6_4 = virtualinvoke $r12_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(12)    $r8_3 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r6_4);
+
+     label14:
+(13)    goto label04;
+
+     label15:
+        $r2 := @caughtexception;
+
+        $r9_2 = Phi($r9 #0, $r9_1 #4);
+
+        $r8_4 = Phi($r8 #0, $r8_1 #2, $r8_2 #5, $r8_3 #12);
+
+        $r12_4 = Phi($r12 #0, $r12_1 #8, $r12_2 #9, $r12_3 #10);
+
+        $r7_2 = Phi($r7 #0, $r7_1 #7);
+
+(14)    $r6_5 = Phi($r6 #0, $r6_1 #2, $r6_2 #3, $r6_3 #6, $r6_4 #11);
+
+     label16:
+        throw $r2;
+
+     label17:
+        $r3 := @caughtexception;
+
+        $r9_3 = Phi($r9 #0, $r9_1 #4, $r9_2 #14, $r9_4 #15);
+
+        $r8_5 = Phi($r8 #0, $r8_1 #2, $r8_2 #5, $r8_3 #12, $r8_4 #14, $r8_6 #15);
+
+        $r12_5 = Phi($r12 #0, $r12_1 #8, $r12_2 #9, $r12_3 #10, $r12_4 #14, $r12_6 #15);
+
+        $r7_3 = Phi($r7 #0, $r7_1 #7, $r7_2 #14, $r7_4 #15);
+
+        $r6_6 = Phi($r6 #0, $r6_1 #2, $r6_2 #3, $r6_3 #6, $r6_4 #11, $r6_5 #14, $r6_7 #15, $r6_8 #16);
+
+        if $r7_3 == null goto label18;
+
+        virtualinvoke $r7_3.<java.net.HttpURLConnection: void disconnect()>();
+
+     label18:
+        throw $r3;
+
+     label19:
+        $r4 := @caughtexception;
+
+        $r9_4 = Phi($r9 #0, $r9_1 #4);
+
+        $r8_6 = Phi($r8 #0, $r8_1 #2, $r8_2 #5, $r8_3 #12);
+
+        $r12_6 = Phi($r12 #0, $r12_1 #8, $r12_2 #9, $r12_3 #10);
+
+        $r7_4 = Phi($r7 #0, $r7_1 #7);
+
+(15)    $r6_7 = Phi($r6 #0, $r6_1 #2, $r6_2 #3, $r6_3 #6, $r6_4 #11);
+
+     label20:
+        $r5 = new com.braintreepayments.api.exceptions.UnexpectedException;
+
+(16)    $r6_8 = virtualinvoke $r4.<java.io.IOException: java.lang.String getMessage()>();
+
+        specialinvoke $r5.<com.braintreepayments.api.exceptions.UnexpectedException: void <init>(java.lang.String)>($r6_8);
+
+        throw $r5;
+
+     label21:
+        return $r11;
+
+        catch com.braintreepayments.api.exceptions.BraintreeException from label01 to label02 with label15;
+        catch java.io.IOException from label01 to label02 with label19;
+        catch java.lang.Throwable from label01 to label02 with label17;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label03 to label04 with label15;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label04 to label05 with label15;
+        catch java.io.IOException from label03 to label04 with label19;
+        catch java.io.IOException from label04 to label05 with label19;
+        catch java.lang.Throwable from label03 to label04 with label17;
+        catch java.lang.Throwable from label04 to label05 with label17;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label06 to label07 with label15;
+        catch java.io.IOException from label06 to label07 with label19;
+        catch java.lang.Throwable from label06 to label07 with label17;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label08 to label09 with label15;
+        catch java.io.IOException from label08 to label09 with label19;
+        catch java.lang.Throwable from label08 to label09 with label17;
+        catch java.lang.Throwable from label10 to label11 with label17;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label11 to label12 with label15;
+        catch java.io.IOException from label11 to label12 with label19;
+        catch java.lang.Throwable from label11 to label12 with label17;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label13 to label14 with label15;
+        catch java.io.IOException from label13 to label14 with label19;
+        catch java.lang.Throwable from label13 to label14 with label17;
+        catch java.lang.Throwable from label16 to label17 with label17;
+        catch java.lang.Throwable from label20 to label21 with label17;
+    }
+
+    protected java.net.HttpURLConnection init(java.lang.String) throws java.io.IOException
+    {
+        com.braintreepayments.api.internal.HttpRequest $r0;
+        java.net.URL $r1;
+        boolean $z0;
+        int $i0;
+        java.lang.String $r2, $r4, $r2_1, $r2_2;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2;
+        java.net.URLConnection $r5;
+        java.net.HttpURLConnection $r6;
+        javax.net.ssl.HttpsURLConnection $r7;
+        javax.net.ssl.SSLSocketFactory $r8;
+        java.util.Locale $r9;
+
+        $r0 := @this: com.braintreepayments.api.internal.HttpRequest;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Opening url: ");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r4 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: void log(java.lang.String)>($r4);
+
+        $r1 = new java.net.URL;
+
+        specialinvoke $r1.<java.net.URL: void <init>(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r1.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r6 = (java.net.HttpURLConnection) $r5;
+
+        $z0 = $r6 instanceof javax.net.ssl.HttpsURLConnection;
+
+        if $z0 == 0 goto label1;
+
+        $r7 = (javax.net.ssl.HttpsURLConnection) $r6;
+
+        $r8 = staticinvoke <com.braintreepayments.api.internal.HttpRequest: javax.net.ssl.SSLSocketFactory getSslSocketFactory()>();
+
+        virtualinvoke $r7.<javax.net.ssl.HttpsURLConnection: void setSSLSocketFactory(javax.net.ssl.SSLSocketFactory)>($r8);
+
+     label1:
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("Content-Type", "application/json");
+
+        $r2_1 = staticinvoke <com.braintreepayments.api.internal.HttpRequest: java.lang.String getUserAgent()>();
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("User-Agent", $r2_1);
+
+        $r9 = staticinvoke <java.util.Locale: java.util.Locale getDefault()>();
+
+        $r2_2 = virtualinvoke $r9.<java.util.Locale: java.lang.String getLanguage()>();
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("Accept-Language", $r2_2);
+
+        $i0 = $r0.<com.braintreepayments.api.internal.HttpRequest: int mConnectTimeout>;
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setConnectTimeout(int)>($i0);
+
+        return $r6;
+    }
+
+    public com.braintreepayments.api.internal.HttpResponse post(java.lang.String, java.lang.String) throws com.braintreepayments.api.exceptions.ErrorWithResponse, com.braintreepayments.api.exceptions.BraintreeException
+    {
+        com.braintreepayments.api.internal.HttpRequest $r0;
+        java.io.DataOutputStream $r1;
+        java.lang.String $r2, $r7, $r8, $r8_1, $r8_2, $r7_1, $r7_2, $r7_3, $r8_3, $r7_4, $r8_4, $r7_5, $r7_6, $r8_5, $r7_7, $r7_8, $r8_6;
+        com.braintreepayments.api.exceptions.BraintreeException $r3;
+        java.lang.Throwable $r4;
+        java.io.IOException $r5;
+        org.json.JSONException $r6;
+        java.net.HttpURLConnection $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7;
+        org.json.JSONObject $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5;
+        boolean $z0;
+        java.io.OutputStream $r11;
+        com.braintreepayments.api.internal.HttpResponse $r12;
+        java.lang.StringBuilder $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7;
+        com.braintreepayments.api.exceptions.UnexpectedException $r14, $r14_1, $r14_2;
+
+        $r0 := @this: com.braintreepayments.api.internal.HttpRequest;
+
+        $r7 := @parameter0: java.lang.String;
+
+        $r8 := @parameter1: java.lang.String;
+
+(0)     $r9 = null;
+
+     label01:
+(1)     $r10 = new org.json.JSONObject;
+
+     label02:
+        specialinvoke $r10.<org.json.JSONObject: void <init>(java.lang.String)>($r8);
+
+     label03:
+(2)     $r8_1 = $r0.<com.braintreepayments.api.internal.HttpRequest: java.lang.String mAuthorizationFingerprint>;
+
+     label04:
+(3)     $r10_1 = virtualinvoke $r10.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("authorizationFingerprint", $r8_1);
+
+(4)     $r8_2 = virtualinvoke $r10_1.<org.json.JSONObject: java.lang.String toString()>();
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean startsWith(java.lang.String)>("http");
+
+     label05:
+        if $z0 == 0 goto label11;
+
+     label06:
+(5)     $r9_1 = virtualinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: java.net.HttpURLConnection init(java.lang.String)>($r7);
+
+     label07:
+        $r7_1 = Phi($r7 #5, $r7_2 #12);
+
+        $r9_2 = Phi($r9_1 #5, $r9_3 #12);
+
+        $r13 = Phi($r13 #5, $r13_3 #12);
+
+(6)     virtualinvoke $r9_2.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("POST");
+
+        virtualinvoke $r9_2.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+     label08:
+        $r1 = new java.io.DataOutputStream;
+
+     label09:
+        $r11 = virtualinvoke $r9_2.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+        specialinvoke $r1.<java.io.DataOutputStream: void <init>(java.io.OutputStream)>($r11);
+
+        virtualinvoke $r1.<java.io.DataOutputStream: void writeBytes(java.lang.String)>($r8_2);
+
+        virtualinvoke $r1.<java.io.DataOutputStream: void flush()>();
+
+        virtualinvoke $r1.<java.io.DataOutputStream: void close()>();
+
+        $r12 = specialinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: com.braintreepayments.api.internal.HttpResponse parseResponse(java.net.HttpURLConnection)>($r9_2);
+
+     label10:
+        if $r9_2 == null goto label24;
+
+        virtualinvoke $r9_2.<java.net.HttpURLConnection: void disconnect()>();
+
+        return $r12;
+
+     label11:
+(7)     $r13_1 = new java.lang.StringBuilder;
+
+     label12:
+        specialinvoke $r13_1.<java.lang.StringBuilder: void <init>()>();
+
+     label13:
+        $r2 = $r0.<com.braintreepayments.api.internal.HttpRequest: java.lang.String mBaseUrl>;
+
+     label14:
+(8)     $r13_2 = virtualinvoke $r13_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+(9)     $r13_3 = virtualinvoke $r13_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+(10)    $r7_2 = virtualinvoke $r13_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(11)    $r9_3 = virtualinvoke $r0.<com.braintreepayments.api.internal.HttpRequest: java.net.HttpURLConnection init(java.lang.String)>($r7_2);
+
+     label15:
+(12)    goto label07;
+
+     label16:
+        $r3 := @caughtexception;
+
+        $r7_3 = Phi($r7 #1, $r7_1 #6, $r7_2 #10);
+
+        $r9_4 = Phi($r9 #1, $r9_1 #5, $r9_2 #6, $r9_3 #11);
+
+        $r8_3 = Phi($r8 #1, $r8_1 #2, $r8_2 #4);
+
+        $r13_4 = Phi($r13 #1, $r13_1 #7, $r13_2 #8, $r13_3 #9);
+
+(13)    $r10_2 = Phi($r10 #1, $r10_1 #3);
+
+     label17:
+        throw $r3;
+
+     label18:
+        $r4 := @caughtexception;
+
+        $r7_8 = Phi($r7 #0, $r7_1 #6, $r7_2 #10, $r7_3 #13, $r7_4 #14, $r7_5 #15, $r7_6 #16, $r7_7 #18);
+
+        $r9_7 = Phi($r9 #0, $r9_1 #5, $r9_2 #6, $r9_3 #11, $r9_4 #13, $r9_5 #14, $r9_6 #16);
+
+        $r8_6 = Phi($r8 #0, $r8_1 #2, $r8_2 #4, $r8_3 #13, $r8_4 #14, $r8_5 #16);
+
+        $r13_7 = Phi($r13 #0, $r13_1 #7, $r13_2 #8, $r13_3 #9, $r13_4 #13, $r13_5 #14, $r13_6 #16);
+
+        $r10_5 = Phi($r10 #0, $r10_1 #3, $r10_2 #13, $r10_3 #14, $r10_4 #16);
+
+        $r14_2 = Phi($r14 #0, $r14_1 #17);
+
+        if $r9_7 == null goto label19;
+
+        virtualinvoke $r9_7.<java.net.HttpURLConnection: void disconnect()>();
+
+     label19:
+        throw $r4;
+
+     label20:
+        $r5 := @caughtexception;
+
+        $r7_4 = Phi($r7 #1, $r7_1 #6, $r7_2 #10);
+
+        $r9_5 = Phi($r9 #1, $r9_1 #5, $r9_2 #6, $r9_3 #11);
+
+        $r8_4 = Phi($r8 #1, $r8_1 #2, $r8_2 #4);
+
+        $r13_5 = Phi($r13 #1, $r13_1 #7, $r13_2 #8, $r13_3 #9);
+
+(14)    $r10_3 = Phi($r10 #1, $r10_1 #3);
+
+     label21:
+        $r14 = new com.braintreepayments.api.exceptions.UnexpectedException;
+
+(15)    $r7_5 = virtualinvoke $r5.<java.io.IOException: java.lang.String getMessage()>();
+
+        specialinvoke $r14.<com.braintreepayments.api.exceptions.UnexpectedException: void <init>(java.lang.String)>($r7_5);
+
+        throw $r14;
+
+     label22:
+        $r6 := @caughtexception;
+
+        $r7_6 = Phi($r7 #1, $r7_1 #6, $r7_2 #10);
+
+        $r9_6 = Phi($r9 #1, $r9_1 #5, $r9_2 #6, $r9_3 #11);
+
+        $r8_5 = Phi($r8 #1, $r8_1 #2, $r8_2 #4);
+
+        $r13_6 = Phi($r13 #1, $r13_1 #7, $r13_2 #8, $r13_3 #9);
+
+(16)    $r10_4 = Phi($r10 #1, $r10_1 #3);
+
+     label23:
+(17)    $r14_1 = new com.braintreepayments.api.exceptions.UnexpectedException;
+
+(18)    $r7_7 = virtualinvoke $r6.<org.json.JSONException: java.lang.String getMessage()>();
+
+        specialinvoke $r14_1.<com.braintreepayments.api.exceptions.UnexpectedException: void <init>(java.lang.String)>($r7_7);
+
+        throw $r14_1;
+
+     label24:
+        return $r12;
+
+        catch java.lang.Throwable from label01 to label02 with label18;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label02 to label03 with label16;
+        catch java.io.IOException from label02 to label03 with label20;
+        catch org.json.JSONException from label02 to label03 with label22;
+        catch java.lang.Throwable from label02 to label03 with label18;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label04 to label05 with label16;
+        catch java.io.IOException from label04 to label05 with label20;
+        catch org.json.JSONException from label04 to label05 with label22;
+        catch java.lang.Throwable from label04 to label05 with label18;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label06 to label07 with label16;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label07 to label08 with label16;
+        catch java.io.IOException from label06 to label07 with label20;
+        catch java.io.IOException from label07 to label08 with label20;
+        catch org.json.JSONException from label06 to label07 with label22;
+        catch org.json.JSONException from label07 to label08 with label22;
+        catch java.lang.Throwable from label06 to label07 with label18;
+        catch java.lang.Throwable from label07 to label08 with label18;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label09 to label10 with label16;
+        catch java.io.IOException from label09 to label10 with label20;
+        catch org.json.JSONException from label09 to label10 with label22;
+        catch java.lang.Throwable from label09 to label10 with label18;
+        catch java.lang.Throwable from label11 to label12 with label18;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label12 to label13 with label16;
+        catch java.io.IOException from label12 to label13 with label20;
+        catch org.json.JSONException from label12 to label13 with label22;
+        catch java.lang.Throwable from label12 to label13 with label18;
+        catch com.braintreepayments.api.exceptions.BraintreeException from label14 to label15 with label16;
+        catch java.io.IOException from label14 to label15 with label20;
+        catch org.json.JSONException from label14 to label15 with label22;
+        catch java.lang.Throwable from label14 to label15 with label18;
+        catch java.lang.Throwable from label17 to label18 with label18;
+        catch java.lang.Throwable from label21 to label22 with label18;
+        catch java.lang.Throwable from label23 to label24 with label18;
+    }
+
+    public void setBaseUrl(java.lang.String)
+    {
+        com.braintreepayments.api.internal.HttpRequest $r0;
+        java.lang.String $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.braintreepayments.api.internal.HttpRequest;
+
+        $r1 := @parameter0: java.lang.String;
+
+(0)     if $r1 != null goto label1;
+
+(1)     $r1_1 = "";
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $r0.<com.braintreepayments.api.internal.HttpRequest: java.lang.String mBaseUrl> = $r1_2;
+
+        return;
+    }
+
+    protected void setConnectTimeout(int)
+    {
+        com.braintreepayments.api.internal.HttpRequest $r0;
+        int $i0;
+
+        $r0 := @this: com.braintreepayments.api.internal.HttpRequest;
+
+        $i0 := @parameter0: int;
+
+        $r0.<com.braintreepayments.api.internal.HttpRequest: int mConnectTimeout> = $i0;
+
+        return;
+    }
+}

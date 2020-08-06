@@ -1,0 +1,158 @@
+public class android.support.v4.util.Pools$SimplePool extends java.lang.Object implements android.support.v4.util.Pools$Pool
+{
+    private final java.lang.Object[] mPool;
+    private int mPoolSize;
+
+    public void <init>(int)
+    {
+        android.support.v4.util.Pools$SimplePool $r0;
+        int $i0;
+        java.lang.IllegalArgumentException $r1;
+        java.lang.Object[] $r2;
+
+        $r0 := @this: android.support.v4.util.Pools$SimplePool;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $i0 > 0 goto label1;
+
+        $r1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("The max pool size must be > 0");
+
+        throw $r1;
+
+     label1:
+        $r2 = newarray (java.lang.Object)[$i0];
+
+        $r0.<android.support.v4.util.Pools$SimplePool: java.lang.Object[] mPool> = $r2;
+
+        return;
+    }
+
+    private boolean isInPool(java.lang.Object)
+    {
+        android.support.v4.util.Pools$SimplePool $r0;
+        java.lang.Object $r1, $r3;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.lang.Object[] $r2;
+
+        $r0 := @this: android.support.v4.util.Pools$SimplePool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $i0 = $r0.<android.support.v4.util.Pools$SimplePool: int mPoolSize>;
+
+        if $i1_1 >= $i0 goto label3;
+
+        $r2 = $r0.<android.support.v4.util.Pools$SimplePool: java.lang.Object[] mPool>;
+
+        $r3 = $r2[$i1_1];
+
+        if $r3 != $r1 goto label2;
+
+        return 1;
+
+     label2:
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label3:
+        return 0;
+    }
+
+    public java.lang.Object acquire()
+    {
+        android.support.v4.util.Pools$SimplePool $r0;
+        java.lang.Object $r1;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4;
+        java.lang.Object[] $r2, $r2_1;
+
+        $r0 := @this: android.support.v4.util.Pools$SimplePool;
+
+        $i0 = $r0.<android.support.v4.util.Pools$SimplePool: int mPoolSize>;
+
+        if $i0 <= 0 goto label1;
+
+        $i0_1 = $r0.<android.support.v4.util.Pools$SimplePool: int mPoolSize>;
+
+        $i0_2 = $i0_1 + -1;
+
+        $r2 = $r0.<android.support.v4.util.Pools$SimplePool: java.lang.Object[] mPool>;
+
+        $r1 = $r2[$i0_2];
+
+        $r2_1 = $r0.<android.support.v4.util.Pools$SimplePool: java.lang.Object[] mPool>;
+
+        $r2_1[$i0_2] = null;
+
+        $i0_3 = $r0.<android.support.v4.util.Pools$SimplePool: int mPoolSize>;
+
+        $i0_4 = $i0_3 + -1;
+
+        $r0.<android.support.v4.util.Pools$SimplePool: int mPoolSize> = $i0_4;
+
+        return $r1;
+
+     label1:
+        return null;
+    }
+
+    public boolean release(java.lang.Object)
+    {
+        android.support.v4.util.Pools$SimplePool $r0;
+        java.lang.Object $r1;
+        java.lang.IllegalStateException $r2;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3;
+        boolean $z0;
+        java.lang.Object[] $r3, $r3_1;
+
+        $r0 := @this: android.support.v4.util.Pools$SimplePool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $z0 = specialinvoke $r0.<android.support.v4.util.Pools$SimplePool: boolean isInPool(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Already in the pool!");
+
+        throw $r2;
+
+     label1:
+        $i1 = $r0.<android.support.v4.util.Pools$SimplePool: int mPoolSize>;
+
+        $r3 = $r0.<android.support.v4.util.Pools$SimplePool: java.lang.Object[] mPool>;
+
+        $i0 = lengthof $r3;
+
+        if $i1 >= $i0 goto label2;
+
+        $r3_1 = $r0.<android.support.v4.util.Pools$SimplePool: java.lang.Object[] mPool>;
+
+        $i0_1 = $r0.<android.support.v4.util.Pools$SimplePool: int mPoolSize>;
+
+        $r3_1[$i0_1] = $r1;
+
+        $i0_2 = $r0.<android.support.v4.util.Pools$SimplePool: int mPoolSize>;
+
+        $i0_3 = $i0_2 + 1;
+
+        $r0.<android.support.v4.util.Pools$SimplePool: int mPoolSize> = $i0_3;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+}

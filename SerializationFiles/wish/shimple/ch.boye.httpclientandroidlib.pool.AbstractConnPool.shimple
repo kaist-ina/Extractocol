@@ -1,0 +1,1696 @@
+public abstract class ch.boye.httpclientandroidlib.pool.AbstractConnPool extends java.lang.Object implements ch.boye.httpclientandroidlib.pool.ConnPool, ch.boye.httpclientandroidlib.pool.ConnPoolControl
+{
+    private final java.util.LinkedList available;
+    private final ch.boye.httpclientandroidlib.pool.ConnFactory connFactory;
+    private volatile int defaultMaxPerRoute;
+    private volatile boolean isShutDown;
+    private final java.util.Set leased;
+    private final java.util.concurrent.locks.Lock lock;
+    private final java.util.Map maxPerRoute;
+    private volatile int maxTotal;
+    private final java.util.LinkedList pending;
+    private final java.util.Map routeToPool;
+
+    public void <init>(ch.boye.httpclientandroidlib.pool.ConnFactory, int, int)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        ch.boye.httpclientandroidlib.pool.ConnFactory $r1;
+        int $i0, $i1;
+        java.util.concurrent.locks.ReentrantLock $r2;
+        java.util.HashSet $r3;
+        java.lang.IllegalArgumentException $r4, $r4_1, $r4_2;
+        java.util.HashMap $r5, $r5_1;
+        java.util.LinkedList $r6, $r6_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.pool.ConnFactory;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Connection factory may not null");
+
+        throw $r4;
+
+     label1:
+        if $i0 > 0 goto label2;
+
+        $r4_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Max per route value may not be negative or zero");
+
+        throw $r4_1;
+
+     label2:
+        if $i1 > 0 goto label3;
+
+        $r4_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Max total value may not be negative or zero");
+
+        throw $r4_2;
+
+     label3:
+        $r2 = new java.util.concurrent.locks.ReentrantLock;
+
+        specialinvoke $r2.<java.util.concurrent.locks.ReentrantLock: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock> = $r2;
+
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: ch.boye.httpclientandroidlib.pool.ConnFactory connFactory> = $r1;
+
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Map routeToPool> = $r5;
+
+        $r3 = new java.util.HashSet;
+
+        specialinvoke $r3.<java.util.HashSet: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Set leased> = $r3;
+
+        $r6 = new java.util.LinkedList;
+
+        specialinvoke $r6.<java.util.LinkedList: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available> = $r6;
+
+        $r6_1 = new java.util.LinkedList;
+
+        specialinvoke $r6_1.<java.util.LinkedList: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList pending> = $r6_1;
+
+        $r5_1 = new java.util.HashMap;
+
+        specialinvoke $r5_1.<java.util.HashMap: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Map maxPerRoute> = $r5_1;
+
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int defaultMaxPerRoute> = $i0;
+
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int maxTotal> = $i1;
+
+        return;
+    }
+
+    static ch.boye.httpclientandroidlib.pool.PoolEntry access$000(ch.boye.httpclientandroidlib.pool.AbstractConnPool, java.lang.Object, java.lang.Object, long, java.util.concurrent.TimeUnit, ch.boye.httpclientandroidlib.pool.PoolEntryFuture) throws java.io.IOException, java.lang.InterruptedException, java.util.concurrent.TimeoutException
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Object $r1, $r2;
+        long $l0;
+        java.util.concurrent.TimeUnit $r3;
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r4;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r5;
+
+        $r0 := @parameter0: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter1: java.lang.Object;
+
+        $r2 := @parameter2: java.lang.Object;
+
+        $l0 := @parameter3: long;
+
+        $r3 := @parameter4: java.util.concurrent.TimeUnit;
+
+        $r4 := @parameter5: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        $r5 = specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: ch.boye.httpclientandroidlib.pool.PoolEntry getPoolEntryBlocking(java.lang.Object,java.lang.Object,long,java.util.concurrent.TimeUnit,ch.boye.httpclientandroidlib.pool.PoolEntryFuture)>($r1, $r2, $l0, $r3, $r4);
+
+        return $r5;
+    }
+
+    private int getMax(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.util.Map $r1;
+        java.lang.Object $r2, $r2_1;
+        java.lang.Integer $r3;
+        int $i0, $i0_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r2 := @parameter0: java.lang.Object;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Map maxPerRoute>;
+
+        $r2_1 = interfaceinvoke $r1.<java.util.Map: java.lang.Object get(java.lang.Object)>($r2);
+
+        $r3 = (java.lang.Integer) $r2_1;
+
+        if $r3 == null goto label1;
+
+        $i0 = virtualinvoke $r3.<java.lang.Integer: int intValue()>();
+
+        return $i0;
+
+     label1:
+        $i0_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int defaultMaxPerRoute>;
+
+        return $i0_1;
+    }
+
+    private ch.boye.httpclientandroidlib.pool.RouteSpecificPool getPool(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Object $r1, $r3;
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool$1 $r2;
+        java.util.Map $r4, $r4_1;
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Map routeToPool>;
+
+        $r3 = interfaceinvoke $r4.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r5 = (ch.boye.httpclientandroidlib.pool.RouteSpecificPool) $r3;
+
+        if $r5 != null goto label1;
+
+        $r2 = new ch.boye.httpclientandroidlib.pool.AbstractConnPool$1;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.pool.AbstractConnPool$1: void <init>(ch.boye.httpclientandroidlib.pool.AbstractConnPool,java.lang.Object,java.lang.Object)>($r0, $r1, $r1);
+
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Map routeToPool>;
+
+        interfaceinvoke $r4_1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+        return $r2;
+
+     label1:
+        return $r5;
+    }
+
+    private ch.boye.httpclientandroidlib.pool.PoolEntry getPoolEntryBlocking(java.lang.Object, java.lang.Object, long, java.util.concurrent.TimeUnit, ch.boye.httpclientandroidlib.pool.PoolEntryFuture) throws java.io.IOException, java.lang.InterruptedException, java.util.concurrent.TimeoutException
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.util.concurrent.TimeUnit $r1;
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r2;
+        java.lang.IllegalStateException $r3;
+        java.lang.Throwable $r4, $r6;
+        java.util.concurrent.TimeoutException $r5;
+        java.lang.Object $r7, $r8, $r8_1, $r8_2, $r8_3, $r7_1, $r7_2, $r8_4;
+        long $l0, $l2, $l0_1, $l0_2, $l2_1, $l0_3, $l2_2, $l0_4, $l0_5, $l0_6, $l0_7, $l0_8, $l0_9, $l2_3, $l2_4, $l0_10, $l2_5, $l0_11;
+        java.util.Date $r9, $r9_1, $r9_2;
+        byte $b1, $b1_1, $b1_2, $b1_3, $b1_4;
+        java.util.concurrent.locks.Lock $r10, $r10_1, $r10_2, $r10_3;
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r11, $r16;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r12, $r14, $r12_1, $r12_2, $r14_1, $r14_2, $r12_3, $r14_3, $r14_4, $r14_5, $r12_4, $r12_5, $r12_6, $r12_7, $r14_6, $r12_8, $r14_7;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11, $z0_12;
+        java.util.LinkedList $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7, $r13_8, $r13_9, $r13_10, $r13_11, $r13_12, $r13_13, $r13_14, $r13_15, $r13_16;
+        java.util.Set $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6, $r15_7;
+        int $i3, $i4, $i5, $i3_1, $i4_1, $i4_2, $i4_3, $i4_4, $i5_1, $i5_2, $i5_3, $i5_4, $i4_5, $i3_2, $i4_6, $i3_3, $i4_7, $i3_4, $i4_8, $i4_9, $i3_5, $i4_10, $i3_6, $i4_11, $i5_5, $i3_7, $i4_12, $i5_6, $i3_8;
+        ch.boye.httpclientandroidlib.pool.ConnFactory $r17;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r7 := @parameter0: java.lang.Object;
+
+        $r8 := @parameter1: java.lang.Object;
+
+        $l0 := @parameter2: long;
+
+        $r1 := @parameter3: java.util.concurrent.TimeUnit;
+
+        $r2 := @parameter4: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        $r9 = null;
+
+        $b1 = $l0 cmp 0L;
+
+(0)     if $b1 <= 0 goto label01;
+
+        $r9_1 = new java.util.Date;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l0_1 = virtualinvoke $r1.<java.util.concurrent.TimeUnit: long toMillis(long)>($l0);
+
+        $l0_2 = $l2 + $l0_1;
+
+(1)     specialinvoke $r9_1.<java.util.Date: void <init>(long)>($l0_2);
+
+     label01:
+        $l2_1 = Phi($l2 #0, $l2 #1);
+
+        $l0_3 = Phi($l0 #0, $l0_2 #1);
+
+        $r9_2 = Phi($r9 #0, $r9_1 #1);
+
+        $r10 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+(2)     interfaceinvoke $r10.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label02:
+        $r11 = specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: ch.boye.httpclientandroidlib.pool.RouteSpecificPool getPool(java.lang.Object)>($r7);
+
+     label03:
+(3)     $r12 = null;
+
+     label04:
+        $i4 = Phi($i4 #3, $i4_9 #58, $i4_9 #59, $i4_9 #62);
+
+        $r13 = Phi($r13 #3, $r13_12 #58, $r13_12 #59, $r13_12 #62);
+
+        $r12_1 = Phi($r12 #3, $r12_3 #58, $r12_3 #59, $r12_3 #62);
+
+        $i5 = Phi($i5 #3, $i5_4 #58, $i5_4 #59, $i5_4 #62);
+
+        $i3 = Phi($i3 #3, $i3_5 #58, $i3_5 #59, $i3_5 #62);
+
+        $z0 = Phi($z0 #3, $z0_9 #58, $z0_9 #59, $z0_9 #62);
+
+        $l2_2 = Phi($l2_1 #3, $l2_2 #58, $l2_2 #59, $l2_3 #62);
+
+        $r15 = Phi($r15 #3, $r15_4 #58, $r15_4 #59, $r15_4 #62);
+
+        $b1_1 = Phi($b1 #3, $b1_1 #58, $b1_1 #59, $b1_2 #62);
+
+        $l0_4 = Phi($l0_3 #3, $l0_8 #58, $l0_8 #59, $l0_9 #62);
+
+        $r14 = Phi($r14 #3, $r14_5 #58, $r14_5 #59, $r14_5 #62);
+
+(4)     if $r12_1 != null goto label46;
+
+     label05:
+(5)     $z0_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: boolean isShutDown>;
+
+     label06:
+(6)     if $z0_1 == 0 goto label14;
+
+     label07:
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Connection pool shut down");
+
+        throw $r3;
+
+     label08:
+        $r4 := @caughtexception;
+
+        $i4_12 = Phi($i4 #2, $i4_1 #21, $i4_3 #22, $i4_4 #23, $i4_5 #29, $i4_6 #33, $i4_7 #35, $i4_8 #39, $i4_9 #56, $i4_11 #63, $i4_10 #64);
+
+        $r7_2 = Phi($r7 #2, $r7_1 #49);
+
+        $r13_16 = Phi($r13 #2, $r13_2 #13, $r13_1 #15, $r13_3 #18, $r13_4 #26, $r13_6 #29, $r13_7 #37, $r13_8 #40, $r13_9 #43, $r13_10 #48, $r13_5 #52, $r13_11 #56, $r13_12 #57, $r13_15 #63, $r13_13 #64, $r13_14 #65);
+
+        $r12_8 = Phi($r12 #2, $r12_1 #4, $r12_3 #16, $r12_2 #15, $r12_4 #45, $r12_5 #48, $r12_6 #50, $r12_7 #63);
+
+        $i5_6 = Phi($i5 #2, $i5_2 #26, $i5_4 #29, $i5_5 #63);
+
+        $i3_8 = Phi($i3 #2, $i3_1 #20, $i3_2 #32, $i3_3 #34, $i3_4 #38, $i3_5 #56, $i3_7 #63, $i3_6 #64);
+
+        $z0_12 = Phi($z0 #2, $z0_1 #5, $z0_3 #7, $z0_4 #10, $z0_5 #12, $z0_2 #15, $z0_6 #17, $z0_7 #41, $z0_8 #48, $z0_9 #56, $z0_11 #63, $z0_10 #64);
+
+        $l2_5 = Phi($l2_1 #2, $l2_2 #4, $l2_3 #61, $l2_4 #63);
+
+        $r15_7 = Phi($r15 #2, $r15_1 #19, $r15_2 #31, $r15_3 #51, $r15_4 #56, $r15_6 #63, $r15_5 #64);
+
+        $r8_4 = Phi($r8 #2, $r8_1 #44, $r8_2 #46, $r8_3 #48);
+
+        $b1_4 = Phi($b1 #2, $b1_1 #4, $b1_2 #62, $b1_3 #63);
+
+        $l0_11 = Phi($l0_3 #2, $l0_4 #4, $l0_6 #9, $l0_7 #12, $l0_5 #15, $l0_8 #17, $l0_9 #60, $l0_10 #63);
+
+        $r14_7 = Phi($r14 #2, $r14_2 #15, $r14_3 #26, $r14_4 #27, $r14_5 #29, $r14_6 #63);
+
+        $r10_3 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r10_3.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r4;
+
+     label09:
+(7)     $z0_3 = virtualinvoke $r14_2.<ch.boye.httpclientandroidlib.pool.PoolEntry: boolean isClosed()>();
+
+     label10:
+(8)     if $z0_3 != 0 goto label13;
+
+     label11:
+(9)     $l0_6 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+(10)    $z0_4 = virtualinvoke $r14_2.<ch.boye.httpclientandroidlib.pool.PoolEntry: boolean isExpired(long)>($l0_6);
+
+     label12:
+(11)    if $z0_4 == 0 goto label16;
+
+     label13:
+        $z0_5 = Phi($z0_3 #8, $z0_4 #11);
+
+        $l0_7 = Phi($l0_5 #8, $l0_6 #11);
+
+(12)    virtualinvoke $r14_2.<ch.boye.httpclientandroidlib.pool.PoolEntry: void close()>();
+
+(13)    $r13_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+        virtualinvoke $r13_2.<java.util.LinkedList: boolean remove(java.lang.Object)>($r14_2);
+
+(14)    virtualinvoke $r11.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: void free(ch.boye.httpclientandroidlib.pool.PoolEntry,boolean)>($r14_2, 0);
+
+     label14:
+        $r13_1 = Phi($r13 #6, $r13_2 #14);
+
+        $r12_2 = Phi($r12_1 #6, $r12_3 #14);
+
+        $z0_2 = Phi($z0_1 #6, $z0_5 #14);
+
+        $l0_5 = Phi($l0_4 #6, $l0_7 #14);
+
+        $r14_1 = Phi($r14 #6, $r14_2 #14);
+
+(15)    $r14_2 = virtualinvoke $r11.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: ch.boye.httpclientandroidlib.pool.PoolEntry getFree(java.lang.Object)>($r8);
+
+     label15:
+        $r12_3 = $r14_2;
+
+(16)    if $r14_2 != null goto label09;
+
+     label16:
+        $z0_6 = Phi($z0_4 #11, $z0_2 #16);
+
+        $l0_8 = Phi($l0_6 #11, $l0_5 #16);
+
+(17)    if $r14_2 == null goto label19;
+
+     label17:
+(18)    $r13_3 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+        virtualinvoke $r13_3.<java.util.LinkedList: boolean remove(java.lang.Object)>($r14_2);
+
+(19)    $r15_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Set leased>;
+
+        interfaceinvoke $r15_1.<java.util.Set: boolean add(java.lang.Object)>($r14_2);
+
+     label18:
+        $r10_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r10_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return $r14_2;
+
+     label19:
+(20)    $i3_1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int getMax(java.lang.Object)>($r7);
+
+(21)    $i4_1 = virtualinvoke $r11.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: int getAllocatedCount()>();
+
+     label20:
+        $i4_2 = $i4_1 + 1;
+
+(22)    $i4_3 = $i4_2 - $i3_1;
+
+     label21:
+(23)    $i4_4 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i4_3);
+
+     label22:
+(24)    if $i4_4 <= 0 goto label26;
+
+(25)    $i5_1 = 0;
+
+     label23:
+        $r13_4 = Phi($r13_1 #25, $r13_5 #53);
+
+        $i5_2 = Phi($i5_1 #25, $i5_3 #53);
+
+        $r14_3 = Phi($r14_2 #25, $r14_4 #53);
+
+(26)    if $i5_2 >= $i4_4 goto label26;
+
+     label24:
+(27)    $r14_4 = virtualinvoke $r11.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: ch.boye.httpclientandroidlib.pool.PoolEntry getLastUsed()>();
+
+     label25:
+(28)    if $r14_4 != null goto label39;
+
+     label26:
+        $r13_6 = Phi($r13_1 #24, $r13_4 #26, $r13_4 #28);
+
+        $i5_4 = Phi($i5 #24, $i5_2 #26, $i5_2 #28);
+
+        $r14_5 = Phi($r14_2 #24, $r14_3 #26, $r14_4 #28);
+
+(29)    $i4_5 = virtualinvoke $r11.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: int getAllocatedCount()>();
+
+     label27:
+(30)    if $i4_5 >= $i3_1 goto label41;
+
+     label28:
+(31)    $r15_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Set leased>;
+
+(32)    $i3_2 = interfaceinvoke $r15_2.<java.util.Set: int size()>();
+
+(33)    $i4_6 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int maxTotal>;
+
+     label29:
+(34)    $i3_3 = $i4_6 - $i3_2;
+
+     label30:
+(35)    $i4_7 = staticinvoke <java.lang.Math: int max(int,int)>($i3_3, 0);
+
+     label31:
+(36)    if $i4_7 <= 0 goto label41;
+
+     label32:
+(37)    $r13_7 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+(38)    $i3_4 = virtualinvoke $r13_7.<java.util.LinkedList: int size()>();
+
+     label33:
+        $i4_8 = $i4_7 + -1;
+
+(39)    if $i3_4 <= $i4_8 goto label37;
+
+     label34:
+(40)    $r13_8 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+(41)    $z0_7 = virtualinvoke $r13_8.<java.util.LinkedList: boolean isEmpty()>();
+
+     label35:
+(42)    if $z0_7 != 0 goto label37;
+
+     label36:
+(43)    $r13_9 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+(44)    $r8_1 = virtualinvoke $r13_9.<java.util.LinkedList: java.lang.Object removeLast()>();
+
+(45)    $r12_4 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r8_1;
+
+        virtualinvoke $r12_4.<ch.boye.httpclientandroidlib.pool.PoolEntry: void close()>();
+
+(46)    $r8_2 = virtualinvoke $r12_4.<ch.boye.httpclientandroidlib.pool.PoolEntry: java.lang.Object getRoute()>();
+
+        $r16 = specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: ch.boye.httpclientandroidlib.pool.RouteSpecificPool getPool(java.lang.Object)>($r8_2);
+
+(47)    virtualinvoke $r16.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: boolean remove(ch.boye.httpclientandroidlib.pool.PoolEntry)>($r12_4);
+
+     label37:
+        $r13_10 = Phi($r13_7 #39, $r13_8 #42, $r13_9 #47);
+
+        $r12_5 = Phi($r12_3 #39, $r12_3 #42, $r12_4 #47);
+
+        $z0_8 = Phi($z0_6 #39, $z0_7 #42, $z0_7 #47);
+
+        $r8_3 = Phi($r8 #39, $r8 #42, $r8_2 #47);
+
+(48)    $r17 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: ch.boye.httpclientandroidlib.pool.ConnFactory connFactory>;
+
+(49)    $r7_1 = interfaceinvoke $r17.<ch.boye.httpclientandroidlib.pool.ConnFactory: java.lang.Object create(java.lang.Object)>($r7);
+
+(50)    $r12_6 = virtualinvoke $r11.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: ch.boye.httpclientandroidlib.pool.PoolEntry add(java.lang.Object)>($r7_1);
+
+(51)    $r15_3 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Set leased>;
+
+        interfaceinvoke $r15_3.<java.util.Set: boolean add(java.lang.Object)>($r12_6);
+
+     label38:
+        $r10_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r10_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return $r12_6;
+
+     label39:
+        virtualinvoke $r14_4.<ch.boye.httpclientandroidlib.pool.PoolEntry: void close()>();
+
+(52)    $r13_5 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+        virtualinvoke $r13_5.<java.util.LinkedList: boolean remove(java.lang.Object)>($r14_4);
+
+        virtualinvoke $r11.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: boolean remove(ch.boye.httpclientandroidlib.pool.PoolEntry)>($r14_4);
+
+     label40:
+        $i5_3 = $i5_2 + 1;
+
+(53)    goto label23;
+
+     label41:
+        $i4_9 = Phi($i4_5 #30, $i4_7 #36);
+
+        $i3_5 = Phi($i3_1 #30, $i3_3 #36);
+
+        $r15_4 = Phi($r15 #30, $r15_2 #36);
+
+(54)    virtualinvoke $r11.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: void queue(ch.boye.httpclientandroidlib.pool.PoolEntryFuture)>($r2);
+
+(55)    $r13_11 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList pending>;
+
+        virtualinvoke $r13_11.<java.util.LinkedList: boolean add(java.lang.Object)>($r2);
+
+(56)    $z0_9 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean await(java.util.Date)>($r9_2);
+
+     label42:
+        virtualinvoke $r11.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: void unqueue(ch.boye.httpclientandroidlib.pool.PoolEntryFuture)>($r2);
+
+(57)    $r13_12 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList pending>;
+
+        virtualinvoke $r13_12.<java.util.LinkedList: boolean remove(java.lang.Object)>($r2);
+
+     label43:
+(58)    if $z0_9 != 0 goto label04;
+
+(59)    if $r9_2 == null goto label04;
+
+     label44:
+(60)    $l0_9 = virtualinvoke $r9_2.<java.util.Date: long getTime()>();
+
+(61)    $l2_3 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+     label45:
+        $b1_2 = $l0_9 cmp $l2_3;
+
+(62)    if $b1_2 > 0 goto label04;
+
+     label46:
+        $i4_11 = Phi($i4 #4, $i4_9 #62);
+
+        $r13_15 = Phi($r13 #4, $r13_12 #62);
+
+        $r12_7 = Phi($r12_1 #4, $r12_3 #62);
+
+        $i5_5 = Phi($i5 #4, $i5_4 #62);
+
+        $i3_7 = Phi($i3 #4, $i3_5 #62);
+
+        $z0_11 = Phi($z0 #4, $z0_9 #62);
+
+        $l2_4 = Phi($l2_2 #4, $l2_3 #62);
+
+        $r15_6 = Phi($r15 #4, $r15_4 #62);
+
+        $b1_3 = Phi($b1_1 #4, $b1_2 #62);
+
+        $l0_10 = Phi($l0_4 #4, $l0_9 #62);
+
+        $r14_6 = Phi($r14 #4, $r14_5 #62);
+
+(63)    $r5 = new java.util.concurrent.TimeoutException;
+
+        specialinvoke $r5.<java.util.concurrent.TimeoutException: void <init>(java.lang.String)>("Timeout waiting for connection");
+
+        throw $r5;
+
+     label47:
+        $r6 := @caughtexception;
+
+        $i4_10 = Phi($i4_5 #30, $i4_7 #36, $i4_9 #54);
+
+        $r13_13 = Phi($r13_6 #30, $r13_11 #55);
+
+        $i3_6 = Phi($i3_1 #30, $i3_3 #36, $i3_5 #54);
+
+        $z0_10 = Phi($z0_6 #30, $z0_9 #56);
+
+(64)    $r15_5 = Phi($r15 #30, $r15_2 #36, $r15_4 #54);
+
+     label48:
+        virtualinvoke $r11.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: void unqueue(ch.boye.httpclientandroidlib.pool.PoolEntryFuture)>($r2);
+
+(65)    $r13_14 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList pending>;
+
+        virtualinvoke $r13_14.<java.util.LinkedList: boolean remove(java.lang.Object)>($r2);
+
+        throw $r6;
+
+     label49:
+        nop;
+
+        catch java.lang.Throwable from label02 to label03 with label08;
+        catch java.lang.Throwable from label05 to label06 with label08;
+        catch java.lang.Throwable from label07 to label08 with label08;
+        catch java.lang.Throwable from label09 to label10 with label08;
+        catch java.lang.Throwable from label11 to label12 with label08;
+        catch java.lang.Throwable from label13 to label15 with label08;
+        catch java.lang.Throwable from label17 to label18 with label08;
+        catch java.lang.Throwable from label19 to label20 with label08;
+        catch java.lang.Throwable from label21 to label22 with label08;
+        catch java.lang.Throwable from label24 to label25 with label08;
+        catch java.lang.Throwable from label26 to label27 with label08;
+        catch java.lang.Throwable from label28 to label29 with label08;
+        catch java.lang.Throwable from label30 to label31 with label08;
+        catch java.lang.Throwable from label32 to label33 with label08;
+        catch java.lang.Throwable from label34 to label35 with label08;
+        catch java.lang.Throwable from label36 to label38 with label08;
+        catch java.lang.Throwable from label39 to label40 with label08;
+        catch java.lang.Throwable from label41 to label42 with label47;
+        catch java.lang.Throwable from label42 to label43 with label08;
+        catch java.lang.Throwable from label44 to label45 with label08;
+        catch java.lang.Throwable from label46 to label47 with label08;
+        catch java.lang.Throwable from label48 to label49 with label08;
+    }
+
+    private void notifyPending(ch.boye.httpclientandroidlib.pool.RouteSpecificPool)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r1;
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r2, $r3, $r3_1, $r3_2;
+        java.util.LinkedList $r4, $r4_1, $r4_2;
+        java.lang.Object $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r2 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: ch.boye.httpclientandroidlib.pool.PoolEntryFuture nextPending()>();
+
+        $r3 = $r2;
+
+        if $r2 == null goto label2;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList pending>;
+
+(0)     virtualinvoke $r4.<java.util.LinkedList: boolean remove(java.lang.Object)>($r2);
+
+     label1:
+        $r4_1 = Phi($r4 #0, $r4_2 #1);
+
+        $r3_1 = Phi($r3 #0, $r3_2 #1);
+
+        if $r3_1 == null goto label3;
+
+        virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: void wakeup()>();
+
+        return;
+
+     label2:
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList pending>;
+
+        $r5 = virtualinvoke $r4_2.<java.util.LinkedList: java.lang.Object poll()>();
+
+        $r3_2 = (ch.boye.httpclientandroidlib.pool.PoolEntryFuture) $r5;
+
+(1)     goto label1;
+
+     label3:
+        return;
+    }
+
+    public void closeExpired()
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.util.LinkedList $r1;
+        java.lang.Throwable $r2;
+        long $l0;
+        java.util.concurrent.locks.Lock $r3, $r3_1, $r3_2;
+        java.util.Iterator $r4;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.Object $r5, $r5_1, $r5_2, $r5_3;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r6;
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+(0)     interfaceinvoke $r3.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label1:
+        $r1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+(1)     $r4 = virtualinvoke $r1.<java.util.LinkedList: java.util.Iterator iterator()>();
+
+     label2:
+        $r5 = Phi($r5 #1, $r5_1 #5, $r5_2 #7);
+
+        $z0 = Phi($z0 #1, $z0_2 #5, $z0_2 #7);
+
+(2)     $z0_1 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+     label3:
+        if $z0_1 == 0 goto label9;
+
+     label4:
+(3)     $r5_1 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r5_1;
+
+(4)     $z0_2 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.pool.PoolEntry: boolean isExpired(long)>($l0);
+
+     label5:
+(5)     if $z0_2 == 0 goto label2;
+
+     label6:
+        virtualinvoke $r6.<ch.boye.httpclientandroidlib.pool.PoolEntry: void close()>();
+
+(6)     $r5_2 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.pool.PoolEntry: java.lang.Object getRoute()>();
+
+        $r7 = specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: ch.boye.httpclientandroidlib.pool.RouteSpecificPool getPool(java.lang.Object)>($r5_2);
+
+        virtualinvoke $r7.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: boolean remove(ch.boye.httpclientandroidlib.pool.PoolEntry)>($r6);
+
+        interfaceinvoke $r4.<java.util.Iterator: void remove()>();
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: void notifyPending(ch.boye.httpclientandroidlib.pool.RouteSpecificPool)>($r7);
+
+     label7:
+(7)     goto label2;
+
+     label8:
+        $r2 := @caughtexception;
+
+        $r5_3 = Phi($r5 #0, $r5_1 #3, $r5_2 #6);
+
+        $z0_3 = Phi($z0 #0, $z0_1 #2, $z0_2 #4);
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r2;
+
+     label9:
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label8;
+        catch java.lang.Throwable from label4 to label5 with label8;
+        catch java.lang.Throwable from label6 to label7 with label8;
+    }
+
+    public void closeIdle(long, java.util.concurrent.TimeUnit)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.util.concurrent.TimeUnit $r1;
+        java.lang.IllegalArgumentException $r2;
+        java.util.LinkedList $r3;
+        java.lang.Throwable $r4;
+        long $l0, $l1, $l0_1, $l0_2, $l0_3, $l1_1, $l0_4, $l1_2, $l1_3, $l1_4;
+        byte $b2, $b2_1, $b2_2, $b2_3;
+        java.util.concurrent.locks.Lock $r5, $r5_1, $r5_2;
+        java.util.Iterator $r6;
+        boolean $z0;
+        java.lang.Object $r7, $r7_1, $r7_2, $r7_3;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r8;
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r9;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.util.concurrent.TimeUnit;
+
+        if $r1 != null goto label01;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Time unit must not be null.");
+
+        throw $r2;
+
+     label01:
+        $l1 = virtualinvoke $r1.<java.util.concurrent.TimeUnit: long toMillis(long)>($l0);
+
+        $l0_1 = $l1;
+
+        $b2 = $l1 cmp 0L;
+
+(0)     if $b2 >= 0 goto label02;
+
+(1)     $l0_2 = 0L;
+
+     label02:
+        $l0_3 = Phi($l0_1 #0, $l0_2 #1);
+
+        $l1_1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l0_4 = $l1_1 - $l0_3;
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+(2)     interfaceinvoke $r5.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label03:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+(3)     $r6 = virtualinvoke $r3.<java.util.LinkedList: java.util.Iterator iterator()>();
+
+     label04:
+        $r7 = Phi($r7 #3, $r7_1 #7, $r7_2 #9);
+
+        $b2_1 = Phi($b2 #3, $b2_2 #7, $b2_2 #9);
+
+        $l1_2 = Phi($l1_1 #3, $l1_3 #7, $l1_3 #9);
+
+(4)     $z0 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+     label05:
+        if $z0 == 0 goto label11;
+
+     label06:
+(5)     $r7_1 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r8 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r7_1;
+
+(6)     $l1_3 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.pool.PoolEntry: long getUpdated()>();
+
+     label07:
+        $b2_2 = $l1_3 cmp $l0_4;
+
+(7)     if $b2_2 > 0 goto label04;
+
+     label08:
+        virtualinvoke $r8.<ch.boye.httpclientandroidlib.pool.PoolEntry: void close()>();
+
+(8)     $r7_2 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.pool.PoolEntry: java.lang.Object getRoute()>();
+
+        $r9 = specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: ch.boye.httpclientandroidlib.pool.RouteSpecificPool getPool(java.lang.Object)>($r7_2);
+
+        virtualinvoke $r9.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: boolean remove(ch.boye.httpclientandroidlib.pool.PoolEntry)>($r8);
+
+        interfaceinvoke $r6.<java.util.Iterator: void remove()>();
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: void notifyPending(ch.boye.httpclientandroidlib.pool.RouteSpecificPool)>($r9);
+
+     label09:
+(9)     goto label04;
+
+     label10:
+        $r4 := @caughtexception;
+
+        $r7_3 = Phi($r7 #2, $r7_1 #5, $r7_2 #8);
+
+        $b2_3 = Phi($b2 #2, $b2_2 #7, $b2_1 #4);
+
+        $l1_4 = Phi($l1_1 #2, $l1_2 #4, $l1_3 #6);
+
+        $r5_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r5_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r4;
+
+     label11:
+        $r5_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r5_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+        catch java.lang.Throwable from label03 to label05 with label10;
+        catch java.lang.Throwable from label06 to label07 with label10;
+        catch java.lang.Throwable from label08 to label09 with label10;
+    }
+
+    protected abstract ch.boye.httpclientandroidlib.pool.PoolEntry createEntry(java.lang.Object, java.lang.Object);
+
+    public int getDefaultMaxPerRoute()
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Throwable $r1;
+        java.util.concurrent.locks.Lock $r2, $r2_1, $r2_2;
+        int i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r2.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label1:
+        i0 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int defaultMaxPerRoute>;
+
+     label2:
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r2_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return i0;
+
+     label3:
+        $r1 := @caughtexception;
+
+        $r2_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r2_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public int getMaxPerRoute(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Object $r1;
+        java.lang.IllegalArgumentException $r2;
+        java.lang.Throwable $r3;
+        int $i0;
+        java.util.concurrent.locks.Lock $r4, $r4_1, $r4_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Route may not be null");
+
+        throw $r2;
+
+     label1:
+        $r4 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r4.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label2:
+        $i0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int getMax(java.lang.Object)>($r1);
+
+     label3:
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r4_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return $i0;
+
+     label4:
+        $r3 := @caughtexception;
+
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r4_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r3;
+
+        catch java.lang.Throwable from label2 to label3 with label4;
+    }
+
+    public int getMaxTotal()
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Throwable $r1;
+        java.util.concurrent.locks.Lock $r2, $r2_1, $r2_2;
+        int i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r2.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label1:
+        i0 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int maxTotal>;
+
+     label2:
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r2_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return i0;
+
+     label3:
+        $r1 := @caughtexception;
+
+        $r2_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r2_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public ch.boye.httpclientandroidlib.pool.PoolStats getStats(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Object $r1;
+        java.lang.IllegalArgumentException $r2;
+        ch.boye.httpclientandroidlib.pool.PoolStats $r3;
+        java.lang.Throwable $r4;
+        java.util.concurrent.locks.Lock $r5, $r5_1, $r5_2;
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r6;
+        int $i0, $i1, $i2, $i3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Route may not be null");
+
+        throw $r2;
+
+     label1:
+        $r5 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r5.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label2:
+        $r6 = specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: ch.boye.httpclientandroidlib.pool.RouteSpecificPool getPool(java.lang.Object)>($r1);
+
+        $r3 = new ch.boye.httpclientandroidlib.pool.PoolStats;
+
+        $i0 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: int getLeasedCount()>();
+
+        $i1 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: int getPendingCount()>();
+
+        $i2 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: int getAvailableCount()>();
+
+        $i3 = specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int getMax(java.lang.Object)>($r1);
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.pool.PoolStats: void <init>(int,int,int,int)>($i0, $i1, $i2, $i3);
+
+     label3:
+        $r5_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r5_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return $r3;
+
+     label4:
+        $r4 := @caughtexception;
+
+        $r5_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r5_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r4;
+
+        catch java.lang.Throwable from label2 to label3 with label4;
+    }
+
+    public ch.boye.httpclientandroidlib.pool.PoolStats getTotalStats()
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        ch.boye.httpclientandroidlib.pool.PoolStats $r1;
+        java.util.Set $r2;
+        int $i0, $i1, $i2, $i3;
+        java.lang.Throwable $r3;
+        java.util.concurrent.locks.Lock $r4, $r4_1, $r4_2;
+        java.util.LinkedList $r5, $r5_1, $r5_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+(0)     interfaceinvoke $r4.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label1:
+        $r1 = new ch.boye.httpclientandroidlib.pool.PoolStats;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Set leased>;
+
+        $i1 = interfaceinvoke $r2.<java.util.Set: int size()>();
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList pending>;
+
+        $i2 = virtualinvoke $r5.<java.util.LinkedList: int size()>();
+
+(1)     $r5_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+        $i3 = virtualinvoke $r5_1.<java.util.LinkedList: int size()>();
+
+        $i0 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int maxTotal>;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.pool.PoolStats: void <init>(int,int,int,int)>($i1, $i2, $i3, $i0);
+
+     label2:
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r4_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return $r1;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r4_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public boolean isShutdown()
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        boolean z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        z0 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: boolean isShutDown>;
+
+        return z0;
+    }
+
+    public java.util.concurrent.Future lease(java.lang.Object, java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Object $r1, $r2;
+        java.util.concurrent.Future $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.Future lease(java.lang.Object,java.lang.Object,ch.boye.httpclientandroidlib.concurrent.FutureCallback)>($r1, $r2, null);
+
+        return $r3;
+    }
+
+    public java.util.concurrent.Future lease(java.lang.Object, java.lang.Object, ch.boye.httpclientandroidlib.concurrent.FutureCallback)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Object $r1, $r2;
+        ch.boye.httpclientandroidlib.concurrent.FutureCallback $r3;
+        java.lang.IllegalArgumentException $r4;
+        boolean $z0;
+        java.lang.IllegalStateException $r5;
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool$2 $r6;
+        java.util.concurrent.locks.Lock $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.concurrent.FutureCallback;
+
+        if $r1 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Route may not be null");
+
+        throw $r4;
+
+     label1:
+        $z0 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: boolean isShutDown>;
+
+        if $z0 == 0 goto label2;
+
+        $r5 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Connection pool shut down");
+
+        throw $r5;
+
+     label2:
+        $r6 = new ch.boye.httpclientandroidlib.pool.AbstractConnPool$2;
+
+        $r7 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        specialinvoke $r6.<ch.boye.httpclientandroidlib.pool.AbstractConnPool$2: void <init>(ch.boye.httpclientandroidlib.pool.AbstractConnPool,java.util.concurrent.locks.Lock,ch.boye.httpclientandroidlib.concurrent.FutureCallback,java.lang.Object,java.lang.Object)>($r0, $r7, $r3, $r1, $r2);
+
+        return $r6;
+    }
+
+    public void release(ch.boye.httpclientandroidlib.pool.PoolEntry, boolean)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r1;
+        java.util.Set $r2;
+        java.util.LinkedList $r3;
+        java.lang.Throwable $r4;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.util.concurrent.locks.Lock $r5, $r5_1, $r5_2;
+        java.lang.Object $r6;
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.pool.PoolEntry;
+
+        $z0 := @parameter1: boolean;
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+(0)     interfaceinvoke $r5.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label01:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Set leased>;
+
+        $z1 = interfaceinvoke $r2.<java.util.Set: boolean remove(java.lang.Object)>($r1);
+
+     label02:
+(1)     if $z1 == 0 goto label09;
+
+     label03:
+        $r6 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.pool.PoolEntry: java.lang.Object getRoute()>();
+
+        $r7 = specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: ch.boye.httpclientandroidlib.pool.RouteSpecificPool getPool(java.lang.Object)>($r6);
+
+        virtualinvoke $r7.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: void free(ch.boye.httpclientandroidlib.pool.PoolEntry,boolean)>($r1, $z0);
+
+     label04:
+(2)     if $z0 == 0 goto label10;
+
+     label05:
+(3)     $z0_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: boolean isShutDown>;
+
+     label06:
+(4)     if $z0_1 != 0 goto label10;
+
+     label07:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+(5)     virtualinvoke $r3.<java.util.LinkedList: void addFirst(java.lang.Object)>($r1);
+
+     label08:
+        $z0_2 = Phi($z0_1 #5, $z0_3 #8);
+
+(6)     specialinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: void notifyPending(ch.boye.httpclientandroidlib.pool.RouteSpecificPool)>($r7);
+
+     label09:
+        $z0_4 = Phi($z0 #1, $z0_2 #6);
+
+        $r5_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r5_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label10:
+        $z0_3 = Phi($z0 #2, $z0_1 #4);
+
+(7)     virtualinvoke $r1.<ch.boye.httpclientandroidlib.pool.PoolEntry: void close()>();
+
+     label11:
+(8)     goto label08;
+
+     label12:
+        $r4 := @caughtexception;
+
+        $z0_5 = Phi($z0 #0, $z0_1 #3, $z0_2 #6, $z0_3 #7);
+
+        $r5_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r5_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r4;
+
+        catch java.lang.Throwable from label01 to label02 with label12;
+        catch java.lang.Throwable from label03 to label04 with label12;
+        catch java.lang.Throwable from label05 to label06 with label12;
+        catch java.lang.Throwable from label07 to label09 with label12;
+        catch java.lang.Throwable from label10 to label11 with label12;
+    }
+
+    public volatile void release(java.lang.Object, boolean)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Object $r1;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r1;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: void release(ch.boye.httpclientandroidlib.pool.PoolEntry,boolean)>($r2, $z0);
+
+        return;
+    }
+
+    public void setDefaultMaxPerRoute(int)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        int $i0;
+        java.lang.IllegalArgumentException $r1;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.Lock $r3, $r3_1, $r3_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $i0 := @parameter0: int;
+
+        if $i0 > 0 goto label1;
+
+        $r1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Max value may not be negative or zero");
+
+        throw $r1;
+
+     label1:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int defaultMaxPerRoute> = $i0;
+
+     label3:
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label4:
+        $r2 := @caughtexception;
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label2 to label3 with label4;
+    }
+
+    public void setMaxPerRoute(java.lang.Object, int)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Object $r1;
+        int $i0;
+        java.util.Map $r2;
+        java.lang.Throwable $r3;
+        java.lang.Integer $r4;
+        java.lang.IllegalArgumentException $r5, $r5_1;
+        java.util.concurrent.locks.Lock $r6, $r6_1, $r6_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $i0 := @parameter1: int;
+
+        if $r1 != null goto label1;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Route may not be null");
+
+        throw $r5;
+
+     label1:
+        if $i0 > 0 goto label2;
+
+        $r5_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Max value may not be negative or zero");
+
+        throw $r5_1;
+
+     label2:
+        $r6 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r6.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label3:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Map maxPerRoute>;
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r4);
+
+     label4:
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r6_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label5:
+        $r3 := @caughtexception;
+
+        $r6_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r6_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r3;
+
+        catch java.lang.Throwable from label3 to label4 with label5;
+    }
+
+    public void setMaxTotal(int)
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        int $i0;
+        java.lang.IllegalArgumentException $r1;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.Lock $r3, $r3_1, $r3_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $i0 := @parameter0: int;
+
+        if $i0 > 0 goto label1;
+
+        $r1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Max value may not be negative or zero");
+
+        throw $r1;
+
+     label1:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: int maxTotal> = $i0;
+
+     label3:
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label4:
+        $r2 := @caughtexception;
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label2 to label3 with label4;
+    }
+
+    public void shutdown() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.Throwable $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+        java.util.concurrent.locks.Lock $r2, $r2_1, $r2_2;
+        java.util.LinkedList $r3, $r3_1, $r3_2;
+        java.util.Iterator $r4, $r4_1, $r4_2, $r4_3;
+        java.lang.Object $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        java.util.Set $r7, $r7_1, $r7_2;
+        java.util.Map $r8, $r8_1, $r8_2;
+        java.util.Collection $r9;
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r10;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: boolean isShutDown>;
+
+        if $z0 == 0 goto label01;
+
+        return;
+
+     label01:
+        $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: boolean isShutDown> = 1;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+(0)     interfaceinvoke $r2.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label02:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+(1)     $r4 = virtualinvoke $r3.<java.util.LinkedList: java.util.Iterator iterator()>();
+
+     label03:
+        $r6 = Phi($r6 #1, $r6_1 #5);
+
+        $z0_1 = Phi($z0 #1, $z0_2 #5);
+
+        $r5 = Phi($r5 #1, $r5_1 #5);
+
+(2)     $z0_2 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+     label04:
+        if $z0_2 == 0 goto label08;
+
+     label05:
+(3)     $r5_1 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+(4)     $r6_1 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r5_1;
+
+        virtualinvoke $r6_1.<ch.boye.httpclientandroidlib.pool.PoolEntry: void close()>();
+
+     label06:
+(5)     goto label03;
+
+     label07:
+        $r1 := @caughtexception;
+
+        $r6_4 = Phi($r6 #0, $r6_1 #4, $r6_2 #7, $r6_3 #9);
+
+        $z0_7 = Phi($z0 #0, $z0_2 #2, $z0_4 #7, $z0_6 #12);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #6, $r4_2 #11);
+
+        $r8_2 = Phi($r8 #0, $r8_1 #15);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #17);
+
+        $r5_6 = Phi($r5 #0, $r5_1 #3, $r5_2 #7, $r5_3 #8, $r5_4 #12, $r5_5 #13);
+
+        $r7_2 = Phi($r7 #0, $r7_1 #16);
+
+        $r2_2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r2_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r1;
+
+     label08:
+        $r7 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Set leased>;
+
+(6)     $r4_1 = interfaceinvoke $r7.<java.util.Set: java.util.Iterator iterator()>();
+
+     label09:
+        $r6_2 = Phi($r6 #6, $r6_3 #10);
+
+        $z0_3 = Phi($z0_2 #6, $z0_4 #10);
+
+        $r5_2 = Phi($r5 #6, $r5_3 #10);
+
+(7)     $z0_4 = interfaceinvoke $r4_1.<java.util.Iterator: boolean hasNext()>();
+
+     label10:
+        if $z0_4 == 0 goto label13;
+
+     label11:
+(8)     $r5_3 = interfaceinvoke $r4_1.<java.util.Iterator: java.lang.Object next()>();
+
+(9)     $r6_3 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r5_3;
+
+        virtualinvoke $r6_3.<ch.boye.httpclientandroidlib.pool.PoolEntry: void close()>();
+
+     label12:
+(10)    goto label09;
+
+     label13:
+        $r8 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Map routeToPool>;
+
+        $r9 = interfaceinvoke $r8.<java.util.Map: java.util.Collection values()>();
+
+(11)    $r4_2 = interfaceinvoke $r9.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label14:
+        $z0_5 = Phi($z0_4 #11, $z0_6 #14);
+
+        $r5_4 = Phi($r5_2 #11, $r5_5 #14);
+
+(12)    $z0_6 = interfaceinvoke $r4_2.<java.util.Iterator: boolean hasNext()>();
+
+     label15:
+        if $z0_6 == 0 goto label18;
+
+     label16:
+(13)    $r5_5 = interfaceinvoke $r4_2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r10 = (ch.boye.httpclientandroidlib.pool.RouteSpecificPool) $r5_5;
+
+        virtualinvoke $r10.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: void shutdown()>();
+
+     label17:
+(14)    goto label14;
+
+     label18:
+(15)    $r8_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Map routeToPool>;
+
+        interfaceinvoke $r8_1.<java.util.Map: void clear()>();
+
+(16)    $r7_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Set leased>;
+
+        interfaceinvoke $r7_1.<java.util.Set: void clear()>();
+
+(17)    $r3_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+        virtualinvoke $r3_1.<java.util.LinkedList: void clear()>();
+
+     label19:
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r2_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+        catch java.lang.Throwable from label02 to label04 with label07;
+        catch java.lang.Throwable from label05 to label06 with label07;
+        catch java.lang.Throwable from label08 to label10 with label07;
+        catch java.lang.Throwable from label11 to label12 with label07;
+        catch java.lang.Throwable from label13 to label15 with label07;
+        catch java.lang.Throwable from label16 to label17 with label07;
+        catch java.lang.Throwable from label18 to label19 with label07;
+    }
+
+    public java.lang.String toString()
+    {
+        ch.boye.httpclientandroidlib.pool.AbstractConnPool $r0;
+        java.lang.StringBuilder $r1;
+        java.util.Set $r2;
+        java.lang.String $r3;
+        java.util.LinkedList $r4, $r4_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.AbstractConnPool;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[leased: ");
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.Set leased>;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("][available: ");
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList available>;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r4);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("][pending: ");
+
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.pool.AbstractConnPool: java.util.LinkedList pending>;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r4_1);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r3 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3;
+    }
+}

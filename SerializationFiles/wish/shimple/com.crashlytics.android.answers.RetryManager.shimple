@@ -1,0 +1,102 @@
+class com.crashlytics.android.answers.RetryManager extends java.lang.Object
+{
+    private static final long NANOSECONDS_IN_MS;
+    long lastRetry;
+    private io.fabric.sdk.android.services.concurrency.internal.RetryState retryState;
+
+    public void <init>(io.fabric.sdk.android.services.concurrency.internal.RetryState)
+    {
+        com.crashlytics.android.answers.RetryManager $r0;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r1;
+        java.lang.NullPointerException $r2;
+
+        $r0 := @this: com.crashlytics.android.answers.RetryManager;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.concurrency.internal.RetryState;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("retryState must not be null");
+
+        throw $r2;
+
+     label1:
+        $r0.<com.crashlytics.android.answers.RetryManager: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState> = $r1;
+
+        return;
+    }
+
+    public boolean canRetry(long)
+    {
+        com.crashlytics.android.answers.RetryManager $r0;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r1;
+        long $l0, $l2, $l3, $l2_1, $l3_1;
+        byte $b1;
+
+        $r0 := @this: com.crashlytics.android.answers.RetryManager;
+
+        $l3 := @parameter0: long;
+
+        $r1 = $r0.<com.crashlytics.android.answers.RetryManager: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState>;
+
+        $l2 = virtualinvoke $r1.<io.fabric.sdk.android.services.concurrency.internal.RetryState: long getRetryDelay()>();
+
+        $l2_1 = 1000000L * $l2;
+
+        $l0 = $r0.<com.crashlytics.android.answers.RetryManager: long lastRetry>;
+
+        $l3_1 = $l3 - $l0;
+
+        $b1 = $l3_1 cmp $l2_1;
+
+        if $b1 < 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public void recordRetry(long)
+    {
+        com.crashlytics.android.answers.RetryManager $r0;
+        long $l0;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r1, $r1_1;
+
+        $r0 := @this: com.crashlytics.android.answers.RetryManager;
+
+        $l0 := @parameter0: long;
+
+        $r0.<com.crashlytics.android.answers.RetryManager: long lastRetry> = $l0;
+
+        $r1 = $r0.<com.crashlytics.android.answers.RetryManager: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState>;
+
+        $r1_1 = virtualinvoke $r1.<io.fabric.sdk.android.services.concurrency.internal.RetryState: io.fabric.sdk.android.services.concurrency.internal.RetryState nextRetryState()>();
+
+        $r0.<com.crashlytics.android.answers.RetryManager: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState> = $r1_1;
+
+        return;
+    }
+
+    public void reset()
+    {
+        com.crashlytics.android.answers.RetryManager $r0;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r1, $r1_1;
+
+        $r0 := @this: com.crashlytics.android.answers.RetryManager;
+
+        $r0.<com.crashlytics.android.answers.RetryManager: long lastRetry> = 0L;
+
+        $r1 = $r0.<com.crashlytics.android.answers.RetryManager: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState>;
+
+        $r1_1 = virtualinvoke $r1.<io.fabric.sdk.android.services.concurrency.internal.RetryState: io.fabric.sdk.android.services.concurrency.internal.RetryState initialRetryState()>();
+
+        $r0.<com.crashlytics.android.answers.RetryManager: io.fabric.sdk.android.services.concurrency.internal.RetryState retryState> = $r1_1;
+
+        return;
+    }
+}

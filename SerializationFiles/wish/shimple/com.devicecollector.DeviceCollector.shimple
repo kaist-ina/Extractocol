@@ -1,0 +1,495 @@
+public final class com.devicecollector.DeviceCollector extends java.lang.Object
+{
+    private static final java.lang.String RE_MERC;
+    private static final java.lang.String RE_SESS;
+    private static final java.lang.String RE_URL;
+    public static final java.lang.String VERSION;
+    private android.app.Activity activity;
+    private com.devicecollector.AbstractCollectorProcess collectorProcess;
+    private java.lang.String collectorUrl;
+    private com.devicecollector.DeviceCollector$StatusListener listener;
+    private java.lang.String merchantId;
+    private java.util.EnumSet skipList;
+
+    public void <init>(android.app.Activity)
+    {
+        com.devicecollector.DeviceCollector $r0;
+        android.app.Activity $r1;
+
+        $r0 := @this: com.devicecollector.DeviceCollector;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.devicecollector.DeviceCollector: android.app.Activity activity> = $r1;
+
+        return;
+    }
+
+    private boolean isNetworkAvailable()
+    {
+        com.devicecollector.DeviceCollector $r0;
+        android.app.Activity $r1;
+        java.lang.Exception $r2;
+        android.content.Context $r3;
+        java.lang.Object $r4;
+        android.net.ConnectivityManager $r5;
+        android.net.NetworkInfo $r6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        com.devicecollector.DeviceCollector$ErrorCode $r7, $r7_1, $r7_2;
+
+(0)     $r0 := @this: com.devicecollector.DeviceCollector;
+
+     label01:
+        $r1 = $r0.<com.devicecollector.DeviceCollector: android.app.Activity activity>;
+
+        $r3 = virtualinvoke $r1.<android.app.Activity: android.content.Context getApplicationContext()>();
+
+        $r4 = virtualinvoke $r3.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        $r5 = (android.net.ConnectivityManager) $r4;
+
+        $r6 = virtualinvoke $r5.<android.net.ConnectivityManager: android.net.NetworkInfo getActiveNetworkInfo()>();
+
+     label02:
+(1)     if $r6 == null goto label08;
+
+     label03:
+        $z0 = virtualinvoke $r6.<android.net.NetworkInfo: boolean isConnectedOrConnecting()>();
+
+     label04:
+(2)     if $z0 == 0 goto label08;
+
+(3)     $z0_1 = 1;
+
+     label05:
+        $z0_2 = Phi($z0_1 #3, $z0_4 #5);
+
+        if $z0_2 != 0 goto label10;
+
+(4)     $r7 = <com.devicecollector.DeviceCollector$ErrorCode: com.devicecollector.DeviceCollector$ErrorCode NO_NETWORK>;
+
+     label06:
+        specialinvoke $r0.<com.devicecollector.DeviceCollector: void onCollectorError(com.devicecollector.DeviceCollector$ErrorCode,java.lang.Exception)>($r7, null);
+
+     label07:
+        return $z0_2;
+
+     label08:
+        $z0_3 = Phi($z0 #1, $z0 #2);
+
+        $z0_4 = 0;
+
+(5)     goto label05;
+
+     label09:
+        $r2 := @caughtexception;
+
+        $z0_5 = Phi($z0 #0, $z0_2 #4);
+
+        $r7_1 = Phi($r7 #0);
+
+        $r7_2 = <com.devicecollector.DeviceCollector$ErrorCode: com.devicecollector.DeviceCollector$ErrorCode RUNTIME_FAILURE>;
+
+        specialinvoke $r0.<com.devicecollector.DeviceCollector: void onCollectorError(com.devicecollector.DeviceCollector$ErrorCode,java.lang.Exception)>($r7_2, $r2);
+
+        return 0;
+
+     label10:
+        return $z0_2;
+
+        catch java.lang.Exception from label01 to label02 with label09;
+        catch java.lang.Exception from label03 to label04 with label09;
+        catch java.lang.Exception from label06 to label07 with label09;
+    }
+
+    private boolean isValidParams(java.lang.String, java.lang.String, java.lang.String)
+    {
+        com.devicecollector.DeviceCollector $r0;
+        java.lang.String $r1, $r2, $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        com.devicecollector.DeviceCollector$ErrorCode $r4, $r4_1, $r4_2;
+
+        $r0 := @this: com.devicecollector.DeviceCollector;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+(0)     if $r1 == null goto label1;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean matches(java.lang.String)>("^https?://[\\w-]+(\\.[\\w-]+)+(/[^?]*)?$");
+
+(1)     if $z0 != 0 goto label2;
+
+     label1:
+        $z0_5 = Phi($z0 #0, $z0 #1);
+
+        $r4_2 = <com.devicecollector.DeviceCollector$ErrorCode: com.devicecollector.DeviceCollector$ErrorCode INVALID_URL>;
+
+        specialinvoke $r0.<com.devicecollector.DeviceCollector: void onCollectorError(com.devicecollector.DeviceCollector$ErrorCode,java.lang.Exception)>($r4_2, null);
+
+        return 0;
+
+     label2:
+(2)     if $r2 == null goto label3;
+
+        $z0_1 = virtualinvoke $r2.<java.lang.String: boolean matches(java.lang.String)>("^\\d{1,6}$");
+
+(3)     if $z0_1 != 0 goto label4;
+
+     label3:
+        $z0_4 = Phi($z0 #2, $z0_1 #3);
+
+        $r4_1 = <com.devicecollector.DeviceCollector$ErrorCode: com.devicecollector.DeviceCollector$ErrorCode INVALID_MERCHANT>;
+
+        specialinvoke $r0.<com.devicecollector.DeviceCollector: void onCollectorError(com.devicecollector.DeviceCollector$ErrorCode,java.lang.Exception)>($r4_1, null);
+
+        return 0;
+
+     label4:
+(4)     if $r3 == null goto label5;
+
+        $z0_2 = virtualinvoke $r3.<java.lang.String: boolean matches(java.lang.String)>("^[\\w-]{1,32}$");
+
+(5)     if $z0_2 != 0 goto label6;
+
+     label5:
+        $z0_3 = Phi($z0_1 #4, $z0_2 #5);
+
+        $r4 = <com.devicecollector.DeviceCollector$ErrorCode: com.devicecollector.DeviceCollector$ErrorCode INVALID_SESSION>;
+
+        specialinvoke $r0.<com.devicecollector.DeviceCollector: void onCollectorError(com.devicecollector.DeviceCollector$ErrorCode,java.lang.Exception)>($r4, null);
+
+        return 0;
+
+     label6:
+        return 1;
+    }
+
+    private void onCollectorError(com.devicecollector.DeviceCollector$ErrorCode, java.lang.Exception)
+    {
+        com.devicecollector.DeviceCollector $r0;
+        com.devicecollector.DeviceCollector$ErrorCode $r1;
+        java.lang.Exception $r2;
+        com.devicecollector.DeviceCollector$StatusListener $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.devicecollector.DeviceCollector;
+
+        $r1 := @parameter0: com.devicecollector.DeviceCollector$ErrorCode;
+
+        $r2 := @parameter1: java.lang.Exception;
+
+        $r3 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.DeviceCollector$StatusListener listener>;
+
+(0)     if $r3 == null goto label1;
+
+        $r3_1 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.DeviceCollector$StatusListener listener>;
+
+(1)     interfaceinvoke $r3_1.<com.devicecollector.DeviceCollector$StatusListener: void onCollectorError(com.devicecollector.DeviceCollector$ErrorCode,java.lang.Exception)>($r1, $r2);
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void collect(java.lang.String)
+    {
+        com.devicecollector.DeviceCollector $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.devicecollector.DeviceCollector;
+
+        $r1 := @parameter0: java.lang.String;
+
+        virtualinvoke $r0.<com.devicecollector.DeviceCollector: void collect(java.lang.String,long)>($r1, -1L);
+
+        return;
+    }
+
+    public void collect(java.lang.String, long)
+    {
+        com.devicecollector.DeviceCollector $r0;
+        java.lang.String $r1, $r2, $r8, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+        long $l0;
+        com.devicecollector.CollectorProcess $r3;
+        android.app.Activity $r4;
+        java.util.EnumSet $r5;
+        int $i1;
+        java.util.concurrent.Executor $r6;
+        com.devicecollector.AbstractCollectorProcess $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        com.devicecollector.DeviceCollector$StatusListener $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+        java.lang.String[] $r10, $r10_1;
+        com.devicecollector.DeviceCollector$ErrorCode $r11, $r11_1, $r11_2;
+        java.lang.RuntimeException $r12, $r12_1, $r12_2;
+
+        $r0 := @this: com.devicecollector.DeviceCollector;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $l0 := @parameter1: long;
+
+        $r7 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess>;
+
+        if $r7 != null goto label2;
+
+        $z0 = specialinvoke $r0.<com.devicecollector.DeviceCollector: boolean isNetworkAvailable()>();
+
+(0)     if $z0 == 0 goto label4;
+
+        $r8 = $r0.<com.devicecollector.DeviceCollector: java.lang.String collectorUrl>;
+
+        $r2 = $r0.<com.devicecollector.DeviceCollector: java.lang.String merchantId>;
+
+        $z0_1 = specialinvoke $r0.<com.devicecollector.DeviceCollector: boolean isValidParams(java.lang.String,java.lang.String,java.lang.String)>($r8, $r2, $r1);
+
+(1)     if $z0_1 == 0 goto label4;
+
+        $r3 = new com.devicecollector.CollectorProcess;
+
+        $r4 = $r0.<com.devicecollector.DeviceCollector: android.app.Activity activity>;
+
+        $r9 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.DeviceCollector$StatusListener listener>;
+
+        $r5 = $r0.<com.devicecollector.DeviceCollector: java.util.EnumSet skipList>;
+
+        specialinvoke $r3.<com.devicecollector.CollectorProcess: void <init>(android.app.Activity,com.devicecollector.DeviceCollector$StatusListener,java.util.EnumSet)>($r4, $r9, $r5);
+
+        $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess> = $r3;
+
+        $r7_1 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess>;
+
+        virtualinvoke $r7_1.<com.devicecollector.AbstractCollectorProcess: void setTimoutMs(long)>($l0);
+
+        $i1 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i1 <= 10 goto label1;
+
+        $r7_2 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess>;
+
+        $r6 = <android.os.AsyncTask: java.util.concurrent.Executor THREAD_POOL_EXECUTOR>;
+
+        $r10 = newarray (java.lang.String)[3];
+
+        $r2_1 = $r0.<com.devicecollector.DeviceCollector: java.lang.String collectorUrl>;
+
+        $r10[0] = $r2_1;
+
+        $r2_2 = $r0.<com.devicecollector.DeviceCollector: java.lang.String merchantId>;
+
+        $r10[1] = $r2_2;
+
+        $r10[2] = $r1;
+
+        virtualinvoke $r7_2.<com.devicecollector.AbstractCollectorProcess: android.os.AsyncTask executeOnExecutor(java.util.concurrent.Executor,java.lang.Object[])>($r6, $r10);
+
+        return;
+
+     label1:
+        $r7_3 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess>;
+
+        $r10_1 = newarray (java.lang.String)[3];
+
+        $r2_3 = $r0.<com.devicecollector.DeviceCollector: java.lang.String collectorUrl>;
+
+        $r10_1[0] = $r2_3;
+
+        $r2_4 = $r0.<com.devicecollector.DeviceCollector: java.lang.String merchantId>;
+
+        $r10_1[1] = $r2_4;
+
+        $r10_1[2] = $r1;
+
+        virtualinvoke $r7_3.<com.devicecollector.AbstractCollectorProcess: android.os.AsyncTask execute(java.lang.Object[])>($r10_1);
+
+        return;
+
+     label2:
+        $r9_1 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.DeviceCollector$StatusListener listener>;
+
+(2)     if $r9_1 == null goto label4;
+
+        $r7_4 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess>;
+
+        $z0_2 = virtualinvoke $r7_4.<com.devicecollector.AbstractCollectorProcess: boolean isFinished()>();
+
+        if $z0_2 != 0 goto label3;
+
+        $r9_2 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.DeviceCollector$StatusListener listener>;
+
+        $r11 = <com.devicecollector.DeviceCollector$ErrorCode: com.devicecollector.DeviceCollector$ErrorCode RUNTIME_FAILURE>;
+
+        $r12 = new java.lang.RuntimeException;
+
+        specialinvoke $r12.<java.lang.RuntimeException: void <init>(java.lang.String)>("Already running. Will not start collecting again.");
+
+        interfaceinvoke $r9_2.<com.devicecollector.DeviceCollector$StatusListener: void onCollectorError(com.devicecollector.DeviceCollector$ErrorCode,java.lang.Exception)>($r11, $r12);
+
+        return;
+
+     label3:
+        $r9_3 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.DeviceCollector$StatusListener listener>;
+
+        $r11_1 = <com.devicecollector.DeviceCollector$ErrorCode: com.devicecollector.DeviceCollector$ErrorCode RUNTIME_FAILURE>;
+
+        $r12_1 = new java.lang.RuntimeException;
+
+        specialinvoke $r12_1.<java.lang.RuntimeException: void <init>(java.lang.String)>("Already completed. Will not start collecting again.");
+
+(3)     interfaceinvoke $r9_3.<com.devicecollector.DeviceCollector$StatusListener: void onCollectorError(com.devicecollector.DeviceCollector$ErrorCode,java.lang.Exception)>($r11_1, $r12_1);
+
+     label4:
+        $r2_5 = Phi($r2 #0, $r2 #1, $r2 #2, $r2 #3);
+
+        $r9_4 = Phi($r9 #0, $r9 #1, $r9_1 #2, $r9_3 #3);
+
+        $z0_3 = Phi($z0 #0, $z0_1 #1, $z0 #2, $z0_2 #3);
+
+        $r7_5 = Phi($r7 #0, $r7 #1, $r7 #2, $r7_4 #3);
+
+        $r11_2 = Phi($r11 #0, $r11 #1, $r11 #2, $r11_1 #3);
+
+        $r12_2 = Phi($r12 #0, $r12 #1, $r12 #2, $r12_1 #3);
+
+        return;
+    }
+
+    public void setCollectorUrl(java.lang.String)
+    {
+        com.devicecollector.DeviceCollector $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.devicecollector.DeviceCollector;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r0.<com.devicecollector.DeviceCollector: java.lang.String collectorUrl> = $r1;
+
+        return;
+    }
+
+    public void setMerchantId(java.lang.String)
+    {
+        com.devicecollector.DeviceCollector $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.devicecollector.DeviceCollector;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r0.<com.devicecollector.DeviceCollector: java.lang.String merchantId> = $r1;
+
+        return;
+    }
+
+    public void setStatusListener(com.devicecollector.DeviceCollector$StatusListener)
+    {
+        com.devicecollector.DeviceCollector $r0;
+        com.devicecollector.DeviceCollector$StatusListener $r1, $r1_1, $r1_2;
+        com.devicecollector.AbstractCollectorProcess $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.devicecollector.DeviceCollector;
+
+        $r1 := @parameter0: com.devicecollector.DeviceCollector$StatusListener;
+
+        $r0.<com.devicecollector.DeviceCollector: com.devicecollector.DeviceCollector$StatusListener listener> = $r1;
+
+        $r2 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess>;
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess>;
+
+        $r1_1 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.DeviceCollector$StatusListener listener>;
+
+(1)     virtualinvoke $r2_1.<com.devicecollector.AbstractCollectorProcess: void setListener(com.devicecollector.DeviceCollector$StatusListener)>($r1_1);
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    public void skipCollectors(java.util.EnumSet)
+    {
+        com.devicecollector.DeviceCollector $r0;
+        java.util.EnumSet $r1;
+        com.devicecollector.collectors.CollectorEnum $r2;
+        java.lang.RuntimeException $r3;
+        boolean $z0;
+
+        $r0 := @this: com.devicecollector.DeviceCollector;
+
+        $r1 := @parameter0: java.util.EnumSet;
+
+        if $r1 == null goto label1;
+
+        $r2 = <com.devicecollector.collectors.CollectorEnum: com.devicecollector.collectors.CollectorEnum WEB>;
+
+        $z0 = virtualinvoke $r1.<java.util.EnumSet: boolean contains(java.lang.Object)>($r2);
+
+        if $z0 == 0 goto label1;
+
+        $r3 = new java.lang.RuntimeException;
+
+        specialinvoke $r3.<java.lang.RuntimeException: void <init>(java.lang.String)>("You cannot skip the Web collector");
+
+        throw $r3;
+
+     label1:
+        $r0.<com.devicecollector.DeviceCollector: java.util.EnumSet skipList> = $r1;
+
+        return;
+    }
+
+    public boolean stopNow()
+    {
+        com.devicecollector.DeviceCollector $r0;
+        com.devicecollector.AbstractCollectorProcess $r1, $r1_1, $r1_2, $r1_3;
+        boolean $z0;
+        java.lang.Class $r2, $r2_1;
+        java.lang.String $r3, $r3_1;
+
+        $r0 := @this: com.devicecollector.DeviceCollector;
+
+        $r1 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess>;
+
+        $z0 = virtualinvoke $r1_1.<com.devicecollector.AbstractCollectorProcess: boolean isFinished()>();
+
+(1)     if $z0 != 0 goto label1;
+
+        $r2 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r3 = virtualinvoke $r2.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r3, "Attempting to cancel..");
+
+        $r1_2 = $r0.<com.devicecollector.DeviceCollector: com.devicecollector.AbstractCollectorProcess collectorProcess>;
+
+        virtualinvoke $r1_2.<com.devicecollector.AbstractCollectorProcess: boolean cancel(boolean)>(1);
+
+        return 1;
+
+     label1:
+        $r1_3 = Phi($r1 #0, $r1_1 #1);
+
+        $r2_1 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r3_1 = virtualinvoke $r2_1.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r3_1, "Not started, or already finished.  Skipping cancel.");
+
+        return 0;
+    }
+}

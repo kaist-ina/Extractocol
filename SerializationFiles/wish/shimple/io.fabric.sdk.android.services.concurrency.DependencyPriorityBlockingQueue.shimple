@@ -1,0 +1,960 @@
+public class io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue extends java.util.concurrent.PriorityBlockingQueue
+{
+    static final int PEEK;
+    static final int POLL;
+    static final int POLL_WITH_TIMEOUT;
+    static final int TAKE;
+    final java.util.Queue blockedQueue;
+    private final java.util.concurrent.locks.ReentrantLock lock;
+
+    public void <init>()
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.util.LinkedList $r1;
+        java.util.concurrent.locks.ReentrantLock $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: void <init>()>();
+
+        $r1 = new java.util.LinkedList;
+
+        specialinvoke $r1.<java.util.LinkedList: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue> = $r1;
+
+        $r2 = new java.util.concurrent.locks.ReentrantLock;
+
+        specialinvoke $r2.<java.util.concurrent.locks.ReentrantLock: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock> = $r2;
+
+        return;
+    }
+
+    boolean canProcess(io.fabric.sdk.android.services.concurrency.Dependency)
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        io.fabric.sdk.android.services.concurrency.Dependency $r1;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.concurrency.Dependency;
+
+        $z0 = interfaceinvoke $r1.<io.fabric.sdk.android.services.concurrency.Dependency: boolean areDependenciesMet()>();
+
+        return $z0;
+    }
+
+    public void clear()
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.util.Queue $r1;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.ReentrantLock $r3, $r3_1, $r3_2, $r3_3;
+
+(0)     $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+     label1:
+        $r3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+        interfaceinvoke $r1.<java.util.Queue: void clear()>();
+
+        specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: void clear()>();
+
+     label2:
+        $r3_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3_2 = Phi($r3 #0);
+
+        $r3_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    java.lang.Object[] concatenate(java.lang.Object[], java.lang.Object[])
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.lang.Object[] $r1, $r2, $r5;
+        int $i0, $i1, $i2;
+        java.lang.Class $r3, $r3_1;
+        java.lang.Object $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $r1 := @parameter0: java.lang.Object[];
+
+        $r2 := @parameter1: java.lang.Object[];
+
+        $i0 = lengthof $r1;
+
+        $i1 = lengthof $r2;
+
+        $r3 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.Class: java.lang.Class getComponentType()>();
+
+        $i2 = $i0 + $i1;
+
+        $r4 = staticinvoke <java.lang.reflect.Array: java.lang.Object newInstance(java.lang.Class,int)>($r3_1, $i2);
+
+        $r5 = (java.lang.Object[]) $r4;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r1, 0, $r5, 0, $i0);
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r2, 0, $r5, $i0, $i1);
+
+        return $r5;
+    }
+
+    public boolean contains(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.lang.Object $r1;
+        java.util.Queue $r2;
+        java.lang.Throwable $r3;
+        java.util.concurrent.locks.ReentrantLock $r4, $r4_1, $r4_2, $r4_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+(0)     $r1 := @parameter0: java.lang.Object;
+
+     label1:
+        $r4 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+        $z0 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: boolean contains(java.lang.Object)>($r1);
+
+     label2:
+(1)     if $z0 != 0 goto label5;
+
+     label3:
+        $r2 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+(2)     $z0_1 = interfaceinvoke $r2.<java.util.Queue: boolean contains(java.lang.Object)>($r1);
+
+     label4:
+(3)     if $z0_1 == 0 goto label7;
+
+     label5:
+        $z0_3 = Phi($z0 #1, $z0_1 #3);
+
+(4)     $z0_4 = 1;
+
+     label6:
+        $z0_5 = Phi($z0_4 #4, $z0_2 #5);
+
+        $r4_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return $z0_5;
+
+     label7:
+        $z0_2 = 0;
+
+(5)     goto label6;
+
+     label8:
+        $r3 := @caughtexception;
+
+        $r4_2 = Phi($r4 #0);
+
+        $z0_6 = Phi($z0 #0, $z0_1 #2);
+
+        $r4_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label8;
+        catch java.lang.Throwable from label3 to label4 with label8;
+    }
+
+    public int drainTo(java.util.Collection)
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.util.Collection $r1;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.ReentrantLock $r3, $r3_1, $r3_2, $r3_3;
+        int $i0, $i1, $i0_1, $i0_2;
+        java.util.Queue $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        boolean $z0;
+        java.lang.Object $r5;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+(0)     $r1 := @parameter0: java.util.Collection;
+
+     label1:
+        $r3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+        $i0 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: int drainTo(java.util.Collection)>($r1);
+
+        $r4 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+        $i1 = interfaceinvoke $r4.<java.util.Queue: int size()>();
+
+     label2:
+(1)     $i0_1 = $i0 + $i1;
+
+     label3:
+        $r4_1 = Phi($r4 #1, $r4_3 #4);
+
+(2)     $r4_2 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+        $z0 = interfaceinvoke $r4_2.<java.util.Queue: boolean isEmpty()>();
+
+     label4:
+        if $z0 != 0 goto label8;
+
+     label5:
+(3)     $r4_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+        $r5 = interfaceinvoke $r4_3.<java.util.Queue: java.lang.Object poll()>();
+
+        interfaceinvoke $r1.<java.util.Collection: boolean add(java.lang.Object)>($r5);
+
+     label6:
+(4)     goto label3;
+
+     label7:
+        $r2 := @caughtexception;
+
+        $r3_2 = Phi($r3 #0);
+
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $r4_4 = Phi($r4 #0, $r4_2 #2, $r4_3 #3);
+
+        $r3_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r2;
+
+     label8:
+        $r3_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return $i0_1;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label3 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+
+    public int drainTo(java.util.Collection, int)
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.util.Collection $r1;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.ReentrantLock $r3, $r3_1, $r3_2, $r3_3;
+        java.util.Queue $r4, $r4_1, $r4_2, $r4_3;
+        boolean $z0;
+        java.lang.Object $r5;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $r1 := @parameter0: java.util.Collection;
+
+(0)     $i0 := @parameter1: int;
+
+     label1:
+        $r3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+(1)     $i1 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: int drainTo(java.util.Collection,int)>($r1, $i0);
+
+     label2:
+        $i1_1 = Phi($i1 #1, $i1_2 #4);
+
+        $r4 = Phi($r4 #1, $r4_2 #4);
+
+(2)     $r4_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+        $z0 = interfaceinvoke $r4_1.<java.util.Queue: boolean isEmpty()>();
+
+     label3:
+        if $z0 != 0 goto label6;
+
+        if $i1_1 > $i0 goto label6;
+
+     label4:
+(3)     $r4_2 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+        $r5 = interfaceinvoke $r4_2.<java.util.Queue: java.lang.Object poll()>();
+
+        interfaceinvoke $r1.<java.util.Collection: boolean add(java.lang.Object)>($r5);
+
+     label5:
+        $i1_2 = $i1_1 + 1;
+
+(4)     goto label2;
+
+     label6:
+        $r3_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return $i1_1;
+
+     label7:
+        $r2 := @caughtexception;
+
+        $r3_2 = Phi($r3 #0);
+
+        $i1_3 = Phi($i1 #0, $i1_2 #4, $i1_1 #2);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #2, $r4_2 #3);
+
+        $r3_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label2 to label3 with label7;
+        catch java.lang.Throwable from label4 to label5 with label7;
+    }
+
+    io.fabric.sdk.android.services.concurrency.Dependency get(int, java.lang.Long, java.util.concurrent.TimeUnit) throws java.lang.InterruptedException
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        int $i0;
+        java.lang.Long $r1;
+        java.util.concurrent.TimeUnit $r2;
+        io.fabric.sdk.android.services.concurrency.Dependency $r3;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.Long;
+
+        $r2 := @parameter2: java.util.concurrent.TimeUnit;
+
+     label1:
+        $r3 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: io.fabric.sdk.android.services.concurrency.Dependency performOperation(int,java.lang.Long,java.util.concurrent.TimeUnit)>($i0, $r1, $r2);
+
+        if $r3 == null goto label3;
+
+        $z0 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: boolean canProcess(io.fabric.sdk.android.services.concurrency.Dependency)>($r3);
+
+        if $z0 == 0 goto label2;
+
+        return $r3;
+
+     label2:
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: boolean offerBlockedResult(int,io.fabric.sdk.android.services.concurrency.Dependency)>($i0, $r3);
+
+        goto label1;
+
+     label3:
+        return $r3;
+    }
+
+    boolean offerBlockedResult(int, io.fabric.sdk.android.services.concurrency.Dependency)
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        int $i0;
+        io.fabric.sdk.android.services.concurrency.Dependency $r1;
+        java.util.Queue $r2;
+        java.lang.Throwable $r3;
+        boolean $z0;
+        java.util.concurrent.locks.ReentrantLock $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $i0 := @parameter0: int;
+
+(0)     $r1 := @parameter1: io.fabric.sdk.android.services.concurrency.Dependency;
+
+     label1:
+        $r4 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+     label2:
+        if $i0 != 1 goto label4;
+
+     label3:
+        specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: boolean remove(java.lang.Object)>($r1);
+
+     label4:
+        $r2 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+        $z0 = interfaceinvoke $r2.<java.util.Queue: boolean offer(java.lang.Object)>($r1);
+
+     label5:
+        $r4_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return $z0;
+
+     label6:
+        $r3 := @caughtexception;
+
+        $r4_2 = Phi($r4 #0);
+
+        $r4_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label3 to label5 with label6;
+    }
+
+    public io.fabric.sdk.android.services.concurrency.Dependency peek()
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.lang.InterruptedException $r1;
+        io.fabric.sdk.android.services.concurrency.Dependency $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+     label1:
+        $r2 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: io.fabric.sdk.android.services.concurrency.Dependency get(int,java.lang.Long,java.util.concurrent.TimeUnit)>(1, null, null);
+
+     label2:
+        return $r2;
+
+     label3:
+        $r1 := @caughtexception;
+
+        return null;
+
+        catch java.lang.InterruptedException from label1 to label2 with label3;
+    }
+
+    public volatile java.lang.Object peek()
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        io.fabric.sdk.android.services.concurrency.Dependency $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $r1 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: io.fabric.sdk.android.services.concurrency.Dependency peek()>();
+
+        return $r1;
+    }
+
+    io.fabric.sdk.android.services.concurrency.Dependency performOperation(int, java.lang.Long, java.util.concurrent.TimeUnit) throws java.lang.InterruptedException
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        int $i0;
+        java.lang.Long $r1;
+        java.util.concurrent.TimeUnit $r2;
+        java.lang.Object $r3, $r3_1, $r3_2, $r3_3;
+        io.fabric.sdk.android.services.concurrency.Dependency $r4, $r4_1, $r4_2, $r4_3;
+        long $l1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.Long;
+
+        $r2 := @parameter2: java.util.concurrent.TimeUnit;
+
+        lookupswitch($i0)
+        {
+            case 0: goto label3;
+            case 1: goto label4;
+            case 2: goto label5;
+            case 3: goto label6;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        return null;
+
+     label3:
+        $r3 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: java.lang.Object take()>();
+
+        $r4 = (io.fabric.sdk.android.services.concurrency.Dependency) $r3;
+
+        return $r4;
+
+     label4:
+        $r3_1 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: java.lang.Object peek()>();
+
+        $r4_1 = (io.fabric.sdk.android.services.concurrency.Dependency) $r3_1;
+
+        return $r4_1;
+
+     label5:
+        $r3_2 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: java.lang.Object poll()>();
+
+        $r4_2 = (io.fabric.sdk.android.services.concurrency.Dependency) $r3_2;
+
+        return $r4_2;
+
+     label6:
+        $l1 = virtualinvoke $r1.<java.lang.Long: long longValue()>();
+
+        $r3_3 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: java.lang.Object poll(long,java.util.concurrent.TimeUnit)>($l1, $r2);
+
+        $r4_3 = (io.fabric.sdk.android.services.concurrency.Dependency) $r3_3;
+
+        return $r4_3;
+    }
+
+    public io.fabric.sdk.android.services.concurrency.Dependency poll()
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.lang.InterruptedException $r1;
+        io.fabric.sdk.android.services.concurrency.Dependency $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+     label1:
+        $r2 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: io.fabric.sdk.android.services.concurrency.Dependency get(int,java.lang.Long,java.util.concurrent.TimeUnit)>(2, null, null);
+
+     label2:
+        return $r2;
+
+     label3:
+        $r1 := @caughtexception;
+
+        return null;
+
+        catch java.lang.InterruptedException from label1 to label2 with label3;
+    }
+
+    public io.fabric.sdk.android.services.concurrency.Dependency poll(long, java.util.concurrent.TimeUnit) throws java.lang.InterruptedException
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        long $l0;
+        java.util.concurrent.TimeUnit $r1;
+        java.lang.Long $r2;
+        io.fabric.sdk.android.services.concurrency.Dependency $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.util.concurrent.TimeUnit;
+
+        $r2 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r3 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: io.fabric.sdk.android.services.concurrency.Dependency get(int,java.lang.Long,java.util.concurrent.TimeUnit)>(3, $r2, $r1);
+
+        return $r3;
+    }
+
+    public volatile java.lang.Object poll()
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        io.fabric.sdk.android.services.concurrency.Dependency $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $r1 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: io.fabric.sdk.android.services.concurrency.Dependency poll()>();
+
+        return $r1;
+    }
+
+    public volatile java.lang.Object poll(long, java.util.concurrent.TimeUnit) throws java.lang.InterruptedException
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        long $l0;
+        java.util.concurrent.TimeUnit $r1;
+        io.fabric.sdk.android.services.concurrency.Dependency $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.util.concurrent.TimeUnit;
+
+        $r2 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: io.fabric.sdk.android.services.concurrency.Dependency poll(long,java.util.concurrent.TimeUnit)>($l0, $r1);
+
+        return $r2;
+    }
+
+    public void recycleBlockedQueue()
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.util.Queue $r1;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.ReentrantLock $r3, $r3_1, $r3_2, $r3_3;
+        java.util.Iterator $r4;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.Object $r5;
+        io.fabric.sdk.android.services.concurrency.Dependency $r6;
+
+(0)     $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+     label1:
+        $r3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+(1)     $r4 = interfaceinvoke $r1.<java.util.Queue: java.util.Iterator iterator()>();
+
+     label2:
+        $z0 = Phi($z0 #1, $z0_2 #4, $z0_2 #5);
+
+(2)     $z0_1 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+     label3:
+        if $z0_1 == 0 goto label9;
+
+     label4:
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (io.fabric.sdk.android.services.concurrency.Dependency) $r5;
+
+(3)     $z0_2 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: boolean canProcess(io.fabric.sdk.android.services.concurrency.Dependency)>($r6);
+
+     label5:
+(4)     if $z0_2 == 0 goto label2;
+
+     label6:
+        specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: boolean offer(java.lang.Object)>($r6);
+
+        interfaceinvoke $r4.<java.util.Iterator: void remove()>();
+
+     label7:
+(5)     goto label2;
+
+     label8:
+        $r2 := @caughtexception;
+
+        $z0_3 = Phi($z0 #0, $z0_1 #2, $z0_2 #3);
+
+        $r3_2 = Phi($r3 #0);
+
+        $r3_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r2;
+
+     label9:
+        $r3_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label8;
+        catch java.lang.Throwable from label4 to label5 with label8;
+        catch java.lang.Throwable from label6 to label7 with label8;
+    }
+
+    public boolean remove(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.lang.Object $r1;
+        java.util.Queue $r2;
+        java.lang.Throwable $r3;
+        java.util.concurrent.locks.ReentrantLock $r4, $r4_1, $r4_2, $r4_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+(0)     $r1 := @parameter0: java.lang.Object;
+
+     label1:
+        $r4 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+        $z0 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: boolean remove(java.lang.Object)>($r1);
+
+     label2:
+(1)     if $z0 != 0 goto label5;
+
+     label3:
+        $r2 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+(2)     $z0_1 = interfaceinvoke $r2.<java.util.Queue: boolean remove(java.lang.Object)>($r1);
+
+     label4:
+(3)     if $z0_1 == 0 goto label7;
+
+     label5:
+        $z0_3 = Phi($z0 #1, $z0_1 #3);
+
+(4)     $z0_4 = 1;
+
+     label6:
+        $z0_5 = Phi($z0_4 #4, $z0_2 #5);
+
+        $r4_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return $z0_5;
+
+     label7:
+        $z0_2 = 0;
+
+(5)     goto label6;
+
+     label8:
+        $r3 := @caughtexception;
+
+        $z0_6 = Phi($z0 #0, $z0_1 #2);
+
+        $r4_2 = Phi($r4 #0);
+
+        $r4_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label8;
+        catch java.lang.Throwable from label3 to label4 with label8;
+    }
+
+    public boolean removeAll(java.util.Collection)
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.util.Collection $r1;
+        java.util.Queue $r2;
+        boolean $z0, $z1, $z0_1, $z0_2;
+        java.lang.Throwable $r3;
+        java.util.concurrent.locks.ReentrantLock $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+(0)     $r1 := @parameter0: java.util.Collection;
+
+     label1:
+        $r4 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+        $z0 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: boolean removeAll(java.util.Collection)>($r1);
+
+        $r2 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+        $z1 = interfaceinvoke $r2.<java.util.Queue: boolean removeAll(java.util.Collection)>($r1);
+
+     label2:
+        $z0_1 = $z0 | $z1;
+
+        $r4_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return $z0_1;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $z0_2 = Phi($z0 #0);
+
+        $r4_2 = Phi($r4 #0);
+
+        $r4_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public int size()
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.util.Queue $r1;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.ReentrantLock $r3, $r3_1, $r3_2, $r3_3;
+        int $i0, $i1, $i0_1, $i0_2;
+
+(0)     $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+     label1:
+        $r3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+        $i0 = interfaceinvoke $r1.<java.util.Queue: int size()>();
+
+        $i1 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: int size()>();
+
+     label2:
+        $i0_1 = $i0 + $i1;
+
+        $r3_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return $i0_1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $i0_2 = Phi($i0 #0);
+
+        $r3_2 = Phi($r3 #0);
+
+        $r3_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public io.fabric.sdk.android.services.concurrency.Dependency take() throws java.lang.InterruptedException
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        io.fabric.sdk.android.services.concurrency.Dependency $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $r1 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: io.fabric.sdk.android.services.concurrency.Dependency get(int,java.lang.Long,java.util.concurrent.TimeUnit)>(0, null, null);
+
+        return $r1;
+    }
+
+    public volatile java.lang.Object take() throws java.lang.InterruptedException
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        io.fabric.sdk.android.services.concurrency.Dependency $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+        $r1 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: io.fabric.sdk.android.services.concurrency.Dependency take()>();
+
+        return $r1;
+    }
+
+    public java.lang.Object[] toArray()
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.util.Queue $r1;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.ReentrantLock $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.Object[] $r4, $r5, $r4_1, $r4_2;
+
+(0)     $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+     label1:
+        $r3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+        $r4 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: java.lang.Object[] toArray()>();
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+        $r5 = interfaceinvoke $r1.<java.util.Queue: java.lang.Object[] toArray()>();
+
+(1)     $r4_1 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.lang.Object[] concatenate(java.lang.Object[],java.lang.Object[])>($r4, $r5);
+
+     label2:
+        $r3_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return $r4_1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r3_2 = Phi($r3 #0);
+
+        $r3_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r3_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public java.lang.Object[] toArray(java.lang.Object[])
+    {
+        io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue $r0;
+        java.util.Queue $r1;
+        java.lang.Throwable $r2;
+        java.lang.Object[] $r3, $r5, $r3_1, $r3_2, $r3_3;
+        java.util.concurrent.locks.ReentrantLock $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue;
+
+(0)     $r3 := @parameter0: java.lang.Object[];
+
+     label1:
+        $r4 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+        $r5 = specialinvoke $r0.<java.util.concurrent.PriorityBlockingQueue: java.lang.Object[] toArray(java.lang.Object[])>($r3);
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.Queue blockedQueue>;
+
+(1)     $r3_1 = interfaceinvoke $r1.<java.util.Queue: java.lang.Object[] toArray(java.lang.Object[])>($r3);
+
+(2)     $r3_2 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.lang.Object[] concatenate(java.lang.Object[],java.lang.Object[])>($r5, $r3_1);
+
+     label2:
+        $r4_1 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return $r3_2;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r4_2 = Phi($r4 #0);
+
+        $r3_3 = Phi($r3 #0, $r3_1 #1, $r3_2 #2);
+
+        $r4_3 = $r0.<io.fabric.sdk.android.services.concurrency.DependencyPriorityBlockingQueue: java.util.concurrent.locks.ReentrantLock lock>;
+
+        virtualinvoke $r4_3.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+}

@@ -1,0 +1,1255 @@
+public class com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment extends com.contextlogic.wish.ui.fragment.base.BaseContentFragment implements com.contextlogic.wish.api.core.ApiDataChangeNotificationListener
+{
+    public static final java.lang.String ARG_FOLLOWERS_SET_ID;
+    public static final java.lang.String ARG_FOLLOWING_SET_ID;
+    public static final java.lang.String ARG_SECTION_MODE;
+    public static final java.lang.String ARG_STANDALONE_MODE;
+    private static final int REQUEST_USER_COUNT;
+    private static final java.lang.String STORED_STATE_CURRENT_OFFSET;
+    private static final java.lang.String STORED_STATE_DATA;
+    private static final java.lang.String STORED_STATE_FOLLOWERS_SET_ID;
+    private static final java.lang.String STORED_STATE_FOLLOWING_SET_ID;
+    private static final java.lang.String STORED_STATE_NO_MORE_DATA;
+    private int currentOffset;
+    private java.lang.String dataStateStoreKey;
+    private android.view.View errorView;
+    public com.contextlogic.wish.api.service.FollowService followService;
+    private java.lang.String followersSetId;
+    private java.lang.String followingSetId;
+    private com.contextlogic.wish.api.service.GetProfileUsersService getProfileUsersService;
+    private com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter;
+    private android.widget.ListView listView;
+    private boolean loadingComplete;
+    private boolean loadingErrored;
+    private com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow;
+    private android.view.View loadingView;
+    private android.widget.TextView noItemsText;
+    private android.view.View noItemsView;
+    private boolean noMoreItems;
+    private com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode sectionMode;
+    public com.contextlogic.wish.api.service.UnfollowService unfollowService;
+    private boolean useStandaloneMode;
+    private java.util.ArrayList userList;
+
+    public void <init>()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void <init>()>();
+
+        return;
+    }
+
+    static void access$000(com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment, int, int, int)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        int $i0, $i1, $i2;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 := @parameter3: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void handleScrollLoad(int,int,int)>($i0, $i1, $i2);
+
+        return;
+    }
+
+    static void access$100(com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void loadNextPage()>();
+
+        return;
+    }
+
+    static void access$200(com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment, java.util.ArrayList, boolean)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        java.util.ArrayList $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r1 := @parameter1: java.util.ArrayList;
+
+        $z0 := @parameter2: boolean;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void handleLoadingSuccess(java.util.ArrayList,boolean)>($r1, $z0);
+
+        return;
+    }
+
+    static void access$300(com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void handleLoadingFailure()>();
+
+        return;
+    }
+
+    private void handleLoadingFailure()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingErrored> = 1;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void refreshViewState()>();
+
+        return;
+    }
+
+    private void handleLoadingSuccess(java.util.ArrayList, boolean)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter $r1;
+        android.widget.ListView $r2;
+        java.util.ArrayList $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        boolean $z0, $z1, $z0_1;
+        java.util.Iterator $r4;
+        java.lang.Object $r5;
+        com.contextlogic.wish.api.data.WishUser $r6;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r3 := @parameter0: java.util.ArrayList;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingComplete> = 1;
+
+(0)     $r4 = virtualinvoke $r3.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label1:
+        $r3_1 = Phi($r3 #0, $r3_2 #1);
+
+        $z1 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label2;
+
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (com.contextlogic.wish.api.data.WishUser) $r5;
+
+        $r3_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.util.ArrayList userList>;
+
+        virtualinvoke $r3_2.<java.util.ArrayList: boolean add(java.lang.Object)>($r6);
+
+(1)     goto label1;
+
+     label2:
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter: void notifyDataSetChanged()>();
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset>;
+
+        if $i0 != 0 goto label3;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.ListView listView>;
+
+        virtualinvoke $r2.<android.widget.ListView: void setSelectionAfterHeaderView()>();
+
+     label3:
+        $i0_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset>;
+
+        $i0_2 = $i0_1 + 25;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset> = $i0_2;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean noMoreItems> = $z0;
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean noMoreItems>;
+
+(2)     if $z0_1 != 0 goto label4;
+
+        $r3_3 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.util.ArrayList userList>;
+
+        $i0_3 = virtualinvoke $r3_3.<java.util.ArrayList: int size()>();
+
+(3)     if $i0_3 >= 10 goto label4;
+
+(4)     specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void loadNextPage()>();
+
+     label4:
+        $r3_4 = Phi($r3_1 #2, $r3_3 #3, $r3_3 #4);
+
+        $i0_4 = Phi($i0_2 #2, $i0_3 #3, $i0_3 #4);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void refreshViewState()>();
+
+        return;
+    }
+
+    private void handleScrollLoad(int, int, int)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        int $i0, $i1, $i2, $i2_1, $i2_2, $i2_3;
+        com.contextlogic.wish.api.service.GetProfileUsersService $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $i0 := @parameter0: int;
+
+        $i2 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingErrored>;
+
+(0)     if $z0 != 0 goto label2;
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean noMoreItems>;
+
+(1)     if $z0_1 != 0 goto label2;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.GetProfileUsersService getProfileUsersService>;
+
+        $z0_2 = virtualinvoke $r1.<com.contextlogic.wish.api.service.GetProfileUsersService: boolean isPending()>();
+
+(2)     if $z0_2 != 0 goto label2;
+
+        $z0_3 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingComplete>;
+
+(3)     if $z0_3 == 0 goto label2;
+
+(4)     $z0_4 = 1;
+
+     label1:
+        $z0_5 = Phi($z0_4 #4, $z0_7 #7);
+
+(5)     if $z0_5 == 0 goto label3;
+
+        $i2_1 = $i2 * 2;
+
+        $i2_2 = $i1 - $i2_1;
+
+(6)     if $i0 <= $i2_2 goto label3;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void loadNextPage()>();
+
+        return;
+
+     label2:
+        $z0_6 = Phi($z0 #0, $z0_1 #1, $z0_2 #2, $z0_3 #3);
+
+        $z0_7 = 0;
+
+(7)     goto label1;
+
+     label3:
+        $i2_3 = Phi($i2 #5, $i2_2 #6);
+
+        return;
+    }
+
+    private void hideAllUiElements()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        android.widget.ListView $r1;
+        android.view.View $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.ListView listView>;
+
+        virtualinvoke $r1.<android.widget.ListView: void setVisibility(int)>(8);
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.view.View errorView>;
+
+        virtualinvoke $r2.<android.view.View: void setVisibility(int)>(8);
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.view.View noItemsView>;
+
+        virtualinvoke $r2_1.<android.view.View: void setVisibility(int)>(8);
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.view.View loadingView>;
+
+        virtualinvoke $r2_2.<android.view.View: void setVisibility(int)>(8);
+
+        return;
+    }
+
+    private void loadNextPage()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$3 $r1;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$4 $r2;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$5 $r3;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$6 $r4;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode $r5, $r6, $r6_1, $r5_1, $r5_2, $r6_2;
+        com.contextlogic.wish.api.service.GetProfileUsersService $r7, $r7_1, $r7_2;
+        java.lang.String $r8, $r8_1, $r8_2;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingErrored> = 0;
+
+        $r5 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode sectionMode>;
+
+        $r6 = <com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode Following>;
+
+        if $r5 != $r6 goto label2;
+
+        $r7 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.GetProfileUsersService getProfileUsersService>;
+
+        $r8 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followingSetId>;
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset>;
+
+        $r1 = new com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$3;
+
+        specialinvoke $r1.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$3: void <init>(com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment)>($r0);
+
+        $r2 = new com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$4;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$4: void <init>(com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment)>($r0);
+
+(0)     virtualinvoke $r7.<com.contextlogic.wish.api.service.GetProfileUsersService: void requestService(java.lang.String,int,int,com.contextlogic.wish.api.service.GetProfileUsersService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($r8, $i0, 25, $r1, $r2);
+
+     label1:
+        $i0_1 = Phi($i0 #0, $i0 #1, $i0_2 #2);
+
+        $r6_1 = Phi($r6 #0, $r6_2 #1, $r6_2 #2);
+
+        $r5_1 = Phi($r5 #0, $r5_2 #1, $r5_2 #2);
+
+        $r7_1 = Phi($r7 #0, $r7 #1, $r7_2 #2);
+
+        $r8_1 = Phi($r8 #0, $r8 #1, $r8_2 #2);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void refreshViewState()>();
+
+        return;
+
+     label2:
+        $r5_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode sectionMode>;
+
+        $r6_2 = <com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode Followers>;
+
+(1)     if $r5_2 != $r6_2 goto label1;
+
+        $r7_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.GetProfileUsersService getProfileUsersService>;
+
+        $r8_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followersSetId>;
+
+        $i0_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset>;
+
+        $r3 = new com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$5;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$5: void <init>(com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment)>($r0);
+
+        $r4 = new com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$6;
+
+        specialinvoke $r4.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$6: void <init>(com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment)>($r0);
+
+        virtualinvoke $r7_2.<com.contextlogic.wish.api.service.GetProfileUsersService: void requestService(java.lang.String,int,int,com.contextlogic.wish.api.service.GetProfileUsersService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($r8_2, $i0_2, 25, $r3, $r4);
+
+(2)     goto label1;
+    }
+
+    private void refreshViewState()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode $r1, $r2;
+        android.widget.ListView $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        java.util.ArrayList $r4, $r4_1, $r4_2;
+        int $i0, $i0_1, $i0_2;
+        com.contextlogic.wish.ui.components.list.LoadingListRow $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        com.contextlogic.wish.api.service.GetProfileUsersService $r7, $r7_1;
+        android.view.View $r8, $r8_1, $r8_2;
+        android.widget.TextView $r9, $r9_1;
+        android.support.v4.app.FragmentActivity $r10, $r10_1;
+        java.lang.String $r11, $r11_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void hideAllUiElements()>();
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingErrored>;
+
+        if $z0 == 0 goto label4;
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.util.ArrayList userList>;
+
+        $i0 = virtualinvoke $r4.<java.util.ArrayList: int size()>();
+
+        if $i0 <= 0 goto label3;
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean noMoreItems>;
+
+        if $z0_1 == 0 goto label1;
+
+        $r5 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode NoMoreItems>;
+
+        virtualinvoke $r5.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6);
+
+        return;
+
+     label1:
+        $r7 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.GetProfileUsersService getProfileUsersService>;
+
+        $z0_2 = virtualinvoke $r7.<com.contextlogic.wish.api.service.GetProfileUsersService: boolean isPending()>();
+
+        if $z0_2 == 0 goto label2;
+
+        $r5_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6_1 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode Loading>;
+
+        virtualinvoke $r5_1.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6_1);
+
+        return;
+
+     label2:
+        $r5_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6_2 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode ClickToLoad>;
+
+        virtualinvoke $r5_2.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6_2);
+
+        return;
+
+     label3:
+        $r8 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.view.View errorView>;
+
+        virtualinvoke $r8.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label4:
+        $z0_3 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingComplete>;
+
+(0)     if $z0_3 == 0 goto label6;
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.util.ArrayList userList>;
+
+        $i0_1 = virtualinvoke $r4_1.<java.util.ArrayList: int size()>();
+
+(1)     if $i0_1 != 0 goto label6;
+
+        $r8_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.view.View noItemsView>;
+
+        virtualinvoke $r8_1.<android.view.View: void setVisibility(int)>(0);
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode sectionMode>;
+
+        $r2 = <com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode Followers>;
+
+        if $r1 != $r2 goto label5;
+
+        $r9 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.TextView noItemsText>;
+
+        $r10 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r11 = virtualinvoke $r10.<android.support.v4.app.FragmentActivity: java.lang.String getString(int)>(2131100113);
+
+        virtualinvoke $r9.<android.widget.TextView: void setText(java.lang.CharSequence)>($r11);
+
+        return;
+
+     label5:
+        $r9_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.TextView noItemsText>;
+
+        $r10_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r11_1 = virtualinvoke $r10_1.<android.support.v4.app.FragmentActivity: java.lang.String getString(int)>(2131100114);
+
+        virtualinvoke $r9_1.<android.widget.TextView: void setText(java.lang.CharSequence)>($r11_1);
+
+        return;
+
+     label6:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $z0_4 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingComplete>;
+
+        if $z0_4 == 0 goto label9;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.ListView listView>;
+
+        virtualinvoke $r3.<android.widget.ListView: void setVisibility(int)>(0);
+
+        $z0_5 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean noMoreItems>;
+
+        if $z0_5 == 0 goto label7;
+
+        $r5_3 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6_3 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode NoMoreItems>;
+
+        virtualinvoke $r5_3.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6_3);
+
+        return;
+
+     label7:
+        $r7_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.GetProfileUsersService getProfileUsersService>;
+
+        $z0_6 = virtualinvoke $r7_1.<com.contextlogic.wish.api.service.GetProfileUsersService: boolean isPending()>();
+
+        if $z0_6 == 0 goto label8;
+
+        $r5_4 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6_4 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode Loading>;
+
+        virtualinvoke $r5_4.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6_4);
+
+        return;
+
+     label8:
+        $r5_5 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r6_5 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode ClickToLoad>;
+
+        virtualinvoke $r5_5.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r6_5);
+
+        return;
+
+     label9:
+        $r8_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.view.View loadingView>;
+
+        virtualinvoke $r8_2.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+    }
+
+    protected com.contextlogic.wish.analytics.Analytics$PageViewType getAnalyticsPageViewType()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode $r1, $r2;
+        com.contextlogic.wish.analytics.Analytics$PageViewType r3, r3_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode sectionMode>;
+
+        $r2 = <com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode Followers>;
+
+        if $r1 != $r2 goto label1;
+
+        r3 = <com.contextlogic.wish.analytics.Analytics$PageViewType: com.contextlogic.wish.analytics.Analytics$PageViewType ProfileFollowers>;
+
+        return r3;
+
+     label1:
+        r3_1 = <com.contextlogic.wish.analytics.Analytics$PageViewType: com.contextlogic.wish.analytics.Analytics$PageViewType ProfileFollowing>;
+
+        return r3_1;
+    }
+
+    public int getLayoutResourceId()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        return 2130903185;
+    }
+
+    public void handleProfileUserClick(com.contextlogic.wish.api.data.WishUser)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.api.data.WishUser $r1;
+        com.contextlogic.wish.analytics.Analytics$EventType $r2;
+        com.contextlogic.wish.ui.fragment.profile.ProfileFragment $r3;
+        android.os.Bundle $r4;
+        com.contextlogic.wish.cache.RuntimeStateStore $r5;
+        java.lang.String $r6;
+        android.support.v4.app.FragmentActivity $r7;
+        com.contextlogic.wish.ui.activity.root.RootActivity $r8;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.WishUser;
+
+        $r2 = <com.contextlogic.wish.analytics.Analytics$EventType: com.contextlogic.wish.analytics.Analytics$EventType ProfileUserBucketSelect>;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void trackClick(com.contextlogic.wish.analytics.Analytics$EventType)>($r2);
+
+        $r3 = new com.contextlogic.wish.ui.fragment.profile.ProfileFragment;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.profile.ProfileFragment: void <init>()>();
+
+        $r4 = new android.os.Bundle;
+
+        specialinvoke $r4.<android.os.Bundle: void <init>()>();
+
+        $r5 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+        $r6 = virtualinvoke $r5.<com.contextlogic.wish.cache.RuntimeStateStore: java.lang.String storeState(java.lang.Object,java.lang.String)>($r1, null);
+
+        virtualinvoke $r4.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("ArgUser", $r6);
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void setArguments(android.os.Bundle)>($r4);
+
+        $r7 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r8 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r7;
+
+        virtualinvoke $r8.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r3, 0);
+
+        return;
+    }
+
+    public void handleResume()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        int $i0;
+        boolean $z0;
+        java.lang.String $r1, $r1_1, $r1_2;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter $r2, $r2_1, $r2_2, $r2_3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void handleResume()>();
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset>;
+
+(0)     if $i0 != -1 goto label1;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingComplete>;
+
+(1)     if $z0 != 0 goto label1;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followersSetId>;
+
+(2)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followingSetId>;
+
+(3)     if $r1_1 == null goto label1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset> = 0;
+
+(4)     specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void loadNextPage()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1 #1, $r1 #2, $r1_1 #3, $r1_1 #4);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void refreshViewState()>();
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+(5)     if $r2 == null goto label2;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+        virtualinvoke $r2_1.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter: void resumeCacheWarming()>();
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+(6)     virtualinvoke $r2_2.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter: void refreshFollowButtonStates()>();
+
+     label2:
+        $r2_3 = Phi($r2 #5, $r2_2 #6);
+
+        return;
+    }
+
+    public void initializeUi(android.view.View)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        boolean $z0;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode $r1, $r2;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$1 $r3;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$2 $r4;
+        android.view.View $r5, $r8, $r8_1, $r8_2, $r8_3, $r5_1;
+        com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper $r6, $r6_1, $r6_2;
+        java.lang.String $r7, $r7_1, $r7_2;
+        android.widget.ListView $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5;
+        android.widget.TextView $r10;
+        com.contextlogic.wish.ui.components.list.LoadingListRow $r11, $r11_1, $r11_2;
+        android.support.v4.app.FragmentActivity $r12, $r12_1;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter $r13, $r13_1, $r13_2;
+        java.util.ArrayList $r14;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r5 := @parameter0: android.view.View;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean useStandaloneMode>;
+
+        if $z0 == 0 goto label3;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode sectionMode>;
+
+        $r2 = <com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode Following>;
+
+        if $r1 != $r2 goto label2;
+
+        $r6 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper getNavigationBar()>();
+
+        $r7 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String getString(int)>(2131100112);
+
+(0)     virtualinvoke $r6.<com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper: void setTitle(java.lang.String)>($r7);
+
+     label1:
+        $r6_2 = Phi($r6 #0, $r6_1 #1, $r6 #2);
+
+        $r7_2 = Phi($r7 #0, $r7_1 #1, $r7 #2);
+
+        $r8 = virtualinvoke $r5.<android.view.View: android.view.View findViewById(int)>(2131559119);
+
+        $r9 = (android.widget.ListView) $r8;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.ListView listView> = $r9;
+
+        $r8_1 = virtualinvoke $r5.<android.view.View: android.view.View findViewById(int)>(2131559120);
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.view.View loadingView> = $r8_1;
+
+        $r8_2 = virtualinvoke $r5.<android.view.View: android.view.View findViewById(int)>(2131559121);
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.view.View noItemsView> = $r8_2;
+
+        $r8_3 = virtualinvoke $r5.<android.view.View: android.view.View findViewById(int)>(2131559123);
+
+        $r10 = (android.widget.TextView) $r8_3;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.TextView noItemsText> = $r10;
+
+        $r5_1 = virtualinvoke $r5.<android.view.View: android.view.View findViewById(int)>(2131559124);
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.view.View errorView> = $r5_1;
+
+        $r9_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.ListView listView>;
+
+        $r3 = new com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$1;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$1: void <init>(com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment)>($r0);
+
+        virtualinvoke $r9_1.<android.widget.ListView: void setOnScrollListener(android.widget.AbsListView$OnScrollListener)>($r3);
+
+        $r11 = new com.contextlogic.wish.ui.components.list.LoadingListRow;
+
+        $r12 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        specialinvoke $r11.<com.contextlogic.wish.ui.components.list.LoadingListRow: void <init>(android.content.Context)>($r12);
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow> = $r11;
+
+        $r11_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r4 = new com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$2;
+
+        specialinvoke $r4.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$2: void <init>(com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment)>($r0);
+
+        virtualinvoke $r11_1.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setOnClickListener(android.view.View$OnClickListener)>($r4);
+
+        $r9_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.ListView listView>;
+
+        $r11_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        virtualinvoke $r9_2.<android.widget.ListView: void addFooterView(android.view.View)>($r11_2);
+
+        $r13 = new com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter;
+
+        $r12_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r14 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.util.ArrayList userList>;
+
+        $r9_3 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.ListView listView>;
+
+        specialinvoke $r13.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter: void <init>(android.content.Context,java.util.ArrayList,android.widget.ListView,com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment)>($r12_1, $r14, $r9_3, $r0);
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter> = $r13;
+
+        $r9_4 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.ListView listView>;
+
+        $r13_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+        virtualinvoke $r9_4.<android.widget.ListView: void setAdapter(android.widget.ListAdapter)>($r13_1);
+
+        $r13_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+        virtualinvoke $r13_2.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter: void notifyDataSetChanged()>();
+
+        $r9_5 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.widget.ListView listView>;
+
+        virtualinvoke $r9_5.<android.widget.ListView: void setFadingEdgeLength(int)>(0);
+
+        return;
+
+     label2:
+        $r6_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper getNavigationBar()>();
+
+        $r7_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String getString(int)>(2131100034);
+
+        virtualinvoke $r6_1.<com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper: void setTitle(java.lang.String)>($r7_1);
+
+(1)     goto label1;
+
+     label3:
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void hideNavigationBar()>();
+
+(2)     goto label1;
+    }
+
+    public void loadingComplete(com.contextlogic.wish.api.data.WishUser)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.api.data.WishUser $r1;
+        int $i0;
+        boolean $z0;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.WishUser;
+
+        $r2 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishUser: java.lang.String getFollowersSetId()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followersSetId> = $r2;
+
+        $r2_1 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishUser: java.lang.String getFollowingSetId()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followingSetId> = $r2_1;
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset>;
+
+(0)     if $i0 != -1 goto label1;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingComplete>;
+
+(1)     if $z0 != 0 goto label1;
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followersSetId>;
+
+(2)     if $r2_2 == null goto label1;
+
+        $r2_3 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followingSetId>;
+
+(3)     if $r2_3 == null goto label1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset> = 0;
+
+(4)     specialinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: void loadNextPage()>();
+
+     label1:
+        $r2_4 = Phi($r2_1 #0, $r2_1 #1, $r2_2 #2, $r2_3 #3, $r2_3 #4);
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.api.service.GetProfileUsersService $r1;
+        com.contextlogic.wish.api.service.FollowService $r2;
+        com.contextlogic.wish.api.service.UnfollowService $r3;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode $r4;
+        android.os.Bundle $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode[] $r6;
+        int $i0;
+        java.lang.String $r7, $r7_1;
+        boolean $z0;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager $r8, $r8_1;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType $r9, $r9_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r5 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onCreate(android.os.Bundle)>($r5);
+
+        $r1 = new com.contextlogic.wish.api.service.GetProfileUsersService;
+
+        specialinvoke $r1.<com.contextlogic.wish.api.service.GetProfileUsersService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.GetProfileUsersService getProfileUsersService> = $r1;
+
+        $r2 = new com.contextlogic.wish.api.service.FollowService;
+
+        specialinvoke $r2.<com.contextlogic.wish.api.service.FollowService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.FollowService followService> = $r2;
+
+        $r3 = new com.contextlogic.wish.api.service.UnfollowService;
+
+        specialinvoke $r3.<com.contextlogic.wish.api.service.UnfollowService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.UnfollowService unfollowService> = $r3;
+
+        $r6 = staticinvoke <com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode[] values()>();
+
+        $r5_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.os.Bundle getArguments()>();
+
+        $i0 = virtualinvoke $r5_1.<android.os.Bundle: int getInt(java.lang.String)>("ArgSectionMode");
+
+        $r4 = $r6[$i0];
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment$SectionMode sectionMode> = $r4;
+
+        $r5_2 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.os.Bundle getArguments()>();
+
+        $r7 = virtualinvoke $r5_2.<android.os.Bundle: java.lang.String getString(java.lang.String)>("ArgFollowersSetId");
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followersSetId> = $r7;
+
+        $r5_3 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.os.Bundle getArguments()>();
+
+        $r7_1 = virtualinvoke $r5_3.<android.os.Bundle: java.lang.String getString(java.lang.String)>("ArgFollowingSetId");
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followingSetId> = $r7_1;
+
+        $r5_4 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: android.os.Bundle getArguments()>();
+
+        $z0 = virtualinvoke $r5_4.<android.os.Bundle: boolean getBoolean(java.lang.String,boolean)>("ArgStandaloneMode", 0);
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean useStandaloneMode> = $z0;
+
+        $r8 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $r9 = <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType UserFollowed>;
+
+        virtualinvoke $r8.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void addListener(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType,com.contextlogic.wish.api.core.ApiDataChangeNotificationListener)>($r9, $r0);
+
+        $r8_1 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $r9_1 = <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType UserUnfollowed>;
+
+        virtualinvoke $r8_1.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void addListener(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType,com.contextlogic.wish.api.core.ApiDataChangeNotificationListener)>($r9_1, $r0);
+
+        return;
+    }
+
+    public void onDestroy()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.cache.RuntimeStateStore $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onDestroy()>();
+
+        $r2 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String dataStateStoreKey>;
+
+        virtualinvoke $r2.<com.contextlogic.wish.cache.RuntimeStateStore: void clearState(java.lang.String)>($r1);
+
+        return;
+    }
+
+    public void onNotificationReceived(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType, android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType $r1;
+        android.os.Bundle $r2;
+        boolean $z0;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $z0 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean isVisible()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+(1)     if $r3 == null goto label1;
+
+        $r3_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+(2)     virtualinvoke $r3_1.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter: void refreshFollowButtonStates()>();
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3 #1, $r3_1 #2);
+
+        return;
+    }
+
+    public void onPause()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.api.service.GetProfileUsersService $r1;
+        com.contextlogic.wish.api.service.FollowService $r2;
+        com.contextlogic.wish.api.service.UnfollowService $r3;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter $r4, $r4_1, $r4_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onPause()>();
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+(0)     if $r4 == null goto label1;
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+(1)     virtualinvoke $r4_1.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter: void pauseCacheWarming()>();
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.GetProfileUsersService getProfileUsersService>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.GetProfileUsersService: void cancelAllRequests()>();
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.FollowService followService>;
+
+        virtualinvoke $r2.<com.contextlogic.wish.api.service.FollowService: void cancelAllRequests()>();
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.api.service.UnfollowService unfollowService>;
+
+        virtualinvoke $r3.<com.contextlogic.wish.api.service.UnfollowService: void cancelAllRequests()>();
+
+        return;
+    }
+
+    public void onSaveInstanceState(android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        android.os.Bundle $r1;
+        boolean $z0, $z0_1, $z0_2;
+        java.util.ArrayList $r2, $r2_1, $r2_2;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        com.contextlogic.wish.cache.RuntimeStateStore $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onSaveInstanceState(android.os.Bundle)>($r1);
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingComplete>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.util.ArrayList userList>;
+
+        $i0 = virtualinvoke $r2.<java.util.ArrayList: int size()>();
+
+(1)     if $i0 <= 0 goto label1;
+
+        $i0_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset>;
+
+(2)     if $i0_1 < 0 goto label1;
+
+        $r3 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.util.ArrayList userList>;
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String dataStateStoreKey>;
+
+        $r4_1 = virtualinvoke $r3.<com.contextlogic.wish.cache.RuntimeStateStore: java.lang.String storeState(java.lang.Object,java.lang.String)>($r2_1, $r4);
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String dataStateStoreKey> = $r4_1;
+
+        $r4_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String dataStateStoreKey>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putSerializable(java.lang.String,java.io.Serializable)>("StoredStateData", $r4_2);
+
+        $i0_2 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putInt(java.lang.String,int)>("StoredStateCurrentOffset", $i0_2);
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean noMoreItems>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putBoolean(java.lang.String,boolean)>("StoredStateNoMoreData", $z0_1);
+
+        $r4_3 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followersSetId>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("StoredStateFollowersSetId", $r4_3);
+
+        $r4_4 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followingSetId>;
+
+(3)     virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("StoredStateFollowingSetId", $r4_4);
+
+     label1:
+        $i0_3 = Phi($i0 #0, $i0 #1, $i0_1 #2, $i0_2 #3);
+
+        $r4_5 = Phi($r4 #0, $r4 #1, $r4 #2, $r4_4 #3);
+
+        $r2_2 = Phi($r2 #0, $r2 #1, $r2 #2, $r2_1 #3);
+
+        $z0_2 = Phi($z0 #0, $z0 #1, $z0 #2, $z0_1 #3);
+
+        return;
+    }
+
+    public void refresh()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        java.util.ArrayList $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingErrored> = 0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingComplete> = 0;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.util.ArrayList userList>;
+
+        virtualinvoke $r1.<java.util.ArrayList: void clear()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean noMoreItems> = 0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset> = -1;
+
+        return;
+    }
+
+    protected void releaseImages()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter: void releaseImages()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    protected void restoreImages()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter listAdapter>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListAdapter: void restoreImages()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void restoreState(android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+        android.os.Bundle $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3;
+        com.contextlogic.wish.cache.RuntimeStateStore $r3;
+        java.lang.Object $r4;
+        java.util.ArrayList $r5, $r5_1;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void restoreState(android.os.Bundle)>($r1);
+
+(0)     if $r1 == null goto label1;
+
+        $z0 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("StoredStateData");
+
+(1)     if $z0 == 0 goto label1;
+
+        $z0_1 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("StoredStateNoMoreData");
+
+(2)     if $z0_1 == 0 goto label1;
+
+        $z0_2 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("StoredStateCurrentOffset");
+
+(3)     if $z0_2 == 0 goto label1;
+
+        $r2 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("StoredStateData");
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String dataStateStoreKey> = $r2;
+
+        $r3 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String dataStateStoreKey>;
+
+        $r4 = virtualinvoke $r3.<com.contextlogic.wish.cache.RuntimeStateStore: java.lang.Object getState(java.lang.String)>($r2_1);
+
+        $r5 = (java.util.ArrayList) $r4;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.util.ArrayList userList> = $r5;
+
+        $i0 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String)>("StoredStateCurrentOffset");
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset> = $i0;
+
+        $z0_3 = virtualinvoke $r1.<android.os.Bundle: boolean getBoolean(java.lang.String)>("StoredStateNoMoreData");
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean noMoreItems> = $z0_3;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingComplete> = 1;
+
+        $r2_2 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("StoredStateFollowersSetId");
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followersSetId> = $r2_2;
+
+        $r2_3 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("StoredStateFollowingSetId");
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.lang.String followingSetId> = $r2_3;
+
+        return;
+
+     label1:
+        $z0_4 = Phi($z0 #0, $z0 #1, $z0_1 #2, $z0_2 #3);
+
+        $r5_1 = new java.util.ArrayList;
+
+        specialinvoke $r5_1.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: java.util.ArrayList userList> = $r5_1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean noMoreItems> = 0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: int currentOffset> = -1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment: boolean loadingComplete> = 0;
+
+        return;
+    }
+
+    public boolean useCanvasBackground()
+    {
+        com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.profile.userlist.ProfileUserListFragment;
+
+        return 1;
+    }
+}

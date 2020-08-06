@@ -1,0 +1,1184 @@
+public class bolts.AppLinkNavigation extends java.lang.Object
+{
+    private static final java.lang.String KEY_NAME_REFERER_APP_LINK;
+    private static final java.lang.String KEY_NAME_REFERER_APP_LINK_APP_NAME;
+    private static final java.lang.String KEY_NAME_REFERER_APP_LINK_PACKAGE;
+    private static final java.lang.String KEY_NAME_USER_AGENT;
+    private static final java.lang.String KEY_NAME_VERSION;
+    private static final java.lang.String VERSION;
+    private static bolts.AppLinkResolver defaultResolver;
+    private final bolts.AppLink appLink;
+    private final android.os.Bundle appLinkData;
+    private final android.os.Bundle extras;
+
+    public void <init>(bolts.AppLink, android.os.Bundle, android.os.Bundle)
+    {
+        bolts.AppLinkNavigation $r0;
+        bolts.AppLink $r1;
+        java.lang.IllegalArgumentException $r2;
+        android.os.Bundle $r3, $r4, $r3_1, $r3_2, $r4_1, $r4_2;
+
+        $r0 := @this: bolts.AppLinkNavigation;
+
+        $r1 := @parameter0: bolts.AppLink;
+
+        $r3 := @parameter1: android.os.Bundle;
+
+        $r4 := @parameter2: android.os.Bundle;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("appLink must not be null.");
+
+        throw $r2;
+
+     label1:
+(0)     if $r3 != null goto label2;
+
+        $r3_1 = new android.os.Bundle;
+
+(1)     specialinvoke $r3_1.<android.os.Bundle: void <init>()>();
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+(2)     if $r4 != null goto label3;
+
+        $r4_1 = new android.os.Bundle;
+
+(3)     specialinvoke $r4_1.<android.os.Bundle: void <init>()>();
+
+     label3:
+        $r4_2 = Phi($r4 #2, $r4_1 #3);
+
+        $r0.<bolts.AppLinkNavigation: bolts.AppLink appLink> = $r1;
+
+        $r0.<bolts.AppLinkNavigation: android.os.Bundle extras> = $r3_2;
+
+        $r0.<bolts.AppLinkNavigation: android.os.Bundle appLinkData> = $r4_2;
+
+        return;
+    }
+
+    private android.os.Bundle buildAppLinkDataForNavigation(android.content.Context)
+    {
+        bolts.AppLinkNavigation $r0;
+        android.content.Context $r1;
+        android.os.Bundle $r2, $r3, $r6, $r3_1;
+        int $i0;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3;
+        android.content.pm.ApplicationInfo $r5;
+        bolts.AppLink $r7;
+        android.net.Uri $r8;
+
+        $r0 := @this: bolts.AppLinkNavigation;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = new android.os.Bundle;
+
+        specialinvoke $r2.<android.os.Bundle: void <init>()>();
+
+        $r3 = new android.os.Bundle;
+
+        specialinvoke $r3.<android.os.Bundle: void <init>()>();
+
+(0)     if $r1 == null goto label2;
+
+        $r4 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        if $r4 == null goto label1;
+
+        virtualinvoke $r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("package", $r4);
+
+     label1:
+        $r5 = virtualinvoke $r1.<android.content.Context: android.content.pm.ApplicationInfo getApplicationInfo()>();
+
+(1)     if $r5 == null goto label2;
+
+        $i0 = $r5.<android.content.pm.PackageItemInfo: int labelRes>;
+
+        $r4_1 = virtualinvoke $r1.<android.content.Context: java.lang.String getString(int)>($i0);
+
+(2)     if $r4_1 == null goto label2;
+
+(3)     virtualinvoke $r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("app_name", $r4_1);
+
+     label2:
+        $r4_2 = Phi($r4 #0, $r4 #1, $r4_1 #2, $r4_1 #3);
+
+        $r6 = virtualinvoke $r0.<bolts.AppLinkNavigation: android.os.Bundle getAppLinkData()>();
+
+        virtualinvoke $r2.<android.os.Bundle: void putAll(android.os.Bundle)>($r6);
+
+        $r7 = virtualinvoke $r0.<bolts.AppLinkNavigation: bolts.AppLink getAppLink()>();
+
+        $r8 = virtualinvoke $r7.<bolts.AppLink: android.net.Uri getSourceUrl()>();
+
+        $r4_3 = virtualinvoke $r8.<android.net.Uri: java.lang.String toString()>();
+
+        virtualinvoke $r2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("target_url", $r4_3);
+
+        virtualinvoke $r2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("version", "1.0");
+
+        virtualinvoke $r2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("user_agent", "Bolts Android 1.1.2");
+
+        virtualinvoke $r2.<android.os.Bundle: void putBundle(java.lang.String,android.os.Bundle)>("referer_app_link", $r3);
+
+        $r3_1 = virtualinvoke $r0.<bolts.AppLinkNavigation: android.os.Bundle getExtras()>();
+
+        virtualinvoke $r2.<android.os.Bundle: void putBundle(java.lang.String,android.os.Bundle)>("extras", $r3_1);
+
+        return $r2;
+    }
+
+    public static bolts.AppLinkResolver getDefaultResolver()
+    {
+        bolts.AppLinkResolver r0;
+
+        r0 = <bolts.AppLinkNavigation: bolts.AppLinkResolver defaultResolver>;
+
+        return r0;
+    }
+
+    private org.json.JSONObject getJSONForBundle(android.os.Bundle) throws org.json.JSONException
+    {
+        bolts.AppLinkNavigation $r0;
+        android.os.Bundle $r1;
+        org.json.JSONObject $r2;
+        java.util.Set $r3;
+        java.util.Iterator $r4;
+        boolean $z0;
+        java.lang.Object $r5, $r5_1, $r5_2, $r5_3;
+        java.lang.String $r6;
+
+        $r0 := @this: bolts.AppLinkNavigation;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $r2 = new org.json.JSONObject;
+
+        specialinvoke $r2.<org.json.JSONObject: void <init>()>();
+
+        $r3 = virtualinvoke $r1.<android.os.Bundle: java.util.Set keySet()>();
+
+(0)     $r4 = interfaceinvoke $r3.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $r5 = Phi($r5 #0, $r5_3 #1);
+
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r5_1 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (java.lang.String) $r5_1;
+
+        $r5_2 = virtualinvoke $r1.<android.os.Bundle: java.lang.Object get(java.lang.String)>($r6);
+
+        $r5_3 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r5_2);
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>($r6, $r5_3);
+
+(1)     goto label1;
+
+     label2:
+        return $r2;
+    }
+
+    private java.lang.Object getJSONValue(java.lang.Object) throws org.json.JSONException
+    {
+        bolts.AppLinkNavigation $r0;
+        char $c0;
+        java.lang.CharSequence $r1;
+        float $f0;
+        int $i1, $i3, $i5, $i1_1, $i3_1, $i3_2, $i1_2, $i1_3, $i3_3, $i3_4, $i3_5, $i1_4, $i3_6, $i3_7, $i3_8, $i1_5, $i3_9, $i3_10, $i3_11, $i1_6, $i3_12, $i3_13, $i3_14, $i1_7, $i3_15, $i3_16, $i3_17, $i3_18, $i1_8, $i5_1, $i1_9, $i5_2, $i1_10, $i3_19, $i3_20, $i3_21, $i1_11, $i3_22, $i3_23, $i3_24, $i1_12, $i3_25, $i3_26, $i3_27, $i3_28, $i1_13, $i5_3;
+        short $s2;
+        java.lang.Object $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6, $r2_7, $r2_8, $r2_9, $r2_10, $r2_11, $r2_12, $r2_13, $r2_14, $r2_15, $r2_16, $r2_17, $r2_18, $r2_19, $r2_20, $r2_21, $r2_22, $r2_23, $r2_24, $r2_25;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11, $z0_12, $z0_13, $z0_14, $z0_15, $z0_16, $z0_17, $z0_18, $z0_19, $z0_20, $z0_21, $z0_22, $z0_23;
+        android.os.Bundle $r3;
+        org.json.JSONObject $r4;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        org.json.JSONArray $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8, $r6_9, $r6_10, $r6_11;
+        java.util.List $r7;
+        java.util.Iterator $r8;
+        android.util.SparseArray $r9;
+        java.lang.Number $r10, $r10_1;
+        double $d0, $d0_1, $d0_2, $d0_3;
+        java.lang.Double $r11, $r11_1, $r11_2, $r11_3;
+        long $l4, $l4_1, $l4_2, $l4_3;
+        java.lang.Long $r12, $r12_1, $r12_2, $r12_3;
+        boolean[] $r13;
+        java.lang.Boolean $r14;
+        char[] $r15;
+        java.lang.Character $r16;
+        java.lang.CharSequence[] $r17;
+        double[] $r18;
+        float[] $r19;
+        java.lang.Float $r20;
+        int[] $r21;
+        java.lang.Integer $r22;
+        long[] $r23;
+        short[] $r24;
+        java.lang.Short $r25;
+        java.lang.String[] $r26;
+
+        $r0 := @this: bolts.AppLinkNavigation;
+
+        $r2 := @parameter0: java.lang.Object;
+
+        $z0 = $r2 instanceof android.os.Bundle;
+
+        if $z0 == 0 goto label01;
+
+        $r3 = (android.os.Bundle) $r2;
+
+        $r4 = specialinvoke $r0.<bolts.AppLinkNavigation: org.json.JSONObject getJSONForBundle(android.os.Bundle)>($r3);
+
+        return $r4;
+
+     label01:
+        $z0_1 = $r2 instanceof java.lang.CharSequence;
+
+        if $z0_1 == 0 goto label02;
+
+        $r5 = virtualinvoke $r2.<java.lang.Object: java.lang.String toString()>();
+
+        return $r5;
+
+     label02:
+        $z0_2 = $r2 instanceof java.util.List;
+
+        if $z0_2 == 0 goto label04;
+
+        $r6 = new org.json.JSONArray;
+
+        specialinvoke $r6.<org.json.JSONArray: void <init>()>();
+
+        $r7 = (java.util.List) $r2;
+
+(0)     $r8 = interfaceinvoke $r7.<java.util.List: java.util.Iterator iterator()>();
+
+     label03:
+        $r2_1 = Phi($r2 #0, $r2_3 #2);
+
+        $z0_3 = Phi($z0_2 #0, $z0_4 #2);
+
+        $z0_4 = interfaceinvoke $r8.<java.util.Iterator: boolean hasNext()>();
+
+(1)     if $z0_4 == 0 goto label30;
+
+        $r2_2 = interfaceinvoke $r8.<java.util.Iterator: java.lang.Object next()>();
+
+        $r2_3 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r2_2);
+
+        virtualinvoke $r6.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2_3);
+
+(2)     goto label03;
+
+     label04:
+        $z0_5 = $r2 instanceof android.util.SparseArray;
+
+        if $z0_5 == 0 goto label06;
+
+        $r6_1 = new org.json.JSONArray;
+
+        specialinvoke $r6_1.<org.json.JSONArray: void <init>()>();
+
+        $r9 = (android.util.SparseArray) $r2;
+
+(3)     $i1 = 0;
+
+     label05:
+        $r2_4 = Phi($r2 #3, $r2_6 #5);
+
+        $i3 = Phi($i3 #3, $i3_2 #5);
+
+        $i1_1 = Phi($i1 #3, $i1_2 #5);
+
+        $i3_1 = virtualinvoke $r9.<android.util.SparseArray: int size()>();
+
+(4)     if $i1_1 >= $i3_1 goto label30;
+
+        $i3_2 = virtualinvoke $r9.<android.util.SparseArray: int keyAt(int)>($i1_1);
+
+        $r2_5 = virtualinvoke $r9.<android.util.SparseArray: java.lang.Object valueAt(int)>($i1_1);
+
+        $r2_6 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r2_5);
+
+        virtualinvoke $r6_1.<org.json.JSONArray: org.json.JSONArray put(int,java.lang.Object)>($i3_2, $r2_6);
+
+        $i1_2 = $i1_1 + 1;
+
+(5)     goto label05;
+
+     label06:
+        $z0_6 = $r2 instanceof java.lang.Character;
+
+        if $z0_6 == 0 goto label07;
+
+        $r5_1 = virtualinvoke $r2.<java.lang.Object: java.lang.String toString()>();
+
+        return $r5_1;
+
+     label07:
+        $z0_7 = $r2 instanceof java.lang.Boolean;
+
+        if $z0_7 == 0 goto label08;
+
+        return $r2;
+
+     label08:
+        $z0_8 = $r2 instanceof java.lang.Number;
+
+        if $z0_8 == 0 goto label11;
+
+        $z0_9 = $r2 instanceof java.lang.Double;
+
+(6)     if $z0_9 != 0 goto label09;
+
+        $z0_10 = $r2 instanceof java.lang.Float;
+
+(7)     if $z0_10 == 0 goto label10;
+
+     label09:
+        $z0_11 = Phi($z0_9 #6, $z0_10 #7);
+
+        $r10_1 = (java.lang.Number) $r2;
+
+        $d0 = virtualinvoke $r10_1.<java.lang.Number: double doubleValue()>();
+
+        $r11 = staticinvoke <java.lang.Double: java.lang.Double valueOf(double)>($d0);
+
+        return $r11;
+
+     label10:
+        $r10 = (java.lang.Number) $r2;
+
+        $l4 = virtualinvoke $r10.<java.lang.Number: long longValue()>();
+
+        $r12 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l4);
+
+        return $r12;
+
+     label11:
+        $z0_12 = $r2 instanceof boolean[];
+
+        if $z0_12 == 0 goto label13;
+
+        $r6_2 = new org.json.JSONArray;
+
+        specialinvoke $r6_2.<org.json.JSONArray: void <init>()>();
+
+        $r13 = (boolean[]) $r2;
+
+        $i1_3 = lengthof $r13;
+
+(8)     $i3_3 = 0;
+
+     label12:
+        $r2_7 = Phi($r2 #8, $r2_8 #10);
+
+        $i3_4 = Phi($i3_3 #8, $i3_5 #10);
+
+        $z0_13 = Phi($z0_12 #8, $z0_14 #10);
+
+(9)     if $i3_4 >= $i1_3 goto label30;
+
+        $z0_14 = $r13[$i3_4];
+
+        $r14 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>($z0_14);
+
+        $r2_8 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r14);
+
+        virtualinvoke $r6_2.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2_8);
+
+        $i3_5 = $i3_4 + 1;
+
+(10)    goto label12;
+
+     label13:
+        $z0_15 = $r2 instanceof char[];
+
+        if $z0_15 == 0 goto label15;
+
+        $r6_3 = new org.json.JSONArray;
+
+        specialinvoke $r6_3.<org.json.JSONArray: void <init>()>();
+
+        $r15 = (char[]) $r2;
+
+        $i1_4 = lengthof $r15;
+
+(11)    $i3_6 = 0;
+
+     label14:
+        $r2_9 = Phi($r2 #11, $r2_10 #13);
+
+        $i3_7 = Phi($i3_6 #11, $i3_8 #13);
+
+(12)    if $i3_7 >= $i1_4 goto label30;
+
+        $c0 = $r15[$i3_7];
+
+        $r16 = staticinvoke <java.lang.Character: java.lang.Character valueOf(char)>($c0);
+
+        $r2_10 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r16);
+
+        virtualinvoke $r6_3.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2_10);
+
+        $i3_8 = $i3_7 + 1;
+
+(13)    goto label14;
+
+     label15:
+        $z0_16 = $r2 instanceof java.lang.CharSequence[];
+
+        if $z0_16 == 0 goto label17;
+
+        $r6_4 = new org.json.JSONArray;
+
+        specialinvoke $r6_4.<org.json.JSONArray: void <init>()>();
+
+        $r17 = (java.lang.CharSequence[]) $r2;
+
+        $i1_5 = lengthof $r17;
+
+(14)    $i3_9 = 0;
+
+     label16:
+        $r2_11 = Phi($r2 #14, $r2_12 #16);
+
+        $i3_10 = Phi($i3_9 #14, $i3_11 #16);
+
+(15)    if $i3_10 >= $i1_5 goto label30;
+
+        $r1 = $r17[$i3_10];
+
+        $r2_12 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r1);
+
+        virtualinvoke $r6_4.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2_12);
+
+        $i3_11 = $i3_10 + 1;
+
+(16)    goto label16;
+
+     label17:
+        $z0_17 = $r2 instanceof double[];
+
+        if $z0_17 == 0 goto label19;
+
+        $r6_5 = new org.json.JSONArray;
+
+        specialinvoke $r6_5.<org.json.JSONArray: void <init>()>();
+
+        $r18 = (double[]) $r2;
+
+        $i1_6 = lengthof $r18;
+
+(17)    $i3_12 = 0;
+
+     label18:
+        $r2_13 = Phi($r2 #17, $r2_14 #19);
+
+        $r11_1 = Phi($r11 #17, $r11_2 #19);
+
+        $i3_13 = Phi($i3_12 #17, $i3_14 #19);
+
+        $d0_1 = Phi($d0 #17, $d0_2 #19);
+
+(18)    if $i3_13 >= $i1_6 goto label30;
+
+        $d0_2 = $r18[$i3_13];
+
+        $r11_2 = staticinvoke <java.lang.Double: java.lang.Double valueOf(double)>($d0_2);
+
+        $r2_14 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r11_2);
+
+        virtualinvoke $r6_5.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2_14);
+
+        $i3_14 = $i3_13 + 1;
+
+(19)    goto label18;
+
+     label19:
+        $z0_18 = $r2 instanceof float[];
+
+        if $z0_18 == 0 goto label21;
+
+        $r6_6 = new org.json.JSONArray;
+
+        specialinvoke $r6_6.<org.json.JSONArray: void <init>()>();
+
+        $r19 = (float[]) $r2;
+
+        $i1_7 = lengthof $r19;
+
+(20)    $i3_15 = 0;
+
+     label20:
+        $r2_15 = Phi($r2 #20, $r2_16 #22);
+
+        $i3_16 = Phi($i3_15 #20, $i3_17 #22);
+
+(21)    if $i3_16 >= $i1_7 goto label30;
+
+        $f0 = $r19[$i3_16];
+
+        $r20 = staticinvoke <java.lang.Float: java.lang.Float valueOf(float)>($f0);
+
+        $r2_16 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r20);
+
+        virtualinvoke $r6_6.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2_16);
+
+        $i3_17 = $i3_16 + 1;
+
+(22)    goto label20;
+
+     label21:
+        $z0_19 = $r2 instanceof int[];
+
+        if $z0_19 == 0 goto label23;
+
+        $r6_7 = new org.json.JSONArray;
+
+        specialinvoke $r6_7.<org.json.JSONArray: void <init>()>();
+
+        $r21 = (int[]) $r2;
+
+        $i3_18 = lengthof $r21;
+
+(23)    $i5 = 0;
+
+     label22:
+        $r2_17 = Phi($r2 #23, $r2_18 #25);
+
+        $i1_8 = Phi($i1 #23, $i1_9 #25);
+
+        $i5_1 = Phi($i5 #23, $i5_2 #25);
+
+(24)    if $i5_1 >= $i3_18 goto label30;
+
+        $i1_9 = $r21[$i5_1];
+
+        $r22 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1_9);
+
+        $r2_18 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r22);
+
+        virtualinvoke $r6_7.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2_18);
+
+        $i5_2 = $i5_1 + 1;
+
+(25)    goto label22;
+
+     label23:
+        $z0_20 = $r2 instanceof long[];
+
+        if $z0_20 == 0 goto label25;
+
+        $r6_8 = new org.json.JSONArray;
+
+        specialinvoke $r6_8.<org.json.JSONArray: void <init>()>();
+
+        $r23 = (long[]) $r2;
+
+        $i1_10 = lengthof $r23;
+
+(26)    $i3_19 = 0;
+
+     label24:
+        $r2_19 = Phi($r2 #26, $r2_20 #28);
+
+        $i3_20 = Phi($i3_19 #26, $i3_21 #28);
+
+        $l4_1 = Phi($l4 #26, $l4_2 #28);
+
+        $r12_1 = Phi($r12 #26, $r12_2 #28);
+
+(27)    if $i3_20 >= $i1_10 goto label30;
+
+        $l4_2 = $r23[$i3_20];
+
+        $r12_2 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l4_2);
+
+        $r2_20 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r12_2);
+
+        virtualinvoke $r6_8.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2_20);
+
+        $i3_21 = $i3_20 + 1;
+
+(28)    goto label24;
+
+     label25:
+        $z0_21 = $r2 instanceof short[];
+
+        if $z0_21 == 0 goto label27;
+
+        $r6_9 = new org.json.JSONArray;
+
+        specialinvoke $r6_9.<org.json.JSONArray: void <init>()>();
+
+        $r24 = (short[]) $r2;
+
+        $i1_11 = lengthof $r24;
+
+(29)    $i3_22 = 0;
+
+     label26:
+        $r2_21 = Phi($r2 #29, $r2_22 #31);
+
+        $i3_23 = Phi($i3_22 #29, $i3_24 #31);
+
+(30)    if $i3_23 >= $i1_11 goto label30;
+
+        $s2 = $r24[$i3_23];
+
+        $r25 = staticinvoke <java.lang.Short: java.lang.Short valueOf(short)>($s2);
+
+        $r2_22 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r25);
+
+        virtualinvoke $r6_9.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2_22);
+
+        $i3_24 = $i3_23 + 1;
+
+(31)    goto label26;
+
+     label27:
+        $z0_22 = $r2 instanceof java.lang.String[];
+
+        if $z0_22 == 0 goto label29;
+
+        $r6_10 = new org.json.JSONArray;
+
+        specialinvoke $r6_10.<org.json.JSONArray: void <init>()>();
+
+        $r26 = (java.lang.String[]) $r2;
+
+        $i1_12 = lengthof $r26;
+
+(32)    $i3_25 = 0;
+
+     label28:
+        $r2_23 = Phi($r2 #32, $r2_24 #34);
+
+        $r5_2 = Phi($r5 #32, $r5_3 #34);
+
+        $i3_26 = Phi($i3_25 #32, $i3_27 #34);
+
+(33)    if $i3_26 >= $i1_12 goto label30;
+
+        $r5_3 = $r26[$i3_26];
+
+        $r2_24 = specialinvoke $r0.<bolts.AppLinkNavigation: java.lang.Object getJSONValue(java.lang.Object)>($r5_3);
+
+        virtualinvoke $r6_10.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2_24);
+
+        $i3_27 = $i3_26 + 1;
+
+(34)    goto label28;
+
+     label29:
+        return null;
+
+     label30:
+        $r2_25 = Phi($r2_1 #1, $r2_4 #4, $r2_7 #9, $r2_9 #12, $r2_11 #15, $r2_13 #18, $r2_15 #21, $r2_17 #24, $r2_19 #27, $r2_21 #30, $r2_23 #33);
+
+        $r11_3 = Phi($r11 #1, $r11 #4, $r11 #9, $r11 #12, $r11 #15, $r11_1 #18, $r11 #21, $r11 #24, $r11 #27, $r11 #30, $r11 #33);
+
+        $r5_4 = Phi($r5 #1, $r5 #4, $r5 #9, $r5 #12, $r5 #15, $r5 #18, $r5 #21, $r5 #24, $r5 #27, $r5 #30, $r5_2 #33);
+
+        $i3_28 = Phi($i3 #1, $i3_1 #4, $i3_4 #9, $i3_7 #12, $i3_10 #15, $i3_13 #18, $i3_16 #21, $i3_18 #24, $i3_20 #27, $i3_23 #30, $i3_26 #33);
+
+        $i1_13 = Phi($i1 #1, $i1_1 #4, $i1_3 #9, $i1_4 #12, $i1_5 #15, $i1_6 #18, $i1_7 #21, $i1_8 #24, $i1_10 #27, $i1_11 #30, $i1_12 #33);
+
+        $l4_3 = Phi($l4 #1, $l4 #4, $l4 #9, $l4 #12, $l4 #15, $l4 #18, $l4 #21, $l4 #24, $l4_1 #27, $l4 #30, $l4 #33);
+
+        $d0_3 = Phi($d0 #1, $d0 #4, $d0 #9, $d0 #12, $d0 #15, $d0_1 #18, $d0 #21, $d0 #24, $d0 #27, $d0 #30, $d0 #33);
+
+        $i5_3 = Phi($i5 #1, $i5 #4, $i5 #9, $i5 #12, $i5 #15, $i5 #18, $i5 #21, $i5_1 #24, $i5 #27, $i5 #30, $i5 #33);
+
+        $r6_11 = Phi($r6 #1, $r6_1 #4, $r6_2 #9, $r6_3 #12, $r6_4 #15, $r6_5 #18, $r6_6 #21, $r6_7 #24, $r6_8 #27, $r6_9 #30, $r6_10 #33);
+
+        $r12_3 = Phi($r12 #1, $r12 #4, $r12 #9, $r12 #12, $r12 #15, $r12 #18, $r12 #21, $r12 #24, $r12_1 #27, $r12 #30, $r12 #33);
+
+        $z0_23 = Phi($z0_4 #1, $z0_5 #4, $z0_13 #9, $z0_15 #12, $z0_16 #15, $z0_17 #18, $z0_18 #21, $z0_19 #24, $z0_20 #27, $z0_21 #30, $z0_22 #33);
+
+        return $r6_11;
+    }
+
+    private static bolts.AppLinkResolver getResolver(android.content.Context)
+    {
+        android.content.Context $r0;
+        bolts.WebViewAppLinkResolver $r1;
+        bolts.AppLinkResolver $r2, $r2_1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r2 = staticinvoke <bolts.AppLinkNavigation: bolts.AppLinkResolver getDefaultResolver()>();
+
+        if $r2 == null goto label1;
+
+        $r2_1 = staticinvoke <bolts.AppLinkNavigation: bolts.AppLinkResolver getDefaultResolver()>();
+
+        return $r2_1;
+
+     label1:
+        $r1 = new bolts.WebViewAppLinkResolver;
+
+        specialinvoke $r1.<bolts.WebViewAppLinkResolver: void <init>(android.content.Context)>($r0);
+
+        return $r1;
+    }
+
+    public static bolts.AppLinkNavigation$NavigationResult navigate(android.content.Context, bolts.AppLink)
+    {
+        android.content.Context $r0;
+        bolts.AppLink $r1;
+        bolts.AppLinkNavigation $r2;
+        bolts.AppLinkNavigation$NavigationResult $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: bolts.AppLink;
+
+        $r2 = new bolts.AppLinkNavigation;
+
+        specialinvoke $r2.<bolts.AppLinkNavigation: void <init>(bolts.AppLink,android.os.Bundle,android.os.Bundle)>($r1, null, null);
+
+        $r3 = virtualinvoke $r2.<bolts.AppLinkNavigation: bolts.AppLinkNavigation$NavigationResult navigate(android.content.Context)>($r0);
+
+        return $r3;
+    }
+
+    public static bolts.Task navigateInBackground(android.content.Context, android.net.Uri)
+    {
+        android.content.Context $r0;
+        android.net.Uri $r1;
+        bolts.AppLinkResolver $r2;
+        bolts.Task $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: android.net.Uri;
+
+        $r2 = staticinvoke <bolts.AppLinkNavigation: bolts.AppLinkResolver getResolver(android.content.Context)>($r0);
+
+        $r3 = staticinvoke <bolts.AppLinkNavigation: bolts.Task navigateInBackground(android.content.Context,android.net.Uri,bolts.AppLinkResolver)>($r0, $r1, $r2);
+
+        return $r3;
+    }
+
+    public static bolts.Task navigateInBackground(android.content.Context, android.net.Uri, bolts.AppLinkResolver)
+    {
+        android.content.Context $r0;
+        android.net.Uri $r1;
+        bolts.AppLinkResolver $r2;
+        bolts.AppLinkNavigation$1 $r3;
+        java.util.concurrent.Executor $r4;
+        bolts.Task $r5, $r5_1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: android.net.Uri;
+
+        $r2 := @parameter2: bolts.AppLinkResolver;
+
+        $r5 = interfaceinvoke $r2.<bolts.AppLinkResolver: bolts.Task getAppLinkFromUrlInBackground(android.net.Uri)>($r1);
+
+        $r3 = new bolts.AppLinkNavigation$1;
+
+        specialinvoke $r3.<bolts.AppLinkNavigation$1: void <init>(android.content.Context)>($r0);
+
+        $r4 = <bolts.Task: java.util.concurrent.Executor UI_THREAD_EXECUTOR>;
+
+        $r5_1 = virtualinvoke $r5.<bolts.Task: bolts.Task onSuccess(bolts.Continuation,java.util.concurrent.Executor)>($r3, $r4);
+
+        return $r5_1;
+    }
+
+    public static bolts.Task navigateInBackground(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        bolts.AppLinkResolver $r2;
+        bolts.Task $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <bolts.AppLinkNavigation: bolts.AppLinkResolver getResolver(android.content.Context)>($r0);
+
+        $r3 = staticinvoke <bolts.AppLinkNavigation: bolts.Task navigateInBackground(android.content.Context,java.lang.String,bolts.AppLinkResolver)>($r0, $r1, $r2);
+
+        return $r3;
+    }
+
+    public static bolts.Task navigateInBackground(android.content.Context, java.lang.String, bolts.AppLinkResolver)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        bolts.AppLinkResolver $r2;
+        android.net.Uri $r3;
+        bolts.Task $r4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: bolts.AppLinkResolver;
+
+        $r3 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r1);
+
+        $r4 = staticinvoke <bolts.AppLinkNavigation: bolts.Task navigateInBackground(android.content.Context,android.net.Uri,bolts.AppLinkResolver)>($r0, $r3, $r2);
+
+        return $r4;
+    }
+
+    public static bolts.Task navigateInBackground(android.content.Context, java.net.URL)
+    {
+        android.content.Context $r0;
+        java.net.URL $r1;
+        bolts.AppLinkResolver $r2;
+        bolts.Task $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.net.URL;
+
+        $r2 = staticinvoke <bolts.AppLinkNavigation: bolts.AppLinkResolver getResolver(android.content.Context)>($r0);
+
+        $r3 = staticinvoke <bolts.AppLinkNavigation: bolts.Task navigateInBackground(android.content.Context,java.net.URL,bolts.AppLinkResolver)>($r0, $r1, $r2);
+
+        return $r3;
+    }
+
+    public static bolts.Task navigateInBackground(android.content.Context, java.net.URL, bolts.AppLinkResolver)
+    {
+        android.content.Context $r0;
+        java.net.URL $r1;
+        bolts.AppLinkResolver $r2;
+        java.lang.String $r3;
+        android.net.Uri $r4;
+        bolts.Task $r5;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.net.URL;
+
+        $r2 := @parameter2: bolts.AppLinkResolver;
+
+        $r3 = virtualinvoke $r1.<java.net.URL: java.lang.String toString()>();
+
+        $r4 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r3);
+
+        $r5 = staticinvoke <bolts.AppLinkNavigation: bolts.Task navigateInBackground(android.content.Context,android.net.Uri,bolts.AppLinkResolver)>($r0, $r4, $r2);
+
+        return $r5;
+    }
+
+    private void sendAppLinkNavigateEventBroadcast(android.content.Context, android.content.Intent, bolts.AppLinkNavigation$NavigationResult, org.json.JSONException)
+    {
+        bolts.AppLinkNavigation $r0;
+        android.content.Context $r1;
+        android.content.Intent $r2;
+        bolts.AppLinkNavigation$NavigationResult $r3;
+        org.json.JSONException $r4;
+        java.util.HashMap $r5;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        boolean $z0;
+
+        $r0 := @this: bolts.AppLinkNavigation;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.content.Intent;
+
+        $r3 := @parameter2: bolts.AppLinkNavigation$NavigationResult;
+
+        $r4 := @parameter3: org.json.JSONException;
+
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+(0)     if $r4 == null goto label1;
+
+        $r6 = virtualinvoke $r4.<org.json.JSONException: java.lang.String getLocalizedMessage()>();
+
+(1)     interfaceinvoke $r5.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("error", $r6);
+
+     label1:
+        $r6_1 = Phi($r6 #0, $r6 #1);
+
+        $z0 = virtualinvoke $r3.<bolts.AppLinkNavigation$NavigationResult: boolean isSucceeded()>();
+
+        if $z0 == 0 goto label3;
+
+(2)     $r6_2 = "1";
+
+     label2:
+        $r6_3 = Phi($r6_2 #2, $r6_5 #3);
+
+        interfaceinvoke $r5.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("success", $r6_3);
+
+        $r6_4 = virtualinvoke $r3.<bolts.AppLinkNavigation$NavigationResult: java.lang.String getCode()>();
+
+        interfaceinvoke $r5.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("type", $r6_4);
+
+        staticinvoke <bolts.MeasurementEvent: void sendBroadcastEvent(android.content.Context,java.lang.String,android.content.Intent,java.util.Map)>($r1, "al_nav_out", $r2, $r5);
+
+        return;
+
+     label3:
+        $r6_5 = "0";
+
+(3)     goto label2;
+    }
+
+    public static void setDefaultResolver(bolts.AppLinkResolver)
+    {
+        bolts.AppLinkResolver $r0;
+
+        $r0 := @parameter0: bolts.AppLinkResolver;
+
+        <bolts.AppLinkNavigation: bolts.AppLinkResolver defaultResolver> = $r0;
+
+        return;
+    }
+
+    public bolts.AppLink getAppLink()
+    {
+        bolts.AppLinkNavigation $r0;
+        bolts.AppLink r1;
+
+        $r0 := @this: bolts.AppLinkNavigation;
+
+        r1 = $r0.<bolts.AppLinkNavigation: bolts.AppLink appLink>;
+
+        return r1;
+    }
+
+    public android.os.Bundle getAppLinkData()
+    {
+        bolts.AppLinkNavigation $r0;
+        android.os.Bundle r1;
+
+        $r0 := @this: bolts.AppLinkNavigation;
+
+        r1 = $r0.<bolts.AppLinkNavigation: android.os.Bundle appLinkData>;
+
+        return r1;
+    }
+
+    public android.os.Bundle getExtras()
+    {
+        bolts.AppLinkNavigation $r0;
+        android.os.Bundle r1;
+
+        $r0 := @this: bolts.AppLinkNavigation;
+
+        r1 = $r0.<bolts.AppLinkNavigation: android.os.Bundle extras>;
+
+        return r1;
+    }
+
+    public bolts.AppLinkNavigation$NavigationResult navigate(android.content.Context)
+    {
+        bolts.AppLinkNavigation $r0;
+        android.content.Context $r1;
+        org.json.JSONException $r2;
+        java.lang.RuntimeException $r3;
+        android.content.pm.PackageManager $r4;
+        android.os.Bundle $r5;
+        android.content.Intent $r6, $r12, $r12_1, $r6_1, $r12_2, $r6_2, $r12_3, $r12_4, $r12_5, $r12_6;
+        bolts.AppLink $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6;
+        java.util.List $r8;
+        java.util.Iterator $r9;
+        boolean $z0;
+        java.lang.Object $r10;
+        bolts.AppLink$Target $r11;
+        android.net.Uri $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7, $r13_8;
+        java.lang.String $r14, $r15, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5, $r14_6, $r14_7;
+        android.content.pm.ResolveInfo $r16;
+        bolts.AppLinkNavigation$NavigationResult $r17, $r17_1, $r17_2, $r17_3, $r17_4;
+        org.json.JSONObject $r18;
+        android.net.Uri$Builder $r19, $r19_1, $r19_2;
+
+        $r0 := @this: bolts.AppLinkNavigation;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r4 = virtualinvoke $r1.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r5 = specialinvoke $r0.<bolts.AppLinkNavigation: android.os.Bundle buildAppLinkDataForNavigation(android.content.Context)>($r1);
+
+        $r6 = null;
+
+        $r7 = virtualinvoke $r0.<bolts.AppLinkNavigation: bolts.AppLink getAppLink()>();
+
+        $r8 = virtualinvoke $r7.<bolts.AppLink: java.util.List getTargets()>();
+
+(0)     $r9 = interfaceinvoke $r8.<java.util.List: java.util.Iterator iterator()>();
+
+     label01:
+        $r7_1 = Phi($r7 #0, $r7_2 #5);
+
+        $r12 = Phi($r12 #0, $r12_1 #5);
+
+        $r13 = Phi($r13 #0, $r13_3 #5);
+
+        $r14 = Phi($r14 #0, $r14_4 #5);
+
+        $z0 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+(1)     if $z0 == 0 goto label04;
+
+        $r10 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        $r11 = (bolts.AppLink$Target) $r10;
+
+        $r12_1 = new android.content.Intent;
+
+        specialinvoke $r12_1.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.VIEW");
+
+        $r13_1 = virtualinvoke $r11.<bolts.AppLink$Target: android.net.Uri getUrl()>();
+
+        if $r13_1 == null goto label06;
+
+        $r13_2 = virtualinvoke $r11.<bolts.AppLink$Target: android.net.Uri getUrl()>();
+
+(2)     virtualinvoke $r12_1.<android.content.Intent: android.content.Intent setData(android.net.Uri)>($r13_2);
+
+     label02:
+        $r7_2 = Phi($r7_1 #2, $r7_3 #8);
+
+        $r13_3 = Phi($r13_2 #2, $r13_4 #8);
+
+        $r14_1 = virtualinvoke $r11.<bolts.AppLink$Target: java.lang.String getPackageName()>();
+
+        virtualinvoke $r12_1.<android.content.Intent: android.content.Intent setPackage(java.lang.String)>($r14_1);
+
+        $r14_2 = virtualinvoke $r11.<bolts.AppLink$Target: java.lang.String getClassName()>();
+
+(3)     if $r14_2 == null goto label03;
+
+        $r14_3 = virtualinvoke $r11.<bolts.AppLink$Target: java.lang.String getPackageName()>();
+
+        $r15 = virtualinvoke $r11.<bolts.AppLink$Target: java.lang.String getClassName()>();
+
+(4)     virtualinvoke $r12_1.<android.content.Intent: android.content.Intent setClassName(java.lang.String,java.lang.String)>($r14_3, $r15);
+
+     label03:
+        $r14_4 = Phi($r14_2 #3, $r14_3 #4);
+
+        virtualinvoke $r12_1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Bundle)>("al_applink_data", $r5);
+
+        $r16 = virtualinvoke $r4.<android.content.pm.PackageManager: android.content.pm.ResolveInfo resolveActivity(android.content.Intent,int)>($r12_1, 65536);
+
+(5)     if $r16 == null goto label01;
+
+(6)     $r6_1 = $r12_1;
+
+     label04:
+        $r7_4 = Phi($r7_1 #1, $r7_2 #6);
+
+        $r12_2 = Phi($r12 #1, $r12_1 #6);
+
+        $r13_5 = Phi($r13 #1, $r13_3 #6);
+
+        $r14_5 = Phi($r14 #1, $r14_4 #6);
+
+        $r6_2 = Phi($r6 #1, $r6_1 #6);
+
+        $r12_3 = null;
+
+        $r17 = <bolts.AppLinkNavigation$NavigationResult: bolts.AppLinkNavigation$NavigationResult FAILED>;
+
+        if $r6_2 == null goto label07;
+
+        $r12_4 = $r6_2;
+
+(7)     $r17_1 = <bolts.AppLinkNavigation$NavigationResult: bolts.AppLinkNavigation$NavigationResult APP>;
+
+     label05:
+        $r7_5 = Phi($r7_4 #7, $r7_6 #9, $r7_6 #10);
+
+        $r12_5 = Phi($r12_4 #7, $r12_3 #9, $r12_6 #10);
+
+        $r13_6 = Phi($r13_5 #7, $r13_7 #9, $r13_8 #10);
+
+        $r17_2 = Phi($r17_1 #7, $r17 #9, $r17_3 #10);
+
+        $r19 = Phi($r19 #7, $r19 #9, $r19_2 #10);
+
+        $r14_6 = Phi($r14_5 #7, $r14_5 #9, $r14_7 #10);
+
+        specialinvoke $r0.<bolts.AppLinkNavigation: void sendAppLinkNavigateEventBroadcast(android.content.Context,android.content.Intent,bolts.AppLinkNavigation$NavigationResult,org.json.JSONException)>($r1, $r12_5, $r17_2, null);
+
+        if $r12_5 == null goto label11;
+
+        virtualinvoke $r1.<android.content.Context: void startActivity(android.content.Intent)>($r12_5);
+
+        return $r17_2;
+
+     label06:
+        $r7_3 = $r0.<bolts.AppLinkNavigation: bolts.AppLink appLink>;
+
+        $r13_4 = virtualinvoke $r7_3.<bolts.AppLink: android.net.Uri getSourceUrl()>();
+
+        virtualinvoke $r12_1.<android.content.Intent: android.content.Intent setData(android.net.Uri)>($r13_4);
+
+(8)     goto label02;
+
+     label07:
+        $r7_6 = virtualinvoke $r0.<bolts.AppLinkNavigation: bolts.AppLink getAppLink()>();
+
+        $r13_7 = virtualinvoke $r7_6.<bolts.AppLink: android.net.Uri getWebUrl()>();
+
+(9)     if $r13_7 == null goto label05;
+
+     label08:
+        $r18 = specialinvoke $r0.<bolts.AppLinkNavigation: org.json.JSONObject getJSONForBundle(android.os.Bundle)>($r5);
+
+     label09:
+        $r19_1 = virtualinvoke $r13_7.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+        $r14_7 = virtualinvoke $r18.<org.json.JSONObject: java.lang.String toString()>();
+
+        $r19_2 = virtualinvoke $r19_1.<android.net.Uri$Builder: android.net.Uri$Builder appendQueryParameter(java.lang.String,java.lang.String)>("al_applink_data", $r14_7);
+
+        $r13_8 = virtualinvoke $r19_2.<android.net.Uri$Builder: android.net.Uri build()>();
+
+        $r12_6 = new android.content.Intent;
+
+        specialinvoke $r12_6.<android.content.Intent: void <init>(java.lang.String,android.net.Uri)>("android.intent.action.VIEW", $r13_8);
+
+        $r17_3 = <bolts.AppLinkNavigation$NavigationResult: bolts.AppLinkNavigation$NavigationResult WEB>;
+
+(10)    goto label05;
+
+     label10:
+        $r2 := @caughtexception;
+
+        $r17_4 = <bolts.AppLinkNavigation$NavigationResult: bolts.AppLinkNavigation$NavigationResult FAILED>;
+
+        specialinvoke $r0.<bolts.AppLinkNavigation: void sendAppLinkNavigateEventBroadcast(android.content.Context,android.content.Intent,bolts.AppLinkNavigation$NavigationResult,org.json.JSONException)>($r1, $r6_2, $r17_4, $r2);
+
+        $r3 = new java.lang.RuntimeException;
+
+        specialinvoke $r3.<java.lang.RuntimeException: void <init>(java.lang.Throwable)>($r2);
+
+        throw $r3;
+
+     label11:
+        return $r17_2;
+
+        catch org.json.JSONException from label08 to label09 with label10;
+    }
+}

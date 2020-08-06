@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 
 /**
  * contain tests which check taint propagation for static variables
@@ -24,7 +24,7 @@ public class StaticTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void staticTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.StaticTestCode: void staticTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -33,7 +33,7 @@ public class StaticTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void static2Test() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.StaticTestCode: void static2Test()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -42,7 +42,7 @@ public class StaticTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void static3Test() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.StaticTestCode: void static3Test()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -51,7 +51,7 @@ public class StaticTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void static4Test() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.StaticTestCode: void static4Test()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -60,7 +60,7 @@ public class StaticTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void staticOverwriteTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.StaticTestCode: void staticOverwriteTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -69,7 +69,7 @@ public class StaticTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void staticOverwriteTest2() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.StaticTestCode: void staticOverwriteTest2()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -78,7 +78,7 @@ public class StaticTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void clinitTest1() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.StaticTestCode: void clinitTest1()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -87,7 +87,7 @@ public class StaticTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void clinitTest2() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.StaticTestCode: void clinitTest2()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);

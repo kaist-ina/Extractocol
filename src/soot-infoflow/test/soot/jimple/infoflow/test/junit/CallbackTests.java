@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 
 
 /**
@@ -26,7 +26,7 @@ public class CallbackTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void thirdCallBackTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.CallbackTestCode: void tryNext2()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -35,7 +35,7 @@ public class CallbackTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void secondCallBackTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.CallbackTestCode: void tryNext()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -44,7 +44,7 @@ public class CallbackTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void callbackTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.CallbackTestCode: void checkLocation()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);

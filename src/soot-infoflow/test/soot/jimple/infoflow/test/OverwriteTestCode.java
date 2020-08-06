@@ -159,8 +159,18 @@ public class OverwriteTestCode {
 
 	private class DataClass {
 		public String data = "";
+		public DataClass2 dataClass2;
+		
+		public void clear() {
+			dataClass2 = null;
+		}
+		
 	}
 	private DataClass data2 = new DataClass();
+	
+	private class DataClass2 {
+		public String data = "";		
+	}
 	
 	private void setData2(String data) {
 		this.data2.data = data;
@@ -199,6 +209,18 @@ public class OverwriteTestCode {
 			cm.publish(tmp);
 		}
 		while (true);
+	}
+	
+	public void overwriteAlias() {
+		DataClass dc = new DataClass();
+		dc.dataClass2 = new DataClass2();
+		dc.dataClass2.data = TelephonyManager.getDeviceId();
+		DataClass dc2 = new DataClass();
+		dc2.dataClass2 = dc.dataClass2;
+		dc2.clear();
+		ConnectionManager cm = new ConnectionManager();		
+		cm.publish(dc.dataClass2.data);
+		cm.publish(dc2.dataClass2.data);
 	}
 
 }

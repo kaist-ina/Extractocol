@@ -1,0 +1,482 @@
+public class ch.boye.httpclientandroidlib.conn.EofSensorInputStream extends java.io.InputStream implements ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger
+{
+    private final ch.boye.httpclientandroidlib.conn.EofSensorWatcher eofWatcher;
+    private boolean selfClosed;
+    protected java.io.InputStream wrappedStream;
+
+    public void <init>(java.io.InputStream, ch.boye.httpclientandroidlib.conn.EofSensorWatcher)
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+        java.io.InputStream $r1;
+        ch.boye.httpclientandroidlib.conn.EofSensorWatcher $r2;
+        java.lang.IllegalArgumentException $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $r1 := @parameter0: java.io.InputStream;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.conn.EofSensorWatcher;
+
+        specialinvoke $r0.<java.io.InputStream: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Wrapped stream may not be null.");
+
+        throw $r3;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream> = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: boolean selfClosed> = 0;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: ch.boye.httpclientandroidlib.conn.EofSensorWatcher eofWatcher> = $r2;
+
+        return;
+    }
+
+    public void abortConnection() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: boolean selfClosed> = 1;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void checkAbort()>();
+
+        return;
+    }
+
+    public int available() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+        java.io.InputStream $r1;
+        java.io.IOException $r2;
+        boolean $z0;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: boolean isReadAllowed()>();
+
+        if $z0 == 0 goto label4;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+     label1:
+        $i0 = virtualinvoke $r1.<java.io.InputStream: int available()>();
+
+     label2:
+        return $i0;
+
+     label3:
+        $r2 := @caughtexception;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void checkAbort()>();
+
+        throw $r2;
+
+     label4:
+        return 0;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    protected void checkAbort() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+        java.lang.Throwable $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.io.InputStream $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+        ch.boye.httpclientandroidlib.conn.EofSensorWatcher $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+        if $r2 == null goto label8;
+
+(0)     $z0 = 1;
+
+     label1:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: ch.boye.httpclientandroidlib.conn.EofSensorWatcher eofWatcher>;
+
+     label2:
+(1)     if $r3 == null goto label4;
+
+     label3:
+(2)     $r3_1 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: ch.boye.httpclientandroidlib.conn.EofSensorWatcher eofWatcher>;
+
+(3)     $r2_1 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+(4)     $z0_1 = interfaceinvoke $r3_1.<ch.boye.httpclientandroidlib.conn.EofSensorWatcher: boolean streamAbort(java.io.InputStream)>($r2_1);
+
+     label4:
+        $r2_2 = Phi($r2 #1, $r2_1 #4);
+
+        $r3_2 = Phi($r3 #1, $r3_1 #4);
+
+        $z0_2 = Phi($z0 #1, $z0_1 #4);
+
+(5)     if $z0_2 == 0 goto label6;
+
+     label5:
+(6)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+(7)     virtualinvoke $r2_3.<java.io.InputStream: void close()>();
+
+     label6:
+        $r2_4 = Phi($r2_2 #5, $r2_3 #7);
+
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream> = null;
+
+        return;
+
+     label7:
+        $r1 := @caughtexception;
+
+        $r2_5 = Phi($r2 #0, $r2_1 #3, $r2_2 #5, $r2_3 #6);
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #5);
+
+        $z0_3 = Phi($z0 #0, $z0_1 #4, $z0_2 #5);
+
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream> = null;
+
+        throw $r1;
+
+     label8:
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label3 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+
+    protected void checkClose() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+        java.lang.Throwable $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.io.InputStream $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+        ch.boye.httpclientandroidlib.conn.EofSensorWatcher $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+        if $r2 == null goto label8;
+
+(0)     $z0 = 1;
+
+     label1:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: ch.boye.httpclientandroidlib.conn.EofSensorWatcher eofWatcher>;
+
+     label2:
+(1)     if $r3 == null goto label4;
+
+     label3:
+(2)     $r3_1 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: ch.boye.httpclientandroidlib.conn.EofSensorWatcher eofWatcher>;
+
+(3)     $r2_1 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+(4)     $z0_1 = interfaceinvoke $r3_1.<ch.boye.httpclientandroidlib.conn.EofSensorWatcher: boolean streamClosed(java.io.InputStream)>($r2_1);
+
+     label4:
+        $r3_2 = Phi($r3 #1, $r3_1 #4);
+
+        $z0_2 = Phi($z0 #1, $z0_1 #4);
+
+        $r2_2 = Phi($r2 #1, $r2_1 #4);
+
+(5)     if $z0_2 == 0 goto label6;
+
+     label5:
+(6)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+(7)     virtualinvoke $r2_3.<java.io.InputStream: void close()>();
+
+     label6:
+        $r2_4 = Phi($r2_2 #5, $r2_3 #7);
+
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream> = null;
+
+        return;
+
+     label7:
+        $r1 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #5);
+
+        $z0_3 = Phi($z0 #0, $z0_1 #4, $z0_2 #5);
+
+        $r2_5 = Phi($r2 #0, $r2_1 #3, $r2_2 #5, $r2_3 #6);
+
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream> = null;
+
+        throw $r1;
+
+     label8:
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label3 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+
+    protected void checkEOF(int) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+        int $i0;
+        java.lang.Throwable $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.io.InputStream $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+        ch.boye.httpclientandroidlib.conn.EofSensorWatcher $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $i0 := @parameter0: int;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+        if $r2 == null goto label8;
+
+        if $i0 >= 0 goto label8;
+
+(0)     $z0 = 1;
+
+     label1:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: ch.boye.httpclientandroidlib.conn.EofSensorWatcher eofWatcher>;
+
+     label2:
+(1)     if $r3 == null goto label4;
+
+     label3:
+(2)     $r3_1 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: ch.boye.httpclientandroidlib.conn.EofSensorWatcher eofWatcher>;
+
+(3)     $r2_1 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+(4)     $z0_1 = interfaceinvoke $r3_1.<ch.boye.httpclientandroidlib.conn.EofSensorWatcher: boolean eofDetected(java.io.InputStream)>($r2_1);
+
+     label4:
+        $r3_2 = Phi($r3 #1, $r3_1 #4);
+
+        $z0_2 = Phi($z0 #1, $z0_1 #4);
+
+        $r2_2 = Phi($r2 #1, $r2_1 #4);
+
+(5)     if $z0_2 == 0 goto label6;
+
+     label5:
+(6)     $r2_3 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+(7)     virtualinvoke $r2_3.<java.io.InputStream: void close()>();
+
+     label6:
+        $r2_4 = Phi($r2_2 #5, $r2_3 #7);
+
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream> = null;
+
+        return;
+
+     label7:
+        $r1 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #5);
+
+        $z0_3 = Phi($z0 #0, $z0_1 #4, $z0_2 #5);
+
+        $r2_5 = Phi($r2 #0, $r2_1 #3, $r2_2 #5, $r2_3 #6);
+
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream> = null;
+
+        throw $r1;
+
+     label8:
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label3 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: boolean selfClosed> = 1;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void checkClose()>();
+
+        return;
+    }
+
+    protected boolean isReadAllowed() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+        boolean $z0;
+        java.io.IOException $r1;
+        java.io.InputStream $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: boolean selfClosed>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new java.io.IOException;
+
+        specialinvoke $r1.<java.io.IOException: void <init>(java.lang.String)>("Attempted read on closed stream.");
+
+        throw $r1;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+        if $r2 == null goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public int read() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+        java.io.InputStream $r1;
+        java.io.IOException $r2;
+        boolean $z0;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: boolean isReadAllowed()>();
+
+        if $z0 == 0 goto label4;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+     label1:
+        $i0 = virtualinvoke $r1.<java.io.InputStream: int read()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void checkEOF(int)>($i0);
+
+     label2:
+        return $i0;
+
+     label3:
+        $r2 := @caughtexception;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void checkAbort()>();
+
+        throw $r2;
+
+     label4:
+        return -1;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public int read(byte[]) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+        byte[] $r1;
+        java.io.InputStream $r2;
+        java.io.IOException $r3;
+        boolean $z0;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: boolean isReadAllowed()>();
+
+        if $z0 == 0 goto label4;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+     label1:
+        $i0 = virtualinvoke $r2.<java.io.InputStream: int read(byte[])>($r1);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void checkEOF(int)>($i0);
+
+     label2:
+        return $i0;
+
+     label3:
+        $r3 := @caughtexception;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void checkAbort()>();
+
+        throw $r3;
+
+     label4:
+        return -1;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public int read(byte[], int, int) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+        byte[] $r1;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.io.InputStream $r2;
+        java.io.IOException $r3;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $i1 := @parameter1: int;
+
+        $i0 := @parameter2: int;
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: boolean isReadAllowed()>();
+
+        if $z0 == 0 goto label4;
+
+(0)     $r2 = $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: java.io.InputStream wrappedStream>;
+
+     label1:
+(1)     $i1_1 = virtualinvoke $r2.<java.io.InputStream: int read(byte[],int,int)>($r1, $i1, $i0);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void checkEOF(int)>($i1_1);
+
+     label2:
+        return $i1_1;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $i1_2 = Phi($i1 #0, $i1_1 #1);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void checkAbort()>();
+
+        throw $r3;
+
+     label4:
+        return -1;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public void releaseConnection() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.EofSensorInputStream $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.EofSensorInputStream;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.EofSensorInputStream: void close()>();
+
+        return;
+    }
+}

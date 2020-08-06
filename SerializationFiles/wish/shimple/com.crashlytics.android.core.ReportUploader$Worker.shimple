@@ -1,0 +1,387 @@
+class com.crashlytics.android.core.ReportUploader$Worker extends io.fabric.sdk.android.services.common.BackgroundPriorityRunnable
+{
+    private final float delay;
+    final com.crashlytics.android.core.ReportUploader this$0;
+
+    void <init>(com.crashlytics.android.core.ReportUploader, float)
+    {
+        com.crashlytics.android.core.ReportUploader$Worker $r0;
+        com.crashlytics.android.core.ReportUploader $r1;
+        float $f0;
+
+        $r0 := @this: com.crashlytics.android.core.ReportUploader$Worker;
+
+        $r1 := @parameter0: com.crashlytics.android.core.ReportUploader;
+
+        $f0 := @parameter1: float;
+
+        $r0.<com.crashlytics.android.core.ReportUploader$Worker: com.crashlytics.android.core.ReportUploader this$0> = $r1;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.BackgroundPriorityRunnable: void <init>()>();
+
+        $r0.<com.crashlytics.android.core.ReportUploader$Worker: float delay> = $f0;
+
+        return;
+    }
+
+    private void attemptUploadWithRetry()
+    {
+        com.crashlytics.android.core.ReportUploader$Worker $r0;
+        byte $b0;
+        java.lang.InterruptedException $r1, $r2;
+        short $s1;
+        io.fabric.sdk.android.Logger $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9, $r4_10, $r4_11, $r4_12, $r4_13, $r4_14, $r4_15, $r4_16, $r4_17;
+        float $f0, $f0_1, $f0_2, $f0_3, $f0_4;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        long $l2, $l2_1, $l2_2, $l2_3, $l2_4, $l2_5;
+        com.crashlytics.android.core.CrashlyticsCore $r6, $r6_1, $r6_2, $r6_3;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r7, $r7_1, $r7_2, $r7_3;
+        com.crashlytics.android.core.ReportUploader $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        java.util.List $r9, $r10, $r10_1, $r9_1, $r9_2, $r10_2, $r10_3, $r9_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11, $z0_12;
+        java.lang.Thread $r11, $r11_1, $r11_2;
+        int $i3, $i4, $i5, $i3_1, $i3_2, $i4_1, $i4_2, $i5_1, $i5_2, $i3_3, $i3_4, $i4_3, $i5_3, $i3_5;
+        java.util.Iterator $r12, $r12_1, $r12_2, $r12_3;
+        java.lang.Object $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5;
+        com.crashlytics.android.core.Report $r14, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5;
+        short[] $r15, $r16;
+
+        $r0 := @this: com.crashlytics.android.core.ReportUploader$Worker;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Starting report processing in ");
+
+        $f0 = $r0.<com.crashlytics.android.core.ReportUploader$Worker: float delay>;
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f0);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" second(s)...");
+
+        $r5 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r5);
+
+        $f0_1 = $r0.<com.crashlytics.android.core.ReportUploader$Worker: float delay>;
+
+        $b0 = $f0_1 cmpl 0.0F;
+
+(0)     if $b0 <= 0 goto label02;
+
+        $f0_2 = $r0.<com.crashlytics.android.core.ReportUploader$Worker: float delay>;
+
+        $f0_3 = $f0_2 * 1000.0F;
+
+        $l2 = (long) $f0_3;
+
+     label01:
+(1)     staticinvoke <java.lang.Thread: void sleep(long)>($l2);
+
+     label02:
+        $l2_1 = Phi($l2 #0, $l2 #1);
+
+        $f0_4 = Phi($f0_1 #0, $f0_3 #1);
+
+        $r6 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsCore getInstance()>();
+
+        $r7 = virtualinvoke $r6.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler getHandler()>();
+
+        $r8 = $r0.<com.crashlytics.android.core.ReportUploader$Worker: com.crashlytics.android.core.ReportUploader this$0>;
+
+        $r9 = virtualinvoke $r8.<com.crashlytics.android.core.ReportUploader: java.util.List findReports()>();
+
+        $r10 = $r9;
+
+        $z0 = virtualinvoke $r7.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: boolean isHandlingException()>();
+
+        if $z0 == 0 goto label04;
+
+        return;
+
+     label03:
+        $r1 := @caughtexception;
+
+        $r11 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        virtualinvoke $r11.<java.lang.Thread: void interrupt()>();
+
+        return;
+
+     label04:
+        $z0_1 = interfaceinvoke $r9.<java.util.List: boolean isEmpty()>();
+
+(2)     if $z0_1 != 0 goto label06;
+
+        $z0_2 = virtualinvoke $r6.<com.crashlytics.android.core.CrashlyticsCore: boolean canSendWithUserApproval()>();
+
+(3)     if $z0_2 != 0 goto label06;
+
+        $r3_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r4_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("User declined to send. Removing ");
+
+        $i3 = interfaceinvoke $r9.<java.util.List: int size()>();
+
+        $r4_6 = virtualinvoke $r4_5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i3);
+
+        $r4_7 = virtualinvoke $r4_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" Report(s).");
+
+        $r5_1 = virtualinvoke $r4_7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r3_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r5_1);
+
+(4)     $r12 = interfaceinvoke $r9.<java.util.List: java.util.Iterator iterator()>();
+
+     label05:
+        $r14 = Phi($r14 #4, $r14_1 #6);
+
+        $r13 = Phi($r13 #4, $r13_1 #6);
+
+        $z0_3 = Phi($z0_2 #4, $z0_4 #6);
+
+        $z0_4 = interfaceinvoke $r12.<java.util.Iterator: boolean hasNext()>();
+
+(5)     if $z0_4 == 0 goto label13;
+
+        $r13_1 = interfaceinvoke $r12.<java.util.Iterator: java.lang.Object next()>();
+
+        $r14_1 = (com.crashlytics.android.core.Report) $r13_1;
+
+        interfaceinvoke $r14_1.<com.crashlytics.android.core.Report: boolean remove()>();
+
+(6)     goto label05;
+
+     label06:
+        $z0_5 = Phi($z0_1 #2, $z0_2 #3);
+
+(7)     $i3_1 = 0;
+
+     label07:
+        $l2_2 = Phi($l2_1 #7, $l2_2 #12, $l2_4 #13);
+
+        $r12_1 = Phi($r12 #7, $r12_2 #12, $r12_2 #13);
+
+        $r7_1 = Phi($r7 #7, $r7_2 #12, $r7_2 #13);
+
+        $r10_1 = Phi($r10 #7, $r10_2 #12, $r10_2 #13);
+
+        $r5_2 = Phi($r5 #7, $r5_3 #12, $r5_4 #13);
+
+        $r4_8 = Phi($r4_3 #7, $r4_12 #12, $r4_16 #13);
+
+        $r14_2 = Phi($r14 #7, $r14_3 #12, $r14_3 #13);
+
+        $i4 = Phi($i4 #7, $i4_1 #12, $i4_2 #13);
+
+        $r3_2 = Phi($r3 #7, $r3_3 #12, $r3_4 #13);
+
+        $r8_1 = Phi($r8 #7, $r8_4 #12, $r8_4 #13);
+
+        $r6_1 = Phi($r6 #7, $r6_2 #12, $r6_2 #13);
+
+        $r13_2 = Phi($r13 #7, $r13_3 #12, $r13_3 #13);
+
+        $i5 = Phi($i5 #7, $i5 #12, $i5_2 #13);
+
+        $z0_6 = Phi($z0_5 #7, $z0_11 #12, $z0_11 #13);
+
+        $r9_1 = Phi($r9 #7, $r9_2 #12, $r9_2 #13);
+
+        $i3_2 = Phi($i3_1 #7, $i3_2 #12, $i3_4 #13);
+
+        $z0_7 = interfaceinvoke $r10_1.<java.util.List: boolean isEmpty()>();
+
+(8)     if $z0_7 != 0 goto label13;
+
+        $r6_2 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsCore getInstance()>();
+
+        $r7_2 = virtualinvoke $r6_2.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler getHandler()>();
+
+        $z0_8 = virtualinvoke $r7_2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: boolean isHandlingException()>();
+
+(9)     if $z0_8 != 0 goto label13;
+
+        $r3_3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r4_9 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_9.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_10 = virtualinvoke $r4_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Attempting to send ");
+
+        $i4_1 = interfaceinvoke $r10_1.<java.util.List: int size()>();
+
+        $r4_11 = virtualinvoke $r4_10.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i4_1);
+
+        $r4_12 = virtualinvoke $r4_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" report(s)");
+
+        $r5_3 = virtualinvoke $r4_12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r3_3.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r5_3);
+
+(10)    $r12_2 = interfaceinvoke $r10_1.<java.util.List: java.util.Iterator iterator()>();
+
+     label08:
+        $r14_3 = Phi($r14_2 #10, $r14_4 #11);
+
+        $r8_2 = Phi($r8_1 #10, $r8_3 #11);
+
+        $r13_3 = Phi($r13_2 #10, $r13_4 #11);
+
+        $z0_9 = Phi($z0_8 #10, $z0_10 #11);
+
+        $z0_10 = interfaceinvoke $r12_2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_10 == 0 goto label09;
+
+        $r13_4 = interfaceinvoke $r12_2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r14_4 = (com.crashlytics.android.core.Report) $r13_4;
+
+        $r8_3 = $r0.<com.crashlytics.android.core.ReportUploader$Worker: com.crashlytics.android.core.ReportUploader this$0>;
+
+        virtualinvoke $r8_3.<com.crashlytics.android.core.ReportUploader: boolean forceUpload(com.crashlytics.android.core.Report)>($r14_4);
+
+(11)    goto label08;
+
+     label09:
+        $r8_4 = $r0.<com.crashlytics.android.core.ReportUploader$Worker: com.crashlytics.android.core.ReportUploader this$0>;
+
+        $r9_2 = virtualinvoke $r8_4.<com.crashlytics.android.core.ReportUploader: java.util.List findReports()>();
+
+        $r10_2 = $r9_2;
+
+        $z0_11 = interfaceinvoke $r9_2.<java.util.List: boolean isEmpty()>();
+
+(12)    if $z0_11 != 0 goto label07;
+
+        $r15 = staticinvoke <com.crashlytics.android.core.ReportUploader: short[] access$100()>();
+
+        $i4_2 = $i3_2 + 1;
+
+        $r16 = staticinvoke <com.crashlytics.android.core.ReportUploader: short[] access$100()>();
+
+        $i5_1 = lengthof $r16;
+
+        $i5_2 = $i5_1 + -1;
+
+        $i3_3 = staticinvoke <java.lang.Math: int min(int,int)>($i3_2, $i5_2);
+
+        $s1 = $r15[$i3_3];
+
+        $l2_3 = (long) $s1;
+
+        $r3_4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r4_13 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_13.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_14 = virtualinvoke $r4_13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Report submisson: scheduling delayed retry in ");
+
+        $r4_15 = virtualinvoke $r4_14.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l2_3);
+
+        $r4_16 = virtualinvoke $r4_15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" seconds");
+
+        $r5_4 = virtualinvoke $r4_16.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r3_4.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r5_4);
+
+        $l2_4 = 1000L * $l2_3;
+
+     label10:
+        staticinvoke <java.lang.Thread: void sleep(long)>($l2_4);
+
+     label11:
+        $i3_4 = $i4_2;
+
+(13)    goto label07;
+
+     label12:
+        $r2 := @caughtexception;
+
+        $r11_1 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+(14)    virtualinvoke $r11_1.<java.lang.Thread: void interrupt()>();
+
+     label13:
+        $l2_5 = Phi($l2_1 #5, $l2_2 #8, $l2_2 #9, $l2_4 #14);
+
+        $r12_3 = Phi($r12 #5, $r12_1 #8, $r12_1 #9, $r12_2 #14);
+
+        $r7_3 = Phi($r7 #5, $r7_1 #8, $r7_2 #9, $r7_2 #14);
+
+        $r10_3 = Phi($r10 #5, $r10_1 #8, $r10_1 #9, $r10_2 #14);
+
+        $r5_5 = Phi($r5_1 #5, $r5_2 #8, $r5_2 #9, $r5_4 #14);
+
+        $r4_17 = Phi($r4_7 #5, $r4_8 #8, $r4_8 #9, $r4_16 #14);
+
+        $r14_5 = Phi($r14 #5, $r14_2 #8, $r14_2 #9, $r14_3 #14);
+
+        $i4_3 = Phi($i4 #5, $i4 #8, $i4 #9, $i4_2 #14);
+
+        $r3_5 = Phi($r3_1 #5, $r3_2 #8, $r3_2 #9, $r3_4 #14);
+
+        $r11_2 = Phi($r11 #5, $r11 #8, $r11 #9, $r11_1 #14);
+
+        $r8_5 = Phi($r8 #5, $r8_1 #8, $r8_1 #9, $r8_4 #14);
+
+        $r6_3 = Phi($r6 #5, $r6_1 #8, $r6_2 #9, $r6_2 #14);
+
+        $r13_5 = Phi($r13 #5, $r13_2 #8, $r13_2 #9, $r13_3 #14);
+
+        $i5_3 = Phi($i5 #5, $i5 #8, $i5 #9, $i5_2 #14);
+
+        $z0_12 = Phi($z0_4 #5, $z0_7 #8, $z0_8 #9, $z0_11 #14);
+
+        $r9_3 = Phi($r9 #5, $r9_1 #8, $r9_1 #9, $r9_2 #14);
+
+        $i3_5 = Phi($i3 #5, $i3_2 #8, $i3_2 #9, $i3_3 #14);
+
+        return;
+
+        catch java.lang.InterruptedException from label01 to label02 with label03;
+        catch java.lang.InterruptedException from label10 to label11 with label12;
+    }
+
+    public void onRun()
+    {
+        com.crashlytics.android.core.ReportUploader$Worker $r0;
+        com.crashlytics.android.core.ReportUploader $r1;
+        java.lang.Exception $r2;
+        io.fabric.sdk.android.Logger $r3;
+
+        $r0 := @this: com.crashlytics.android.core.ReportUploader$Worker;
+
+     label1:
+        specialinvoke $r0.<com.crashlytics.android.core.ReportUploader$Worker: void attemptUploadWithRetry()>();
+
+     label2:
+        $r1 = $r0.<com.crashlytics.android.core.ReportUploader$Worker: com.crashlytics.android.core.ReportUploader this$0>;
+
+        staticinvoke <com.crashlytics.android.core.ReportUploader: java.lang.Thread access$002(com.crashlytics.android.core.ReportUploader,java.lang.Thread)>($r1, null);
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "An unexpected error occurred while attempting to upload crash reports.", $r2);
+
+        goto label2;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+}

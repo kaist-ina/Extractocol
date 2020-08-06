@@ -1,0 +1,1145 @@
+public abstract class android.support.v4.widget.AutoScrollHelper extends java.lang.Object implements android.view.View$OnTouchListener
+{
+    private static final int DEFAULT_ACTIVATION_DELAY;
+    private static final int DEFAULT_EDGE_TYPE;
+    private static final float DEFAULT_MAXIMUM_EDGE;
+    private static final int DEFAULT_MAXIMUM_VELOCITY_DIPS;
+    private static final int DEFAULT_MINIMUM_VELOCITY_DIPS;
+    private static final int DEFAULT_RAMP_DOWN_DURATION;
+    private static final int DEFAULT_RAMP_UP_DURATION;
+    private static final float DEFAULT_RELATIVE_EDGE;
+    private static final float DEFAULT_RELATIVE_VELOCITY;
+    public static final int EDGE_TYPE_INSIDE;
+    public static final int EDGE_TYPE_INSIDE_EXTEND;
+    public static final int EDGE_TYPE_OUTSIDE;
+    private static final int HORIZONTAL;
+    public static final float NO_MAX;
+    public static final float NO_MIN;
+    public static final float RELATIVE_UNSPECIFIED;
+    private static final int VERTICAL;
+    private int mActivationDelay;
+    private boolean mAlreadyDelayed;
+    private boolean mAnimating;
+    private final android.view.animation.Interpolator mEdgeInterpolator;
+    private int mEdgeType;
+    private boolean mEnabled;
+    private boolean mExclusive;
+    private float[] mMaximumEdges;
+    private float[] mMaximumVelocity;
+    private float[] mMinimumVelocity;
+    private boolean mNeedsCancel;
+    private boolean mNeedsReset;
+    private float[] mRelativeEdges;
+    private float[] mRelativeVelocity;
+    private java.lang.Runnable mRunnable;
+    private final android.support.v4.widget.AutoScrollHelper$ClampedScroller mScroller;
+    private final android.view.View mTarget;
+
+    static void <clinit>()
+    {
+        int $i0;
+
+        $i0 = staticinvoke <android.view.ViewConfiguration: int getTapTimeout()>();
+
+        <android.support.v4.widget.AutoScrollHelper: int DEFAULT_ACTIVATION_DELAY> = $i0;
+
+        return;
+    }
+
+    public void <init>(android.view.View)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        android.view.View $r1;
+        int $i0, $i1, $i0_1;
+        float[] $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        android.content.res.Resources $r5;
+        android.util.DisplayMetrics $r6;
+        float $f0, $f1, $f0_1, $f0_2, $f0_3, $f0_4, $f0_5, $f0_6, $f0_7, $f0_8, $f0_9, $f0_10, $f0_11, $f0_12, $f0_13, $f0_14, $f0_15, $f0_16, $f0_17, $f1_1;
+        android.support.v4.widget.AutoScrollHelper$ClampedScroller r7;
+        android.view.animation.AccelerateInterpolator r8;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $r1 := @parameter0: android.view.View;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        r7 = new android.support.v4.widget.AutoScrollHelper$ClampedScroller;
+
+        specialinvoke r7.<android.support.v4.widget.AutoScrollHelper$ClampedScroller: void <init>()>();
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper$ClampedScroller mScroller> = r7;
+
+        r8 = new android.view.animation.AccelerateInterpolator;
+
+        specialinvoke r8.<android.view.animation.AccelerateInterpolator: void <init>()>();
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: android.view.animation.Interpolator mEdgeInterpolator> = r8;
+
+        $r4 = newarray (float)[2];
+
+        $f0 = 0.0F;
+
+        $r4[0] = $f0;
+
+        $f0_1 = 0.0F;
+
+        $r4[1] = $f0_1;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: float[] mRelativeEdges> = $r4;
+
+        $r4_1 = newarray (float)[2];
+
+        $f0_2 = 2.13909504E9F;
+
+        $r4_1[0] = $f0_2;
+
+        $f0_3 = 2.13909504E9F;
+
+        $r4_1[1] = $f0_3;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMaximumEdges> = $r4_1;
+
+        $r4_2 = newarray (float)[2];
+
+        $f0_4 = 0.0F;
+
+        $r4_2[0] = $f0_4;
+
+        $f0_5 = 0.0F;
+
+        $r4_2[1] = $f0_5;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: float[] mRelativeVelocity> = $r4_2;
+
+        $r4_3 = newarray (float)[2];
+
+        $f0_6 = 0.0F;
+
+        $r4_3[0] = $f0_6;
+
+        $f0_7 = 0.0F;
+
+        $r4_3[1] = $f0_7;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMinimumVelocity> = $r4_3;
+
+        $r4_4 = newarray (float)[2];
+
+        $f0_8 = 2.13909504E9F;
+
+        $r4_4[0] = $f0_8;
+
+        $f0_9 = 2.13909504E9F;
+
+        $r4_4[1] = $f0_9;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMaximumVelocity> = $r4_4;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: android.view.View mTarget> = $r1;
+
+        $r5 = staticinvoke <android.content.res.Resources: android.content.res.Resources getSystem()>();
+
+        $r6 = virtualinvoke $r5.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0_10 = $r6.<android.util.DisplayMetrics: float density>;
+
+        $f0_11 = 1575.0F * $f0_10;
+
+        $f0_12 = $f0_11 + 0.5F;
+
+        $i1 = (int) $f0_12;
+
+        $f0_13 = $r6.<android.util.DisplayMetrics: float density>;
+
+        $f0_14 = 315.0F * $f0_13;
+
+        $f0_15 = $f0_14 + 0.5F;
+
+        $i0 = (int) $f0_15;
+
+        $f0_16 = (float) $i1;
+
+        $f1 = (float) $i1;
+
+        virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper setMaximumVelocity(float,float)>($f0_16, $f1);
+
+        $f0_17 = (float) $i0;
+
+        $f1_1 = (float) $i0;
+
+        virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper setMinimumVelocity(float,float)>($f0_17, $f1_1);
+
+        virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper setEdgeType(int)>(1);
+
+        virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper setMaximumEdges(float,float)>(3.4028235E38F, 3.4028235E38F);
+
+        virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper setRelativeEdges(float,float)>(0.2F, 0.2F);
+
+        virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper setRelativeVelocity(float,float)>(1.0F, 1.0F);
+
+        $i0_1 = <android.support.v4.widget.AutoScrollHelper: int DEFAULT_ACTIVATION_DELAY>;
+
+        virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper setActivationDelay(int)>($i0_1);
+
+        virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper setRampUpDuration(int)>(500);
+
+        virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper setRampDownDuration(int)>(500);
+
+        return;
+    }
+
+    static boolean access$100(android.support.v4.widget.AutoScrollHelper)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean z0;
+
+        $r0 := @parameter0: android.support.v4.widget.AutoScrollHelper;
+
+        z0 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mAnimating>;
+
+        return z0;
+    }
+
+    static boolean access$102(android.support.v4.widget.AutoScrollHelper, boolean)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.support.v4.widget.AutoScrollHelper;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mAnimating> = $z0;
+
+        return $z0;
+    }
+
+    static boolean access$200(android.support.v4.widget.AutoScrollHelper)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean z0;
+
+        $r0 := @parameter0: android.support.v4.widget.AutoScrollHelper;
+
+        z0 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mNeedsReset>;
+
+        return z0;
+    }
+
+    static boolean access$202(android.support.v4.widget.AutoScrollHelper, boolean)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.support.v4.widget.AutoScrollHelper;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mNeedsReset> = $z0;
+
+        return $z0;
+    }
+
+    static android.support.v4.widget.AutoScrollHelper$ClampedScroller access$300(android.support.v4.widget.AutoScrollHelper)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        android.support.v4.widget.AutoScrollHelper$ClampedScroller r1;
+
+        $r0 := @parameter0: android.support.v4.widget.AutoScrollHelper;
+
+        r1 = $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper$ClampedScroller mScroller>;
+
+        return r1;
+    }
+
+    static boolean access$400(android.support.v4.widget.AutoScrollHelper)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.support.v4.widget.AutoScrollHelper;
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: boolean shouldAnimate()>();
+
+        return $z0;
+    }
+
+    static boolean access$500(android.support.v4.widget.AutoScrollHelper)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean z0;
+
+        $r0 := @parameter0: android.support.v4.widget.AutoScrollHelper;
+
+        z0 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mNeedsCancel>;
+
+        return z0;
+    }
+
+    static boolean access$502(android.support.v4.widget.AutoScrollHelper, boolean)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.support.v4.widget.AutoScrollHelper;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mNeedsCancel> = $z0;
+
+        return $z0;
+    }
+
+    static void access$600(android.support.v4.widget.AutoScrollHelper)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+
+        $r0 := @parameter0: android.support.v4.widget.AutoScrollHelper;
+
+        specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: void cancelTargetTouch()>();
+
+        return;
+    }
+
+    static android.view.View access$700(android.support.v4.widget.AutoScrollHelper)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        android.view.View r1;
+
+        $r0 := @parameter0: android.support.v4.widget.AutoScrollHelper;
+
+        r1 = $r0.<android.support.v4.widget.AutoScrollHelper: android.view.View mTarget>;
+
+        return r1;
+    }
+
+    static int access$800(int, int, int)
+    {
+        int $i0, $i1, $i2, $i2_1;
+
+        $i2 := @parameter0: int;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2_1 = staticinvoke <android.support.v4.widget.AutoScrollHelper: int constrain(int,int,int)>($i2, $i0, $i1);
+
+        return $i2_1;
+    }
+
+    static float access$900(float, float, float)
+    {
+        float $f0, $f1, $f2, $f2_1;
+
+        $f2 := @parameter0: float;
+
+        $f0 := @parameter1: float;
+
+        $f1 := @parameter2: float;
+
+        $f2_1 = staticinvoke <android.support.v4.widget.AutoScrollHelper: float constrain(float,float,float)>($f2, $f0, $f1);
+
+        return $f2_1;
+    }
+
+    private void cancelTargetTouch()
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        android.view.View $r1;
+        long $l0;
+        android.view.MotionEvent $r2;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $l0 = staticinvoke <android.os.SystemClock: long uptimeMillis()>();
+
+        $r2 = staticinvoke <android.view.MotionEvent: android.view.MotionEvent obtain(long,long,int,float,float,int)>($l0, $l0, 3, 0.0F, 0.0F, 0);
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: android.view.View mTarget>;
+
+        virtualinvoke $r1.<android.view.View: boolean onTouchEvent(android.view.MotionEvent)>($r2);
+
+        virtualinvoke $r2.<android.view.MotionEvent: void recycle()>();
+
+        return;
+    }
+
+    private float computeTargetVelocity(int, float, float, float)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        int $i0;
+        float $f0, $f1, $f2, $f3, $f4, $f3_1, $f4_1, $f0_1, $f1_1, $f2_1, $f2_2, $f0_2, $f3_2, $f2_3, $f0_3, $f0_4;
+        float[] $r1, $r1_1, $r1_2, $r1_3, $r1_4;
+        byte $b1, $b1_1;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $i0 := @parameter0: int;
+
+        $f0 := @parameter1: float;
+
+        $f1 := @parameter2: float;
+
+        $f2 := @parameter3: float;
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mRelativeEdges>;
+
+        $f3 = $r1[$i0];
+
+        $r1_1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMaximumEdges>;
+
+        $f4 = $r1_1[$i0];
+
+        $f3_1 = specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: float getEdgeValue(float,float,float,float)>($f3, $f1, $f4, $f0);
+
+        $b1 = $f3_1 cmpl 0.0F;
+
+        if $b1 != 0 goto label1;
+
+        return 0.0F;
+
+     label1:
+        $r1_2 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mRelativeVelocity>;
+
+        $f4_1 = $r1_2[$i0];
+
+        $r1_3 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMinimumVelocity>;
+
+        $f0_1 = $r1_3[$i0];
+
+        $r1_4 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMaximumVelocity>;
+
+        $f1_1 = $r1_4[$i0];
+
+        $f2_1 = $f4_1 * $f2;
+
+        $b1_1 = $f3_1 cmpl 0.0F;
+
+        if $b1_1 <= 0 goto label2;
+
+        $f2_2 = $f3_1 * $f2_1;
+
+        $f0_2 = staticinvoke <android.support.v4.widget.AutoScrollHelper: float constrain(float,float,float)>($f2_2, $f0_1, $f1_1);
+
+        return $f0_2;
+
+     label2:
+        $f3_2 = neg $f3_1;
+
+        $f2_3 = $f3_2 * $f2_1;
+
+        $f0_3 = staticinvoke <android.support.v4.widget.AutoScrollHelper: float constrain(float,float,float)>($f2_3, $f0_1, $f1_1);
+
+        $f0_4 = neg $f0_3;
+
+        return $f0_4;
+    }
+
+    private static float constrain(float, float, float)
+    {
+        float $f0, $f1, $f2;
+        byte $b0, $b0_1;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $f2 := @parameter2: float;
+
+        $b0 = $f0 cmpl $f2;
+
+        if $b0 <= 0 goto label1;
+
+        return $f2;
+
+     label1:
+        $b0_1 = $f0 cmpg $f1;
+
+        if $b0_1 >= 0 goto label2;
+
+        return $f1;
+
+     label2:
+        return $f0;
+    }
+
+    private static int constrain(int, int, int)
+    {
+        int $i0, $i1, $i2;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        if $i0 <= $i2 goto label1;
+
+        return $i2;
+
+     label1:
+        if $i0 >= $i1 goto label2;
+
+        return $i1;
+
+     label2:
+        return $i0;
+    }
+
+    private float constrainEdgeValue(float, float)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean $z0;
+        float $f0, $f1, $f0_1, $f0_2, $f1_1, $f0_3;
+        byte $b0, $b0_1, $b0_2, $b0_3, $b0_4;
+        int $i1, $i1_1, $i1_2;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $b0 = $f1 cmpl 0.0F;
+
+        if $b0 != 0 goto label1;
+
+        return 0.0F;
+
+     label1:
+        $i1 = $r0.<android.support.v4.widget.AutoScrollHelper: int mEdgeType>;
+
+        lookupswitch($i1)
+        {
+            case 0: goto label4;
+            case 1: goto label4;
+            case 2: goto label6;
+            default: goto label2;
+        };
+
+     label2:
+        goto label3;
+
+     label3:
+        return 0.0F;
+
+     label4:
+        $b0_1 = $f0 cmpg $f1;
+
+(0)     if $b0_1 >= 0 goto label7;
+
+        $b0_2 = $f0 cmpl 0.0F;
+
+        if $b0_2 < 0 goto label5;
+
+        $f0_1 = $f0 / $f1;
+
+        $f0_2 = 1.0F - $f0_1;
+
+        return $f0_2;
+
+     label5:
+        $z0 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mAnimating>;
+
+(1)     if $z0 == 0 goto label7;
+
+        $i1_1 = $r0.<android.support.v4.widget.AutoScrollHelper: int mEdgeType>;
+
+(2)     if $i1_1 != 1 goto label7;
+
+        return 1.0F;
+
+     label6:
+        $b0_3 = $f0 cmpg 0.0F;
+
+(3)     if $b0_3 >= 0 goto label7;
+
+        $f1_1 = neg $f1;
+
+        $f0_3 = $f0 / $f1_1;
+
+        return $f0_3;
+
+     label7:
+        $b0_4 = Phi($b0_1 #0, $b0_2 #1, $b0_2 #2, $b0_3 #3);
+
+        $i1_2 = Phi($i1 #0, $i1 #1, $i1_1 #2, $i1 #3);
+
+        return 0.0F;
+    }
+
+    private float getEdgeValue(float, float, float, float)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        float $f0, $f1, $f2, $f3, $f1_1, $f3_1, $f1_2, $f2_1, $f2_2, $f1_3, $f1_4, $f1_5, $f1_6, $f1_7, $f1_8, $f1_9;
+        byte $b0, $b0_1, $b0_2;
+        android.view.animation.Interpolator $r1, $r1_1, $r1_2;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $f1 := @parameter0: float;
+
+        $f2 := @parameter1: float;
+
+        $f3 := @parameter2: float;
+
+        $f0 := @parameter3: float;
+
+        $f1_1 = $f1 * $f2;
+
+        $f3_1 = staticinvoke <android.support.v4.widget.AutoScrollHelper: float constrain(float,float,float)>($f1_1, 0.0F, $f3);
+
+        $f1_2 = specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: float constrainEdgeValue(float,float)>($f0, $f3_1);
+
+        $f2_1 = $f2 - $f0;
+
+        $f2_2 = specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: float constrainEdgeValue(float,float)>($f2_1, $f3_1);
+
+        $f1_3 = $f2_2 - $f1_2;
+
+        $b0 = $f1_3 cmpg 0.0F;
+
+        if $b0 >= 0 goto label2;
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: android.view.animation.Interpolator mEdgeInterpolator>;
+
+        $f1_4 = neg $f1_3;
+
+        $f1_5 = interfaceinvoke $r1.<android.view.animation.Interpolator: float getInterpolation(float)>($f1_4);
+
+(0)     $f1_6 = neg $f1_5;
+
+     label1:
+        $f1_7 = Phi($f1_6 #0, $f1_9 #1);
+
+        $r1_1 = Phi($r1 #0, $r1_2 #1);
+
+        $b0_1 = Phi($b0 #0, $b0_2 #1);
+
+        $f1_8 = staticinvoke <android.support.v4.widget.AutoScrollHelper: float constrain(float,float,float)>($f1_7, -1.0F, 1.0F);
+
+        return $f1_8;
+
+     label2:
+        $b0_2 = $f1_3 cmpl 0.0F;
+
+        if $b0_2 <= 0 goto label3;
+
+        $r1_2 = $r0.<android.support.v4.widget.AutoScrollHelper: android.view.animation.Interpolator mEdgeInterpolator>;
+
+        $f1_9 = interfaceinvoke $r1_2.<android.view.animation.Interpolator: float getInterpolation(float)>($f1_3);
+
+(1)     goto label1;
+
+     label3:
+        return 0.0F;
+    }
+
+    private void requestStop()
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean $z0;
+        android.support.v4.widget.AutoScrollHelper$ClampedScroller $r1;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $z0 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mNeedsReset>;
+
+        if $z0 == 0 goto label1;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mAnimating> = 0;
+
+        return;
+
+     label1:
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper$ClampedScroller mScroller>;
+
+        virtualinvoke $r1.<android.support.v4.widget.AutoScrollHelper$ClampedScroller: void requestStop()>();
+
+        return;
+    }
+
+    private boolean shouldAnimate()
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        android.support.v4.widget.AutoScrollHelper$ClampedScroller $r1;
+        int $i0, $i1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper$ClampedScroller mScroller>;
+
+        $i0 = virtualinvoke $r1.<android.support.v4.widget.AutoScrollHelper$ClampedScroller: int getVerticalDirection()>();
+
+        $i1 = virtualinvoke $r1.<android.support.v4.widget.AutoScrollHelper$ClampedScroller: int getHorizontalDirection()>();
+
+(0)     if $i0 == 0 goto label1;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: boolean canTargetScrollVertically(int)>($i0);
+
+(1)     if $z0 != 0 goto label2;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0 #1);
+
+(2)     if $i1 == 0 goto label3;
+
+        $z0_2 = virtualinvoke $r0.<android.support.v4.widget.AutoScrollHelper: boolean canTargetScrollHorizontally(int)>($i1);
+
+(3)     if $z0_2 == 0 goto label3;
+
+     label2:
+        $z0_4 = Phi($z0 #1, $z0_2 #3);
+
+        return 1;
+
+     label3:
+        $z0_3 = Phi($z0_1 #2, $z0_2 #3);
+
+        return 0;
+    }
+
+    private void startAnimating()
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        android.support.v4.widget.AutoScrollHelper$ScrollAnimationRunnable $r1;
+        boolean $z0;
+        android.view.View $r2;
+        long $l0;
+        java.lang.Runnable $r3, $r3_1, $r3_2, $r3_3;
+        int $i1, $i1_1, $i1_2, $i1_3;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $r3 = $r0.<android.support.v4.widget.AutoScrollHelper: java.lang.Runnable mRunnable>;
+
+        if $r3 != null goto label1;
+
+        $r1 = new android.support.v4.widget.AutoScrollHelper$ScrollAnimationRunnable;
+
+        specialinvoke $r1.<android.support.v4.widget.AutoScrollHelper$ScrollAnimationRunnable: void <init>(android.support.v4.widget.AutoScrollHelper,android.support.v4.widget.AutoScrollHelper$1)>($r0, null);
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: java.lang.Runnable mRunnable> = $r1;
+
+     label1:
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mAnimating> = 1;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mNeedsReset> = 1;
+
+        $z0 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mAlreadyDelayed>;
+
+(0)     if $z0 != 0 goto label3;
+
+        $i1 = $r0.<android.support.v4.widget.AutoScrollHelper: int mActivationDelay>;
+
+(1)     if $i1 <= 0 goto label3;
+
+        $r2 = $r0.<android.support.v4.widget.AutoScrollHelper: android.view.View mTarget>;
+
+        $r3_1 = $r0.<android.support.v4.widget.AutoScrollHelper: java.lang.Runnable mRunnable>;
+
+        $i1_1 = $r0.<android.support.v4.widget.AutoScrollHelper: int mActivationDelay>;
+
+        $l0 = (long) $i1_1;
+
+(2)     staticinvoke <android.support.v4.view.ViewCompat: void postOnAnimationDelayed(android.view.View,java.lang.Runnable,long)>($r2, $r3_1, $l0);
+
+     label2:
+        $i1_2 = Phi($i1_1 #2, $i1_3 #3);
+
+        $r3_2 = Phi($r3_1 #2, $r3_3 #3);
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mAlreadyDelayed> = 1;
+
+        return;
+
+     label3:
+        $i1_3 = Phi($i1 #0, $i1 #1);
+
+        $r3_3 = $r0.<android.support.v4.widget.AutoScrollHelper: java.lang.Runnable mRunnable>;
+
+        interfaceinvoke $r3_3.<java.lang.Runnable: void run()>();
+
+(3)     goto label2;
+    }
+
+    public abstract boolean canTargetScrollHorizontally(int);
+
+    public abstract boolean canTargetScrollVertically(int);
+
+    public boolean isEnabled()
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean z0;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        z0 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mEnabled>;
+
+        return z0;
+    }
+
+    public boolean isExclusive()
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean z0;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        z0 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mExclusive>;
+
+        return z0;
+    }
+
+    public boolean onTouch(android.view.View, android.view.MotionEvent)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        android.view.MotionEvent $r1;
+        android.view.View $r2, $r4, $r4_1, $r4_2;
+        float $f0, $f1, $f2, $f3, $f1_1, $f0_1, $f2_1, $f1_2, $f2_2, $f0_2, $f0_3;
+        android.support.v4.widget.AutoScrollHelper$ClampedScroller $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $r4 := @parameter0: android.view.View;
+
+        $r1 := @parameter1: android.view.MotionEvent;
+
+        $z0 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mEnabled>;
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $i0 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionMasked(android.view.MotionEvent)>($r1);
+
+        lookupswitch($i0)
+        {
+            case 0: goto label4;
+            case 1: goto label6;
+            case 2: goto label5;
+            case 3: goto label6;
+            default: goto label2;
+        };
+
+     label2:
+(0)     goto label3;
+
+     label3:
+        $f2 = Phi($f2 #0, $f2_2 #3, $f2_2 #4, $f2_2 #5, $f2 #6);
+
+        $f0 = Phi($f0 #0, $f0_3 #3, $f0_3 #4, $f0_3 #5, $f0 #6);
+
+        $f1 = Phi($f1 #0, $f1_2 #3, $f1_2 #4, $f1_2 #5, $f1 #6);
+
+        $z0_1 = Phi($z0 #0, $z0_5 #3, $z0_6 #4, $z0_6 #5, $z0 #6);
+
+        $r4_1 = Phi($r4 #0, $r4_2 #3, $r4_2 #4, $r4_2 #5, $r4 #6);
+
+        $i0_1 = Phi($i0 #0, $i0_5 #3, $i0_5 #4, $i0_5 #5, $i0 #6);
+
+        $z0_2 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mExclusive>;
+
+(1)     if $z0_2 == 0 goto label7;
+
+        $z0_3 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mAnimating>;
+
+(2)     if $z0_3 == 0 goto label7;
+
+        return 1;
+
+     label4:
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mNeedsCancel> = 1;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mAlreadyDelayed> = 0;
+
+     label5:
+        $f1_1 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $i0_2 = virtualinvoke $r4.<android.view.View: int getWidth()>();
+
+        $f0_1 = (float) $i0_2;
+
+        $r2 = $r0.<android.support.v4.widget.AutoScrollHelper: android.view.View mTarget>;
+
+        $i0_3 = virtualinvoke $r2.<android.view.View: int getWidth()>();
+
+        $f2_1 = (float) $i0_3;
+
+        $f1_2 = specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: float computeTargetVelocity(int,float,float,float)>(0, $f1_1, $f0_1, $f2_1);
+
+        $f2_2 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $i0_4 = virtualinvoke $r4.<android.view.View: int getHeight()>();
+
+        $f3 = (float) $i0_4;
+
+        $r4_2 = $r0.<android.support.v4.widget.AutoScrollHelper: android.view.View mTarget>;
+
+        $i0_5 = virtualinvoke $r4_2.<android.view.View: int getHeight()>();
+
+        $f0_2 = (float) $i0_5;
+
+        $f0_3 = specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: float computeTargetVelocity(int,float,float,float)>(1, $f2_2, $f3, $f0_2);
+
+        $r3 = $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper$ClampedScroller mScroller>;
+
+        virtualinvoke $r3.<android.support.v4.widget.AutoScrollHelper$ClampedScroller: void setTargetVelocity(float,float)>($f1_2, $f0_3);
+
+        $z0_5 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mAnimating>;
+
+(3)     if $z0_5 != 0 goto label3;
+
+        $z0_6 = specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: boolean shouldAnimate()>();
+
+(4)     if $z0_6 == 0 goto label3;
+
+        specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: void startAnimating()>();
+
+(5)     goto label3;
+
+     label6:
+        specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: void requestStop()>();
+
+(6)     goto label3;
+
+     label7:
+        $z0_4 = Phi($z0_2 #1, $z0_3 #2);
+
+        return 0;
+    }
+
+    public abstract void scrollTargetBy(int, int);
+
+    public android.support.v4.widget.AutoScrollHelper setActivationDelay(int)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $i0 := @parameter0: int;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: int mActivationDelay> = $i0;
+
+        return $r0;
+    }
+
+    public android.support.v4.widget.AutoScrollHelper setEdgeType(int)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $i0 := @parameter0: int;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: int mEdgeType> = $i0;
+
+        return $r0;
+    }
+
+    public android.support.v4.widget.AutoScrollHelper setEnabled(boolean)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean $z0, $z1;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = $r0.<android.support.v4.widget.AutoScrollHelper: boolean mEnabled>;
+
+        if $z1 == 0 goto label1;
+
+        if $z0 != 0 goto label1;
+
+        specialinvoke $r0.<android.support.v4.widget.AutoScrollHelper: void requestStop()>();
+
+     label1:
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mEnabled> = $z0;
+
+        return $r0;
+    }
+
+    public android.support.v4.widget.AutoScrollHelper setExclusive(boolean)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<android.support.v4.widget.AutoScrollHelper: boolean mExclusive> = $z0;
+
+        return $r0;
+    }
+
+    public android.support.v4.widget.AutoScrollHelper setMaximumEdges(float, float)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        float $f0, $f1;
+        float[] $r1, $r1_1;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMaximumEdges>;
+
+        $r1[0] = $f0;
+
+        $r1_1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMaximumEdges>;
+
+        $r1_1[1] = $f1;
+
+        return $r0;
+    }
+
+    public android.support.v4.widget.AutoScrollHelper setMaximumVelocity(float, float)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        float $f0, $f1, $f1_1, $f1_2;
+        float[] $r1, $r1_1;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $f1 := @parameter0: float;
+
+        $f0 := @parameter1: float;
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMaximumVelocity>;
+
+        $f1_1 = $f1 / 1000.0F;
+
+        $r1[0] = $f1_1;
+
+        $r1_1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMaximumVelocity>;
+
+        $f1_2 = $f0 / 1000.0F;
+
+        $r1_1[1] = $f1_2;
+
+        return $r0;
+    }
+
+    public android.support.v4.widget.AutoScrollHelper setMinimumVelocity(float, float)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        float $f0, $f1, $f1_1, $f1_2;
+        float[] $r1, $r1_1;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $f1 := @parameter0: float;
+
+        $f0 := @parameter1: float;
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMinimumVelocity>;
+
+        $f1_1 = $f1 / 1000.0F;
+
+        $r1[0] = $f1_1;
+
+        $r1_1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mMinimumVelocity>;
+
+        $f1_2 = $f0 / 1000.0F;
+
+        $r1_1[1] = $f1_2;
+
+        return $r0;
+    }
+
+    public android.support.v4.widget.AutoScrollHelper setRampDownDuration(int)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        int $i0;
+        android.support.v4.widget.AutoScrollHelper$ClampedScroller $r1;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper$ClampedScroller mScroller>;
+
+        virtualinvoke $r1.<android.support.v4.widget.AutoScrollHelper$ClampedScroller: void setRampDownDuration(int)>($i0);
+
+        return $r0;
+    }
+
+    public android.support.v4.widget.AutoScrollHelper setRampUpDuration(int)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        int $i0;
+        android.support.v4.widget.AutoScrollHelper$ClampedScroller $r1;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: android.support.v4.widget.AutoScrollHelper$ClampedScroller mScroller>;
+
+        virtualinvoke $r1.<android.support.v4.widget.AutoScrollHelper$ClampedScroller: void setRampUpDuration(int)>($i0);
+
+        return $r0;
+    }
+
+    public android.support.v4.widget.AutoScrollHelper setRelativeEdges(float, float)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        float $f0, $f1;
+        float[] $r1, $r1_1;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mRelativeEdges>;
+
+        $r1[0] = $f0;
+
+        $r1_1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mRelativeEdges>;
+
+        $r1_1[1] = $f1;
+
+        return $r0;
+    }
+
+    public android.support.v4.widget.AutoScrollHelper setRelativeVelocity(float, float)
+    {
+        android.support.v4.widget.AutoScrollHelper $r0;
+        float $f0, $f1, $f1_1, $f1_2;
+        float[] $r1, $r1_1;
+
+        $r0 := @this: android.support.v4.widget.AutoScrollHelper;
+
+        $f1 := @parameter0: float;
+
+        $f0 := @parameter1: float;
+
+        $r1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mRelativeVelocity>;
+
+        $f1_1 = $f1 / 1000.0F;
+
+        $r1[0] = $f1_1;
+
+        $r1_1 = $r0.<android.support.v4.widget.AutoScrollHelper: float[] mRelativeVelocity>;
+
+        $f1_2 = $f0 / 1000.0F;
+
+        $r1_1[1] = $f1_2;
+
+        return $r0;
+    }
+}

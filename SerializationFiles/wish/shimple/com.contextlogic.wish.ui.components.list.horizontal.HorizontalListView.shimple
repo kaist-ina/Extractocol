@@ -1,0 +1,1270 @@
+public class com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView extends com.contextlogic.wish.ui.components.scrollview.InterceptingTouchHorizontalScrollView
+{
+    private static final double VISIBLE_RECT_BUFFER_RATIO;
+    private com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter;
+    private boolean disableContentRequestLayout;
+    private java.util.HashMap indexRectMapping;
+    private java.lang.ref.WeakReference listenerReference;
+    private java.lang.Runnable recycleRunnable;
+    private java.util.HashMap reusableViews;
+    private int scrollPositionOverride;
+    private android.widget.LinearLayout scrollViewContent;
+    private android.widget.FrameLayout scrollViewContentHolder;
+    private int totalContentWidth;
+    private java.util.HashMap visibleViews;
+
+    public void <init>(android.content.Context)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, 0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.scrollview.InterceptingTouchHorizontalScrollView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void init()>();
+
+        return;
+    }
+
+    static boolean access$000(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        z0 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: boolean disableContentRequestLayout>;
+
+        return z0;
+    }
+
+    static void access$100(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void recycleViewsIfNecessary()>();
+
+        return;
+    }
+
+    static void access$200(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView, com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 := @parameter1: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void alertListenerOnClickView(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell)>($r1);
+
+        return;
+    }
+
+    static com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter access$300(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        r1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        return r1;
+    }
+
+    private void addCells(int)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i2_1, $i2_2, $i0_1, $i0_2, $i2_3, $i2_4, $i2_5, $i0_3, $i0_4;
+        android.graphics.Rect $r1;
+        java.util.HashMap $r2;
+        android.widget.LinearLayout$LayoutParams $r3;
+        android.widget.FrameLayout $r4;
+        java.lang.Runnable $r5;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter $r6, $r6_1, $r6_2;
+        java.lang.Integer $r7;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $i0 := @parameter0: int;
+
+        $r6 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        $i1 = interfaceinvoke $r6.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter: int getNumItems()>();
+
+        $i2 = 0;
+
+        $r6_1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        $i3 = interfaceinvoke $r6_1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter: int getWidthForView()>();
+
+        $r6_2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        $i4 = interfaceinvoke $r6_2.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter: int getHeightForView()>();
+
+(0)     if $i1 <= 0 goto label3;
+
+(1)     $i2_1 = $i0;
+
+     label1:
+        $i2_2 = Phi($i2_1 #1, $i2_3 #2);
+
+        $i0_1 = Phi($i0 #1, $i0_2 #2);
+
+        if $i2_2 >= $i1 goto label2;
+
+        $i5 = $i2_2 * $i3;
+
+        $i0_2 = $i5 + $i3;
+
+        $r1 = new android.graphics.Rect;
+
+        specialinvoke $r1.<android.graphics.Rect: void <init>(int,int,int,int)>($i5, 0, $i0_2, $i4);
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap indexRectMapping>;
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2_2);
+
+        virtualinvoke $r2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r7, $r1);
+
+        $i2_3 = $i2_2 + 1;
+
+(2)     goto label1;
+
+     label2:
+(3)     $i2_4 = $i1 * $i3;
+
+     label3:
+        $i2_5 = Phi($i2 #0, $i2_4 #3);
+
+        $i0_3 = Phi($i0 #0, $i0_1 #3);
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: int totalContentWidth> = $i2_5;
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: boolean disableContentRequestLayout> = 0;
+
+        $r3 = new android.widget.LinearLayout$LayoutParams;
+
+        $i0_4 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: int totalContentWidth>;
+
+        specialinvoke $r3.<android.widget.LinearLayout$LayoutParams: void <init>(int,int)>($i0_4, $i4);
+
+        $r4 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        virtualinvoke $r4.<android.widget.FrameLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r3);
+
+        $r5 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.lang.Runnable recycleRunnable>;
+
+        interfaceinvoke $r5.<java.lang.Runnable: void run()>();
+
+        return;
+    }
+
+    private void alertListenerOnClickView(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell $r1;
+        java.lang.ref.WeakReference $r2, $r2_1;
+        java.lang.Object $r3;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener $r4;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.lang.ref.WeakReference listenerReference>;
+
+        if $r2 != null goto label1;
+
+        return;
+
+     label1:
+        $r2_1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.lang.ref.WeakReference listenerReference>;
+
+        $r3 = virtualinvoke $r2_1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r4 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener) $r3;
+
+        if $r4 == null goto label2;
+
+        $i0 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: int getIndex()>();
+
+        interfaceinvoke $r4.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener: void onSelectCell(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell,int)>($r1, $i0);
+
+     label2:
+        return;
+    }
+
+    private void alertListenerOnScrollChanged(int)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        int $i0, $i1, $i2;
+        java.lang.ref.WeakReference $r1, $r1_1;
+        java.lang.Object $r2;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.lang.ref.WeakReference listenerReference>;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $r1_1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.lang.ref.WeakReference listenerReference>;
+
+        $r2 = virtualinvoke $r1_1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r3 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener) $r2;
+
+        if $r3 == null goto label2;
+
+        $i2 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: int getWidth()>();
+
+        $i1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: int totalContentWidth>;
+
+        interfaceinvoke $r3.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener: void onScrollChanged(int,int,int)>($i0, $i2, $i1);
+
+     label2:
+        return;
+    }
+
+    private void enqueueView(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell $r1;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3;
+        java.util.HashMap $r3, $r3_1, $r3_2;
+        java.lang.Object $r4;
+        java.util.ArrayList $r5, $r5_1, $r5_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell;
+
+        virtualinvoke $r1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: void prepareForRecycle()>();
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: boolean disableContentRequestLayout> = 1;
+
+        virtualinvoke $r1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: void setVisibility(int)>(8);
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: boolean disableContentRequestLayout> = 0;
+
+        $r2 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: java.lang.String getIdentifier()>();
+
+(0)     if $r2 == null goto label2;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap reusableViews>;
+
+        $r2_1 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: java.lang.String getIdentifier()>();
+
+        $r4 = virtualinvoke $r3.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r2_1);
+
+        $r5 = (java.util.ArrayList) $r4;
+
+        if $r5 == null goto label1;
+
+        virtualinvoke $r5.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        return;
+
+     label1:
+        $r5_1 = new java.util.ArrayList;
+
+        specialinvoke $r5_1.<java.util.ArrayList: void <init>()>();
+
+        virtualinvoke $r5_1.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r3_1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap reusableViews>;
+
+        $r2_2 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: java.lang.String getIdentifier()>();
+
+(1)     virtualinvoke $r3_1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2_2, $r5_1);
+
+     label2:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        $r2_3 = Phi($r2 #0, $r2_2 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    private void init()
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        android.widget.LinearLayout$LayoutParams $r1;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$1 $r2;
+        android.widget.FrameLayout $r3;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$2 $r4;
+        android.widget.LinearLayout $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        android.content.Context $r6, $r6_1;
+        java.util.HashMap $r7, $r7_1, $r7_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r5 = new android.widget.LinearLayout;
+
+        $r6 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.content.Context getContext()>();
+
+        specialinvoke $r5.<android.widget.LinearLayout: void <init>(android.content.Context)>($r6);
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.LinearLayout scrollViewContent> = $r5;
+
+        $r5_1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.LinearLayout scrollViewContent>;
+
+        $r1 = new android.widget.LinearLayout$LayoutParams;
+
+        specialinvoke $r1.<android.widget.LinearLayout$LayoutParams: void <init>(int,int)>(-1, -1);
+
+        virtualinvoke $r5_1.<android.widget.LinearLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r1);
+
+        $r5_2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.LinearLayout scrollViewContent>;
+
+        virtualinvoke $r5_2.<android.widget.LinearLayout: void setOrientation(int)>(1);
+
+        $r5_3 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.LinearLayout scrollViewContent>;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void addView(android.view.View)>($r5_3);
+
+        $r2 = new com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$1;
+
+        $r6_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.content.Context getContext()>();
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$1: void <init>(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView,android.content.Context)>($r0, $r6_1);
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.FrameLayout scrollViewContentHolder> = $r2;
+
+        $r5_4 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.LinearLayout scrollViewContent>;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        virtualinvoke $r5_4.<android.widget.LinearLayout: void addView(android.view.View)>($r3);
+
+        $r7 = new java.util.HashMap;
+
+        specialinvoke $r7.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap reusableViews> = $r7;
+
+        $r7_1 = new java.util.HashMap;
+
+        specialinvoke $r7_1.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews> = $r7_1;
+
+        $r7_2 = new java.util.HashMap;
+
+        specialinvoke $r7_2.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap indexRectMapping> = $r7_2;
+
+        $r4 = new com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$2;
+
+        specialinvoke $r4.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$2: void <init>(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView)>($r0);
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.lang.Runnable recycleRunnable> = $r4;
+
+        return;
+    }
+
+    private void recycleViewsIfNecessary()
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        android.graphics.Rect $r1, $r13, $r13_1, $r13_2, $r13_3;
+        java.util.ArrayList $r2;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$3 $r3;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i1_1, $i3_1, $i1_2, $i3_2, $i0_1, $i0_2, $i4_1, $i0_3, $i2_1, $i5_1, $i1_3, $i1_4, $i3_3, $i3_4, $i1_5, $i1_6, $i0_4, $i2_2, $i1_7, $i2_3, $i3_5, $i1_8, $i3_6, $i2_4, $i3_7, $i3_8, $i1_9, $i0_5, $i2_5, $i2_6, $i2_7, $i0_6, $i3_9, $i3_10, $i1_10, $i0_7, $i1_11, $i5_2, $i2_8, $i0_8, $i5_3, $i2_9, $i1_12, $i0_9, $i2_10, $i0_10, $i2_11, $i5_4, $i2_12, $i0_11, $i0_12, $i0_13, $i0_14, $i0_15, $i2_13, $i0_16, $i2_14, $i0_17, $i2_15, $i0_18, $i2_16, $i0_19, $i2_17, $i5_5, $i2_18, $i0_20, $i0_21, $i4_2;
+        android.content.Context $r5, $r5_1, $r5_2;
+        android.app.Activity $r6, $r6_1, $r6_2;
+        android.view.WindowManager $r7, $r7_1, $r7_2;
+        android.view.Display $r8, $r8_1, $r8_2;
+        android.widget.FrameLayout $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6;
+        boolean $z0, $z1, $z2, $z0_1, $z1_1, $z1_2, $z1_3, $z1_4, $z0_2;
+        double $d0, $d0_1, $d0_2, $d0_3, $d0_4, $d0_5;
+        java.util.HashMap $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8, $r10_9, $r10_10, $r10_11, $r10_12;
+        java.lang.Integer $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8, $r11_9, $r11_10;
+        java.lang.Object $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8, $r12_9;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell $r14, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5, $r14_6;
+        android.widget.FrameLayout$LayoutParams $r15, $r15_1, $r15_2, $r15_3, $r15_4;
+        android.view.ViewParent $r16, $r16_1, $r16_2, $r16_3, $r16_4, $r16_5, $r16_6;
+        android.view.ViewGroup $r17;
+        android.view.ViewGroup$LayoutParams $r18;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r4 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        if $r4 != null goto label01;
+
+        return;
+
+     label01:
+        $i0 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: int getWidth()>();
+
+        $i1 = $i0;
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        $i2 = interfaceinvoke $r4_1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter: int getHeightForView()>();
+
+        $i3 = $i2;
+
+        if $i2 == 0 goto label02;
+
+(0)     if $i0 != 0 goto label03;
+
+     label02:
+        $r5 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.content.Context getContext()>();
+
+        $r6 = (android.app.Activity) $r5;
+
+        $r7 = virtualinvoke $r6.<android.app.Activity: android.view.WindowManager getWindowManager()>();
+
+        $r8 = interfaceinvoke $r7.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        $i1_1 = virtualinvoke $r8.<android.view.Display: int getWidth()>();
+
+        $r5_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.content.Context getContext()>();
+
+        $r6_1 = (android.app.Activity) $r5_1;
+
+        $r7_1 = virtualinvoke $r6_1.<android.app.Activity: android.view.WindowManager getWindowManager()>();
+
+        $r8_1 = interfaceinvoke $r7_1.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+(1)     $i3_1 = virtualinvoke $r8_1.<android.view.Display: int getHeight()>();
+
+     label03:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        $r8_2 = Phi($r8 #0, $r8_1 #1);
+
+        $i1_2 = Phi($i1 #0, $i1_1 #1);
+
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        $r7_2 = Phi($r7 #0, $r7_1 #1);
+
+        $i3_2 = Phi($i3 #0, $i3_1 #1);
+
+        $r9 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        $i0_1 = virtualinvoke $r9.<android.widget.FrameLayout: int getChildCount()>();
+
+        if $i0_1 <= 0 goto label08;
+
+(2)     $z0 = 1;
+
+     label04:
+        $z0_1 = Phi($z0 #2, $z0_2 #8);
+
+        $i0_2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: int scrollPositionOverride>;
+
+        if $i0_2 == 0 goto label09;
+
+(3)     $i4 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: int scrollPositionOverride>;
+
+     label05:
+        $i4_1 = Phi($i4 #3, $i4_2 #9);
+
+        $r4_2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        $i0_3 = interfaceinvoke $r4_2.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter: int getWidthForView()>();
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: int scrollPositionOverride> = 0;
+
+        $d0 = (double) $i1_2;
+
+        $d0_1 = $d0 * 1.0;
+
+        $i2_1 = (int) $d0_1;
+
+        $i5 = $i4_1 - $i2_1;
+
+        $i5_1 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i5);
+
+        $i1_3 = $i4_1 + $i1_2;
+
+        $i1_4 = $i1_3 + $i2_1;
+
+        $r1 = new android.graphics.Rect;
+
+        specialinvoke $r1.<android.graphics.Rect: void <init>(int,int,int,int)>($i5_1, 0, $i1_4, $i3_2);
+
+        $i3_3 = $i5_1 / $i0_3;
+
+        $d0_2 = (double) $i3_3;
+
+        $d0_3 = staticinvoke <java.lang.Math: double floor(double)>($d0_2);
+
+        $i3_4 = (int) $d0_3;
+
+        $i1_5 = $i1_4 / $i0_3;
+
+        $d0_4 = (double) $i1_5;
+
+        $d0_5 = staticinvoke <java.lang.Math: double ceil(double)>($d0_4);
+
+        $i1_6 = (int) $d0_5;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        $r10 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        $i0_4 = virtualinvoke $r10.<java.util.HashMap: int size()>();
+
+(4)     $i2_2 = 0;
+
+     label06:
+        $r13 = Phi($r13 #4, $r13_1 #7);
+
+        $r12 = Phi($r12 #4, $r12_3 #7);
+
+        $i1_7 = Phi($i1_6 #4, $i1_8 #7);
+
+        $r14 = Phi($r14 #4, $r14_2 #7);
+
+        $i2_3 = Phi($i2_2 #4, $i2_4 #7);
+
+        $r11 = Phi($r11 #4, $r11_4 #7);
+
+        $r10_1 = Phi($r10 #4, $r10_4 #7);
+
+        $i3_5 = Phi($i3_4 #4, $i3_6 #7);
+
+        $z1 = Phi($z1 #4, $z1_1 #7);
+
+        if $i2_3 >= $i0_4 goto label14;
+
+        $r10_2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap indexRectMapping>;
+
+        $r11_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2_3);
+
+        $r12_1 = virtualinvoke $r10_2.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r11_1);
+
+        $r13_1 = (android.graphics.Rect) $r12_1;
+
+        $z1_1 = staticinvoke <android.graphics.Rect: boolean intersects(android.graphics.Rect,android.graphics.Rect)>($r13_1, $r1);
+
+        if $z1_1 != 0 goto label10;
+
+        $r10_3 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        $r11_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2_3);
+
+        $r12_2 = virtualinvoke $r10_3.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r11_2);
+
+        $r14_1 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell) $r12_2;
+
+(5)     if $r14_1 == null goto label07;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void enqueueView(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell)>($r14_1);
+
+        $r11_3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2_3);
+
+(6)     virtualinvoke $r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r11_3);
+
+     label07:
+        $r12_3 = Phi($r12_2 #5, $r12_2 #6, $r12_1 #12, $r12_1 #13);
+
+        $i1_8 = Phi($i1_7 #5, $i1_7 #6, $i1_7 #12, $i1_9 #13);
+
+        $r14_2 = Phi($r14_1 #5, $r14_1 #6, $r14 #12, $r14 #13);
+
+        $r11_4 = Phi($r11_2 #5, $r11_3 #6, $r11_1 #12, $r11_1 #13);
+
+        $r10_4 = Phi($r10_3 #5, $r10_3 #6, $r10_2 #12, $r10_2 #13);
+
+        $i3_6 = Phi($i3_5 #5, $i3_5 #6, $i3_8 #12, $i3_8 #13);
+
+        $i2_4 = $i2_3 + 1;
+
+(7)     goto label06;
+
+     label08:
+        $z0_2 = 0;
+
+(8)     goto label04;
+
+     label09:
+        $i4_2 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: int getScrollX()>();
+
+(9)     goto label05;
+
+     label10:
+        if $i3_5 == -1 goto label11;
+
+(10)    if $i2_3 >= $i3_5 goto label12;
+
+     label11:
+(11)    $i3_7 = $i2_3;
+
+     label12:
+        $i3_8 = Phi($i3_5 #10, $i3_7 #11);
+
+        if $i1_7 == -1 goto label13;
+
+(12)    if $i2_3 <= $i1_7 goto label07;
+
+     label13:
+        $i1_9 = $i2_3;
+
+(13)    goto label07;
+
+     label14:
+        $i0_5 = virtualinvoke $r2.<java.util.ArrayList: int size()>();
+
+(14)    $i2_5 = 0;
+
+     label15:
+        $r12_4 = Phi($r12 #14, $r12_5 #15);
+
+        $i2_6 = Phi($i2_5 #14, $i2_7 #15);
+
+        $r10_5 = Phi($r10_1 #14, $r10_6 #15);
+
+        if $i2_6 >= $i0_5 goto label16;
+
+        $r10_6 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        $r12_5 = virtualinvoke $r2.<java.util.ArrayList: java.lang.Object get(int)>($i2_6);
+
+        virtualinvoke $r10_6.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>($r12_5);
+
+        $i2_7 = $i2_6 + 1;
+
+(15)    goto label15;
+
+     label16:
+        $i0_6 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i3_5);
+
+        $r4_3 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        $i3_9 = interfaceinvoke $r4_3.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter: int getNumItems()>();
+
+        $i3_10 = staticinvoke <java.lang.Math: int min(int,int)>($i3_9, $i1_7);
+
+(16)    $i1_10 = $i0_6;
+
+     label17:
+        $r16 = Phi($r16 #16, $r16_1 #18);
+
+        $r13_2 = Phi($r13 #16, $r13_3 #18);
+
+        $i0_7 = Phi($i0_6 #16, $i0_8 #18);
+
+        $r12_6 = Phi($r12_4 #16, $r12_8 #18);
+
+        $r15 = Phi($r15 #16, $r15_1 #18);
+
+        $i1_11 = Phi($i1_10 #16, $i1_12 #18);
+
+        $r14_3 = Phi($r14 #16, $r14_4 #18);
+
+        $i5_2 = Phi($i5_1 #16, $i5_3 #18);
+
+        $i2_8 = Phi($i2_6 #16, $i2_9 #18);
+
+        $r4_4 = Phi($r4_3 #16, $r4_5 #18);
+
+        $r9_1 = Phi($r9 #16, $r9_2 #18);
+
+        $r11_5 = Phi($r11 #16, $r11_7 #18);
+
+        $r10_7 = Phi($r10_5 #16, $r10_9 #18);
+
+        $z1_2 = Phi($z1 #16, $z1_3 #18);
+
+        if $i1_11 >= $i3_10 goto label24;
+
+        $r10_8 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap indexRectMapping>;
+
+        $r11_6 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1_11);
+
+        $r12_7 = virtualinvoke $r10_8.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r11_6);
+
+        $r13_3 = (android.graphics.Rect) $r12_7;
+
+(17)    if $r13_3 != null goto label19;
+
+     label18:
+        $r16_1 = Phi($r16 #17, $r16_6 #24, $r16 #25, $r16 #27, $r16 #28);
+
+        $i0_8 = Phi($i0_7 #17, $i0_14 #24, $i0_7 #25, $i0_16 #27, $i0_21 #28);
+
+        $r12_8 = Phi($r12_7 #17, $r12_7 #24, $r12_7 #25, $r12_9 #27, $r12_9 #28);
+
+        $r15_1 = Phi($r15 #17, $r15_2 #24, $r15 #25, $r15_3 #27, $r15_4 #28);
+
+        $r14_4 = Phi($r14_3 #17, $r14_5 #24, $r14_3 #25, $r14_6 #27, $r14_6 #28);
+
+        $i5_3 = Phi($i5_2 #17, $i5_4 #24, $i5_2 #25, $i5_2 #27, $i5_5 #28);
+
+        $i2_9 = Phi($i2_8 #17, $i2_12 #24, $i2_8 #25, $i2_14 #27, $i2_18 #28);
+
+        $r4_5 = Phi($r4_4 #17, $r4_8 #24, $r4_4 #25, $r4_4 #27, $r4_4 #28);
+
+        $r9_2 = Phi($r9_1 #17, $r9_6 #24, $r9_1 #25, $r9_1 #27, $r9_1 #28);
+
+        $r11_7 = Phi($r11_6 #17, $r11_9 #24, $r11_8 #25, $r11_10 #27, $r11_10 #28);
+
+        $r10_9 = Phi($r10_8 #17, $r10_11 #24, $r10_10 #25, $r10_12 #27, $r10_12 #28);
+
+        $z1_3 = Phi($z1_2 #17, $z1_4 #24, $z1_4 #25, $z1_4 #27, $z1_4 #28);
+
+        $i1_12 = $i1_11 + 1;
+
+(18)    goto label17;
+
+     label19:
+        $r10_10 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        $r11_8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1_11);
+
+        $z1_4 = virtualinvoke $r10_10.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r11_8);
+
+        if $z1_4 != 0 goto label22;
+
+        $z2 = staticinvoke <android.graphics.Rect: boolean intersects(android.graphics.Rect,android.graphics.Rect)>($r13_3, $r1);
+
+        if $z2 == 0 goto label22;
+
+        $r4_6 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        $r14_5 = interfaceinvoke $r4_6.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell getViewAtIndex(int,boolean)>($i1_11, $z0_1);
+
+        virtualinvoke $r14_5.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: void setIndex(int)>($i1_11);
+
+        $r15_2 = new android.widget.FrameLayout$LayoutParams;
+
+        $i0_9 = $r13_3.<android.graphics.Rect: int right>;
+
+        $i2_10 = $r13_3.<android.graphics.Rect: int left>;
+
+        $i0_10 = $i0_9 - $i2_10;
+
+        $i2_11 = $r13_3.<android.graphics.Rect: int bottom>;
+
+        $i5_4 = $r13_3.<android.graphics.Rect: int top>;
+
+        $i2_12 = $i2_11 - $i5_4;
+
+        specialinvoke $r15_2.<android.widget.FrameLayout$LayoutParams: void <init>(int,int)>($i0_10, $i2_12);
+
+        $r15_2.<android.widget.FrameLayout$LayoutParams: int gravity> = 48;
+
+        $i0_11 = $r13_3.<android.graphics.Rect: int top>;
+
+        $r15_2.<android.view.ViewGroup$MarginLayoutParams: int topMargin> = $i0_11;
+
+        $i0_12 = $r13_3.<android.graphics.Rect: int left>;
+
+        $r15_2.<android.view.ViewGroup$MarginLayoutParams: int leftMargin> = $i0_12;
+
+        $r4_7 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        $i0_13 = interfaceinvoke $r4_7.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter: int getWidthForView()>();
+
+        $r15_2.<android.view.ViewGroup$LayoutParams: int width> = $i0_13;
+
+        $r4_8 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        $i0_14 = interfaceinvoke $r4_8.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter: int getHeightForView()>();
+
+        $r15_2.<android.view.ViewGroup$LayoutParams: int height> = $i0_14;
+
+        $r16_2 = virtualinvoke $r14_5.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: android.view.ViewParent getParent()>();
+
+(19)    if $r16_2 == null goto label20;
+
+        $r16_3 = virtualinvoke $r14_5.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: android.view.ViewParent getParent()>();
+
+        $r9_3 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.FrameLayout scrollViewContentHolder>;
+
+(20)    if $r16_3 == $r9_3 goto label20;
+
+        $r16_4 = virtualinvoke $r14_5.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: android.view.ViewParent getParent()>();
+
+        $r17 = (android.view.ViewGroup) $r16_4;
+
+(21)    virtualinvoke $r17.<android.view.ViewGroup: void removeView(android.view.View)>($r14_5);
+
+     label20:
+        $r16_5 = Phi($r16_2 #19, $r16_3 #20, $r16_4 #21);
+
+        $r9_4 = Phi($r9_1 #19, $r9_3 #20, $r9_3 #21);
+
+        $r16_6 = virtualinvoke $r14_5.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: android.view.ViewParent getParent()>();
+
+(22)    if $r16_6 != null goto label21;
+
+        $r9_5 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: android.widget.FrameLayout scrollViewContentHolder>;
+
+(23)    virtualinvoke $r9_5.<android.widget.FrameLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r14_5, $r15_2);
+
+     label21:
+        $r9_6 = Phi($r9_4 #22, $r9_5 #23);
+
+        virtualinvoke $r14_5.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: void setVisibility(int)>(0);
+
+        virtualinvoke $r14_5.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r15_2);
+
+        $r3 = new com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$3;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$3: void <init>(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView,com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell)>($r0, $r14_5);
+
+        virtualinvoke $r14_5.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: void setOnClickListener(android.view.View$OnClickListener)>($r3);
+
+        $r10_11 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        $r11_9 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1_11);
+
+        virtualinvoke $r10_11.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r11_9, $r14_5);
+
+(24)    goto label18;
+
+     label22:
+(25)    if $z1_4 == 0 goto label18;
+
+        $r10_12 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        $r11_10 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1_11);
+
+        $r12_9 = virtualinvoke $r10_12.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r11_10);
+
+        $r14_6 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell) $r12_9;
+
+        virtualinvoke $r14_6.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: void setIndex(int)>($i1_11);
+
+        $r18 = virtualinvoke $r14_6.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r15_3 = (android.widget.FrameLayout$LayoutParams) $r18;
+
+        $i0_15 = $r15_3.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+        $i2_13 = $r13_3.<android.graphics.Rect: int left>;
+
+(26)    if $i0_15 != $i2_13 goto label23;
+
+        $i0_16 = $r15_3.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+        $i2_14 = $r13_3.<android.graphics.Rect: int top>;
+
+(27)    if $i0_16 == $i2_14 goto label18;
+
+     label23:
+        $i0_17 = Phi($i0_15 #26, $i0_16 #27);
+
+        $i2_15 = Phi($i2_13 #26, $i2_14 #27);
+
+        $r15_4 = new android.widget.FrameLayout$LayoutParams;
+
+        $i0_18 = $r13_3.<android.graphics.Rect: int right>;
+
+        $i2_16 = $r13_3.<android.graphics.Rect: int left>;
+
+        $i0_19 = $i0_18 - $i2_16;
+
+        $i2_17 = $r13_3.<android.graphics.Rect: int bottom>;
+
+        $i5_5 = $r13_3.<android.graphics.Rect: int top>;
+
+        $i2_18 = $i2_17 - $i5_5;
+
+        specialinvoke $r15_4.<android.widget.FrameLayout$LayoutParams: void <init>(int,int)>($i0_19, $i2_18);
+
+        $r15_4.<android.widget.FrameLayout$LayoutParams: int gravity> = 48;
+
+        $i0_20 = $r13_3.<android.graphics.Rect: int top>;
+
+        $r15_4.<android.view.ViewGroup$MarginLayoutParams: int topMargin> = $i0_20;
+
+        $i0_21 = $r13_3.<android.graphics.Rect: int left>;
+
+        $r15_4.<android.view.ViewGroup$MarginLayoutParams: int leftMargin> = $i0_21;
+
+        virtualinvoke $r14_6.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r15_4);
+
+(28)    goto label18;
+
+     label24:
+        return;
+    }
+
+    public com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell dequeueView(java.lang.String)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        java.lang.String $r1;
+        java.util.HashMap $r2;
+        java.lang.Object $r3, $r3_1;
+        java.util.ArrayList $r4;
+        int $i0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell $r5;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap reusableViews>;
+
+        $r3 = virtualinvoke $r2.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r4 = (java.util.ArrayList) $r3;
+
+        if $r4 == null goto label1;
+
+        $i0 = virtualinvoke $r4.<java.util.ArrayList: int size()>();
+
+        if $i0 <= 0 goto label1;
+
+        $r3_1 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object remove(int)>(0);
+
+        $r5 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell) $r3_1;
+
+        return $r5;
+
+     label1:
+        return null;
+    }
+
+    public java.util.HashMap getVisibleViews()
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        java.util.HashMap r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        r1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        return r1;
+    }
+
+    public void insertCells(int)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        java.util.HashMap $r1;
+        int $i0, $i1, $i1_1, $i0_1;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter $r2, $r2_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $i0 := @parameter0: int;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        if $r2 != null goto label1;
+
+        return;
+
+     label1:
+        $r1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap indexRectMapping>;
+
+        $i1 = virtualinvoke $r1.<java.util.HashMap: int size()>();
+
+        if $i1 != 0 goto label2;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void reloadData()>();
+
+        return;
+
+     label2:
+        $r2_1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        $i1_1 = interfaceinvoke $r2_1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter: int getNumItems()>();
+
+        $i0_1 = $i1_1 - $i0;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void addCells(int)>($i0_1);
+
+        return;
+    }
+
+    protected void onScrollChanged(int, int, int, int)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        int $i0, $i1, $i2, $i3;
+        java.lang.Runnable $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $i3 := @parameter3: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.scrollview.InterceptingTouchHorizontalScrollView: void onScrollChanged(int,int,int,int)>($i0, $i1, $i2, $i3);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void alertListenerOnScrollChanged(int)>($i0);
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.lang.Runnable recycleRunnable>;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: boolean post(java.lang.Runnable)>($r1);
+
+        return;
+    }
+
+    public void releaseImages()
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        java.util.HashMap $r1;
+        java.util.Set $r2;
+        java.util.Iterator $r3;
+        boolean $z0;
+        java.lang.Object $r4, $r4_1, $r4_2;
+        java.util.Map$Entry $r5;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell $r6;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        $r2 = virtualinvoke $r1.<java.util.HashMap: java.util.Set entrySet()>();
+
+(0)     $r3 = interfaceinvoke $r2.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $r4 = Phi($r4 #0, $r4_2 #1);
+
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r4_1 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.util.Map$Entry) $r4_1;
+
+        $r4_2 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r6 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell) $r4_2;
+
+        virtualinvoke $r6.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: void releaseImages()>();
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    public void reloadData()
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter $r1;
+        java.util.HashMap $r2, $r2_1, $r2_2;
+        java.util.Set $r3;
+        java.util.Iterator $r4;
+        boolean $z0;
+        java.lang.Object $r5, $r5_1, $r5_2;
+        java.util.Map$Entry $r6;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell $r7;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter>;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $r2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        $r3 = virtualinvoke $r2.<java.util.HashMap: java.util.Set entrySet()>();
+
+(0)     $r4 = interfaceinvoke $r3.<java.util.Set: java.util.Iterator iterator()>();
+
+     label2:
+        $r5 = Phi($r5 #0, $r5_2 #1);
+
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label3;
+
+        $r5_1 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (java.util.Map$Entry) $r5_1;
+
+        $r5_2 = interfaceinvoke $r6.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r7 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell) $r5_2;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void enqueueView(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell)>($r7);
+
+(1)     goto label2;
+
+     label3:
+        $r2_1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        virtualinvoke $r2_1.<java.util.HashMap: void clear()>();
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap indexRectMapping>;
+
+        virtualinvoke $r2_2.<java.util.HashMap: void clear()>();
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void addCells(int)>(0);
+
+        return;
+    }
+
+    public void restoreImages()
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        java.util.HashMap $r1;
+        java.util.Set $r2;
+        java.util.Iterator $r3;
+        boolean $z0;
+        java.lang.Object $r4, $r4_1, $r4_2;
+        java.util.Map$Entry $r5;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell $r6;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.util.HashMap visibleViews>;
+
+        $r2 = virtualinvoke $r1.<java.util.HashMap: java.util.Set entrySet()>();
+
+(0)     $r3 = interfaceinvoke $r2.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $r4 = Phi($r4 #0, $r4_2 #1);
+
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r4_1 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.util.Map$Entry) $r4_1;
+
+        $r4_2 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r6 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell) $r4_2;
+
+        virtualinvoke $r6.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell: void restoreImages()>();
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    public void scrollToPosition(int)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        int $i0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$4 $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = new com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$4;
+
+        specialinvoke $r1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView$4: void <init>(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView,int)>($r0, $i0);
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: boolean post(java.lang.Runnable)>($r1);
+
+        return;
+    }
+
+    public void setAdapter(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter;
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter adapter> = $r1;
+
+        return;
+    }
+
+    public void setListener(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener $r1;
+        java.lang.ref.WeakReference $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener;
+
+        $r2 = new java.lang.ref.WeakReference;
+
+        specialinvoke $r2.<java.lang.ref.WeakReference: void <init>(java.lang.Object)>($r1);
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: java.lang.ref.WeakReference listenerReference> = $r2;
+
+        return;
+    }
+
+    public void setScrollPosition(int)
+    {
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r0;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView;
+
+        $i0 := @parameter0: int;
+
+        $r0.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: int scrollPositionOverride> = $i0;
+
+        return;
+    }
+}

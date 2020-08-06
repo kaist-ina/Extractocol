@@ -1,0 +1,410 @@
+public class com.facebook.internal.AttributionIdentifiers extends java.lang.Object
+{
+    private static final java.lang.String ANDROID_ID_COLUMN_NAME;
+    private static final java.lang.String ATTRIBUTION_ID_COLUMN_NAME;
+    private static final android.net.Uri ATTRIBUTION_ID_CONTENT_URI;
+    private static final int CONNECTION_RESULT_SUCCESS;
+    private static final long IDENTIFIER_REFRESH_INTERVAL_MILLIS;
+    private static final java.lang.String LIMIT_TRACKING_COLUMN_NAME;
+    private static final java.lang.String TAG;
+    private static com.facebook.internal.AttributionIdentifiers recentlyFetchedIdentifiers;
+    private java.lang.String androidAdvertiserId;
+    private java.lang.String attributionId;
+    private long fetchTime;
+    private boolean limitTracking;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        java.lang.String $r1;
+        android.net.Uri $r2;
+
+        $r0 = class "com/facebook/internal/AttributionIdentifiers";
+
+        $r1 = virtualinvoke $r0.<java.lang.Class: java.lang.String getCanonicalName()>();
+
+        <com.facebook.internal.AttributionIdentifiers: java.lang.String TAG> = $r1;
+
+        $r2 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>("content://com.facebook.katana.provider.AttributionIdProvider");
+
+        <com.facebook.internal.AttributionIdentifiers: android.net.Uri ATTRIBUTION_ID_CONTENT_URI> = $r2;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.facebook.internal.AttributionIdentifiers $r0;
+
+        $r0 := @this: com.facebook.internal.AttributionIdentifiers;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static com.facebook.internal.AttributionIdentifiers getAndroidId(android.content.Context)
+    {
+        android.content.Context $r0;
+        com.facebook.internal.AttributionIdentifiers $r1;
+        com.facebook.FacebookException $r2;
+        java.lang.Exception $r3;
+        android.os.Looper $r4, $r5;
+        java.lang.Class[] $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        java.lang.reflect.Method $r7, $r12, $r7_1, $r7_2, $r7_3, $r7_4;
+        java.lang.Object[] $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        java.lang.Object $r9, $r13, $r9_1, $r9_2, $r9_3, $r9_4;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.Integer $r10;
+        int $i0;
+        java.lang.Class $r11, $r11_1, $r11_2, $r11_3;
+        java.lang.String $r14;
+        java.lang.Boolean $r15;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = new com.facebook.internal.AttributionIdentifiers;
+
+(0)     specialinvoke $r1.<com.facebook.internal.AttributionIdentifiers: void <init>()>();
+
+     label01:
+        $r4 = staticinvoke <android.os.Looper: android.os.Looper myLooper()>();
+
+        $r5 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+     label02:
+        if $r4 != $r5 goto label05;
+
+        $r2 = new com.facebook.FacebookException;
+
+     label03:
+        specialinvoke $r2.<com.facebook.FacebookException: void <init>(java.lang.String)>("getAndroidId cannot be called on the main thread.");
+
+        throw $r2;
+
+     label04:
+        $r3 := @caughtexception;
+
+        $r6_5 = Phi($r6 #0, $r6_1 #4, $r6_2 #10, $r6_3 #13);
+
+        $r8_5 = Phi($r8 #0, $r8_1 #7, $r8_2 #16, $r8_3 #17);
+
+        $r7_4 = Phi($r7 #0, $r7_1 #5, $r7_2 #11);
+
+        $r11_3 = Phi($r11 #0, $r11_1 #12);
+
+        $r9_4 = Phi($r9 #0, $r9_1 #8, $r9_2 #18);
+
+        $z0_3 = Phi($z0 #0, $z0_1 #19);
+
+        staticinvoke <com.facebook.internal.Utility: void logd(java.lang.String,java.lang.Exception)>("android_id", $r3);
+
+        return $r1;
+
+     label05:
+        $r6 = newarray (java.lang.Class)[1];
+
+        $r6[0] = class "android/content/Context";
+
+        $r7 = staticinvoke <com.facebook.internal.Utility: java.lang.reflect.Method getMethodQuietly(java.lang.String,java.lang.String,java.lang.Class[])>("com.google.android.gms.common.GooglePlayServicesUtil", "isGooglePlayServicesAvailable", $r6);
+
+     label06:
+(1)     if $r7 == null goto label18;
+
+     label07:
+        $r8 = newarray (java.lang.Object)[1];
+
+        $r8[0] = $r0;
+
+        $r9 = staticinvoke <com.facebook.internal.Utility: java.lang.Object invokeMethodQuietly(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])>(null, $r7, $r8);
+
+     label08:
+        $z0 = $r9 instanceof java.lang.Integer;
+
+(2)     if $z0 == 0 goto label18;
+
+     label09:
+        $r10 = (java.lang.Integer) $r9;
+
+        $i0 = virtualinvoke $r10.<java.lang.Integer: int intValue()>();
+
+     label10:
+(3)     if $i0 != 0 goto label18;
+
+     label11:
+(4)     $r6_1 = newarray (java.lang.Class)[1];
+
+        $r6_1[0] = class "android/content/Context";
+
+(5)     $r7_1 = staticinvoke <com.facebook.internal.Utility: java.lang.reflect.Method getMethodQuietly(java.lang.String,java.lang.String,java.lang.Class[])>("com.google.android.gms.ads.identifier.AdvertisingIdClient", "getAdvertisingIdInfo", $r6_1);
+
+     label12:
+(6)     if $r7_1 == null goto label18;
+
+     label13:
+(7)     $r8_1 = newarray (java.lang.Object)[1];
+
+        $r8_1[0] = $r0;
+
+(8)     $r9_1 = staticinvoke <com.facebook.internal.Utility: java.lang.Object invokeMethodQuietly(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])>(null, $r7_1, $r8_1);
+
+     label14:
+(9)     if $r9_1 == null goto label18;
+
+     label15:
+        $r11 = virtualinvoke $r9_1.<java.lang.Object: java.lang.Class getClass()>();
+
+(10)    $r6_2 = newarray (java.lang.Class)[0];
+
+(11)    $r7_2 = staticinvoke <com.facebook.internal.Utility: java.lang.reflect.Method getMethodQuietly(java.lang.Class,java.lang.String,java.lang.Class[])>($r11, "getId", $r6_2);
+
+(12)    $r11_1 = virtualinvoke $r9_1.<java.lang.Object: java.lang.Class getClass()>();
+
+(13)    $r6_3 = newarray (java.lang.Class)[0];
+
+        $r12 = staticinvoke <com.facebook.internal.Utility: java.lang.reflect.Method getMethodQuietly(java.lang.Class,java.lang.String,java.lang.Class[])>($r11_1, "isLimitAdTrackingEnabled", $r6_3);
+
+     label16:
+(14)    if $r7_2 == null goto label18;
+
+(15)    if $r12 == null goto label18;
+
+     label17:
+(16)    $r8_2 = newarray (java.lang.Object)[0];
+
+        $r13 = staticinvoke <com.facebook.internal.Utility: java.lang.Object invokeMethodQuietly(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])>($r9_1, $r7_2, $r8_2);
+
+        $r14 = (java.lang.String) $r13;
+
+        $r1.<com.facebook.internal.AttributionIdentifiers: java.lang.String androidAdvertiserId> = $r14;
+
+(17)    $r8_3 = newarray (java.lang.Object)[0];
+
+(18)    $r9_2 = staticinvoke <com.facebook.internal.Utility: java.lang.Object invokeMethodQuietly(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])>($r9_1, $r12, $r8_3);
+
+        $r15 = (java.lang.Boolean) $r9_2;
+
+(19)    $z0_1 = virtualinvoke $r15.<java.lang.Boolean: boolean booleanValue()>();
+
+(20)    $r1.<com.facebook.internal.AttributionIdentifiers: boolean limitTracking> = $z0_1;
+
+     label18:
+        $r6_4 = Phi($r6 #1, $r6 #2, $r6 #3, $r6_1 #6, $r6_1 #9, $r6_3 #14, $r6_3 #15, $r6_3 #20);
+
+        $r8_4 = Phi($r8 #1, $r8 #2, $r8 #3, $r8 #6, $r8_1 #9, $r8_1 #14, $r8_1 #15, $r8_3 #20);
+
+        $r7_3 = Phi($r7 #1, $r7 #2, $r7 #3, $r7_1 #6, $r7_1 #9, $r7_2 #14, $r7_2 #15, $r7_2 #20);
+
+        $r11_2 = Phi($r11 #1, $r11 #2, $r11 #3, $r11 #6, $r11 #9, $r11_1 #14, $r11_1 #15, $r11_1 #20);
+
+        $r9_3 = Phi($r9 #1, $r9 #2, $r9 #3, $r9 #6, $r9_1 #9, $r9_1 #14, $r9_1 #15, $r9_2 #20);
+
+        $z0_2 = Phi($z0 #1, $z0 #2, $z0 #3, $z0 #6, $z0 #9, $z0 #14, $z0 #15, $z0_1 #20);
+
+        return $r1;
+
+        catch java.lang.Exception from label01 to label02 with label04;
+        catch java.lang.Exception from label03 to label04 with label04;
+        catch java.lang.Exception from label05 to label06 with label04;
+        catch java.lang.Exception from label07 to label08 with label04;
+        catch java.lang.Exception from label09 to label10 with label04;
+        catch java.lang.Exception from label11 to label12 with label04;
+        catch java.lang.Exception from label13 to label14 with label04;
+        catch java.lang.Exception from label15 to label16 with label04;
+        catch java.lang.Exception from label17 to label18 with label04;
+    }
+
+    public static com.facebook.internal.AttributionIdentifiers getAttributionIdentifiers(android.content.Context)
+    {
+        android.content.Context $r0;
+        long $l0, $l2, $l0_1, $l0_2, $l0_3;
+        byte $b1;
+        java.lang.String[] $r1;
+        android.net.Uri $r2;
+        java.lang.Exception $r3;
+        com.facebook.internal.AttributionIdentifiers $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        android.content.ContentResolver $r5;
+        android.database.Cursor $r6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        int $i3, $i4, $i5;
+        java.lang.String $r7, $r9, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r9_1;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r4 = <com.facebook.internal.AttributionIdentifiers: com.facebook.internal.AttributionIdentifiers recentlyFetchedIdentifiers>;
+
+(0)     if $r4 == null goto label01;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r4_1 = <com.facebook.internal.AttributionIdentifiers: com.facebook.internal.AttributionIdentifiers recentlyFetchedIdentifiers>;
+
+        $l0 = $r4_1.<com.facebook.internal.AttributionIdentifiers: long fetchTime>;
+
+        $l0_1 = $l2 - $l0;
+
+        $b1 = $l0_1 cmp 3600000L;
+
+(1)     if $b1 >= 0 goto label01;
+
+        $r4_2 = <com.facebook.internal.AttributionIdentifiers: com.facebook.internal.AttributionIdentifiers recentlyFetchedIdentifiers>;
+
+        return $r4_2;
+
+     label01:
+        $r4_3 = Phi($r4 #0, $r4_1 #1);
+
+        $l0_2 = Phi($l0 #0, $l0_1 #1);
+
+(2)     $r4_4 = staticinvoke <com.facebook.internal.AttributionIdentifiers: com.facebook.internal.AttributionIdentifiers getAndroidId(android.content.Context)>($r0);
+
+     label02:
+        $r1 = newarray (java.lang.String)[3];
+
+        $r1[0] = "aid";
+
+        $r1[1] = "androidid";
+
+        $r1[2] = "limit_tracking";
+
+        $r5 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+     label03:
+        $r2 = <com.facebook.internal.AttributionIdentifiers: android.net.Uri ATTRIBUTION_ID_CONTENT_URI>;
+
+     label04:
+        $r6 = virtualinvoke $r5.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r2, $r1, null, null, null);
+
+     label05:
+(3)     if $r6 == null goto label16;
+
+     label06:
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean moveToFirst()>();
+
+     label07:
+(4)     if $z0 == 0 goto label16;
+
+     label08:
+        $i3 = interfaceinvoke $r6.<android.database.Cursor: int getColumnIndex(java.lang.String)>("aid");
+
+        $i4 = interfaceinvoke $r6.<android.database.Cursor: int getColumnIndex(java.lang.String)>("androidid");
+
+        $i5 = interfaceinvoke $r6.<android.database.Cursor: int getColumnIndex(java.lang.String)>("limit_tracking");
+
+        $r7 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>($i3);
+
+        $r4_4.<com.facebook.internal.AttributionIdentifiers: java.lang.String attributionId> = $r7;
+
+     label09:
+(5)     if $i4 <= 0 goto label13;
+
+(6)     if $i5 <= 0 goto label13;
+
+     label10:
+(7)     $r7_1 = virtualinvoke $r4_4.<com.facebook.internal.AttributionIdentifiers: java.lang.String getAndroidAdvertiserId()>();
+
+     label11:
+(8)     if $r7_1 != null goto label13;
+
+     label12:
+(9)     $r7_2 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>($i4);
+
+        $r4_4.<com.facebook.internal.AttributionIdentifiers: java.lang.String androidAdvertiserId> = $r7_2;
+
+(10)    $r7_3 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>($i5);
+
+(11)    $z0_1 = staticinvoke <java.lang.Boolean: boolean parseBoolean(java.lang.String)>($r7_3);
+
+(12)    $r4_4.<com.facebook.internal.AttributionIdentifiers: boolean limitTracking> = $z0_1;
+
+     label13:
+        $z0_2 = Phi($z0 #5, $z0 #6, $z0 #8, $z0_1 #12);
+
+        $r7_4 = Phi($r7 #5, $r7 #6, $r7_1 #8, $r7_3 #12);
+
+(13)    interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+     label14:
+        $l0_3 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r4_4.<com.facebook.internal.AttributionIdentifiers: long fetchTime> = $l0_3;
+
+        <com.facebook.internal.AttributionIdentifiers: com.facebook.internal.AttributionIdentifiers recentlyFetchedIdentifiers> = $r4_4;
+
+        return $r4_4;
+
+     label15:
+        $r3 := @caughtexception;
+
+        $z0_4 = Phi($z0 #2, $z0_1 #11, $z0_2 #13);
+
+        $r7_5 = Phi($r7 #2, $r7_1 #7, $r7_2 #9, $r7_3 #10, $r7_4 #13);
+
+        $r7_6 = <com.facebook.internal.AttributionIdentifiers: java.lang.String TAG>;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Caught unexpected exception in getAttributionId(): ");
+
+        $r9 = virtualinvoke $r3.<java.lang.Exception: java.lang.String toString()>();
+
+        $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9_1 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r7_6, $r9_1);
+
+        return null;
+
+     label16:
+        $z0_3 = Phi($z0 #3, $z0 #4);
+
+        return $r4_4;
+
+        catch java.lang.Exception from label02 to label03 with label15;
+        catch java.lang.Exception from label04 to label05 with label15;
+        catch java.lang.Exception from label06 to label07 with label15;
+        catch java.lang.Exception from label08 to label09 with label15;
+        catch java.lang.Exception from label10 to label11 with label15;
+        catch java.lang.Exception from label12 to label14 with label15;
+    }
+
+    public java.lang.String getAndroidAdvertiserId()
+    {
+        com.facebook.internal.AttributionIdentifiers $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.facebook.internal.AttributionIdentifiers;
+
+        r1 = $r0.<com.facebook.internal.AttributionIdentifiers: java.lang.String androidAdvertiserId>;
+
+        return r1;
+    }
+
+    public java.lang.String getAttributionId()
+    {
+        com.facebook.internal.AttributionIdentifiers $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.facebook.internal.AttributionIdentifiers;
+
+        r1 = $r0.<com.facebook.internal.AttributionIdentifiers: java.lang.String attributionId>;
+
+        return r1;
+    }
+
+    public boolean isTrackingLimited()
+    {
+        com.facebook.internal.AttributionIdentifiers $r0;
+        boolean z0;
+
+        $r0 := @this: com.facebook.internal.AttributionIdentifiers;
+
+        z0 = $r0.<com.facebook.internal.AttributionIdentifiers: boolean limitTracking>;
+
+        return z0;
+    }
+}

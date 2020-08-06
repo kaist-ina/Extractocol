@@ -12,12 +12,16 @@ package soot.jimple.infoflow.android.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parser for reading out the contents of Android's resource.arsc file.
@@ -28,6 +32,8 @@ import java.util.Set;
  */
 public class ARSCFileParser extends AbstractResourceParser {
 	
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    
 	private final static boolean DEBUG = false;
 
 	protected final static int RES_STRING_POOL_TYPE = 0x0001;
@@ -430,6 +436,11 @@ public class ARSCFileParser extends AbstractResourceParser {
 		public int getValue() {
 			return this.value;
 		}
+		
+		@Override
+		public String toString() {
+			return Integer.toString(value);
+		}
 	}
 	
 	/**
@@ -444,6 +455,11 @@ public class ARSCFileParser extends AbstractResourceParser {
 		
 		public float getValue() {
 			return this.value;
+		}
+		
+		@Override
+		public String toString() {
+			return Float.toString(value);
 		}
 	}
 
@@ -460,6 +476,12 @@ public class ARSCFileParser extends AbstractResourceParser {
 		public boolean getValue() {
 			return this.value;
 		}
+
+		@Override
+		public String toString() {
+			return Boolean.toString(value);
+		}
+		
 	}
 	
 	/**
@@ -493,6 +515,12 @@ public class ARSCFileParser extends AbstractResourceParser {
 		public int getB() {
 			return this.b;
 		}
+
+		@Override
+		public String toString() {
+			return String.format("#%02x%02x%02x%02x", a, r, g, b);
+		}
+		
 	}
 	
 	/**
@@ -588,6 +616,11 @@ public class ARSCFileParser extends AbstractResourceParser {
 		
 		public Dimension getUnit() {
 			return this.unit;
+		}
+		
+		@Override
+		public String toString() {
+			return Integer.toString(this.value) + unit.toString().toLowerCase();
 		}
 	}
 	
@@ -1462,6 +1495,19 @@ public class ARSCFileParser extends AbstractResourceParser {
 		offset += 8;
 		if (config.size <= 48)
 			return offset;
+		
+		// Read in the remaining bytes. If they're all zero, we're fine.
+		// Otherwise, we print a warning.
+		int remainingSize = config.size - 48;
+		if (remainingSize > 0) {
+			byte[] remainingBytes = new byte[remainingSize];
+			System.arraycopy(data, offset, remainingBytes, 0, remainingSize);
+			if (!(new BigInteger(1, remainingBytes).equals(BigInteger.ZERO))) {
+				logger.warn("Excessive non-null bytes in ResTable_Config ignored");
+				assert false;
+			}
+			offset += remainingSize;
+		}
 
 		return offset;
 	}

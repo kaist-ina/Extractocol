@@ -1,0 +1,336 @@
+public abstract class com.braintreepayments.api.AppSwitch extends java.lang.Object
+{
+    public static final java.lang.String EXTRA_MERCHANT_ID;
+    public static final java.lang.String EXTRA_OFFLINE;
+    public static final java.lang.String EXTRA_PAYMENT_METHOD_NONCE;
+    protected static boolean sEnableSignatureVerification;
+    protected com.braintreepayments.api.models.Configuration mConfiguration;
+    protected android.content.Context mContext;
+
+    static void <clinit>()
+    {
+        <com.braintreepayments.api.AppSwitch: boolean sEnableSignatureVerification> = 1;
+
+        return;
+    }
+
+    public void <init>(android.content.Context, com.braintreepayments.api.models.Configuration)
+    {
+        com.braintreepayments.api.AppSwitch $r0;
+        android.content.Context $r1;
+        com.braintreepayments.api.models.Configuration $r2;
+
+        $r0 := @this: com.braintreepayments.api.AppSwitch;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.braintreepayments.api.models.Configuration;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.braintreepayments.api.AppSwitch: android.content.Context mContext> = $r1;
+
+        $r0.<com.braintreepayments.api.AppSwitch: com.braintreepayments.api.models.Configuration mConfiguration> = $r2;
+
+        return;
+    }
+
+    private boolean isSignatureValid()
+    {
+        com.braintreepayments.api.AppSwitch $r0;
+        android.content.Context $r1;
+        android.content.pm.Signature[] $r2;
+        android.content.pm.Signature $r3;
+        java.io.ByteArrayInputStream $r4;
+        android.content.pm.PackageManager$NameNotFoundException $r5;
+        java.security.cert.CertificateException $r6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        android.content.pm.PackageManager $r7;
+        java.lang.String $r8, $r15, $r17, $r8_1, $r15_1, $r8_2, $r15_2, $r15_3, $r15_4, $r8_3, $r8_4;
+        android.content.pm.PackageInfo $r9;
+        int $i0, $i1, $i2, $i1_1, $i0_1, $i0_2, $i0_3, $i0_4, $i1_2;
+        byte[] $r10;
+        java.security.cert.CertificateFactory $r11;
+        java.security.cert.Certificate $r12;
+        java.security.cert.X509Certificate $r13;
+        javax.security.auth.x500.X500Principal $r14, $r14_1, $r14_2, $r14_3;
+        java.security.PublicKey $r16;
+
+        $r0 := @this: com.braintreepayments.api.AppSwitch;
+
+        $z0 = <com.braintreepayments.api.AppSwitch: boolean sEnableSignatureVerification>;
+
+        if $z0 != 0 goto label01;
+
+        return 1;
+
+     label01:
+        $r1 = $r0.<com.braintreepayments.api.AppSwitch: android.content.Context mContext>;
+
+(0)     $r7 = virtualinvoke $r1.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+     label02:
+        $r8 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: java.lang.String getPackage()>();
+
+        $r9 = virtualinvoke $r7.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>($r8, 64);
+
+     label03:
+        $r2 = $r9.<android.content.pm.PackageInfo: android.content.pm.Signature[] signatures>;
+
+        $i0 = lengthof $r2;
+
+(1)     $i1 = 0;
+
+     label04:
+        $r14 = Phi($r14 #1, $r14_3 #14);
+
+        $i1_1 = Phi($i1 #1, $i1_2 #14);
+
+        $i0_1 = Phi($i0 #1, $i0_4 #14);
+
+        $z0_1 = Phi($z0 #1, $z0_5 #14);
+
+        $r15 = Phi($r15 #1, $r15_4 #14);
+
+        $r8_1 = Phi($r8 #1, $r8_3 #14);
+
+        if $i1_1 >= $i0_1 goto label18;
+
+(2)     $r3 = $r2[$i1_1];
+
+     label05:
+        $r10 = virtualinvoke $r3.<android.content.pm.Signature: byte[] toByteArray()>();
+
+     label06:
+        $r4 = new java.io.ByteArrayInputStream;
+
+     label07:
+        specialinvoke $r4.<java.io.ByteArrayInputStream: void <init>(byte[])>($r10);
+
+        $r11 = staticinvoke <java.security.cert.CertificateFactory: java.security.cert.CertificateFactory getInstance(java.lang.String)>("X509");
+
+        $r12 = virtualinvoke $r11.<java.security.cert.CertificateFactory: java.security.cert.Certificate generateCertificate(java.io.InputStream)>($r4);
+
+     label08:
+        $r13 = (java.security.cert.X509Certificate) $r12;
+
+     label09:
+(3)     $r14_1 = virtualinvoke $r13.<java.security.cert.X509Certificate: javax.security.auth.x500.X500Principal getSubjectX500Principal()>();
+
+(4)     $r15_1 = virtualinvoke $r14_1.<javax.security.auth.x500.X500Principal: java.lang.String getName()>();
+
+(5)     $r14_2 = virtualinvoke $r13.<java.security.cert.X509Certificate: javax.security.auth.x500.X500Principal getIssuerX500Principal()>();
+
+(6)     $r8_2 = virtualinvoke $r14_2.<javax.security.auth.x500.X500Principal: java.lang.String getName()>();
+
+        $r16 = virtualinvoke $r13.<java.security.cert.X509Certificate: java.security.PublicKey getPublicKey()>();
+
+        $i2 = virtualinvoke $r16.<java.lang.Object: int hashCode()>();
+
+        $r17 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: java.lang.String getCertificateSubject()>();
+
+(7)     $z0_2 = virtualinvoke $r17.<java.lang.String: boolean equals(java.lang.Object)>($r15_1);
+
+     label10:
+(8)     if $z0_2 == 0 goto label16;
+
+     label11:
+(9)     $r15_2 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: java.lang.String getCertificateIssuer()>();
+
+(10)    $z0_3 = virtualinvoke $r15_2.<java.lang.String: boolean equals(java.lang.Object)>($r8_2);
+
+     label12:
+(11)    if $z0_3 == 0 goto label16;
+
+     label13:
+(12)    $i0_2 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: int getPublicKeyHashCode()>();
+
+     label14:
+(13)    if $i0_2 != $i2 goto label16;
+
+        return 1;
+
+     label15:
+        $r5 := @caughtexception;
+
+        $r8_4 = Phi($r8 #0);
+
+        return 0;
+
+     label16:
+        $i0_3 = Phi($i0_1 #8, $i0_1 #11, $i0_2 #13);
+
+        $z0_4 = Phi($z0_2 #8, $z0_3 #11, $z0_3 #13);
+
+        $r15_3 = Phi($r15_1 #8, $r15_2 #11, $r15_2 #13);
+
+        return 0;
+
+     label17:
+        $r6 := @caughtexception;
+
+        $r14_3 = Phi($r14 #2, $r14_1 #3, $r14_2 #5);
+
+        $i0_4 = Phi($i0_1 #2, $i0_2 #12);
+
+        $z0_5 = Phi($z0_1 #2, $z0_2 #7, $z0_3 #10);
+
+        $r15_4 = Phi($r15 #2, $r15_1 #4, $r15_2 #9);
+
+        $r8_3 = Phi($r8_1 #2, $r8_2 #6);
+
+        $i1_2 = $i1_1 + 1;
+
+(14)    goto label04;
+
+     label18:
+        return 0;
+
+        catch android.content.pm.PackageManager$NameNotFoundException from label02 to label03 with label15;
+        catch java.security.cert.CertificateException from label05 to label06 with label17;
+        catch java.security.cert.CertificateException from label07 to label08 with label17;
+        catch java.security.cert.CertificateException from label09 to label10 with label17;
+        catch java.security.cert.CertificateException from label11 to label12 with label17;
+        catch java.security.cert.CertificateException from label13 to label14 with label17;
+    }
+
+    protected abstract java.lang.String getAppSwitchActivity();
+
+    protected abstract java.lang.String getCertificateIssuer();
+
+    protected abstract java.lang.String getCertificateSubject();
+
+    protected android.content.Intent getLaunchIntent()
+    {
+        com.braintreepayments.api.AppSwitch $r0;
+        android.content.ComponentName $r1;
+        android.content.Intent $r2, $r2_1;
+        java.lang.String $r3, $r5, $r5_1, $r5_2;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.braintreepayments.api.AppSwitch;
+
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>()>();
+
+        $r1 = new android.content.ComponentName;
+
+        $r3 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: java.lang.String getPackage()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: java.lang.String getPackage()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".");
+
+        $r5_1 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: java.lang.String getAppSwitchActivity()>();
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_1);
+
+        $r5_2 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<android.content.ComponentName: void <init>(java.lang.String,java.lang.String)>($r3, $r5_2);
+
+        $r2_1 = virtualinvoke $r2.<android.content.Intent: android.content.Intent setComponent(android.content.ComponentName)>($r1);
+
+        return $r2_1;
+    }
+
+    protected abstract java.lang.String getPackage();
+
+    protected abstract int getPublicKeyHashCode();
+
+    protected abstract java.lang.String handleAppSwitchResponse(int, android.content.Intent);
+
+    protected boolean isAvailable()
+    {
+        com.braintreepayments.api.AppSwitch $r0;
+        android.content.Context $r1;
+        android.content.pm.ActivityInfo $r2;
+        java.lang.String $r3, $r7;
+        android.content.pm.PackageManager $r4;
+        android.content.Intent $r5;
+        java.util.List $r6;
+        int $i0;
+        java.lang.Object $r8;
+        android.content.pm.ResolveInfo $r9;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: com.braintreepayments.api.AppSwitch;
+
+        $r1 = $r0.<com.braintreepayments.api.AppSwitch: android.content.Context mContext>;
+
+        $r4 = virtualinvoke $r1.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r5 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: android.content.Intent getLaunchIntent()>();
+
+        $r6 = virtualinvoke $r4.<android.content.pm.PackageManager: java.util.List queryIntentActivities(android.content.Intent,int)>($r5, 0);
+
+        $i0 = interfaceinvoke $r6.<java.util.List: int size()>();
+
+(0)     if $i0 != 1 goto label1;
+
+        $r7 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: java.lang.String getPackage()>();
+
+        $r8 = interfaceinvoke $r6.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r9 = (android.content.pm.ResolveInfo) $r8;
+
+        $r2 = $r9.<android.content.pm.ResolveInfo: android.content.pm.ActivityInfo activityInfo>;
+
+        $r3 = $r2.<android.content.pm.PackageItemInfo: java.lang.String packageName>;
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+(1)     if $z0 == 0 goto label1;
+
+        $z0_1 = specialinvoke $r0.<com.braintreepayments.api.AppSwitch: boolean isSignatureValid()>();
+
+(2)     if $z0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0 #1, $z0_1 #2);
+
+        return 0;
+    }
+
+    protected void launch(android.app.Activity, int) throws com.braintreepayments.api.exceptions.AppSwitchNotAvailableException
+    {
+        com.braintreepayments.api.AppSwitch $r0;
+        android.app.Activity $r1;
+        int $i0;
+        com.braintreepayments.api.exceptions.AppSwitchNotAvailableException $r2;
+        boolean $z0;
+        android.content.Intent $r3;
+
+        $r0 := @this: com.braintreepayments.api.AppSwitch;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $i0 := @parameter1: int;
+
+        $z0 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: boolean isAvailable()>();
+
+        if $z0 == 0 goto label1;
+
+        $r3 = virtualinvoke $r0.<com.braintreepayments.api.AppSwitch: android.content.Intent getLaunchIntent()>();
+
+        virtualinvoke $r1.<android.app.Activity: void startActivityForResult(android.content.Intent,int)>($r3, $i0);
+
+        return;
+
+     label1:
+        $r2 = new com.braintreepayments.api.exceptions.AppSwitchNotAvailableException;
+
+        specialinvoke $r2.<com.braintreepayments.api.exceptions.AppSwitchNotAvailableException: void <init>()>();
+
+        throw $r2;
+    }
+}

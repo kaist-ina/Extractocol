@@ -1,0 +1,526 @@
+public class ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection extends ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection implements ch.boye.httpclientandroidlib.HttpInetConnection
+{
+    private volatile boolean open;
+    private volatile java.net.Socket socket;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket> = null;
+
+        return;
+    }
+
+    private static void formatAddress(java.lang.StringBuilder, java.net.SocketAddress)
+    {
+        java.net.SocketAddress $r0;
+        boolean $z0;
+        java.lang.StringBuilder $r1, $r1_1, $r1_2;
+        java.net.InetSocketAddress $r2;
+        java.net.InetAddress $r3, $r3_1, $r3_2;
+        java.io.Serializable $r5, $r5_1, $r5_2;
+        int $i0;
+
+        $r1 := @parameter0: java.lang.StringBuilder;
+
+        $r0 := @parameter1: java.net.SocketAddress;
+
+        $z0 = $r0 instanceof java.net.InetSocketAddress;
+
+        if $z0 == 0 goto label3;
+
+        $r2 = (java.net.InetSocketAddress) $r0;
+
+        $r3 = virtualinvoke $r2.<java.net.InetSocketAddress: java.net.InetAddress getAddress()>();
+
+        if $r3 == null goto label2;
+
+        $r3_1 = virtualinvoke $r2.<java.net.InetSocketAddress: java.net.InetAddress getAddress()>();
+
+(0)     $r5 = virtualinvoke $r3_1.<java.net.InetAddress: java.lang.String getHostAddress()>();
+
+     label1:
+        $r5_1 = Phi($r5 #0, $r5_2 #1);
+
+        $r3_2 = Phi($r3_1 #0, $r3 #1);
+
+        $r1_1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5_1);
+
+        $r1_2 = virtualinvoke $r1_1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $i0 = virtualinvoke $r2.<java.net.InetSocketAddress: int getPort()>();
+
+        virtualinvoke $r1_2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        return;
+
+     label2:
+        $r5_2 = virtualinvoke $r2.<java.net.InetSocketAddress: java.net.InetAddress getAddress()>();
+
+(1)     goto label1;
+
+     label3:
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        return;
+    }
+
+    protected void assertNotOpen()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        boolean $z0;
+        java.lang.IllegalStateException $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: boolean open>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Connection is already open");
+
+        throw $r1;
+
+     label1:
+        return;
+    }
+
+    protected void assertOpen()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        boolean $z0;
+        java.lang.IllegalStateException $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: boolean open>;
+
+        if $z0 != 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Connection is not open");
+
+        throw $r1;
+
+     label1:
+        return;
+    }
+
+    protected void bind(java.net.Socket, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        java.net.Socket $r1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        java.lang.IllegalArgumentException $r3, $r3_1;
+        int $i0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r4;
+        ch.boye.httpclientandroidlib.io.SessionOutputBuffer $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $r1 := @parameter0: java.net.Socket;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Socket may not be null");
+
+        throw $r3;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r3_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP parameters may not be null");
+
+        throw $r3_1;
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket> = $r1;
+
+        $i0 = staticinvoke <ch.boye.httpclientandroidlib.params.HttpConnectionParams: int getSocketBufferSize(ch.boye.httpclientandroidlib.params.HttpParams)>($r2);
+
+        $r4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: ch.boye.httpclientandroidlib.io.SessionInputBuffer createSessionInputBuffer(java.net.Socket,int,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $i0, $r2);
+
+        $r5 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: ch.boye.httpclientandroidlib.io.SessionOutputBuffer createSessionOutputBuffer(java.net.Socket,int,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $i0, $r2);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: void init(ch.boye.httpclientandroidlib.io.SessionInputBuffer,ch.boye.httpclientandroidlib.io.SessionOutputBuffer,ch.boye.httpclientandroidlib.params.HttpParams)>($r4, $r5, $r2);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: boolean open> = 1;
+
+        return;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        boolean $z0;
+        java.net.Socket $r1;
+        java.lang.Throwable $r2;
+        java.io.IOException $r3, $r4;
+        java.lang.UnsupportedOperationException $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: boolean open>;
+
+        if $z0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: boolean open> = 0;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: boolean open> = 0;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+     label2:
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: void doFlush()>();
+
+     label3:
+        virtualinvoke $r1.<java.net.Socket: void shutdownOutput()>();
+
+     label4:
+        virtualinvoke $r1.<java.net.Socket: void shutdownInput()>();
+
+     label5:
+        virtualinvoke $r1.<java.net.Socket: void close()>();
+
+        return;
+
+     label6:
+        $r2 := @caughtexception;
+
+        virtualinvoke $r1.<java.net.Socket: void close()>();
+
+        throw $r2;
+
+     label7:
+        $r3 := @caughtexception;
+
+        goto label4;
+
+     label8:
+        $r4 := @caughtexception;
+
+        goto label5;
+
+     label9:
+        $r5 := @caughtexception;
+
+        goto label5;
+
+        catch java.lang.Throwable from label2 to label3 with label6;
+        catch java.io.IOException from label3 to label4 with label7;
+        catch java.lang.UnsupportedOperationException from label3 to label4 with label9;
+        catch java.lang.Throwable from label3 to label4 with label6;
+        catch java.io.IOException from label4 to label5 with label8;
+        catch java.lang.UnsupportedOperationException from label4 to label5 with label9;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    protected ch.boye.httpclientandroidlib.io.SessionInputBuffer createSessionInputBuffer(java.net.Socket, int, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        java.net.Socket $r1;
+        int $i0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        ch.boye.httpclientandroidlib.impl.io.SocketInputBuffer $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $r1 := @parameter0: java.net.Socket;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.io.SocketInputBuffer;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.io.SocketInputBuffer: void <init>(java.net.Socket,int,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $i0, $r2);
+
+        return $r3;
+    }
+
+    protected ch.boye.httpclientandroidlib.io.SessionOutputBuffer createSessionOutputBuffer(java.net.Socket, int, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        java.net.Socket $r1;
+        int $i0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        ch.boye.httpclientandroidlib.impl.io.SocketOutputBuffer $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $r1 := @parameter0: java.net.Socket;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.io.SocketOutputBuffer;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.io.SocketOutputBuffer: void <init>(java.net.Socket,int,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $i0, $r2);
+
+        return $r3;
+    }
+
+    public java.net.InetAddress getLocalAddress()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        java.net.InetAddress $r1;
+        java.net.Socket $r2, $r2_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        if $r2 == null goto label1;
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        $r1 = virtualinvoke $r2_1.<java.net.Socket: java.net.InetAddress getLocalAddress()>();
+
+        return $r1;
+
+     label1:
+        return null;
+    }
+
+    public int getLocalPort()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        int $i0;
+        java.net.Socket $r1, $r1_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        if $r1 == null goto label1;
+
+        $r1_1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        $i0 = virtualinvoke $r1_1.<java.net.Socket: int getLocalPort()>();
+
+        return $i0;
+
+     label1:
+        return -1;
+    }
+
+    public java.net.InetAddress getRemoteAddress()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        java.net.InetAddress $r1;
+        java.net.Socket $r2, $r2_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        if $r2 == null goto label1;
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        $r1 = virtualinvoke $r2_1.<java.net.Socket: java.net.InetAddress getInetAddress()>();
+
+        return $r1;
+
+     label1:
+        return null;
+    }
+
+    public int getRemotePort()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        int $i0;
+        java.net.Socket $r1, $r1_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        if $r1 == null goto label1;
+
+        $r1_1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        $i0 = virtualinvoke $r1_1.<java.net.Socket: int getPort()>();
+
+        return $i0;
+
+     label1:
+        return -1;
+    }
+
+    protected java.net.Socket getSocket()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        java.net.Socket r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        return r1;
+    }
+
+    public int getSocketTimeout()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        java.net.SocketException $r1;
+        int $i0;
+        java.net.Socket $r2, $r2_1, $r2_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+(0)     if $r2 == null goto label4;
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+     label1:
+        $i0 = virtualinvoke $r2_1.<java.net.Socket: int getSoTimeout()>();
+
+     label2:
+        return $i0;
+
+     label3:
+(1)     $r1 := @caughtexception;
+
+     label4:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return -1;
+
+        catch java.net.SocketException from label1 to label2 with label3;
+    }
+
+    public boolean isOpen()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        boolean z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        z0 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: boolean open>;
+
+        return z0;
+    }
+
+    public void setSocketTimeout(int)
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        int $i0;
+        java.net.SocketException $r1;
+        java.net.Socket $r2, $r2_1, $r2_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $i0 := @parameter0: int;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: void assertOpen()>();
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+(0)     if $r2 == null goto label4;
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+     label1:
+        virtualinvoke $r2_1.<java.net.Socket: void setSoTimeout(int)>($i0);
+
+     label2:
+        return;
+
+     label3:
+(1)     $r1 := @caughtexception;
+
+     label4:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+
+        catch java.net.SocketException from label1 to label2 with label3;
+    }
+
+    public void shutdown() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        java.net.Socket $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: boolean open> = 0;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        if $r1 == null goto label1;
+
+        virtualinvoke $r1.<java.net.Socket: void close()>();
+
+     label1:
+        return;
+    }
+
+    public java.lang.String toString()
+    {
+        ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection $r0;
+        java.lang.StringBuilder $r1;
+        java.net.Socket $r2, $r2_1, $r2_2;
+        java.net.SocketAddress $r3, $r4;
+        java.lang.String $r5, $r5_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        if $r2 == null goto label2;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        $r3 = virtualinvoke $r2_1.<java.net.Socket: java.net.SocketAddress getRemoteSocketAddress()>();
+
+        $r2_2 = $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: java.net.Socket socket>;
+
+        $r4 = virtualinvoke $r2_2.<java.net.Socket: java.net.SocketAddress getLocalSocketAddress()>();
+
+        if $r3 == null goto label1;
+
+        if $r4 == null goto label1;
+
+        staticinvoke <ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: void formatAddress(java.lang.StringBuilder,java.net.SocketAddress)>($r1, $r4);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("<->");
+
+        staticinvoke <ch.boye.httpclientandroidlib.impl.SocketHttpServerConnection: void formatAddress(java.lang.StringBuilder,java.net.SocketAddress)>($r1, $r3);
+
+     label1:
+        $r5 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r5;
+
+     label2:
+        $r5_1 = specialinvoke $r0.<java.lang.Object: java.lang.String toString()>();
+
+        return $r5_1;
+    }
+}

@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 /**
  *  test taint propagation in vectors
  */
@@ -23,7 +23,7 @@ public class VectorTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void vectorRWPos0Test() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.VectorTestCode: void concreteWriteReadPos0Test()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -32,7 +32,7 @@ public class VectorTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void vectorRWPos1Test() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.VectorTestCode: void concreteWriteReadPos1Test()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -41,7 +41,7 @@ public class VectorTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void vIteratorPos0Test() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.VectorTestCode: void iteratorPos0Test()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -50,7 +50,7 @@ public class VectorTests extends JUnitTests {
 	
 	@Test(timeout=300000)
 	public void vIteratorPos1Test() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.VectorTestCode: void iteratorPos1Test()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -59,7 +59,7 @@ public class VectorTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void concreteVIteratorTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.VectorTestCode: void concreteIteratorTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -68,7 +68,7 @@ public class VectorTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void concreteNegativeTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.VectorTestCode: void concreteWriteReadNegativeTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);

@@ -1,0 +1,2349 @@
+public class io.fabric.sdk.android.services.common.CommonUtils extends java.lang.Object
+{
+    static final int BYTES_IN_A_GIGABYTE;
+    static final int BYTES_IN_A_KILOBYTE;
+    static final int BYTES_IN_A_MEGABYTE;
+    private static final java.lang.String CLS_SHARED_PREFERENCES_NAME;
+    static final boolean CLS_TRACE_DEFAULT;
+    static final java.lang.String CLS_TRACE_PREFERENCE_NAME;
+    static final java.lang.String CRASHLYTICS_BUILD_ID;
+    public static final int DEVICE_STATE_BETAOS;
+    public static final int DEVICE_STATE_COMPROMISEDLIBRARIES;
+    public static final int DEVICE_STATE_DEBUGGERATTACHED;
+    public static final int DEVICE_STATE_ISSIMULATOR;
+    public static final int DEVICE_STATE_JAILBROKEN;
+    public static final int DEVICE_STATE_VENDORINTERNAL;
+    static final java.lang.String ENCRYPTION_AES;
+    static final java.lang.String FABRIC_BUILD_ID;
+    public static final java.util.Comparator FILE_MODIFIED_COMPARATOR;
+    public static final java.lang.String GOOGLE_SDK;
+    private static final char[] HEX_VALUES;
+    private static final boolean LOGGING_DISABLED_DEFAULT;
+    private static final java.lang.String LOGGING_DISABLED_KEY;
+    private static final java.lang.String LOG_PRIORITY_NAME_ASSERT;
+    private static final java.lang.String LOG_PRIORITY_NAME_DEBUG;
+    private static final java.lang.String LOG_PRIORITY_NAME_ERROR;
+    private static final java.lang.String LOG_PRIORITY_NAME_INFO;
+    private static final java.lang.String LOG_PRIORITY_NAME_UNKNOWN;
+    private static final java.lang.String LOG_PRIORITY_NAME_VERBOSE;
+    private static final java.lang.String LOG_PRIORITY_NAME_WARN;
+    public static final java.lang.String MD5_INSTANCE;
+    public static final java.lang.String SDK;
+    public static final java.lang.String SHA1_INSTANCE;
+    private static final long UNCALCULATED_TOTAL_RAM;
+    private static java.lang.Boolean clsTrace;
+    private static java.lang.Boolean loggingEnabled;
+    private static long totalRamInBytes;
+
+    static void <clinit>()
+    {
+        char[] $r0;
+        io.fabric.sdk.android.services.common.CommonUtils$1 $r1;
+
+        <io.fabric.sdk.android.services.common.CommonUtils: java.lang.Boolean clsTrace> = null;
+
+        $r0 = newarray (char)[16];
+
+        $r0[0] = 48;
+
+        $r0[1] = 49;
+
+        $r0[2] = 50;
+
+        $r0[3] = 51;
+
+        $r0[4] = 52;
+
+        $r0[5] = 53;
+
+        $r0[6] = 54;
+
+        $r0[7] = 55;
+
+        $r0[8] = 56;
+
+        $r0[9] = 57;
+
+        $r0[10] = 97;
+
+        $r0[11] = 98;
+
+        $r0[12] = 99;
+
+        $r0[13] = 100;
+
+        $r0[14] = 101;
+
+        $r0[15] = 102;
+
+        <io.fabric.sdk.android.services.common.CommonUtils: char[] HEX_VALUES> = $r0;
+
+        <io.fabric.sdk.android.services.common.CommonUtils: long totalRamInBytes> = -1L;
+
+        <io.fabric.sdk.android.services.common.CommonUtils: java.lang.Boolean loggingEnabled> = null;
+
+        $r1 = new io.fabric.sdk.android.services.common.CommonUtils$1;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.common.CommonUtils$1: void <init>()>();
+
+        <io.fabric.sdk.android.services.common.CommonUtils: java.util.Comparator FILE_MODIFIED_COMPARATOR> = $r1;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        io.fabric.sdk.android.services.common.CommonUtils $r0;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.CommonUtils;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static long calculateFreeRamInBytes(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.app.ActivityManager$MemoryInfo $r1;
+        java.lang.Object $r2;
+        android.app.ActivityManager $r3;
+        long l0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = new android.app.ActivityManager$MemoryInfo;
+
+        specialinvoke $r1.<android.app.ActivityManager$MemoryInfo: void <init>()>();
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("activity");
+
+        $r3 = (android.app.ActivityManager) $r2;
+
+        virtualinvoke $r3.<android.app.ActivityManager: void getMemoryInfo(android.app.ActivityManager$MemoryInfo)>($r1);
+
+        l0 = $r1.<android.app.ActivityManager$MemoryInfo: long availMem>;
+
+        return l0;
+    }
+
+    public static long calculateUsedDiskSpaceInBytes(java.lang.String)
+    {
+        java.lang.String $r0;
+        android.os.StatFs $r1;
+        long $l0, $l2, $l3, $l3_1, $l2_1, $l2_2;
+        int $i1, $i1_1, $i1_2;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = new android.os.StatFs;
+
+        specialinvoke $r1.<android.os.StatFs: void <init>(java.lang.String)>($r0);
+
+        $i1 = virtualinvoke $r1.<android.os.StatFs: int getBlockSize()>();
+
+        $l2 = (long) $i1;
+
+        $i1_1 = virtualinvoke $r1.<android.os.StatFs: int getBlockCount()>();
+
+        $l3 = (long) $i1_1;
+
+        $l3_1 = $l2 * $l3;
+
+        $i1_2 = virtualinvoke $r1.<android.os.StatFs: int getAvailableBlocks()>();
+
+        $l0 = (long) $i1_2;
+
+        $l2_1 = $l2 * $l0;
+
+        $l2_2 = $l3_1 - $l2_1;
+
+        return $l2_2;
+    }
+
+    public static boolean canTryConnection(android.content.Context)
+    {
+        android.content.Context $r0;
+        boolean $z0, $z0_1, $z0_2;
+        java.lang.Object $r1;
+        android.net.ConnectivityManager $r2;
+        android.net.NetworkInfo $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean checkPermission(android.content.Context,java.lang.String)>($r0, "android.permission.ACCESS_NETWORK_STATE");
+
+        if $z0 == 0 goto label2;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        $r2 = (android.net.ConnectivityManager) $r1;
+
+        $r3 = virtualinvoke $r2.<android.net.ConnectivityManager: android.net.NetworkInfo getActiveNetworkInfo()>();
+
+(0)     if $r3 == null goto label1;
+
+        $z0_1 = virtualinvoke $r3.<android.net.NetworkInfo: boolean isConnectedOrConnecting()>();
+
+(1)     if $z0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 0;
+
+     label2:
+        return 1;
+    }
+
+    public static boolean checkPermission(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        int $i0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $i0 = virtualinvoke $r0.<android.content.Context: int checkCallingOrSelfPermission(java.lang.String)>($r1);
+
+        if $i0 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public static void closeOrLog(java.io.Closeable, java.lang.String)
+    {
+        java.io.Closeable $r0;
+        java.lang.String $r1;
+        java.io.IOException $r2;
+        io.fabric.sdk.android.Logger $r3;
+
+        $r0 := @parameter0: java.io.Closeable;
+
+        $r1 := @parameter1: java.lang.String;
+
+        if $r0 == null goto label4;
+
+     label1:
+        interfaceinvoke $r0.<java.io.Closeable: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", $r1, $r2);
+
+     label4:
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public static void closeQuietly(java.io.Closeable)
+    {
+        java.io.Closeable $r0;
+        java.lang.RuntimeException $r1;
+        java.lang.Exception $r2;
+
+        $r0 := @parameter0: java.io.Closeable;
+
+        if $r0 == null goto label5;
+
+     label1:
+        interfaceinvoke $r0.<java.io.Closeable: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        throw $r1;
+
+     label4:
+        $r2 := @caughtexception;
+
+     label5:
+        return;
+
+        catch java.lang.RuntimeException from label1 to label2 with label3;
+        catch java.lang.Exception from label1 to label2 with label4;
+    }
+
+    static long convertMemInfoToBytes(java.lang.String, java.lang.String, int)
+    {
+        java.lang.String $r0, $r1, $r1_1, $r1_2;
+        int $i0;
+        java.lang.String[] $r2;
+        long $l1, $l2, $l1_1;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r0 := @parameter1: java.lang.String;
+
+        $i0 := @parameter2: int;
+
+        $r2 = virtualinvoke $r1.<java.lang.String: java.lang.String[] split(java.lang.String)>($r0);
+
+        $r1_1 = $r2[0];
+
+        $r1_2 = virtualinvoke $r1_1.<java.lang.String: java.lang.String trim()>();
+
+        $l1 = staticinvoke <java.lang.Long: long parseLong(java.lang.String)>($r1_2);
+
+        $l2 = (long) $i0;
+
+        $l1_1 = $l1 * $l2;
+
+        return $l1_1;
+    }
+
+    public static void copyStream(java.io.InputStream, java.io.OutputStream, byte[]) throws java.io.IOException
+    {
+        java.io.InputStream $r0;
+        java.io.OutputStream $r1;
+        byte[] $r2;
+        int $i0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 := @parameter1: java.io.OutputStream;
+
+        $r2 := @parameter2: byte[];
+
+     label1:
+        $i0 = virtualinvoke $r0.<java.io.InputStream: int read(byte[])>($r2);
+
+        if $i0 == -1 goto label2;
+
+        virtualinvoke $r1.<java.io.OutputStream: void write(byte[],int,int)>($r2, 0, $i0);
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    public static javax.crypto.Cipher createCipher(int, java.lang.String) throws java.security.InvalidKeyException
+    {
+        int $i0, $i1;
+        java.lang.String $r0;
+        java.security.InvalidKeyException $r1;
+        javax.crypto.spec.SecretKeySpec $r2;
+        java.security.GeneralSecurityException $r3;
+        java.lang.RuntimeException $r4;
+        byte[] $r5;
+        javax.crypto.Cipher $r6;
+        io.fabric.sdk.android.Logger $r7;
+
+        $i0 := @parameter0: int;
+
+        $r0 := @parameter1: java.lang.String;
+
+        $i1 = virtualinvoke $r0.<java.lang.String: int length()>();
+
+        if $i1 >= 32 goto label1;
+
+        $r1 = new java.security.InvalidKeyException;
+
+        specialinvoke $r1.<java.security.InvalidKeyException: void <init>(java.lang.String)>("Key must be at least 32 bytes.");
+
+        throw $r1;
+
+     label1:
+        $r2 = new javax.crypto.spec.SecretKeySpec;
+
+        $r5 = virtualinvoke $r0.<java.lang.String: byte[] getBytes()>();
+
+        specialinvoke $r2.<javax.crypto.spec.SecretKeySpec: void <init>(byte[],int,int,java.lang.String)>($r5, 0, 32, "AES/ECB/PKCS7Padding");
+
+     label2:
+        $r6 = staticinvoke <javax.crypto.Cipher: javax.crypto.Cipher getInstance(java.lang.String)>("AES/ECB/PKCS7Padding");
+
+     label3:
+        virtualinvoke $r6.<javax.crypto.Cipher: void init(int,java.security.Key)>($i0, $r2);
+
+        return $r6;
+
+     label4:
+        $r3 := @caughtexception;
+
+        $r7 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r7.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Could not create Cipher for AES/ECB/PKCS7Padding - should never happen.", $r3);
+
+        $r4 = new java.lang.RuntimeException;
+
+        specialinvoke $r4.<java.lang.RuntimeException: void <init>(java.lang.Throwable)>($r3);
+
+        throw $r4;
+
+        catch java.security.GeneralSecurityException from label2 to label3 with label4;
+    }
+
+    public static transient java.lang.String createInstanceIdFrom(java.lang.String[])
+    {
+        java.lang.String[] $r0;
+        java.util.ArrayList $r1;
+        java.util.Locale $r2;
+        java.lang.StringBuilder $r3;
+        int $i0, $i1, $i0_1, $i1_1, $i1_2, $i0_2, $i0_3, $i1_3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9;
+        java.util.Iterator $r5;
+        boolean $z0;
+        java.lang.Object $r6;
+
+        $r0 := @parameter0: java.lang.String[];
+
+(0)     if $r0 == null goto label7;
+
+        $i0 = lengthof $r0;
+
+        if $i0 != 0 goto label1;
+
+        return null;
+
+     label1:
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $i0_1 = lengthof $r0;
+
+(1)     $i1 = 0;
+
+     label2:
+        $r4 = Phi($r4 #1, $r4_4 #4);
+
+        $i1_1 = Phi($i1 #1, $i1_2 #4);
+
+        if $i1_1 >= $i0_1 goto label4;
+
+        $r4_1 = $r0[$i1_1];
+
+(2)     if $r4_1 == null goto label3;
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("-", "");
+
+        $r2 = <java.util.Locale: java.util.Locale US>;
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.String: java.lang.String toLowerCase(java.util.Locale)>($r2);
+
+(3)     interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r4_3);
+
+     label3:
+        $r4_4 = Phi($r4_1 #2, $r4_3 #3);
+
+        $i1_2 = $i1_1 + 1;
+
+(4)     goto label2;
+
+     label4:
+        staticinvoke <java.util.Collections: void sort(java.util.List)>($r1);
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+(5)     $r5 = interfaceinvoke $r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label5:
+        $r4_5 = Phi($r4 #5, $r4_6 #6);
+
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label6;
+
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        $r4_6 = (java.lang.String) $r6;
+
+        virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4_6);
+
+(6)     goto label5;
+
+     label6:
+        $r4_7 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $i0_2 = virtualinvoke $r4_7.<java.lang.String: int length()>();
+
+(7)     if $i0_2 <= 0 goto label7;
+
+        $r4_8 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String sha1(java.lang.String)>($r4_7);
+
+        return $r4_8;
+
+     label7:
+        $r4_9 = Phi($r4 #0, $r4_7 #7);
+
+        $i0_3 = Phi($i0 #0, $i0_2 #7);
+
+        $i1_3 = Phi($i1 #0, $i1_1 #7);
+
+        return null;
+    }
+
+    public static byte[] dehexify(java.lang.String)
+    {
+        java.lang.String $r0;
+        byte[] $r1;
+        int $i0, $i2, $i3, $i5, $i6, $i0_1, $i3_1, $i0_2, $i5_1, $i5_2, $i6_1, $i6_2, $i5_3, $i3_2;
+        byte $b1;
+        char $c4, $c4_1, $c4_2;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $i2 = virtualinvoke $r0.<java.lang.String: int length()>();
+
+        $i0 = $i2 / 2;
+
+        $r1 = newarray (byte)[$i0];
+
+(0)     $i3 = 0;
+
+     label1:
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        $c4 = Phi($c4 #0, $c4_2 #1);
+
+        $i5 = Phi($i5 #0, $i5_3 #1);
+
+        $i3_1 = Phi($i3 #0, $i3_2 #1);
+
+        $i6 = Phi($i6 #0, $i6_2 #1);
+
+        if $i3_1 >= $i2 goto label2;
+
+        $i0_2 = $i3_1 / 2;
+
+        $c4_1 = virtualinvoke $r0.<java.lang.String: char charAt(int)>($i3_1);
+
+        $i5_1 = staticinvoke <java.lang.Character: int digit(char,int)>($c4_1, 16);
+
+        $i5_2 = $i5_1 << 4;
+
+        $i6_1 = $i3_1 + 1;
+
+        $c4_2 = virtualinvoke $r0.<java.lang.String: char charAt(int)>($i6_1);
+
+        $i6_2 = staticinvoke <java.lang.Character: int digit(char,int)>($c4_2, 16);
+
+        $i5_3 = $i5_2 + $i6_2;
+
+        $b1 = (byte) $i5_3;
+
+        $r1[$i0_2] = $b1;
+
+        $i3_2 = $i3_1 + 2;
+
+(1)     goto label1;
+
+     label2:
+        return $r1;
+    }
+
+    public static java.lang.String extractFieldFromSystemFile(java.io.File, java.lang.String)
+    {
+        java.io.File $r0;
+        java.io.BufferedReader $r1, $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        java.io.FileReader $r2;
+        int $i0;
+        java.lang.String $r3, $r4, $r6, $r6_1, $r6_2, $r4_1, $r4_2, $r6_3, $r6_4, $r4_3, $r6_5, $r4_4, $r6_6, $r3_1, $r4_5, $r6_7, $r3_2, $r4_6, $r6_8, $r3_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8;
+        java.util.regex.Pattern $r7;
+        java.lang.String[] $r8;
+        java.lang.Exception $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+        io.fabric.sdk.android.Logger $r10;
+        java.lang.StringBuilder $r11, $r11_1, $r11_2, $r11_3, $r11_4;
+        java.lang.Throwable $r12, $r12_1, $r12_2;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r3 := @parameter1: java.lang.String;
+
+        $r4 = null;
+
+        $z0 = virtualinvoke $r0.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label19;
+
+        $r5 = null;
+
+        $r1 = new java.io.BufferedReader;
+
+(0)     $r2 = new java.io.FileReader;
+
+     label01:
+        specialinvoke $r2.<java.io.FileReader: void <init>(java.io.File)>($r0);
+
+(1)     specialinvoke $r1.<java.io.BufferedReader: void <init>(java.io.Reader,int)>($r2, 1024);
+
+     label02:
+        $r6 = Phi($r6 #1, $r6_1 #4, $r6_2 #7);
+
+        $z0_1 = Phi($z0 #1, $z0_1 #4, $z0_2 #7);
+
+(2)     $r6_1 = virtualinvoke $r1.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label03:
+(3)     if $r6_1 == null goto label11;
+
+     label04:
+        $r7 = staticinvoke <java.util.regex.Pattern: java.util.regex.Pattern compile(java.lang.String)>("\\s*:\\s*");
+
+        $r8 = virtualinvoke $r7.<java.util.regex.Pattern: java.lang.String[] split(java.lang.CharSequence,int)>($r6_1, 2);
+
+     label05:
+        $i0 = lengthof $r8;
+
+     label06:
+(4)     if $i0 <= 1 goto label02;
+
+     label07:
+(5)     $r6_2 = $r8[0];
+
+     label08:
+(6)     $z0_2 = virtualinvoke $r6_2.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+     label09:
+(7)     if $z0_2 == 0 goto label02;
+
+     label10:
+(8)     $r4_1 = $r8[1];
+
+     label11:
+        $r4_2 = Phi($r4 #3, $r4_1 #8);
+
+        $r6_3 = Phi($r6_1 #3, $r6_2 #8);
+
+        $z0_3 = Phi($z0_1 #3, $z0_2 #8);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r1, "Failed to close system file reader.");
+
+        return $r4_2;
+
+     label12:
+(9)     $r9_1 := @caughtexception;
+
+     label13:
+        $r9_2 = Phi($r9_1 #9, $r9 #16);
+
+        $r5_3 = Phi($r5 #9, $r5_2 #16);
+
+        $r4_4 = Phi($r4 #9, $r4_3 #16);
+
+        $r6_6 = Phi($r6 #9, $r6_5 #16);
+
+        $z0_6 = Phi($z0 #9, $z0_5 #16);
+
+(10)    $r10 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+(11)    $r11_1 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Error parsing ");
+
+(12)    $r11_2 = virtualinvoke $r11_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+(13)    $r3_1 = virtualinvoke $r11_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r10.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", $r3_1, $r9_2);
+
+     label14:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r5_3, "Failed to close system file reader.");
+
+        return null;
+
+     label15:
+        $r12_1 := @caughtexception;
+
+        $r11_3 = Phi($r11 #0, $r11_1 #11, $r11_2 #12);
+
+        $r9_3 = Phi($r9 #0, $r9_1 #9, $r9_2 #10);
+
+        $r5_4 = Phi($r5 #0, $r5_2 #16, $r5_3 #10);
+
+        $r4_5 = Phi($r4 #0, $r4_3 #16, $r4_4 #10);
+
+        $r6_7 = Phi($r6 #0, $r6_5 #16, $r6_6 #10);
+
+        $z0_7 = Phi($z0 #0, $z0_5 #16, $z0_6 #10);
+
+(14)    $r3_2 = Phi($r3 #0, $r3_1 #13);
+
+     label16:
+        $r11_4 = Phi($r11_3 #14, $r11 #15);
+
+        $r9_4 = Phi($r9_3 #14, $r9 #15);
+
+        $r5_5 = Phi($r5_4 #14, $r5_1 #15);
+
+        $r4_6 = Phi($r4_5 #14, $r4 #15);
+
+        $r6_8 = Phi($r6_7 #14, $r6_4 #15);
+
+        $r12_2 = Phi($r12_1 #14, $r12 #15);
+
+        $z0_8 = Phi($z0_7 #14, $z0_4 #15);
+
+        $r3_3 = Phi($r3_2 #14, $r3 #15);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r5_5, "Failed to close system file reader.");
+
+        throw $r12_2;
+
+     label17:
+        $r12 := @caughtexception;
+
+        $r6_4 = Phi($r6 #1, $r6_1 #2, $r6_2 #5);
+
+        $z0_4 = Phi($z0 #1, $z0_1 #2, $z0_2 #6);
+
+        $r5_1 = $r1;
+
+(15)    goto label16;
+
+     label18:
+        $r9 := @caughtexception;
+
+        $r4_3 = Phi($r4 #1, $r4_1 #8);
+
+        $r6_5 = Phi($r6 #1, $r6_1 #2, $r6_2 #5);
+
+        $z0_5 = Phi($z0 #1, $z0_1 #2, $z0_2 #6);
+
+        $r5_2 = $r1;
+
+(16)    goto label13;
+
+     label19:
+        return null;
+
+        catch java.lang.Exception from label01 to label02 with label12;
+        catch java.lang.Throwable from label01 to label02 with label15;
+        catch java.lang.Exception from label02 to label03 with label18;
+        catch java.lang.Throwable from label02 to label03 with label17;
+        catch java.lang.Exception from label04 to label05 with label18;
+        catch java.lang.Throwable from label04 to label05 with label17;
+        catch java.lang.Exception from label05 to label06 with label18;
+        catch java.lang.Exception from label07 to label09 with label18;
+        catch java.lang.Throwable from label08 to label09 with label17;
+        catch java.lang.Exception from label10 to label11 with label18;
+        catch java.lang.Throwable from label13 to label14 with label15;
+    }
+
+    public static void finishAffinity(android.app.Activity, int)
+    {
+        android.app.Activity $r0;
+        int $i0, $i1;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $i0 := @parameter1: int;
+
+        if $r0 != null goto label1;
+
+        return;
+
+     label1:
+        $i1 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i1 < 16 goto label2;
+
+        virtualinvoke $r0.<android.app.Activity: void finishAffinity()>();
+
+        return;
+
+     label2:
+        virtualinvoke $r0.<android.app.Activity: void setResult(int)>($i0);
+
+        virtualinvoke $r0.<android.app.Activity: void finish()>();
+
+        return;
+    }
+
+    public static void finishAffinity(android.content.Context, int)
+    {
+        android.content.Context $r0;
+        int $i0;
+        boolean $z0;
+        android.app.Activity $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $i0 := @parameter1: int;
+
+        $z0 = $r0 instanceof android.app.Activity;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = (android.app.Activity) $r0;
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void finishAffinity(android.app.Activity,int)>($r1, $i0);
+
+     label1:
+        return;
+    }
+
+    public static void flushOrLog(java.io.Flushable, java.lang.String)
+    {
+        java.io.Flushable $r0;
+        java.lang.String $r1;
+        java.io.IOException $r2;
+        io.fabric.sdk.android.Logger $r3;
+
+        $r0 := @parameter0: java.io.Flushable;
+
+        $r1 := @parameter1: java.lang.String;
+
+        if $r0 == null goto label4;
+
+     label1:
+        interfaceinvoke $r0.<java.io.Flushable: void flush()>();
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", $r1, $r2);
+
+     label4:
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public static java.lang.String getAppIconHashOrNull(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.Exception $r1;
+        java.lang.Throwable $r2;
+        java.io.InputStream $r3, $r5, $r3_1, $r3_2, $r3_3;
+        android.content.res.Resources $r4;
+        int $i0;
+        java.lang.String $r6, $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r8;
+
+        $r0 := @parameter0: android.content.Context;
+
+(0)     $r3 = null;
+
+     label01:
+        $r4 = virtualinvoke $r0.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $i0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: int getAppIconResourceId(android.content.Context)>($r0);
+
+        $r5 = virtualinvoke $r4.<android.content.res.Resources: java.io.InputStream openRawResource(int)>($i0);
+
+     label02:
+(1)     $r3_1 = $r5;
+
+     label03:
+        $r6 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String sha1(java.io.InputStream)>($r5);
+
+     label04:
+        $r7 = $r6;
+
+     label05:
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isNullOrEmpty(java.lang.String)>($r6);
+
+     label06:
+(2)     if $z0 == 0 goto label07;
+
+(3)     $r7_1 = null;
+
+     label07:
+        $r7_2 = Phi($r7 #2, $r7_1 #3);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r5, "Failed to close icon input stream.");
+
+        return $r7_2;
+
+     label08:
+        $r1 := @caughtexception;
+
+        $r7_3 = Phi($r7 #0);
+
+(4)     $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+     label09:
+        $r8 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r8.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Could not calculate hash for app icon.", $r1);
+
+     label10:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r3_2, "Failed to close icon input stream.");
+
+        return null;
+
+     label11:
+        $r2 := @caughtexception;
+
+        $r7_4 = Phi($r7 #0, $r7_3 #4);
+
+        $r3_3 = Phi($r3 #0, $r3_1 #1, $r3_2 #4);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r3_3, "Failed to close icon input stream.");
+
+        throw $r2;
+
+        catch java.lang.Exception from label01 to label02 with label08;
+        catch java.lang.Throwable from label01 to label02 with label11;
+        catch java.lang.Exception from label03 to label04 with label08;
+        catch java.lang.Throwable from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label06 with label08;
+        catch java.lang.Throwable from label05 to label06 with label11;
+        catch java.lang.Throwable from label09 to label10 with label11;
+    }
+
+    public static int getAppIconResourceId(android.content.Context)
+    {
+        android.content.Context $r0, $r0_1;
+        android.content.pm.ApplicationInfo $r1;
+        int i0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r0_1 = virtualinvoke $r0.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r1 = virtualinvoke $r0_1.<android.content.Context: android.content.pm.ApplicationInfo getApplicationInfo()>();
+
+        i0 = $r1.<android.content.pm.PackageItemInfo: int icon>;
+
+        return i0;
+    }
+
+    public static android.app.ActivityManager$RunningAppProcessInfo getAppProcessInfo(java.lang.String, android.content.Context)
+    {
+        java.lang.String $r0, $r2;
+        android.content.Context $r1;
+        java.lang.Object $r3, $r3_1, $r3_2, $r3_3;
+        android.app.ActivityManager $r4;
+        java.util.List $r5;
+        java.util.Iterator $r6;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.app.ActivityManager$RunningAppProcessInfo $r7;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("activity");
+
+        $r4 = (android.app.ActivityManager) $r3;
+
+        $r5 = virtualinvoke $r4.<android.app.ActivityManager: java.util.List getRunningAppProcesses()>();
+
+(0)     if $r5 == null goto label2;
+
+(1)     $r6 = interfaceinvoke $r5.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $r3_1 = Phi($r3 #1, $r3_2 #3);
+
+        $z0 = Phi($z0 #1, $z0_2 #3);
+
+        $z0_1 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+(2)     if $z0_1 == 0 goto label2;
+
+        $r3_2 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r7 = (android.app.ActivityManager$RunningAppProcessInfo) $r3_2;
+
+        $r2 = $r7.<android.app.ActivityManager$RunningAppProcessInfo: java.lang.String processName>;
+
+        $z0_2 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r0);
+
+(3)     if $z0_2 == 0 goto label1;
+
+        return $r7;
+
+     label2:
+        $r3_3 = Phi($r3 #0, $r3_1 #2);
+
+        $z0_3 = Phi($z0 #0, $z0_1 #2);
+
+        return null;
+    }
+
+    public static float getBatteryLevel(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.IntentFilter $r1;
+        float $f0, $f1, $f0_1;
+        android.content.Intent $r2;
+        int $i0, $i1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = new android.content.IntentFilter;
+
+        specialinvoke $r1.<android.content.IntentFilter: void <init>(java.lang.String)>("android.intent.action.BATTERY_CHANGED");
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>(null, $r1);
+
+        $i0 = virtualinvoke $r2.<android.content.Intent: int getIntExtra(java.lang.String,int)>("level", -1);
+
+        $i1 = virtualinvoke $r2.<android.content.Intent: int getIntExtra(java.lang.String,int)>("scale", -1);
+
+        $f1 = (float) $i0;
+
+        $f0 = (float) $i1;
+
+        $f0_1 = $f1 / $f0;
+
+        return $f0_1;
+    }
+
+    public static int getBatteryVelocity(android.content.Context, boolean)
+    {
+        android.content.Context $r0;
+        boolean $z0;
+        float $f0;
+        double $d0, $d0_1, $d0_2, $d0_3;
+        byte $b0, $b0_1, $b0_2, $b0_3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $z0 := @parameter1: boolean;
+
+        $f0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: float getBatteryLevel(android.content.Context)>($r0);
+
+        if $z0 != 0 goto label1;
+
+        return 1;
+
+     label1:
+(0)     if $z0 == 0 goto label2;
+
+        $d0 = (double) $f0;
+
+        $b0 = $d0 cmpl 99.0;
+
+(1)     if $b0 < 0 goto label2;
+
+        return 3;
+
+     label2:
+        $b0_1 = Phi($b0 #0, $b0 #1);
+
+        $d0_1 = Phi($d0 #0, $d0 #1);
+
+(2)     if $z0 == 0 goto label3;
+
+        $d0_2 = (double) $f0;
+
+        $b0_2 = $d0_2 cmpg 99.0;
+
+(3)     if $b0_2 >= 0 goto label3;
+
+        return 2;
+
+     label3:
+        $b0_3 = Phi($b0_1 #2, $b0_2 #3);
+
+        $d0_3 = Phi($d0_1 #2, $d0_2 #3);
+
+        return 0;
+    }
+
+    public static byte[] getBitmapBytes(android.graphics.Bitmap)
+    {
+        android.graphics.Bitmap $r0;
+        java.io.ByteArrayOutputStream $r1;
+        android.graphics.Bitmap$CompressFormat $r2;
+        byte[] $r3;
+
+        $r0 := @parameter0: android.graphics.Bitmap;
+
+        $r1 = new java.io.ByteArrayOutputStream;
+
+        specialinvoke $r1.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        $r2 = <android.graphics.Bitmap$CompressFormat: android.graphics.Bitmap$CompressFormat PNG>;
+
+        virtualinvoke $r0.<android.graphics.Bitmap: boolean compress(android.graphics.Bitmap$CompressFormat,int,java.io.OutputStream)>($r2, 100, $r1);
+
+        $r3 = virtualinvoke $r1.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        return $r3;
+    }
+
+    public static boolean getBooleanResourceValue(android.content.Context, java.lang.String, boolean)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1, $r1_1, $r1_2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.content.res.Resources $r2;
+        int $i0, $i0_1, $i0_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $z0 := @parameter2: boolean;
+
+(0)     if $r0 == null goto label2;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.res.Resources getResources()>();
+
+(1)     if $r2 == null goto label2;
+
+        $i0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: int getResourcesIdentifier(android.content.Context,java.lang.String,java.lang.String)>($r0, $r1, "bool");
+
+        if $i0 <= 0 goto label1;
+
+        $z0_1 = virtualinvoke $r2.<android.content.res.Resources: boolean getBoolean(int)>($i0);
+
+        return $z0_1;
+
+     label1:
+        $i0_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: int getResourcesIdentifier(android.content.Context,java.lang.String,java.lang.String)>($r0, $r1, "string");
+
+(2)     if $i0_1 <= 0 goto label2;
+
+        $r1_1 = virtualinvoke $r0.<android.content.Context: java.lang.String getString(int)>($i0_1);
+
+(3)     $z0_2 = staticinvoke <java.lang.Boolean: boolean parseBoolean(java.lang.String)>($r1_1);
+
+     label2:
+        $z0_3 = Phi($z0 #0, $z0 #1, $z0 #2, $z0_2 #3);
+
+        $i0_2 = Phi($i0 #0, $i0 #1, $i0_1 #2, $i0_1 #3);
+
+        $r1_2 = Phi($r1 #0, $r1 #1, $r1 #2, $r1_1 #3);
+
+        return $z0_3;
+    }
+
+    public static int getCpuArchitectureInt()
+    {
+        io.fabric.sdk.android.services.common.CommonUtils$Architecture $r0;
+        int $i0;
+
+        $r0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils$Architecture: io.fabric.sdk.android.services.common.CommonUtils$Architecture getValue()>();
+
+        $i0 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.CommonUtils$Architecture: int ordinal()>();
+
+        return $i0;
+    }
+
+    public static int getDeviceState(android.content.Context)
+    {
+        android.content.Context $r0;
+        byte $b0, $b0_1, $b0_2, $b0_3, $b0_4, $b0_5, $b0_6;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $b0 = 0;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isEmulator(android.content.Context)>($r0);
+
+(0)     if $z0 == 0 goto label1;
+
+(1)     $b0_1 = 1;
+
+     label1:
+        $b0_2 = Phi($b0 #0, $b0_1 #1);
+
+        $z0_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isRooted(android.content.Context)>($r0);
+
+(2)     if $z0_1 == 0 goto label2;
+
+(3)     $b0_3 = $b0_2 | 2;
+
+     label2:
+        $b0_4 = Phi($b0_2 #2, $b0_3 #3);
+
+        $z0_2 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isDebuggerAttached()>();
+
+(4)     if $z0_2 == 0 goto label3;
+
+(5)     $b0_5 = $b0_4 | 4;
+
+     label3:
+        $b0_6 = Phi($b0_4 #4, $b0_5 #5);
+
+        return $b0_6;
+    }
+
+    public static boolean getProximitySensorEnabled(android.content.Context)
+    {
+        android.content.Context $r0;
+        boolean $z0;
+        java.lang.Object $r1;
+        android.hardware.SensorManager $r2;
+        android.hardware.Sensor $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isEmulator(android.content.Context)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("sensor");
+
+        $r2 = (android.hardware.SensorManager) $r1;
+
+        $r3 = virtualinvoke $r2.<android.hardware.SensorManager: android.hardware.Sensor getDefaultSensor(int)>(8);
+
+        if $r3 == null goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public static java.lang.String getResourcePackageName(android.content.Context)
+    {
+        android.content.Context $r0, $r1;
+        int $i0;
+        android.content.pm.ApplicationInfo $r2;
+        android.content.res.Resources $r3;
+        java.lang.String $r4, $r4_1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r2 = virtualinvoke $r1.<android.content.Context: android.content.pm.ApplicationInfo getApplicationInfo()>();
+
+        $i0 = $r2.<android.content.pm.PackageItemInfo: int icon>;
+
+        if $i0 <= 0 goto label1;
+
+        $r3 = virtualinvoke $r0.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r4 = virtualinvoke $r3.<android.content.res.Resources: java.lang.String getResourcePackageName(int)>($i0);
+
+        return $r4;
+
+     label1:
+        $r4_1 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        return $r4_1;
+    }
+
+    public static int getResourcesIdentifier(android.content.Context, java.lang.String, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1, $r2, $r4;
+        android.content.res.Resources $r3;
+        int $i0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 = virtualinvoke $r0.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r4 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String getResourcePackageName(android.content.Context)>($r0);
+
+        $i0 = virtualinvoke $r3.<android.content.res.Resources: int getIdentifier(java.lang.String,java.lang.String,java.lang.String)>($r1, $r2, $r4);
+
+        return $i0;
+    }
+
+    public static android.content.SharedPreferences getSharedPrefs(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.SharedPreferences $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.crashlytics.prefs", 0);
+
+        return $r1;
+    }
+
+    public static java.lang.String getStringsFileValue(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1, $r1_1;
+        int $i0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $i0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: int getResourcesIdentifier(android.content.Context,java.lang.String,java.lang.String)>($r0, $r1, "string");
+
+        if $i0 <= 0 goto label1;
+
+        $r1_1 = virtualinvoke $r0.<android.content.Context: java.lang.String getString(int)>($i0);
+
+        return $r1_1;
+
+     label1:
+        return "";
+    }
+
+    public static long getTotalRamInBytes()
+    {
+        byte $b0;
+        java.io.File $r0;
+        java.util.Locale $r1;
+        java.lang.NumberFormatException $r2;
+        java.lang.Throwable $r3;
+        long $l1, $l1_1, $l1_2, $l1_3, $l1_4, $l1_5, $l1_6, $l1_7, $l1_8, $l1_9;
+        java.lang.String $r4, $r7, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+        io.fabric.sdk.android.Logger $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8, $r6_9;
+
+(0)     entermonitor class "io/fabric/sdk/android/services/common/CommonUtils";
+
+     label01:
+        $l1 = <io.fabric.sdk.android.services.common.CommonUtils: long totalRamInBytes>;
+
+     label02:
+        $b0 = $l1 cmp -1L;
+
+(1)     if $b0 != 0 goto label10;
+
+(2)     $l1_1 = 0L;
+
+     label03:
+        $r0 = new java.io.File;
+
+        specialinvoke $r0.<java.io.File: void <init>(java.lang.String)>("/proc/meminfo");
+
+        $r4 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String extractFieldFromSystemFile(java.io.File,java.lang.String)>($r0, "MemTotal");
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r4);
+
+     label04:
+(3)     if $z0 != 0 goto label09;
+
+     label05:
+        $r1 = <java.util.Locale: java.util.Locale US>;
+
+(4)     $r4_1 = virtualinvoke $r4.<java.lang.String: java.lang.String toUpperCase(java.util.Locale)>($r1);
+
+     label06:
+(5)     $z0_1 = virtualinvoke $r4_1.<java.lang.String: boolean endsWith(java.lang.String)>("KB");
+
+     label07:
+        if $z0_1 == 0 goto label12;
+
+     label08:
+(6)     $l1_2 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: long convertMemInfoToBytes(java.lang.String,java.lang.String,int)>($r4_1, "KB", 1024);
+
+     label09:
+        $z0_5 = Phi($z0 #3, $z0_1 #6, $z0_2 #11, $z0_3 #14, $z0_3 #17, $z0_4 #24);
+
+        $r5_3 = Phi($r5 #3, $r5 #6, $r5 #11, $r5 #14, $r5 #17, $r5_2 #24);
+
+        $r4_3 = Phi($r4 #3, $r4_1 #6, $r4_1 #11, $r4_1 #14, $r4_1 #17, $r4_2 #24);
+
+        $l1_6 = Phi($l1_1 #3, $l1_2 #6, $l1_3 #11, $l1_4 #14, $l1_1 #17, $l1_5 #24);
+
+        $r6_7 = Phi($r6 #3, $r6 #6, $r6 #11, $r6 #14, $r6_2 #17, $r6_6 #24);
+
+(7)     <io.fabric.sdk.android.services.common.CommonUtils: long totalRamInBytes> = $l1_6;
+
+     label10:
+        $z0_6 = Phi($z0 #1, $z0_5 #7);
+
+        $r5_4 = Phi($r5 #1, $r5_3 #7);
+
+        $r4_4 = Phi($r4 #1, $r4_3 #7);
+
+        $l1_7 = Phi($l1 #1, $l1_6 #7);
+
+        $r6_8 = Phi($r6 #1, $r6_7 #7);
+
+(8)     $l1_8 = <io.fabric.sdk.android.services.common.CommonUtils: long totalRamInBytes>;
+
+     label11:
+        exitmonitor class "io/fabric/sdk/android/services/common/CommonUtils";
+
+        return $l1_8;
+
+     label12:
+(9)     $z0_2 = virtualinvoke $r4_1.<java.lang.String: boolean endsWith(java.lang.String)>("MB");
+
+     label13:
+        if $z0_2 == 0 goto label16;
+
+     label14:
+(10)    $l1_3 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: long convertMemInfoToBytes(java.lang.String,java.lang.String,int)>($r4_1, "MB", 1048576);
+
+     label15:
+(11)    goto label09;
+
+     label16:
+(12)    $z0_3 = virtualinvoke $r4_1.<java.lang.String: boolean endsWith(java.lang.String)>("GB");
+
+     label17:
+        if $z0_3 == 0 goto label20;
+
+     label18:
+(13)    $l1_4 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: long convertMemInfoToBytes(java.lang.String,java.lang.String,int)>($r4_1, "GB", 1073741824);
+
+     label19:
+(14)    goto label09;
+
+     label20:
+        $r5 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+     label21:
+        $r6 = new java.lang.StringBuilder;
+
+     label22:
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+(15)    $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unexpected meminfo format while computing RAM: ");
+
+(16)    $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4_1);
+
+        $r7 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r5.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Fabric", $r7);
+
+     label23:
+(17)    goto label09;
+
+     label24:
+        $r2 := @caughtexception;
+
+        $z0_4 = Phi($z0 #4, $z0_1 #5, $z0_2 #9, $z0_3 #12);
+
+        $r5_1 = Phi($r5 #4);
+
+        $l1_5 = Phi($l1_1 #4, $l1_2 #6, $l1_3 #10, $l1_4 #13);
+
+(18)    $r6_3 = Phi($r6 #4, $r6_1 #15, $r6_2 #16);
+
+     label25:
+(19)    $r5_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(20)    $r6_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_4.<java.lang.StringBuilder: void <init>()>();
+
+(21)    $r6_5 = virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unexpected meminfo format while computing RAM: ");
+
+(22)    $r6_6 = virtualinvoke $r6_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4_1);
+
+(23)    $r4_2 = virtualinvoke $r6_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r5_2.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", $r4_2, $r2);
+
+     label26:
+(24)    goto label09;
+
+     label27:
+        $r3 := @caughtexception;
+
+        $z0_7 = Phi($z0 #0, $z0_1 #5, $z0_5 #7, $z0_6 #8, $z0_2 #9, $z0_3 #12, $z0_4 #18);
+
+        $r5_5 = Phi($r5 #0, $r5_3 #7, $r5_4 #8, $r5_1 #18, $r5_2 #19);
+
+        $r4_5 = Phi($r4 #0, $r4_1 #4, $r4_3 #7, $r4_4 #8, $r4_2 #23);
+
+        $l1_9 = Phi($l1 #0, $l1_1 #2, $l1_2 #6, $l1_6 #7, $l1_8 #8, $l1_3 #10, $l1_4 #13, $l1_5 #18);
+
+        $r6_9 = Phi($r6 #0, $r6_7 #7, $r6_8 #8, $r6_1 #15, $r6_2 #16, $r6_3 #18, $r6_4 #20, $r6_5 #21, $r6_6 #22);
+
+        exitmonitor class "io/fabric/sdk/android/services/common/CommonUtils";
+
+        throw $r3;
+
+        catch java.lang.Throwable from label01 to label02 with label27;
+        catch java.lang.Throwable from label03 to label04 with label27;
+        catch java.lang.Throwable from label05 to label06 with label27;
+        catch java.lang.NumberFormatException from label06 to label07 with label24;
+        catch java.lang.Throwable from label06 to label07 with label27;
+        catch java.lang.NumberFormatException from label08 to label09 with label24;
+        catch java.lang.Throwable from label08 to label09 with label27;
+        catch java.lang.Throwable from label09 to label11 with label27;
+        catch java.lang.NumberFormatException from label12 to label13 with label24;
+        catch java.lang.Throwable from label12 to label13 with label27;
+        catch java.lang.NumberFormatException from label14 to label15 with label24;
+        catch java.lang.Throwable from label14 to label15 with label27;
+        catch java.lang.NumberFormatException from label16 to label17 with label24;
+        catch java.lang.Throwable from label16 to label17 with label27;
+        catch java.lang.NumberFormatException from label18 to label19 with label24;
+        catch java.lang.Throwable from label18 to label19 with label27;
+        catch java.lang.NumberFormatException from label20 to label21 with label24;
+        catch java.lang.Throwable from label20 to label21 with label27;
+        catch java.lang.NumberFormatException from label22 to label23 with label24;
+        catch java.lang.Throwable from label22 to label23 with label27;
+        catch java.lang.Throwable from label25 to label26 with label27;
+    }
+
+    private static java.lang.String hash(java.io.InputStream, java.lang.String)
+    {
+        java.io.InputStream $r0;
+        java.lang.Exception $r1;
+        java.lang.String $r2, $r2_1, $r2_2;
+        java.security.MessageDigest $r3;
+        byte[] $r4, $r4_1, $r4_2;
+        int $i0;
+        io.fabric.sdk.android.Logger $r5;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+(0)     $r2 := @parameter1: java.lang.String;
+
+     label1:
+        $r3 = staticinvoke <java.security.MessageDigest: java.security.MessageDigest getInstance(java.lang.String)>("SHA-1");
+
+        $r4 = newarray (byte)[1024];
+
+     label2:
+        $i0 = virtualinvoke $r0.<java.io.InputStream: int read(byte[])>($r4);
+
+     label3:
+        if $i0 == -1 goto label7;
+
+     label4:
+        virtualinvoke $r3.<java.security.MessageDigest: void update(byte[],int,int)>($r4, 0, $i0);
+
+     label5:
+        goto label2;
+
+     label6:
+        $r1 := @caughtexception;
+
+        $r2_2 = Phi($r2 #0, $r2_1 #2);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r5 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r5.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Could not calculate hash for app icon.", $r1);
+
+        return "";
+
+     label7:
+(1)     $r4_1 = virtualinvoke $r3.<java.security.MessageDigest: byte[] digest()>();
+
+(2)     $r2_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String hexify(byte[])>($r4_1);
+
+     label8:
+        return $r2_1;
+
+        catch java.lang.Exception from label1 to label3 with label6;
+        catch java.lang.Exception from label4 to label5 with label6;
+        catch java.lang.Exception from label7 to label8 with label6;
+    }
+
+    private static java.lang.String hash(java.lang.String, java.lang.String)
+    {
+        java.lang.String $r0, $r1, $r1_1;
+        byte[] $r2;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r0 := @parameter1: java.lang.String;
+
+        $r2 = virtualinvoke $r1.<java.lang.String: byte[] getBytes()>();
+
+        $r1_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String hash(byte[],java.lang.String)>($r2, $r0);
+
+        return $r1_1;
+    }
+
+    private static java.lang.String hash(byte[], java.lang.String)
+    {
+        java.security.NoSuchAlgorithmException $r0;
+        byte[] $r1, $r1_1;
+        java.lang.String $r2, $r2_1, $r2_2;
+        java.security.MessageDigest $r3;
+        io.fabric.sdk.android.Logger $r4;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2, $r5_3;
+
+        $r1 := @parameter0: byte[];
+
+        $r2 := @parameter1: java.lang.String;
+
+     label1:
+        $r3 = staticinvoke <java.security.MessageDigest: java.security.MessageDigest getInstance(java.lang.String)>($r2);
+
+     label2:
+        virtualinvoke $r3.<java.security.MessageDigest: void update(byte[])>($r1);
+
+        $r1_1 = virtualinvoke $r3.<java.security.MessageDigest: byte[] digest()>();
+
+        $r2_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String hexify(byte[])>($r1_1);
+
+        return $r2_1;
+
+     label3:
+        $r0 := @caughtexception;
+
+        $r4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Could not create hashing algorithm: ");
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r5_3 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", returning empty string.");
+
+        $r2_2 = virtualinvoke $r5_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", $r2_2, $r0);
+
+        return "";
+
+        catch java.security.NoSuchAlgorithmException from label1 to label2 with label3;
+    }
+
+    public static java.lang.String hexify(byte[])
+    {
+        byte[] $r0;
+        char[] $r1, $r3, $r3_1, $r3_2;
+        byte $b0;
+        short $s1, $s2, $s1_1, $s1_2;
+        java.lang.String $r2;
+        int $i3, $i4, $i3_1, $i3_2, $i3_3, $i4_1, $i4_2, $i4_3, $i4_4, $i3_4;
+        char $c5, $c5_1, $c5_2;
+
+        $r0 := @parameter0: byte[];
+
+        $i3 = lengthof $r0;
+
+        $i3_1 = $i3 * 2;
+
+        $r1 = newarray (char)[$i3_1];
+
+(0)     $i3_2 = 0;
+
+     label1:
+        $r3 = Phi($r3 #0, $r3_2 #1);
+
+        $c5 = Phi($c5 #0, $c5_2 #1);
+
+        $i4 = Phi($i4 #0, $i4_4 #1);
+
+        $i3_3 = Phi($i3_2 #0, $i3_4 #1);
+
+        $s1 = Phi($s1 #0, $s1_2 #1);
+
+        $i4_1 = lengthof $r0;
+
+        if $i3_3 >= $i4_1 goto label2;
+
+        $b0 = $r0[$i3_3];
+
+        $s1_1 = $b0 & 255;
+
+        $i4_2 = $i3_3 * 2;
+
+        $r3_1 = <io.fabric.sdk.android.services.common.CommonUtils: char[] HEX_VALUES>;
+
+        $s2 = $s1_1 >>> 4;
+
+        $c5_1 = $r3_1[$s2];
+
+        $r1[$i4_2] = $c5_1;
+
+        $i4_3 = $i3_3 * 2;
+
+        $i4_4 = $i4_3 + 1;
+
+        $r3_2 = <io.fabric.sdk.android.services.common.CommonUtils: char[] HEX_VALUES>;
+
+        $s1_2 = $s1_1 & 15;
+
+        $c5_2 = $r3_2[$s1_2];
+
+        $r1[$i4_4] = $c5_2;
+
+        $i3_4 = $i3_3 + 1;
+
+(1)     goto label1;
+
+     label2:
+        $r2 = new java.lang.String;
+
+        specialinvoke $r2.<java.lang.String: void <init>(char[])>($r1);
+
+        return $r2;
+    }
+
+    public static void hideKeyboard(android.content.Context, android.view.View)
+    {
+        android.content.Context $r0;
+        android.view.View $r1;
+        java.lang.Object $r2;
+        android.view.inputmethod.InputMethodManager $r3;
+        android.os.IBinder $r4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: android.view.View;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("input_method");
+
+        $r3 = (android.view.inputmethod.InputMethodManager) $r2;
+
+        if $r3 == null goto label1;
+
+        $r4 = virtualinvoke $r1.<android.view.View: android.os.IBinder getWindowToken()>();
+
+        virtualinvoke $r3.<android.view.inputmethod.InputMethodManager: boolean hideSoftInputFromWindow(android.os.IBinder,int)>($r4, 0);
+
+     label1:
+        return;
+    }
+
+    public static boolean isAppDebuggable(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.pm.ApplicationInfo $r1;
+        int $i0, $i0_1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.pm.ApplicationInfo getApplicationInfo()>();
+
+        $i0 = $r1.<android.content.pm.ApplicationInfo: int flags>;
+
+        $i0_1 = $i0 & 2;
+
+        if $i0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public static boolean isClsTrace(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.Boolean $r1, $r1_1, $r1_2, $r1_3;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = <io.fabric.sdk.android.services.common.CommonUtils: java.lang.Boolean clsTrace>;
+
+(0)     if $r1 != null goto label1;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean getBooleanResourceValue(android.content.Context,java.lang.String,boolean)>($r0, "com.crashlytics.Trace", 0);
+
+        $r1_1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>($z0);
+
+(1)     <io.fabric.sdk.android.services.common.CommonUtils: java.lang.Boolean clsTrace> = $r1_1;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0 #1);
+
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $r1_3 = <io.fabric.sdk.android.services.common.CommonUtils: java.lang.Boolean clsTrace>;
+
+        $z0_2 = virtualinvoke $r1_3.<java.lang.Boolean: boolean booleanValue()>();
+
+        return $z0_2;
+    }
+
+    public static boolean isDebuggerAttached()
+    {
+        boolean $z0, $z0_1, $z0_2;
+
+        $z0 = staticinvoke <android.os.Debug: boolean isDebuggerConnected()>();
+
+(0)     if $z0 != 0 goto label1;
+
+        $z0_1 = staticinvoke <android.os.Debug: boolean waitingForDebugger()>();
+
+(1)     if $z0_1 == 0 goto label2;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public static boolean isEmulator(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.ContentResolver $r1;
+        java.lang.String $r2, $r3, $r4, $r3_1, $r4_1, $r3_2, $r4_2;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r2 = staticinvoke <android.provider.Settings$Secure: java.lang.String getString(android.content.ContentResolver,java.lang.String)>($r1, "android_id");
+
+        $r3 = "sdk";
+
+        $r4 = <android.os.Build: java.lang.String PRODUCT>;
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>($r4);
+
+(0)     if $z0 != 0 goto label1;
+
+        $r3_1 = "google_sdk";
+
+        $r4_1 = <android.os.Build: java.lang.String PRODUCT>;
+
+        $z0_1 = virtualinvoke $r3_1.<java.lang.String: boolean equals(java.lang.Object)>($r4_1);
+
+(1)     if $z0_1 != 0 goto label1;
+
+(2)     if $r2 != null goto label2;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1, $r3_1 #2);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1, $r4_1 #2);
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public static boolean isLoggingEnabled(android.content.Context)
+    {
+        android.content.Context $r0;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.lang.Boolean $r1, $r1_1, $r1_2, $r1_3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $z0 = 0;
+
+        $r1 = <io.fabric.sdk.android.services.common.CommonUtils: java.lang.Boolean loggingEnabled>;
+
+(0)     if $r1 != null goto label2;
+
+        $z1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean getBooleanResourceValue(android.content.Context,java.lang.String,boolean)>($r0, "com.crashlytics.SilenceCrashlyticsLogCat", 0);
+
+(1)     if $z1 != 0 goto label1;
+
+(2)     $z0_1 = 1;
+
+     label1:
+        $z0_2 = Phi($z0 #1, $z0_1 #2);
+
+        $r1_1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>($z0_2);
+
+(3)     <io.fabric.sdk.android.services.common.CommonUtils: java.lang.Boolean loggingEnabled> = $r1_1;
+
+     label2:
+        $z0_3 = Phi($z0 #0, $z0_2 #3);
+
+        $r1_2 = Phi($r1 #0, $r1_1 #3);
+
+        $r1_3 = <io.fabric.sdk.android.services.common.CommonUtils: java.lang.Boolean loggingEnabled>;
+
+        $z0_4 = virtualinvoke $r1_3.<java.lang.Boolean: boolean booleanValue()>();
+
+        return $z0_4;
+    }
+
+    public static boolean isNullOrEmpty(java.lang.String)
+    {
+        java.lang.String $r0;
+        int $i0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        if $r0 == null goto label1;
+
+        $i0 = virtualinvoke $r0.<java.lang.String: int length()>();
+
+        if $i0 != 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public static boolean isRooted(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        boolean $z0, $z1, $z1_1, $z1_2, $z0_1, $z0_2, $z0_3;
+        java.io.File $r2, $r2_1, $r2_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isEmulator(android.content.Context)>($r0);
+
+        $r1 = <android.os.Build: java.lang.String TAGS>;
+
+(0)     if $z0 != 0 goto label1;
+
+(1)     if $r1 == null goto label1;
+
+        $z1 = virtualinvoke $r1.<java.lang.String: boolean contains(java.lang.CharSequence)>("test-keys");
+
+(2)     if $z1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z1_1 = Phi($z1 #0, $z1 #1, $z1 #2);
+
+        $r2 = new java.io.File;
+
+        specialinvoke $r2.<java.io.File: void <init>(java.lang.String)>("/system/app/Superuser.apk");
+
+        $z1_2 = virtualinvoke $r2.<java.io.File: boolean exists()>();
+
+(3)     if $z1_2 != 0 goto label3;
+
+        $r2_1 = new java.io.File;
+
+        specialinvoke $r2_1.<java.io.File: void <init>(java.lang.String)>("/system/xbin/su");
+
+(4)     if $z0 != 0 goto label2;
+
+        $z0_1 = virtualinvoke $r2_1.<java.io.File: boolean exists()>();
+
+(5)     if $z0_1 != 0 goto label3;
+
+     label2:
+        $z0_2 = Phi($z0 #4, $z0_1 #5);
+
+        return 0;
+
+     label3:
+        $r2_2 = Phi($r2 #3, $r2_1 #5);
+
+        $z0_3 = Phi($z0 #3, $z0_1 #5);
+
+        return 1;
+    }
+
+    public static void logControlled(android.content.Context, int, java.lang.String, java.lang.String)
+    {
+        android.content.Context $r0;
+        int $i0;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $i0 := @parameter1: int;
+
+        $r1 := @parameter2: java.lang.String;
+
+        $r2 := @parameter3: java.lang.String;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isClsTrace(android.content.Context)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void log(int,java.lang.String,java.lang.String)>($i0, "Fabric", $r2);
+
+     label1:
+        return;
+    }
+
+    public static void logControlled(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isClsTrace(android.content.Context)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        $r2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r2.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Fabric", $r1);
+
+     label1:
+        return;
+    }
+
+    public static void logControlledError(android.content.Context, java.lang.String, java.lang.Throwable)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        java.lang.Throwable $r2;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.Throwable;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isClsTrace(android.content.Context)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String)>("Fabric", $r1);
+
+     label1:
+        return;
+    }
+
+    public static void logOrThrowIllegalArgumentException(java.lang.String, java.lang.String)
+    {
+        java.lang.String $r0, $r1;
+        java.lang.IllegalArgumentException $r2;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r3;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.Fabric: boolean isDebuggable()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r1);
+
+        throw $r2;
+
+     label1:
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void w(java.lang.String,java.lang.String)>($r0, $r1);
+
+        return;
+    }
+
+    public static void logOrThrowIllegalStateException(java.lang.String, java.lang.String)
+    {
+        java.lang.String $r0, $r1;
+        java.lang.IllegalStateException $r2;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r3;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.Fabric: boolean isDebuggable()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r1);
+
+        throw $r2;
+
+     label1:
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void w(java.lang.String,java.lang.String)>($r0, $r1);
+
+        return;
+    }
+
+    public static java.lang.String logPriorityToString(int)
+    {
+        int $i0;
+
+        $i0 := @parameter0: int;
+
+        lookupswitch($i0)
+        {
+            case 2: goto label7;
+            case 3: goto label4;
+            case 4: goto label6;
+            case 5: goto label8;
+            case 6: goto label5;
+            case 7: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        return "?";
+
+     label3:
+        return "A";
+
+     label4:
+        return "D";
+
+     label5:
+        return "E";
+
+     label6:
+        return "I";
+
+     label7:
+        return "V";
+
+     label8:
+        return "W";
+    }
+
+    public static java.lang.String md5(java.lang.String)
+    {
+        java.lang.String $r0, $r0_1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r0_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String hash(java.lang.String,java.lang.String)>($r0, "MD5");
+
+        return $r0_1;
+    }
+
+    public static java.lang.String md5(byte[])
+    {
+        byte[] $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: byte[];
+
+        $r1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String hash(byte[],java.lang.String)>($r0, "MD5");
+
+        return $r1;
+    }
+
+    public static void openKeyboard(android.content.Context, android.view.View)
+    {
+        android.content.Context $r0;
+        android.view.View $r1;
+        java.lang.Object $r2;
+        android.view.inputmethod.InputMethodManager $r3;
+        android.os.IBinder $r4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: android.view.View;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("input_method");
+
+        $r3 = (android.view.inputmethod.InputMethodManager) $r2;
+
+        if $r3 == null goto label1;
+
+        $r4 = virtualinvoke $r1.<android.view.View: android.os.IBinder getWindowToken()>();
+
+        virtualinvoke $r3.<android.view.inputmethod.InputMethodManager: void showSoftInputFromInputMethod(android.os.IBinder,int)>($r4, 0);
+
+     label1:
+        return;
+    }
+
+    public static java.lang.String padWithZerosToMaxIntWidth(int)
+    {
+        int $i0;
+        java.lang.IllegalArgumentException $r0;
+        java.util.Locale $r1;
+        java.lang.Object[] $r2;
+        java.lang.Integer $r3;
+        java.lang.String $r4, $r4_1;
+
+        $i0 := @parameter0: int;
+
+        if $i0 >= 0 goto label1;
+
+        $r0 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r0.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("value must be zero or greater");
+
+        throw $r0;
+
+     label1:
+        $r1 = <java.util.Locale: java.util.Locale US>;
+
+        $r2 = newarray (java.lang.Object)[1];
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r2[0] = $r3;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r1, "%1$10s", $r2);
+
+        $r4_1 = virtualinvoke $r4.<java.lang.String: java.lang.String replace(char,char)>(32, 48);
+
+        return $r4_1;
+    }
+
+    public static java.lang.String resolveBuildId(android.content.Context)
+    {
+        android.content.Context $r0;
+        int $i0, $i1, $i1_1, $i1_2;
+        android.content.res.Resources $r1;
+        java.lang.String $r2, $r5;
+        io.fabric.sdk.android.Logger $r3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $i0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: int getResourcesIdentifier(android.content.Context,java.lang.String,java.lang.String)>($r0, "io.fabric.android.build_id", "string");
+
+        $i1 = $i0;
+
+(0)     if $i0 != 0 goto label1;
+
+(1)     $i1_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: int getResourcesIdentifier(android.content.Context,java.lang.String,java.lang.String)>($r0, "com.crashlytics.android.build_id", "string");
+
+     label1:
+        $i1_2 = Phi($i1 #0, $i1_1 #1);
+
+        if $i1_2 == 0 goto label2;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r2 = virtualinvoke $r1.<android.content.res.Resources: java.lang.String getString(int)>($i1_2);
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Build ID is: ");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Fabric", $r5);
+
+        return $r2;
+
+     label2:
+        return null;
+    }
+
+    public static java.lang.String sha1(java.io.InputStream)
+    {
+        java.io.InputStream $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String hash(java.io.InputStream,java.lang.String)>($r0, "SHA-1");
+
+        return $r1;
+    }
+
+    public static java.lang.String sha1(java.lang.String)
+    {
+        java.lang.String $r0, $r0_1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r0_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String hash(java.lang.String,java.lang.String)>($r0, "SHA-1");
+
+        return $r0_1;
+    }
+
+    public static java.lang.String sha1(byte[])
+    {
+        byte[] $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: byte[];
+
+        $r1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String hash(byte[],java.lang.String)>($r0, "SHA-1");
+
+        return $r1;
+    }
+
+    public static java.lang.String streamToString(java.io.InputStream) throws java.io.IOException
+    {
+        java.io.InputStream $r0;
+        java.util.Scanner $r1, $r1_1;
+        boolean $z0;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 = new java.util.Scanner;
+
+        specialinvoke $r1.<java.util.Scanner: void <init>(java.io.InputStream)>($r0);
+
+        $r1_1 = virtualinvoke $r1.<java.util.Scanner: java.util.Scanner useDelimiter(java.lang.String)>("\\A");
+
+        $z0 = virtualinvoke $r1_1.<java.util.Scanner: boolean hasNext()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = virtualinvoke $r1_1.<java.util.Scanner: java.lang.String next()>();
+
+        return $r2;
+
+     label1:
+        return "";
+    }
+
+    public static boolean stringsEqualIncludingNull(java.lang.String, java.lang.String)
+    {
+        java.lang.String $r0, $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        if $r0 != $r1 goto label1;
+
+        return 1;
+
+     label1:
+        if $r0 == null goto label2;
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        return $z0;
+
+     label2:
+        return 0;
+    }
+}

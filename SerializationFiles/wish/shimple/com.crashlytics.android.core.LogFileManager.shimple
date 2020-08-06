@@ -1,0 +1,348 @@
+class com.crashlytics.android.core.LogFileManager extends java.lang.Object
+{
+    private static final java.lang.String DIRECTORY_NAME;
+    private static final java.lang.String LOGFILE_EXT;
+    private static final java.lang.String LOGFILE_PREFIX;
+    static final int MAX_LOG_SIZE;
+    private static final com.crashlytics.android.core.LogFileManager$NoopLogStore NOOP_LOG_STORE;
+    private final android.content.Context context;
+    private com.crashlytics.android.core.FileLogStore currentLog;
+    private final java.io.File logFileDir;
+
+    static void <clinit>()
+    {
+        com.crashlytics.android.core.LogFileManager$NoopLogStore $r0;
+
+        $r0 = new com.crashlytics.android.core.LogFileManager$NoopLogStore;
+
+        specialinvoke $r0.<com.crashlytics.android.core.LogFileManager$NoopLogStore: void <init>(com.crashlytics.android.core.LogFileManager$1)>(null);
+
+        <com.crashlytics.android.core.LogFileManager: com.crashlytics.android.core.LogFileManager$NoopLogStore NOOP_LOG_STORE> = $r0;
+
+        return;
+    }
+
+    public void <init>(android.content.Context, java.io.File)
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        android.content.Context $r1;
+        java.io.File $r2;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.io.File;
+
+        specialinvoke $r0.<com.crashlytics.android.core.LogFileManager: void <init>(android.content.Context,java.io.File,java.lang.String)>($r1, $r2, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, java.io.File, java.lang.String)
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        android.content.Context $r1;
+        java.io.File $r2, $r4;
+        java.lang.String $r3;
+        com.crashlytics.android.core.LogFileManager$NoopLogStore $r5;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.io.File;
+
+        $r3 := @parameter2: java.lang.String;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.crashlytics.android.core.LogFileManager: android.content.Context context> = $r1;
+
+        $r4 = new java.io.File;
+
+        specialinvoke $r4.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, "log-files");
+
+        $r0.<com.crashlytics.android.core.LogFileManager: java.io.File logFileDir> = $r4;
+
+        $r5 = <com.crashlytics.android.core.LogFileManager: com.crashlytics.android.core.LogFileManager$NoopLogStore NOOP_LOG_STORE>;
+
+        $r0.<com.crashlytics.android.core.LogFileManager: com.crashlytics.android.core.FileLogStore currentLog> = $r5;
+
+        virtualinvoke $r0.<com.crashlytics.android.core.LogFileManager: void setCurrentSession(java.lang.String)>($r3);
+
+        return;
+    }
+
+    private void ensureTargetDirectoryExists()
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        boolean $z0;
+        java.io.File $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r1 = $r0.<com.crashlytics.android.core.LogFileManager: java.io.File logFileDir>;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+(0)     if $z0 != 0 goto label1;
+
+        $r1_1 = $r0.<com.crashlytics.android.core.LogFileManager: java.io.File logFileDir>;
+
+(1)     virtualinvoke $r1_1.<java.io.File: boolean mkdirs()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    private java.lang.String getSessionIdForFile(java.io.File)
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        java.io.File $r1;
+        java.lang.String $r2, $r3, $r2_1;
+        int $i0, $i1;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r1 := @parameter0: java.io.File;
+
+        $r3 = virtualinvoke $r1.<java.io.File: java.lang.String getName()>();
+
+        $i0 = virtualinvoke $r3.<java.lang.String: int lastIndexOf(java.lang.String)>(".temp");
+
+        if $i0 != -1 goto label1;
+
+        return $r3;
+
+     label1:
+        $r2 = "crashlytics-userlog-";
+
+        $i1 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+        $r2_1 = virtualinvoke $r3.<java.lang.String: java.lang.String substring(int,int)>($i1, $i0);
+
+        return $r2_1;
+    }
+
+    private java.io.File getWorkingFileForSession(java.lang.String)
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        java.io.File $r1, $r2;
+        java.lang.String $r3, $r3_1;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r3 := @parameter0: java.lang.String;
+
+        specialinvoke $r0.<com.crashlytics.android.core.LogFileManager: void ensureTargetDirectoryExists()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("crashlytics-userlog-");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".temp");
+
+        $r3_1 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = new java.io.File;
+
+        $r2 = $r0.<com.crashlytics.android.core.LogFileManager: java.io.File logFileDir>;
+
+        specialinvoke $r1.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, $r3_1);
+
+        return $r1;
+    }
+
+    private boolean isLoggingEnabled()
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        android.content.Context $r1;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r1 = $r0.<com.crashlytics.android.core.LogFileManager: android.content.Context context>;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean getBooleanResourceValue(android.content.Context,java.lang.String,boolean)>($r1, "com.crashlytics.CollectCustomLogs", 1);
+
+        return $z0;
+    }
+
+    public void clearLog()
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        com.crashlytics.android.core.FileLogStore $r1;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r1 = $r0.<com.crashlytics.android.core.LogFileManager: com.crashlytics.android.core.FileLogStore currentLog>;
+
+        interfaceinvoke $r1.<com.crashlytics.android.core.FileLogStore: void deleteLogFile()>();
+
+        return;
+    }
+
+    public void discardOldLogFiles(java.util.Set)
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        java.util.Set $r1;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3;
+        java.io.File $r2, $r2_1, $r2_2, $r2_3;
+        java.io.File[] $r3;
+        java.lang.String $r4;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r1 := @parameter0: java.util.Set;
+
+        $r2 = $r0.<com.crashlytics.android.core.LogFileManager: java.io.File logFileDir>;
+
+        $r3 = virtualinvoke $r2.<java.io.File: java.io.File[] listFiles()>();
+
+(0)     if $r3 == null goto label3;
+
+        $i0 = lengthof $r3;
+
+(1)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #1, $i1_2 #3);
+
+        $r2_1 = Phi($r2 #1, $r2_2 #3);
+
+(2)     if $i1_1 >= $i0 goto label3;
+
+        $r2_2 = $r3[$i1_1];
+
+        $r4 = specialinvoke $r0.<com.crashlytics.android.core.LogFileManager: java.lang.String getSessionIdForFile(java.io.File)>($r2_2);
+
+        $z0 = interfaceinvoke $r1.<java.util.Set: boolean contains(java.lang.Object)>($r4);
+
+        if $z0 != 0 goto label2;
+
+        virtualinvoke $r2_2.<java.io.File: boolean delete()>();
+
+     label2:
+        $i1_2 = $i1_1 + 1;
+
+(3)     goto label1;
+
+     label3:
+        $i1_3 = Phi($i1 #0, $i1_1 #2);
+
+        $r2_3 = Phi($r2 #0, $r2_1 #2);
+
+        return;
+    }
+
+    public com.crashlytics.android.core.ByteString getByteStringForLog()
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        com.crashlytics.android.core.FileLogStore $r1;
+        com.crashlytics.android.core.ByteString $r2;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r1 = $r0.<com.crashlytics.android.core.LogFileManager: com.crashlytics.android.core.FileLogStore currentLog>;
+
+        $r2 = interfaceinvoke $r1.<com.crashlytics.android.core.FileLogStore: com.crashlytics.android.core.ByteString getLogAsByteString()>();
+
+        return $r2;
+    }
+
+    public final void setCurrentSession(java.lang.String)
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        java.lang.String $r1;
+        com.crashlytics.android.core.FileLogStore $r2;
+        com.crashlytics.android.core.LogFileManager$NoopLogStore $r3;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r4;
+        java.io.File $r5;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<com.crashlytics.android.core.LogFileManager: com.crashlytics.android.core.FileLogStore currentLog>;
+
+        interfaceinvoke $r2.<com.crashlytics.android.core.FileLogStore: void closeLogFile()>();
+
+        $r3 = <com.crashlytics.android.core.LogFileManager: com.crashlytics.android.core.LogFileManager$NoopLogStore NOOP_LOG_STORE>;
+
+        $r0.<com.crashlytics.android.core.LogFileManager: com.crashlytics.android.core.FileLogStore currentLog> = $r3;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $z0 = specialinvoke $r0.<com.crashlytics.android.core.LogFileManager: boolean isLoggingEnabled()>();
+
+        if $z0 != 0 goto label2;
+
+        $r4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r4.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Preferences requested no custom logs. Aborting log file creation.");
+
+        return;
+
+     label2:
+        $r5 = specialinvoke $r0.<com.crashlytics.android.core.LogFileManager: java.io.File getWorkingFileForSession(java.lang.String)>($r1);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.LogFileManager: void setLogFile(java.io.File,int)>($r5, 65536);
+
+        return;
+    }
+
+    void setLogFile(java.io.File, int)
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        java.io.File $r1;
+        int $i0;
+        com.crashlytics.android.core.QueueFileLogStore $r2;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $r1 := @parameter0: java.io.File;
+
+        $i0 := @parameter1: int;
+
+        $r2 = new com.crashlytics.android.core.QueueFileLogStore;
+
+        specialinvoke $r2.<com.crashlytics.android.core.QueueFileLogStore: void <init>(java.io.File,int)>($r1, $i0);
+
+        $r0.<com.crashlytics.android.core.LogFileManager: com.crashlytics.android.core.FileLogStore currentLog> = $r2;
+
+        return;
+    }
+
+    public void writeToLog(long, java.lang.String)
+    {
+        com.crashlytics.android.core.LogFileManager $r0;
+        long $l0;
+        java.lang.String $r1;
+        com.crashlytics.android.core.FileLogStore $r2;
+
+        $r0 := @this: com.crashlytics.android.core.LogFileManager;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = $r0.<com.crashlytics.android.core.LogFileManager: com.crashlytics.android.core.FileLogStore currentLog>;
+
+        interfaceinvoke $r2.<com.crashlytics.android.core.FileLogStore: void writeToLog(long,java.lang.String)>($l0, $r1);
+
+        return;
+    }
+}

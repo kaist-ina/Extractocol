@@ -20,13 +20,18 @@ import org.junit.Test;
 
 import soot.SootMethod;
 import soot.Unit;
+import soot.Value;
 import soot.jimple.DefinitionStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 import soot.jimple.infoflow.data.AccessPath;
+import soot.jimple.infoflow.data.AccessPathFactory;
 import soot.jimple.infoflow.entryPointCreators.DefaultEntryPointCreator;
 import soot.jimple.infoflow.source.ISourceSinkManager;
 import soot.jimple.infoflow.source.SourceInfo;
+import soot.jimple.infoflow.taintWrappers.EasyTaintWrapper;
 
 /**
  * Test cases for FlowDroid's interaction with non-standard source sink managers
@@ -38,7 +43,8 @@ public class SourceSinkTests extends JUnitTests {
 	private static final String sourceGetSecret = "<soot.jimple.infoflow.test.SourceSinkTestCode: soot.jimple.infoflow.test.SourceSinkTestCode$A getSecret()>";
 	private static final String sourceGetSecret2 = "<soot.jimple.infoflow.test.SourceSinkTestCode: soot.jimple.infoflow.test.SourceSinkTestCode$B getSecret2()>";
 	
-	private static final String sinkAP = "<soot.jimple.infoflow.test.SourceSinkTestCode: void doleakSecret2(soot.jimple.infoflow.test.SourceSinkTestCode$A)>";
+	private static final String sinkAP = "<soot.jimple.infoflow.test.SourceSinkTestCode: void doLeakSecret2(soot.jimple.infoflow.test.SourceSinkTestCode$A)>";
+	private static final String sinkAP2 = "<soot.jimple.infoflow.test.SourceSinkTestCode: void doLeakSecret(java.lang.String)>";
 
 	private abstract class BaseSourceSinkManager implements ISourceSinkManager {
 
@@ -48,13 +54,16 @@ public class SourceSinkTests extends JUnitTests {
 			if (!sCallSite.containsInvokeExpr())
 				return false;
 			SootMethod target = sCallSite.getInvokeExpr().getMethod();
-			if (target.getSignature().equals(sink))
-				return true;
-			
-			if (target.getSignature().equals(sinkAP)
-					&& sCallSite.getInvokeExpr().getArgCount() > 0
-					&& ap.getPlainValue() == sCallSite.getInvokeExpr().getArg(0))
-				return true;
+			if ((target.getSignature().equals(sinkAP)
+						|| target.getSignature().equals(sinkAP2)
+						|| target.getSignature().equals(sink))
+					&& sCallSite.getInvokeExpr().getArgCount() > 0) {
+				if (ap == null)
+					return true;
+				else if (ap.getPlainValue() == sCallSite.getInvokeExpr().getArg(0))
+					if (ap.isLocal() || ap.getTaintSubFields())
+						return true;
+			}
 			return false;
 		}
 
@@ -67,7 +76,8 @@ public class SourceSinkTests extends JUnitTests {
 			if (sCallSite.containsInvokeExpr()
 					&& sCallSite instanceof DefinitionStmt
 					&& sCallSite.getInvokeExpr().getMethod().getName().equals("getSecret")) {
-				AccessPath ap = new AccessPath(((DefinitionStmt) sCallSite).getLeftOp(), true);
+				AccessPath ap = AccessPathFactory.v().createAccessPath(
+						((DefinitionStmt) sCallSite).getLeftOp(), true);
 				return new SourceInfo(ap);
 			}
 			return null;
@@ -83,7 +93,8 @@ public class SourceSinkTests extends JUnitTests {
 					&& sCallSite instanceof DefinitionStmt
 					&& (sCallSite.getInvokeExpr().getMethod().getName().equals("getSecret")
 							|| (sCallSite.getInvokeExpr().getMethod().getName().equals("getSecret2")))) {
-				AccessPath ap = new AccessPath(((DefinitionStmt) sCallSite).getLeftOp(), true);
+				AccessPath ap = AccessPathFactory.v().createAccessPath(
+						((DefinitionStmt) sCallSite).getLeftOp(), true);
 				return new SourceInfo(ap);
 			}
 			return null;
@@ -98,7 +109,8 @@ public class SourceSinkTests extends JUnitTests {
 			if (sCallSite.containsInvokeExpr()
 					&& sCallSite instanceof DefinitionStmt
 					&& sCallSite.getInvokeExpr().getMethod().getName().equals("getSecret")) {
-				AccessPath ap = new AccessPath(((DefinitionStmt) sCallSite).getLeftOp(), false);
+				AccessPath ap = AccessPathFactory.v().createAccessPath(
+						((DefinitionStmt) sCallSite).getLeftOp(), false);
 				return new SourceInfo(ap);
 			}
 			return null;
@@ -106,9 +118,68 @@ public class SourceSinkTests extends JUnitTests {
 		
 	};
 	
+	private final class ifAsSinkSSM implements ISourceSinkManager {
+
+		@Override
+		public SourceInfo getSourceInfo(Stmt sCallSite,
+				InterproceduralCFG<Unit, SootMethod> cfg) {
+			if (sCallSite instanceof DefinitionStmt
+					&& sCallSite.containsInvokeExpr()
+					&& sCallSite.getInvokeExpr().getMethod().getName().equals("currentTimeMillis")) {
+				Value val = ((DefinitionStmt) sCallSite).getLeftOp();
+				return new SourceInfo(AccessPathFactory.v().createAccessPath(val, true));
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isSink(Stmt sCallSite,
+				InterproceduralCFG<Unit, SootMethod> cfg, AccessPath ap) {
+			return sCallSite instanceof IfStmt;
+		}
+		
+	}
+	
+	private final class sourceToSourceSSM extends BaseSourceSinkManager {
+
+		@Override
+		public SourceInfo getSourceInfo(Stmt sCallSite,
+				InterproceduralCFG<Unit, SootMethod> cfg) {
+			if (sCallSite instanceof DefinitionStmt
+					&& sCallSite.containsInvokeExpr()
+					&& sCallSite.getInvokeExpr().getMethod().getName().equals("getSecret")) {
+				Value val = ((DefinitionStmt) sCallSite).getLeftOp();
+				return new SourceInfo(AccessPathFactory.v().createAccessPath(val, true));
+			}
+			return null;
+		}
+		
+	}
+	
+	private final class parameterSourceSSM extends BaseSourceSinkManager {
+
+		@Override
+		public SourceInfo getSourceInfo(Stmt sCallSite,
+				InterproceduralCFG<Unit, SootMethod> cfg) {
+			if (sCallSite.containsInvokeExpr()) {
+				InvokeExpr iexpr = sCallSite.getInvokeExpr();
+				String name = iexpr.getMethod().getName();
+				boolean includeExistingImmutableAliases = name.equals("annotatedSource");
+				if ((name.equals("source") || includeExistingImmutableAliases)
+						&& iexpr.getArgCount() > 0) {
+					AccessPath ap = AccessPathFactory.v().createAccessPath(iexpr.getArg(0), null, null, null, true,
+							false, true, AccessPath.ArrayTaintType.ContentsAndLength, true);
+					return new SourceInfo(ap);
+				}
+			}
+			return null;
+		}
+		
+	}
+	
 	@Test(timeout = 300000)
 	public void fieldTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void testDataObject()>");
 		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), getSecretSSM);
@@ -119,7 +190,7 @@ public class SourceSinkTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void negativeFieldTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void testDataObject()>");
 		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), noTaintSubFieldsSSM);
@@ -128,7 +199,7 @@ public class SourceSinkTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void accessPathTypesTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void testAccessPathTypes()>");
 		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), getSecretOrSecret2SSM);
@@ -140,7 +211,7 @@ public class SourceSinkTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void sourceAccessPathTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void testSourceAccessPaths()>");
 		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), noTaintSubFieldsSSM);
@@ -149,7 +220,7 @@ public class SourceSinkTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void sinkAccessPathTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void testSinkAccessPaths()>");
 		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), noTaintSubFieldsSSM);
@@ -158,11 +229,81 @@ public class SourceSinkTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void sinkAccessPathTest2() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void testSinkAccessPaths2()>");
 		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), noTaintSubFieldsSSM);
 		negativeCheckInfoflow(infoflow);
+	}
+
+	@Test(timeout = 300000)
+	public void ifAsSinkTest() {
+		IInfoflow infoflow = initInfoflow();
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void ifAsSinkTest()>");
+		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), new ifAsSinkSSM());
+		Assert.assertTrue(infoflow.isResultAvailable());
+		Assert.assertEquals(1, infoflow.getResults().size());
+	}
+	
+	@Test(timeout = 300000)
+	public void sourceToSourceTest() {
+		IInfoflow infoflow = initInfoflow(true);
+		((EasyTaintWrapper) infoflow.getTaintWrapper()).addIncludePrefix("soot.jimple.infoflow.test.SourceSinkTestCode");
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void sourceToSourceTest()>");
+		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), new sourceToSourceSSM());
+		Assert.assertTrue(infoflow.isResultAvailable());
+		Assert.assertEquals(1, infoflow.getResults().size());
+		Assert.assertEquals(1, infoflow.getResults().numConnections());
+	}
+	
+	@Test(timeout = 300000)
+	public void parameterSourceTest1() {
+		IInfoflow infoflow = initInfoflow(true);
+		((EasyTaintWrapper) infoflow.getTaintWrapper()).addIncludePrefix("soot.jimple.infoflow.test.SourceSinkTestCode");
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void parameterSourceTest1()>");
+		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), new parameterSourceSSM());
+		Assert.assertTrue(infoflow.isResultAvailable());
+		Assert.assertEquals(1, infoflow.getResults().size());
+		Assert.assertEquals(1, infoflow.getResults().numConnections());
+	}
+
+	@Test(timeout = 300000)
+	public void parameterSourceTest2() {
+		IInfoflow infoflow = initInfoflow(true);
+		((EasyTaintWrapper) infoflow.getTaintWrapper()).addIncludePrefix("soot.jimple.infoflow.test.SourceSinkTestCode");
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void parameterSourceTest2()>");
+		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), new parameterSourceSSM());
+		Assert.assertTrue(infoflow.isResultAvailable());
+		Assert.assertEquals(1, infoflow.getResults().size());
+		Assert.assertEquals(1, infoflow.getResults().numConnections());
+	}
+
+	@Test(timeout = 300000)
+	public void parameterSourceTest3() {
+		IInfoflow infoflow = initInfoflow(true);
+		((EasyTaintWrapper) infoflow.getTaintWrapper()).addIncludePrefix("soot.jimple.infoflow.test.SourceSinkTestCode");
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void parameterSourceTest3()>");
+		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), new parameterSourceSSM());
+		Assert.assertTrue(infoflow.isResultAvailable());
+		Assert.assertEquals(1, infoflow.getResults().size());
+		Assert.assertEquals(1, infoflow.getResults().numConnections());
+	}
+
+	@Test(timeout = 300000)
+	public void parameterSourceTest4() {
+		IInfoflow infoflow = initInfoflow(true);
+		((EasyTaintWrapper) infoflow.getTaintWrapper()).addIncludePrefix("soot.jimple.infoflow.test.SourceSinkTestCode");
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.SourceSinkTestCode: void parameterSourceTest4()>");
+		infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoints), new parameterSourceSSM());
+		Assert.assertTrue(infoflow.isResultAvailable());
+		Assert.assertEquals(1, infoflow.getResults().size());
+		Assert.assertEquals(1, infoflow.getResults().numConnections());
 	}
 
 }

@@ -1,0 +1,391 @@
+public class com.facebook.internal.SessionTracker extends java.lang.Object
+{
+    private final android.support.v4.content.LocalBroadcastManager broadcastManager;
+    private final com.facebook.Session$StatusCallback callback;
+    private boolean isTracking;
+    private final android.content.BroadcastReceiver receiver;
+    private com.facebook.Session session;
+
+    public void <init>(android.content.Context, com.facebook.Session$StatusCallback)
+    {
+        com.facebook.internal.SessionTracker $r0;
+        android.content.Context $r1;
+        com.facebook.Session$StatusCallback $r2;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.facebook.Session$StatusCallback;
+
+        specialinvoke $r0.<com.facebook.internal.SessionTracker: void <init>(android.content.Context,com.facebook.Session$StatusCallback,com.facebook.Session)>($r1, $r2, null);
+
+        return;
+    }
+
+    void <init>(android.content.Context, com.facebook.Session$StatusCallback, com.facebook.Session)
+    {
+        com.facebook.internal.SessionTracker $r0;
+        android.content.Context $r1;
+        com.facebook.Session$StatusCallback $r2;
+        com.facebook.Session $r3;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.facebook.Session$StatusCallback;
+
+        $r3 := @parameter2: com.facebook.Session;
+
+        specialinvoke $r0.<com.facebook.internal.SessionTracker: void <init>(android.content.Context,com.facebook.Session$StatusCallback,com.facebook.Session,boolean)>($r1, $r2, $r3, 1);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, com.facebook.Session$StatusCallback, com.facebook.Session, boolean)
+    {
+        com.facebook.internal.SessionTracker $r0;
+        android.content.Context $r1;
+        com.facebook.Session$StatusCallback $r2;
+        com.facebook.Session $r3;
+        boolean $z0;
+        com.facebook.internal.SessionTracker$CallbackWrapper $r4;
+        com.facebook.internal.SessionTracker$ActiveSessionBroadcastReceiver $r5;
+        android.support.v4.content.LocalBroadcastManager $r6;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.facebook.Session$StatusCallback;
+
+        $r3 := @parameter2: com.facebook.Session;
+
+        $z0 := @parameter3: boolean;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.facebook.internal.SessionTracker: boolean isTracking> = 0;
+
+        $r4 = new com.facebook.internal.SessionTracker$CallbackWrapper;
+
+        specialinvoke $r4.<com.facebook.internal.SessionTracker$CallbackWrapper: void <init>(com.facebook.internal.SessionTracker,com.facebook.Session$StatusCallback)>($r0, $r2);
+
+        $r0.<com.facebook.internal.SessionTracker: com.facebook.Session$StatusCallback callback> = $r4;
+
+        $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session> = $r3;
+
+        $r5 = new com.facebook.internal.SessionTracker$ActiveSessionBroadcastReceiver;
+
+        specialinvoke $r5.<com.facebook.internal.SessionTracker$ActiveSessionBroadcastReceiver: void <init>(com.facebook.internal.SessionTracker,com.facebook.internal.SessionTracker$1)>($r0, null);
+
+        $r0.<com.facebook.internal.SessionTracker: android.content.BroadcastReceiver receiver> = $r5;
+
+        $r6 = staticinvoke <android.support.v4.content.LocalBroadcastManager: android.support.v4.content.LocalBroadcastManager getInstance(android.content.Context)>($r1);
+
+        $r0.<com.facebook.internal.SessionTracker: android.support.v4.content.LocalBroadcastManager broadcastManager> = $r6;
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r0.<com.facebook.internal.SessionTracker: void startTracking()>();
+
+     label1:
+        return;
+    }
+
+    static com.facebook.Session$StatusCallback access$100(com.facebook.internal.SessionTracker)
+    {
+        com.facebook.internal.SessionTracker $r0;
+        com.facebook.Session$StatusCallback r1;
+
+        $r0 := @parameter0: com.facebook.internal.SessionTracker;
+
+        r1 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session$StatusCallback callback>;
+
+        return r1;
+    }
+
+    static com.facebook.Session access$200(com.facebook.internal.SessionTracker)
+    {
+        com.facebook.internal.SessionTracker $r0;
+        com.facebook.Session r1;
+
+        $r0 := @parameter0: com.facebook.internal.SessionTracker;
+
+        r1 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session>;
+
+        return r1;
+    }
+
+    private void addBroadcastReceiver()
+    {
+        com.facebook.internal.SessionTracker $r0;
+        android.content.IntentFilter $r1;
+        android.support.v4.content.LocalBroadcastManager $r2;
+        android.content.BroadcastReceiver $r3;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        $r1 = new android.content.IntentFilter;
+
+        specialinvoke $r1.<android.content.IntentFilter: void <init>()>();
+
+        virtualinvoke $r1.<android.content.IntentFilter: void addAction(java.lang.String)>("com.facebook.sdk.ACTIVE_SESSION_SET");
+
+        virtualinvoke $r1.<android.content.IntentFilter: void addAction(java.lang.String)>("com.facebook.sdk.ACTIVE_SESSION_UNSET");
+
+        $r2 = $r0.<com.facebook.internal.SessionTracker: android.support.v4.content.LocalBroadcastManager broadcastManager>;
+
+        $r3 = $r0.<com.facebook.internal.SessionTracker: android.content.BroadcastReceiver receiver>;
+
+        virtualinvoke $r2.<android.support.v4.content.LocalBroadcastManager: void registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r3, $r1);
+
+        return;
+    }
+
+    public com.facebook.Session getOpenSession()
+    {
+        com.facebook.internal.SessionTracker $r0;
+        com.facebook.Session $r1;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        $r1 = virtualinvoke $r0.<com.facebook.internal.SessionTracker: com.facebook.Session getSession()>();
+
+        if $r1 == null goto label1;
+
+        $z0 = virtualinvoke $r1.<com.facebook.Session: boolean isOpened()>();
+
+        if $z0 == 0 goto label1;
+
+        return $r1;
+
+     label1:
+        return null;
+    }
+
+    public com.facebook.Session getSession()
+    {
+        com.facebook.internal.SessionTracker $r0;
+        com.facebook.Session $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        $r1 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session>;
+
+        if $r1 != null goto label1;
+
+        $r1_1 = staticinvoke <com.facebook.Session: com.facebook.Session getActiveSession()>();
+
+        return $r1_1;
+
+     label1:
+        $r1_2 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session>;
+
+        return $r1_2;
+    }
+
+    public boolean isTracking()
+    {
+        com.facebook.internal.SessionTracker $r0;
+        boolean z0;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        z0 = $r0.<com.facebook.internal.SessionTracker: boolean isTracking>;
+
+        return z0;
+    }
+
+    public boolean isTrackingActiveSession()
+    {
+        com.facebook.internal.SessionTracker $r0;
+        com.facebook.Session $r1;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        $r1 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session>;
+
+        if $r1 != null goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public void setSession(com.facebook.Session)
+    {
+        com.facebook.internal.SessionTracker $r0;
+        android.support.v4.content.LocalBroadcastManager $r1;
+        android.content.BroadcastReceiver $r2;
+        com.facebook.Session $r3, $r5, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r5_1, $r5_2, $r3_6, $r5_3;
+        com.facebook.Session$StatusCallback $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        $r3 := @parameter0: com.facebook.Session;
+
+        if $r3 != null goto label1;
+
+        $r3_1 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session>;
+
+(0)     if $r3_1 == null goto label5;
+
+        $r3_2 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session>;
+
+        $r4 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session$StatusCallback callback>;
+
+        virtualinvoke $r3_2.<com.facebook.Session: void removeCallback(com.facebook.Session$StatusCallback)>($r4);
+
+        $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session> = null;
+
+        specialinvoke $r0.<com.facebook.internal.SessionTracker: void addBroadcastReceiver()>();
+
+        $r3_3 = virtualinvoke $r0.<com.facebook.internal.SessionTracker: com.facebook.Session getSession()>();
+
+(1)     if $r3_3 == null goto label5;
+
+        $r3_4 = virtualinvoke $r0.<com.facebook.internal.SessionTracker: com.facebook.Session getSession()>();
+
+        $r4_1 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session$StatusCallback callback>;
+
+        virtualinvoke $r3_4.<com.facebook.Session: void addCallback(com.facebook.Session$StatusCallback)>($r4_1);
+
+        return;
+
+     label1:
+        $r5 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session>;
+
+        if $r5 != null goto label4;
+
+        $r5_1 = staticinvoke <com.facebook.Session: com.facebook.Session getActiveSession()>();
+
+(2)     if $r5_1 == null goto label2;
+
+        $r4_3 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session$StatusCallback callback>;
+
+(3)     virtualinvoke $r5_1.<com.facebook.Session: void removeCallback(com.facebook.Session$StatusCallback)>($r4_3);
+
+     label2:
+        $r4_4 = Phi($r4 #2, $r4_3 #3);
+
+        $r1 = $r0.<com.facebook.internal.SessionTracker: android.support.v4.content.LocalBroadcastManager broadcastManager>;
+
+        $r2 = $r0.<com.facebook.internal.SessionTracker: android.content.BroadcastReceiver receiver>;
+
+(4)     virtualinvoke $r1.<android.support.v4.content.LocalBroadcastManager: void unregisterReceiver(android.content.BroadcastReceiver)>($r2);
+
+     label3:
+        $r5_2 = Phi($r5_1 #4, $r5_3 #5);
+
+        $r4_5 = Phi($r4_4 #4, $r4_7 #5);
+
+        $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session> = $r3;
+
+        $r3_6 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session>;
+
+        $r4_6 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session$StatusCallback callback>;
+
+        virtualinvoke $r3_6.<com.facebook.Session: void addCallback(com.facebook.Session$StatusCallback)>($r4_6);
+
+        return;
+
+     label4:
+        $r5_3 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session>;
+
+        $r4_7 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session$StatusCallback callback>;
+
+        virtualinvoke $r5_3.<com.facebook.Session: void removeCallback(com.facebook.Session$StatusCallback)>($r4_7);
+
+(5)     goto label3;
+
+     label5:
+        $r3_5 = Phi($r3_1 #0, $r3_3 #1);
+
+        $r4_2 = Phi($r4 #0, $r4 #1);
+
+        return;
+    }
+
+    public void startTracking()
+    {
+        com.facebook.internal.SessionTracker $r0;
+        boolean $z0;
+        com.facebook.Session$StatusCallback $r1;
+        com.facebook.Session $r2, $r2_1, $r2_2, $r2_3;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        $z0 = $r0.<com.facebook.internal.SessionTracker: boolean isTracking>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r2 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session session>;
+
+        if $r2 != null goto label2;
+
+        specialinvoke $r0.<com.facebook.internal.SessionTracker: void addBroadcastReceiver()>();
+
+     label2:
+        $r2_1 = virtualinvoke $r0.<com.facebook.internal.SessionTracker: com.facebook.Session getSession()>();
+
+(0)     if $r2_1 == null goto label3;
+
+        $r2_2 = virtualinvoke $r0.<com.facebook.internal.SessionTracker: com.facebook.Session getSession()>();
+
+        $r1 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session$StatusCallback callback>;
+
+(1)     virtualinvoke $r2_2.<com.facebook.Session: void addCallback(com.facebook.Session$StatusCallback)>($r1);
+
+     label3:
+        $r2_3 = Phi($r2_1 #0, $r2_2 #1);
+
+        $r0.<com.facebook.internal.SessionTracker: boolean isTracking> = 1;
+
+        return;
+    }
+
+    public void stopTracking()
+    {
+        com.facebook.internal.SessionTracker $r0;
+        boolean $z0;
+        com.facebook.Session$StatusCallback $r1;
+        android.support.v4.content.LocalBroadcastManager $r2;
+        android.content.BroadcastReceiver $r3;
+        com.facebook.Session $r4;
+
+        $r0 := @this: com.facebook.internal.SessionTracker;
+
+        $z0 = $r0.<com.facebook.internal.SessionTracker: boolean isTracking>;
+
+        if $z0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $r4 = virtualinvoke $r0.<com.facebook.internal.SessionTracker: com.facebook.Session getSession()>();
+
+        if $r4 == null goto label2;
+
+        $r1 = $r0.<com.facebook.internal.SessionTracker: com.facebook.Session$StatusCallback callback>;
+
+        virtualinvoke $r4.<com.facebook.Session: void removeCallback(com.facebook.Session$StatusCallback)>($r1);
+
+     label2:
+        $r2 = $r0.<com.facebook.internal.SessionTracker: android.support.v4.content.LocalBroadcastManager broadcastManager>;
+
+        $r3 = $r0.<com.facebook.internal.SessionTracker: android.content.BroadcastReceiver receiver>;
+
+        virtualinvoke $r2.<android.support.v4.content.LocalBroadcastManager: void unregisterReceiver(android.content.BroadcastReceiver)>($r3);
+
+        $r0.<com.facebook.internal.SessionTracker: boolean isTracking> = 0;
+
+        return;
+    }
+}

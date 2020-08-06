@@ -1,0 +1,525 @@
+public class com.android.volley.toolbox.HurlStack extends java.lang.Object implements com.android.volley.toolbox.HttpStack
+{
+    private static final java.lang.String HEADER_CONTENT_TYPE;
+    private final javax.net.ssl.SSLSocketFactory mSslSocketFactory;
+    private final com.android.volley.toolbox.HurlStack$UrlRewriter mUrlRewriter;
+
+    public void <init>()
+    {
+        com.android.volley.toolbox.HurlStack $r0;
+
+        $r0 := @this: com.android.volley.toolbox.HurlStack;
+
+        specialinvoke $r0.<com.android.volley.toolbox.HurlStack: void <init>(com.android.volley.toolbox.HurlStack$UrlRewriter)>(null);
+
+        return;
+    }
+
+    public void <init>(com.android.volley.toolbox.HurlStack$UrlRewriter)
+    {
+        com.android.volley.toolbox.HurlStack $r0;
+        com.android.volley.toolbox.HurlStack$UrlRewriter $r1;
+
+        $r0 := @this: com.android.volley.toolbox.HurlStack;
+
+        $r1 := @parameter0: com.android.volley.toolbox.HurlStack$UrlRewriter;
+
+        specialinvoke $r0.<com.android.volley.toolbox.HurlStack: void <init>(com.android.volley.toolbox.HurlStack$UrlRewriter,javax.net.ssl.SSLSocketFactory)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(com.android.volley.toolbox.HurlStack$UrlRewriter, javax.net.ssl.SSLSocketFactory)
+    {
+        com.android.volley.toolbox.HurlStack $r0;
+        com.android.volley.toolbox.HurlStack$UrlRewriter $r1;
+        javax.net.ssl.SSLSocketFactory $r2;
+
+        $r0 := @this: com.android.volley.toolbox.HurlStack;
+
+        $r1 := @parameter0: com.android.volley.toolbox.HurlStack$UrlRewriter;
+
+        $r2 := @parameter1: javax.net.ssl.SSLSocketFactory;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.android.volley.toolbox.HurlStack: com.android.volley.toolbox.HurlStack$UrlRewriter mUrlRewriter> = $r1;
+
+        $r0.<com.android.volley.toolbox.HurlStack: javax.net.ssl.SSLSocketFactory mSslSocketFactory> = $r2;
+
+        return;
+    }
+
+    private static void addBodyIfExists(java.net.HttpURLConnection, com.android.volley.Request) throws java.io.IOException, com.android.volley.AuthFailureError
+    {
+        java.net.HttpURLConnection $r0;
+        com.android.volley.Request $r1;
+        java.io.DataOutputStream $r2;
+        byte[] $r3;
+        java.lang.String $r4;
+        java.io.OutputStream $r5;
+
+        $r0 := @parameter0: java.net.HttpURLConnection;
+
+        $r1 := @parameter1: com.android.volley.Request;
+
+        $r3 = virtualinvoke $r1.<com.android.volley.Request: byte[] getBody()>();
+
+        if $r3 == null goto label1;
+
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        $r4 = virtualinvoke $r1.<com.android.volley.Request: java.lang.String getBodyContentType()>();
+
+        virtualinvoke $r0.<java.net.HttpURLConnection: void addRequestProperty(java.lang.String,java.lang.String)>("Content-Type", $r4);
+
+        $r2 = new java.io.DataOutputStream;
+
+        $r5 = virtualinvoke $r0.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+        specialinvoke $r2.<java.io.DataOutputStream: void <init>(java.io.OutputStream)>($r5);
+
+        virtualinvoke $r2.<java.io.DataOutputStream: void write(byte[])>($r3);
+
+        virtualinvoke $r2.<java.io.DataOutputStream: void close()>();
+
+     label1:
+        return;
+    }
+
+    private static org.apache.http.HttpEntity entityFromConnection(java.net.HttpURLConnection)
+    {
+        java.net.HttpURLConnection $r0;
+        org.apache.http.entity.BasicHttpEntity $r1;
+        long $l0;
+        java.io.IOException $r2;
+        java.io.InputStream $r3, $r3_1, $r3_2, $r3_3;
+        int $i1;
+        java.lang.String $r4, $r4_1;
+
+        $r0 := @parameter0: java.net.HttpURLConnection;
+
+        $r1 = new org.apache.http.entity.BasicHttpEntity;
+
+(0)     specialinvoke $r1.<org.apache.http.entity.BasicHttpEntity: void <init>()>();
+
+     label1:
+(1)     $r3 = virtualinvoke $r0.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+     label2:
+        $r3_1 = Phi($r3 #1, $r3_3 #2);
+
+        virtualinvoke $r1.<org.apache.http.entity.BasicHttpEntity: void setContent(java.io.InputStream)>($r3_1);
+
+        $i1 = virtualinvoke $r0.<java.net.HttpURLConnection: int getContentLength()>();
+
+        $l0 = (long) $i1;
+
+        virtualinvoke $r1.<org.apache.http.entity.BasicHttpEntity: void setContentLength(long)>($l0);
+
+        $r4 = virtualinvoke $r0.<java.net.HttpURLConnection: java.lang.String getContentEncoding()>();
+
+        virtualinvoke $r1.<org.apache.http.entity.BasicHttpEntity: void setContentEncoding(java.lang.String)>($r4);
+
+        $r4_1 = virtualinvoke $r0.<java.net.HttpURLConnection: java.lang.String getContentType()>();
+
+        virtualinvoke $r1.<org.apache.http.entity.BasicHttpEntity: void setContentType(java.lang.String)>($r4_1);
+
+        return $r1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3_2 = Phi($r3 #0);
+
+        $r3_3 = virtualinvoke $r0.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+(2)     goto label2;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    private java.net.HttpURLConnection openConnection(java.net.URL, com.android.volley.Request) throws java.io.IOException
+    {
+        com.android.volley.toolbox.HurlStack $r0;
+        java.net.URL $r1;
+        com.android.volley.Request $r2;
+        java.lang.String $r3, $r5;
+        java.net.HttpURLConnection $r4;
+        int $i0;
+        boolean $z0;
+        javax.net.ssl.SSLSocketFactory $r6, $r6_1, $r6_2;
+        javax.net.ssl.HttpsURLConnection $r7;
+
+        $r0 := @this: com.android.volley.toolbox.HurlStack;
+
+        $r1 := @parameter0: java.net.URL;
+
+        $r2 := @parameter1: com.android.volley.Request;
+
+        $r4 = virtualinvoke $r0.<com.android.volley.toolbox.HurlStack: java.net.HttpURLConnection createConnection(java.net.URL)>($r1);
+
+        $i0 = virtualinvoke $r2.<com.android.volley.Request: int getTimeoutMs()>();
+
+        virtualinvoke $r4.<java.net.HttpURLConnection: void setConnectTimeout(int)>($i0);
+
+        virtualinvoke $r4.<java.net.HttpURLConnection: void setReadTimeout(int)>($i0);
+
+        virtualinvoke $r4.<java.net.HttpURLConnection: void setUseCaches(boolean)>(0);
+
+        virtualinvoke $r4.<java.net.HttpURLConnection: void setDoInput(boolean)>(1);
+
+        $r3 = "https";
+
+        $r5 = virtualinvoke $r1.<java.net.URL: java.lang.String getProtocol()>();
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>($r5);
+
+(0)     if $z0 == 0 goto label1;
+
+        $r6 = $r0.<com.android.volley.toolbox.HurlStack: javax.net.ssl.SSLSocketFactory mSslSocketFactory>;
+
+(1)     if $r6 == null goto label1;
+
+        $r7 = (javax.net.ssl.HttpsURLConnection) $r4;
+
+        $r6_1 = $r0.<com.android.volley.toolbox.HurlStack: javax.net.ssl.SSLSocketFactory mSslSocketFactory>;
+
+(2)     virtualinvoke $r7.<javax.net.ssl.HttpsURLConnection: void setSSLSocketFactory(javax.net.ssl.SSLSocketFactory)>($r6_1);
+
+     label1:
+        $r6_2 = Phi($r6 #0, $r6 #1, $r6_1 #2);
+
+        return $r4;
+    }
+
+    static void setConnectionParametersForRequest(java.net.HttpURLConnection, com.android.volley.Request) throws java.io.IOException, com.android.volley.AuthFailureError
+    {
+        java.net.HttpURLConnection $r0;
+        com.android.volley.Request $r1;
+        java.lang.IllegalStateException $r2;
+        java.io.DataOutputStream $r3;
+        int $i0;
+        byte[] $r4;
+        java.lang.String $r5;
+        java.io.OutputStream $r6;
+
+        $r0 := @parameter0: java.net.HttpURLConnection;
+
+        $r1 := @parameter1: com.android.volley.Request;
+
+        $i0 = virtualinvoke $r1.<com.android.volley.Request: int getMethod()>();
+
+        lookupswitch($i0)
+        {
+            case -1: goto label03;
+            case 0: goto label04;
+            case 1: goto label06;
+            case 2: goto label07;
+            case 3: goto label05;
+            case 4: goto label08;
+            case 5: goto label09;
+            case 6: goto label10;
+            case 7: goto label11;
+            default: goto label01;
+        };
+
+     label01:
+        goto label02;
+
+     label02:
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Unknown method type.");
+
+        throw $r2;
+
+     label03:
+        $r4 = virtualinvoke $r1.<com.android.volley.Request: byte[] getPostBody()>();
+
+        if $r4 == null goto label12;
+
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("POST");
+
+        $r5 = virtualinvoke $r1.<com.android.volley.Request: java.lang.String getPostBodyContentType()>();
+
+        virtualinvoke $r0.<java.net.HttpURLConnection: void addRequestProperty(java.lang.String,java.lang.String)>("Content-Type", $r5);
+
+        $r3 = new java.io.DataOutputStream;
+
+        $r6 = virtualinvoke $r0.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+        specialinvoke $r3.<java.io.DataOutputStream: void <init>(java.io.OutputStream)>($r6);
+
+        virtualinvoke $r3.<java.io.DataOutputStream: void write(byte[])>($r4);
+
+        virtualinvoke $r3.<java.io.DataOutputStream: void close()>();
+
+        return;
+
+     label04:
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("GET");
+
+        return;
+
+     label05:
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("DELETE");
+
+        return;
+
+     label06:
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("POST");
+
+        staticinvoke <com.android.volley.toolbox.HurlStack: void addBodyIfExists(java.net.HttpURLConnection,com.android.volley.Request)>($r0, $r1);
+
+        return;
+
+     label07:
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("PUT");
+
+        staticinvoke <com.android.volley.toolbox.HurlStack: void addBodyIfExists(java.net.HttpURLConnection,com.android.volley.Request)>($r0, $r1);
+
+        return;
+
+     label08:
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("HEAD");
+
+        return;
+
+     label09:
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("OPTIONS");
+
+        return;
+
+     label10:
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("TRACE");
+
+        return;
+
+     label11:
+        staticinvoke <com.android.volley.toolbox.HurlStack: void addBodyIfExists(java.net.HttpURLConnection,com.android.volley.Request)>($r0, $r1);
+
+        virtualinvoke $r0.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("PATCH");
+
+     label12:
+        return;
+    }
+
+    protected java.net.HttpURLConnection createConnection(java.net.URL) throws java.io.IOException
+    {
+        com.android.volley.toolbox.HurlStack $r0;
+        java.net.URL $r1;
+        java.net.URLConnection $r2;
+        java.net.HttpURLConnection $r3;
+
+        $r0 := @this: com.android.volley.toolbox.HurlStack;
+
+        $r1 := @parameter0: java.net.URL;
+
+        $r2 = virtualinvoke $r1.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r3 = (java.net.HttpURLConnection) $r2;
+
+        return $r3;
+    }
+
+    public org.apache.http.HttpResponse performRequest(com.android.volley.Request, java.util.Map) throws java.io.IOException, com.android.volley.AuthFailureError
+    {
+        com.android.volley.toolbox.HurlStack $r0;
+        com.android.volley.Request $r1;
+        java.util.HashMap $r2;
+        java.net.URL $r3;
+        org.apache.http.ProtocolVersion $r4;
+        org.apache.http.message.BasicStatusLine $r5;
+        org.apache.http.message.BasicHttpResponse $r6;
+        org.apache.http.message.BasicHeader $r7;
+        java.util.Map $r8, $r11, $r8_1;
+        java.lang.String $r9, $r10, $r13, $r10_1, $r9_1, $r10_2, $r10_3, $r9_2, $r9_3, $r10_4, $r9_4, $r10_5, $r9_5, $r9_6, $r10_6;
+        com.android.volley.toolbox.HurlStack$UrlRewriter $r12, $r12_1, $r12_2;
+        java.io.IOException $r14, $r14_1;
+        java.lang.StringBuilder $r15, $r15_1, $r15_2;
+        java.net.HttpURLConnection $r16;
+        java.util.Set $r17, $r17_1;
+        java.util.Iterator $r18, $r18_1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.Object $r19, $r19_1, $r19_2, $r19_3, $r19_4, $r19_5, $r19_6, $r19_7, $r19_8;
+        int $i0, $i0_1;
+        org.apache.http.HttpEntity $r20;
+        java.util.Map$Entry $r21;
+        java.util.List $r22;
+
+        $r0 := @this: com.android.volley.toolbox.HurlStack;
+
+        $r1 := @parameter0: com.android.volley.Request;
+
+        $r8 := @parameter1: java.util.Map;
+
+        $r9 = virtualinvoke $r1.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        $r10 = $r9;
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        $r11 = virtualinvoke $r1.<com.android.volley.Request: java.util.Map getHeaders()>();
+
+        virtualinvoke $r2.<java.util.HashMap: void putAll(java.util.Map)>($r11);
+
+        virtualinvoke $r2.<java.util.HashMap: void putAll(java.util.Map)>($r8);
+
+        $r12 = $r0.<com.android.volley.toolbox.HurlStack: com.android.volley.toolbox.HurlStack$UrlRewriter mUrlRewriter>;
+
+(0)     if $r12 == null goto label1;
+
+        $r12_1 = $r0.<com.android.volley.toolbox.HurlStack: com.android.volley.toolbox.HurlStack$UrlRewriter mUrlRewriter>;
+
+        $r13 = interfaceinvoke $r12_1.<com.android.volley.toolbox.HurlStack$UrlRewriter: java.lang.String rewriteUrl(java.lang.String)>($r9);
+
+        $r10_1 = $r13;
+
+(1)     if $r13 != null goto label1;
+
+        $r14 = new java.io.IOException;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r15_1 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("URL blocked by rewriter: ");
+
+        $r15_2 = virtualinvoke $r15_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9_1 = virtualinvoke $r15_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r14.<java.io.IOException: void <init>(java.lang.String)>($r9_1);
+
+        throw $r14;
+
+     label1:
+        $r10_2 = Phi($r10 #0, $r10_1 #1);
+
+        $r12_2 = Phi($r12 #0, $r12_1 #1);
+
+        $r3 = new java.net.URL;
+
+        specialinvoke $r3.<java.net.URL: void <init>(java.lang.String)>($r10_2);
+
+        $r16 = specialinvoke $r0.<com.android.volley.toolbox.HurlStack: java.net.HttpURLConnection openConnection(java.net.URL,com.android.volley.Request)>($r3, $r1);
+
+        $r17 = virtualinvoke $r2.<java.util.HashMap: java.util.Set keySet()>();
+
+(2)     $r18 = interfaceinvoke $r17.<java.util.Set: java.util.Iterator iterator()>();
+
+     label2:
+        $z0 = Phi($z0 #2, $z0_1 #3);
+
+        $r10_3 = Phi($r10_2 #2, $r10_4 #3);
+
+        $r19 = Phi($r19 #2, $r19_2 #3);
+
+        $r9_2 = Phi($r9 #2, $r9_3 #3);
+
+        $z0_1 = interfaceinvoke $r18.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label3;
+
+        $r19_1 = interfaceinvoke $r18.<java.util.Iterator: java.lang.Object next()>();
+
+        $r9_3 = (java.lang.String) $r19_1;
+
+        $r19_2 = virtualinvoke $r2.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r9_3);
+
+        $r10_4 = (java.lang.String) $r19_2;
+
+        virtualinvoke $r16.<java.net.HttpURLConnection: void addRequestProperty(java.lang.String,java.lang.String)>($r9_3, $r10_4);
+
+(3)     goto label2;
+
+     label3:
+        staticinvoke <com.android.volley.toolbox.HurlStack: void setConnectionParametersForRequest(java.net.HttpURLConnection,com.android.volley.Request)>($r16, $r1);
+
+        $r4 = new org.apache.http.ProtocolVersion;
+
+        specialinvoke $r4.<org.apache.http.ProtocolVersion: void <init>(java.lang.String,int,int)>("HTTP", 1, 1);
+
+        $i0 = virtualinvoke $r16.<java.net.HttpURLConnection: int getResponseCode()>();
+
+        if $i0 != -1 goto label4;
+
+        $r14_1 = new java.io.IOException;
+
+        specialinvoke $r14_1.<java.io.IOException: void <init>(java.lang.String)>("Could not retrieve response code from HttpUrlConnection.");
+
+        throw $r14_1;
+
+     label4:
+        $r5 = new org.apache.http.message.BasicStatusLine;
+
+        $i0_1 = virtualinvoke $r16.<java.net.HttpURLConnection: int getResponseCode()>();
+
+        $r9_4 = virtualinvoke $r16.<java.net.HttpURLConnection: java.lang.String getResponseMessage()>();
+
+        specialinvoke $r5.<org.apache.http.message.BasicStatusLine: void <init>(org.apache.http.ProtocolVersion,int,java.lang.String)>($r4, $i0_1, $r9_4);
+
+        $r6 = new org.apache.http.message.BasicHttpResponse;
+
+        specialinvoke $r6.<org.apache.http.message.BasicHttpResponse: void <init>(org.apache.http.StatusLine)>($r5);
+
+        $r20 = staticinvoke <com.android.volley.toolbox.HurlStack: org.apache.http.HttpEntity entityFromConnection(java.net.HttpURLConnection)>($r16);
+
+        virtualinvoke $r6.<org.apache.http.message.BasicHttpResponse: void setEntity(org.apache.http.HttpEntity)>($r20);
+
+        $r8_1 = virtualinvoke $r16.<java.net.HttpURLConnection: java.util.Map getHeaderFields()>();
+
+        $r17_1 = interfaceinvoke $r8_1.<java.util.Map: java.util.Set entrySet()>();
+
+(4)     $r18_1 = interfaceinvoke $r17_1.<java.util.Set: java.util.Iterator iterator()>();
+
+     label5:
+        $z0_2 = Phi($z0_1 #4, $z0_3 #5, $z0_3 #6);
+
+        $r10_5 = Phi($r10_3 #4, $r10_5 #5, $r10_6 #6);
+
+        $r19_3 = Phi($r19 #4, $r19_5 #5, $r19_8 #6);
+
+        $r9_5 = Phi($r9_4 #4, $r9_5 #5, $r9_6 #6);
+
+        $z0_3 = interfaceinvoke $r18_1.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_3 == 0 goto label6;
+
+        $r19_4 = interfaceinvoke $r18_1.<java.util.Iterator: java.lang.Object next()>();
+
+        $r21 = (java.util.Map$Entry) $r19_4;
+
+        $r19_5 = interfaceinvoke $r21.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+(5)     if $r19_5 == null goto label5;
+
+        $r7 = new org.apache.http.message.BasicHeader;
+
+        $r19_6 = interfaceinvoke $r21.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r9_6 = (java.lang.String) $r19_6;
+
+        $r19_7 = interfaceinvoke $r21.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r22 = (java.util.List) $r19_7;
+
+        $r19_8 = interfaceinvoke $r22.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r10_6 = (java.lang.String) $r19_8;
+
+        specialinvoke $r7.<org.apache.http.message.BasicHeader: void <init>(java.lang.String,java.lang.String)>($r9_6, $r10_6);
+
+        virtualinvoke $r6.<org.apache.http.message.BasicHttpResponse: void addHeader(org.apache.http.Header)>($r7);
+
+(6)     goto label5;
+
+     label6:
+        return $r6;
+    }
+}

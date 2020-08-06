@@ -1,0 +1,123 @@
+abstract class ch.boye.httpclientandroidlib.client.entity.DecompressingEntity extends ch.boye.httpclientandroidlib.entity.HttpEntityWrapper
+{
+    private static final int BUFFER_SIZE;
+    private java.io.InputStream content;
+
+    public void <init>(ch.boye.httpclientandroidlib.HttpEntity)
+    {
+        ch.boye.httpclientandroidlib.client.entity.DecompressingEntity $r0;
+        ch.boye.httpclientandroidlib.HttpEntity $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.entity.DecompressingEntity;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpEntity;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.entity.HttpEntityWrapper: void <init>(ch.boye.httpclientandroidlib.HttpEntity)>($r1);
+
+        return;
+    }
+
+    public java.io.InputStream getContent() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.client.entity.DecompressingEntity $r0;
+        ch.boye.httpclientandroidlib.HttpEntity $r1, $r1_1, $r1_2, $r1_3;
+        boolean $z0;
+        java.io.InputStream $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.entity.DecompressingEntity;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.entity.HttpEntityWrapper: ch.boye.httpclientandroidlib.HttpEntity wrappedEntity>;
+
+        $z0 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpEntity: boolean isStreaming()>();
+
+        if $z0 == 0 goto label2;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.client.entity.DecompressingEntity: java.io.InputStream content>;
+
+(0)     if $r2 != null goto label1;
+
+        $r1_1 = $r0.<ch.boye.httpclientandroidlib.entity.HttpEntityWrapper: ch.boye.httpclientandroidlib.HttpEntity wrappedEntity>;
+
+        $r2_1 = interfaceinvoke $r1_1.<ch.boye.httpclientandroidlib.HttpEntity: java.io.InputStream getContent()>();
+
+        $r2_2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.entity.DecompressingEntity: java.io.InputStream getDecompressingInputStream(java.io.InputStream)>($r2_1);
+
+(1)     $r0.<ch.boye.httpclientandroidlib.client.entity.DecompressingEntity: java.io.InputStream content> = $r2_2;
+
+     label1:
+        $r2_3 = Phi($r2 #0, $r2_2 #1);
+
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $r2_4 = $r0.<ch.boye.httpclientandroidlib.client.entity.DecompressingEntity: java.io.InputStream content>;
+
+        return $r2_4;
+
+     label2:
+        $r1_3 = $r0.<ch.boye.httpclientandroidlib.entity.HttpEntityWrapper: ch.boye.httpclientandroidlib.HttpEntity wrappedEntity>;
+
+        $r2_5 = interfaceinvoke $r1_3.<ch.boye.httpclientandroidlib.HttpEntity: java.io.InputStream getContent()>();
+
+        $r2_6 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.entity.DecompressingEntity: java.io.InputStream getDecompressingInputStream(java.io.InputStream)>($r2_5);
+
+        return $r2_6;
+    }
+
+    abstract java.io.InputStream getDecompressingInputStream(java.io.InputStream) throws java.io.IOException;
+
+    public void writeTo(java.io.OutputStream) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.client.entity.DecompressingEntity $r0;
+        java.io.OutputStream $r1;
+        java.lang.IllegalArgumentException $r2;
+        byte[] $r3;
+        java.lang.Throwable $r4;
+        java.io.InputStream $r5;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.entity.DecompressingEntity;
+
+        $r1 := @parameter0: java.io.OutputStream;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Output stream may not be null");
+
+        throw $r2;
+
+     label1:
+        $r5 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.entity.DecompressingEntity: java.io.InputStream getContent()>();
+
+     label2:
+        $r3 = newarray (byte)[2048];
+
+     label3:
+        $i0 = virtualinvoke $r5.<java.io.InputStream: int read(byte[])>($r3);
+
+     label4:
+        if $i0 == -1 goto label8;
+
+     label5:
+        virtualinvoke $r1.<java.io.OutputStream: void write(byte[],int,int)>($r3, 0, $i0);
+
+     label6:
+        goto label3;
+
+     label7:
+        $r4 := @caughtexception;
+
+        virtualinvoke $r5.<java.io.InputStream: void close()>();
+
+        throw $r4;
+
+     label8:
+        virtualinvoke $r5.<java.io.InputStream: void close()>();
+
+        return;
+
+        catch java.lang.Throwable from label2 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+}

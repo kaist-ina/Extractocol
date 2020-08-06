@@ -1,0 +1,1228 @@
+public class ch.boye.httpclientandroidlib.impl.auth.DigestScheme extends ch.boye.httpclientandroidlib.impl.auth.RFC2617Scheme
+{
+    private static final char[] HEXADECIMAL;
+    private static final int QOP_AUTH;
+    private static final int QOP_AUTH_INT;
+    private static final int QOP_MISSING;
+    private static final int QOP_UNKNOWN;
+    private java.lang.String a1;
+    private java.lang.String a2;
+    private java.lang.String cnonce;
+    private boolean complete;
+    private java.lang.String lastNonce;
+    private long nounceCount;
+
+    static void <clinit>()
+    {
+        char[] $r0;
+
+        $r0 = newarray (char)[16];
+
+        $r0[0] = 48;
+
+        $r0[1] = 49;
+
+        $r0[2] = 50;
+
+        $r0[3] = 51;
+
+        $r0[4] = 52;
+
+        $r0[5] = 53;
+
+        $r0[6] = 54;
+
+        $r0[7] = 55;
+
+        $r0[8] = 56;
+
+        $r0[9] = 57;
+
+        $r0[10] = 97;
+
+        $r0[11] = 98;
+
+        $r0[12] = 99;
+
+        $r0[13] = 100;
+
+        $r0[14] = 101;
+
+        $r0[15] = 102;
+
+        <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: char[] HEXADECIMAL> = $r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: void <init>(ch.boye.httpclientandroidlib.auth.ChallengeState)>(null);
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.auth.ChallengeState)
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+        ch.boye.httpclientandroidlib.auth.ChallengeState $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.auth.ChallengeState;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.RFC2617Scheme: void <init>(ch.boye.httpclientandroidlib.auth.ChallengeState)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: boolean complete> = 0;
+
+        return;
+    }
+
+    public static java.lang.String createCnonce()
+    {
+        java.security.SecureRandom $r0;
+        byte[] $r1;
+        java.lang.String $r2;
+
+        $r0 = new java.security.SecureRandom;
+
+        specialinvoke $r0.<java.security.SecureRandom: void <init>()>();
+
+        $r1 = newarray (byte)[8];
+
+        virtualinvoke $r0.<java.security.SecureRandom: void nextBytes(byte[])>($r1);
+
+        $r2 = staticinvoke <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String encode(byte[])>($r1);
+
+        return $r2;
+    }
+
+    private ch.boye.httpclientandroidlib.Header createDigestHeader(ch.boye.httpclientandroidlib.auth.Credentials, ch.boye.httpclientandroidlib.HttpRequest) throws ch.boye.httpclientandroidlib.auth.AuthenticationException
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+        ch.boye.httpclientandroidlib.auth.Credentials $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        java.util.HashSet $r3;
+        java.util.StringTokenizer $r4;
+        java.util.Formatter $r5;
+        ch.boye.httpclientandroidlib.util.CharArrayBuffer $r6;
+        java.util.ArrayList $r7;
+        ch.boye.httpclientandroidlib.message.BasicHeaderValueFormatter $r8;
+        ch.boye.httpclientandroidlib.impl.auth.UnsupportedDigestAlgorithmException $r9;
+        ch.boye.httpclientandroidlib.impl.auth.HttpEntityDigester $r10;
+        java.io.IOException $r11;
+        ch.boye.httpclientandroidlib.message.BufferedHeader $r12;
+        java.lang.String $r13, $r14, $r15, $r16, $r17, $r18, $r19, $r20, $r21, $r27, $r30, $r21_1, $r21_2, $r21_3, $r21_4, $r16_1, $r19_1, $r19_2, $r18_1, $r21_5, $r21_6, $r21_7, $r18_2, $r18_3, $r18_4, $r18_5, $r20_1, $r20_2, $r30_1, $r30_2, $r27_1, $r27_2, $r27_3, $r27_4, $r27_5, $r27_6, $r27_7, $r17_1, $r17_2, $r17_3, $r21_8, $r21_9, $r21_10, $r17_4, $r21_11, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r19_3, $r16_2, $r16_3, $r19_4, $r16_4, $r19_5, $r19_6, $r16_5, $r19_7, $r16_6, $r17_5, $r17_6, $r17_7, $r21_12, $r17_8, $r17_9, $r17_10, $r17_11, $r17_12, $r27_8, $r18_6, $r16_7;
+        byte $b0, $b0_1, $b0_2, $b0_3, $b0_4, $b0_5, $b0_6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11, $z0_12, $z0_13, $z0_14, $z0_15, $z0_16, $z0_17, $z0_18, $z0_19, $z0_20, $z0_21, $z0_22, $z0_23, $z0_24, $z0_25;
+        java.util.Locale $r22, $r22_1, $r22_2, $r22_3;
+        ch.boye.httpclientandroidlib.auth.AuthenticationException $r23, $r23_1, $r23_2, $r23_3;
+        java.lang.StringBuilder $r24, $r31, $r24_1, $r24_2, $r24_3, $r31_1, $r31_2, $r31_3, $r31_4, $r31_5, $r31_6, $r31_7, $r31_8, $r31_9, $r31_10, $r31_11, $r31_12, $r31_13, $r31_14, $r31_15, $r31_16, $r31_17, $r31_18, $r31_19, $r31_20, $r31_21, $r31_22, $r31_23, $r31_24, $r31_25, $r31_26, $r31_27, $r31_28, $r31_29, $r31_30, $r31_31, $r31_32, $r31_33, $r31_34, $r31_35, $r31_36, $r31_37, $r31_38, $r31_39, $r31_40, $r31_41, $r31_42, $r31_43, $r31_44, $r31_45, $r31_46, $r24_4, $r24_5, $r24_6;
+        java.security.MessageDigest $r25;
+        java.security.Principal $r26;
+        long $l1, $l1_1, $l1_2, $l1_3;
+        java.lang.Object[] $r28;
+        java.lang.Long $r29;
+        byte[] $r32, $r32_1, $r32_2, $r32_3, $r32_4, $r32_5, $r32_6, $r32_7, $r32_8, $r32_9, $r32_10;
+        ch.boye.httpclientandroidlib.message.BasicNameValuePair $r33, $r33_1, $r33_2, $r33_3, $r33_4, $r33_5, $r33_6, $r33_7, $r33_8, $r33_9, $r33_10, $r33_11, $r33_12, $r33_13, $r33_14;
+        int $i2, $i3, $i2_1, $i2_2;
+        java.lang.Object $r34;
+        ch.boye.httpclientandroidlib.HttpEntity $r35, $r35_1, $r35_2, $r35_3;
+        ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest $r36;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.auth.Credentials;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r13 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("uri");
+
+        $r14 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("realm");
+
+        $r15 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("nonce");
+
+        $r16 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("opaque");
+
+        $r17 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("methodname");
+
+        $r18 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("algorithm");
+
+        $r19 = $r18;
+
+        $r3 = new java.util.HashSet;
+
+        specialinvoke $r3.<java.util.HashSet: void <init>(int)>(8);
+
+        $b0 = -1;
+
+        $r20 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("qop");
+
+        if $r20 == null goto label05;
+
+        $r4 = new java.util.StringTokenizer;
+
+(0)     specialinvoke $r4.<java.util.StringTokenizer: void <init>(java.lang.String,java.lang.String)>($r20, ",");
+
+     label01:
+        $r21 = Phi($r21 #0, $r21_3 #1);
+
+        $r22 = Phi($r22 #0, $r22_1 #1);
+
+        $z0 = Phi($z0 #0, $z0_1 #1);
+
+        $z0_1 = virtualinvoke $r4.<java.util.StringTokenizer: boolean hasMoreTokens()>();
+
+        if $z0_1 == 0 goto label02;
+
+        $r21_1 = virtualinvoke $r4.<java.util.StringTokenizer: java.lang.String nextToken()>();
+
+        $r21_2 = virtualinvoke $r21_1.<java.lang.String: java.lang.String trim()>();
+
+        $r22_1 = <java.util.Locale: java.util.Locale US>;
+
+        $r21_3 = virtualinvoke $r21_2.<java.lang.String: java.lang.String toLowerCase(java.util.Locale)>($r22_1);
+
+        interfaceinvoke $r3.<java.util.Set: boolean add(java.lang.Object)>($r21_3);
+
+(1)     goto label01;
+
+     label02:
+        $z0_2 = $r2 instanceof ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest;
+
+(2)     if $z0_2 == 0 goto label04;
+
+        $z0_3 = interfaceinvoke $r3.<java.util.Set: boolean contains(java.lang.Object)>("auth-int");
+
+(3)     if $z0_3 == 0 goto label04;
+
+(4)     $b0_1 = 1;
+
+     label03:
+        $r21_4 = Phi($r21 #4, $r21 #5, $r21 #6, $r21 #7);
+
+        $r22_2 = Phi($r22 #4, $r22 #5, $r22 #6, $r22 #7);
+
+        $b0_3 = Phi($b0_1 #4, $b0 #5, $b0_2 #6, $b0_6 #7);
+
+        $z0_6 = Phi($z0_3 #4, $z0_5 #5, $z0_5 #6, $z0 #7);
+
+        if $b0_3 != -1 goto label06;
+
+        $r23 = new ch.boye.httpclientandroidlib.auth.AuthenticationException;
+
+        $r24 = new java.lang.StringBuilder;
+
+        specialinvoke $r24.<java.lang.StringBuilder: void <init>()>();
+
+        $r24_1 = virtualinvoke $r24.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("None of the qop methods is supported: ");
+
+        $r24_2 = virtualinvoke $r24_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r20);
+
+        $r16_1 = virtualinvoke $r24_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r23.<ch.boye.httpclientandroidlib.auth.AuthenticationException: void <init>(java.lang.String)>($r16_1);
+
+        throw $r23;
+
+     label04:
+        $z0_4 = Phi($z0_2 #2, $z0_3 #3);
+
+        $z0_5 = interfaceinvoke $r3.<java.util.Set: boolean contains(java.lang.Object)>("auth");
+
+(5)     if $z0_5 == 0 goto label03;
+
+        $b0_2 = 2;
+
+(6)     goto label03;
+
+     label05:
+        $b0_6 = 0;
+
+(7)     goto label03;
+
+     label06:
+(8)     if $r18 != null goto label07;
+
+(9)     $r19_1 = "MD5";
+
+     label07:
+        $r19_2 = Phi($r19 #8, $r19_1 #9);
+
+        $r18_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("charset");
+
+        $r21_5 = $r18_1;
+
+(10)    if $r18_1 != null goto label08;
+
+(11)    $r21_6 = "ISO-8859-1";
+
+     label08:
+        $r21_7 = Phi($r21_5 #10, $r21_6 #11);
+
+        $r18_2 = $r19_2;
+
+        $z0_7 = virtualinvoke $r19_2.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("MD5-sess");
+
+(12)    if $z0_7 == 0 goto label09;
+
+(13)    $r18_3 = "MD5";
+
+     label09:
+        $r18_4 = Phi($r18_2 #12, $r18_3 #13);
+
+(14)    $r25 = staticinvoke <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.security.MessageDigest createMessageDigest(java.lang.String)>($r18_4);
+
+     label10:
+        $r26 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.auth.Credentials: java.security.Principal getUserPrincipal()>();
+
+        $r18_5 = interfaceinvoke $r26.<java.security.Principal: java.lang.String getName()>();
+
+        $r27 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.auth.Credentials: java.lang.String getPassword()>();
+
+        $r20_1 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String lastNonce>;
+
+        $z0_8 = virtualinvoke $r15.<java.lang.String: boolean equals(java.lang.Object)>($r20_1);
+
+        if $z0_8 == 0 goto label27;
+
+        $l1 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: long nounceCount>;
+
+        $l1_1 = $l1 + 1L;
+
+(15)    $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: long nounceCount> = $l1_1;
+
+     label11:
+        $l1_2 = Phi($l1_1 #15, $l1 #34);
+
+        $r24_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r24_3.<java.lang.StringBuilder: void <init>(int)>(256);
+
+        $r5 = new java.util.Formatter;
+
+        $r22_3 = <java.util.Locale: java.util.Locale US>;
+
+        specialinvoke $r5.<java.util.Formatter: void <init>(java.lang.Appendable,java.util.Locale)>($r24_3, $r22_3);
+
+        $r28 = newarray (java.lang.Object)[1];
+
+        $l1_3 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: long nounceCount>;
+
+        $r29 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1_3);
+
+        $r28[0] = $r29;
+
+        virtualinvoke $r5.<java.util.Formatter: java.util.Formatter format(java.lang.String,java.lang.Object[])>("%08x", $r28);
+
+        $r20_2 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r30 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String cnonce>;
+
+(16)    if $r30 != null goto label12;
+
+        $r30_1 = staticinvoke <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String createCnonce()>();
+
+(17)    $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String cnonce> = $r30_1;
+
+     label12:
+        $r30_2 = Phi($r30 #16, $r30_1 #17);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a1> = null;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a2> = null;
+
+        $z0_9 = virtualinvoke $r19_2.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("MD5-sess");
+
+        if $z0_9 == 0 goto label28;
+
+        virtualinvoke $r24_3.<java.lang.StringBuilder: void setLength(int)>(0);
+
+        $r31 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r18_5);
+
+        $r31_1 = virtualinvoke $r31.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r31_2 = virtualinvoke $r31_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14);
+
+        $r31_3 = virtualinvoke $r31_2.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        virtualinvoke $r31_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r27);
+
+        $r27_1 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r32 = staticinvoke <ch.boye.httpclientandroidlib.util.EncodingUtils: byte[] getBytes(java.lang.String,java.lang.String)>($r27_1, $r21_7);
+
+        $r32_1 = virtualinvoke $r25.<java.security.MessageDigest: byte[] digest(byte[])>($r32);
+
+        $r27_2 = staticinvoke <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String encode(byte[])>($r32_1);
+
+        virtualinvoke $r24_3.<java.lang.StringBuilder: void setLength(int)>(0);
+
+        $r31_4 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r27_2);
+
+        $r31_5 = virtualinvoke $r31_4.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r31_6 = virtualinvoke $r31_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r15);
+
+        $r31_7 = virtualinvoke $r31_6.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r27_3 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String cnonce>;
+
+        virtualinvoke $r31_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r27_3);
+
+        $r27_4 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(18)    $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a1> = $r27_4;
+
+     label13:
+        $r31_8 = Phi($r31_7 #18, $r31_46 #35);
+
+        $r32_2 = Phi($r32_1 #18, $r32 #35);
+
+        $r27_5 = Phi($r27_4 #18, $r27_8 #35);
+
+        $r27_6 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a1>;
+
+        $r32_3 = staticinvoke <ch.boye.httpclientandroidlib.util.EncodingUtils: byte[] getBytes(java.lang.String,java.lang.String)>($r27_6, $r21_7);
+
+        $r32_4 = virtualinvoke $r25.<java.security.MessageDigest: byte[] digest(byte[])>($r32_3);
+
+        $r27_7 = staticinvoke <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String encode(byte[])>($r32_4);
+
+        if $b0_3 != 2 goto label29;
+
+        $r31_9 = new java.lang.StringBuilder;
+
+        specialinvoke $r31_9.<java.lang.StringBuilder: void <init>()>();
+
+        $r31_10 = virtualinvoke $r31_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17);
+
+        $r31_11 = virtualinvoke $r31_10.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r31_12 = virtualinvoke $r31_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13);
+
+        $r17_1 = virtualinvoke $r31_12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(19)    $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a2> = $r17_1;
+
+     label14:
+        $r17_2 = Phi($r17_1 #19, $r17_9 #40, $r17_11 #41, $r17_12 #42);
+
+        $b0_4 = Phi($b0_3 #19, $b0_5 #40, $b0_3 #41, $b0_3 #42);
+
+        $r31_13 = Phi($r31_12 #19, $r31_32 #40, $r31_38 #41, $r31_42 #42);
+
+        $r32_5 = Phi($r32_4 #19, $r32_4 #40, $r32_10 #41, $r32_4 #42);
+
+        $z0_10 = Phi($z0_9 #19, $z0_24 #40, $z0_25 #41, $z0_9 #42);
+
+        $r35 = Phi($r35 #19, $r35_3 #40, $r35_3 #41, $r35 #42);
+
+        $r17_3 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a2>;
+
+        $r32_6 = staticinvoke <ch.boye.httpclientandroidlib.util.EncodingUtils: byte[] getBytes(java.lang.String,java.lang.String)>($r17_3, $r21_7);
+
+        $r32_7 = virtualinvoke $r25.<java.security.MessageDigest: byte[] digest(byte[])>($r32_6);
+
+        $r21_8 = staticinvoke <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String encode(byte[])>($r32_7);
+
+        if $b0_4 != 0 goto label38;
+
+        virtualinvoke $r24_3.<java.lang.StringBuilder: void setLength(int)>(0);
+
+        $r31_14 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r27_7);
+
+        $r31_15 = virtualinvoke $r31_14.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r31_16 = virtualinvoke $r31_15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r15);
+
+        $r31_17 = virtualinvoke $r31_16.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        virtualinvoke $r31_17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r21_8);
+
+(20)    $r21_9 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label15:
+        $r21_10 = Phi($r21_9 #20, $r21_12 #44);
+
+        $r17_4 = Phi($r17_3 #20, $r17_7 #44);
+
+        $r31_18 = Phi($r31_17 #20, $r31_28 #44);
+
+        $r32_8 = staticinvoke <ch.boye.httpclientandroidlib.util.EncodingUtils: byte[] getAsciiBytes(java.lang.String)>($r21_10);
+
+        $r32_9 = virtualinvoke $r25.<java.security.MessageDigest: byte[] digest(byte[])>($r32_8);
+
+        $r21_11 = staticinvoke <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String encode(byte[])>($r32_9);
+
+        $r6 = new ch.boye.httpclientandroidlib.util.CharArrayBuffer;
+
+        specialinvoke $r6.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void <init>(int)>(128);
+
+        $z0_11 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: boolean isProxy()>();
+
+        if $z0_11 == 0 goto label41;
+
+        virtualinvoke $r6.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>("Proxy-Authorization");
+
+     label16:
+        virtualinvoke $r6.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>(": Digest ");
+
+        $r7 = new java.util.ArrayList;
+
+        specialinvoke $r7.<java.util.ArrayList: void <init>(int)>(20);
+
+        $r33 = new ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
+        specialinvoke $r33.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("username", $r18_5);
+
+        interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r33);
+
+        $r33_1 = new ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
+        specialinvoke $r33_1.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("realm", $r14);
+
+        interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r33_1);
+
+        $r33_2 = new ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
+        specialinvoke $r33_2.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("nonce", $r15);
+
+        interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r33_2);
+
+        $r33_3 = new ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
+        specialinvoke $r33_3.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("uri", $r13);
+
+        interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r33_3);
+
+        $r33_4 = new ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
+        specialinvoke $r33_4.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("response", $r21_11);
+
+        interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r33_4);
+
+(21)    if $b0_4 == 0 goto label18;
+
+        $r33_5 = new ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
+        if $b0_4 != 1 goto label42;
+
+(22)    $r13_1 = "auth-int";
+
+     label17:
+        $r13_2 = Phi($r13_1 #22, $r13_4 #46);
+
+        specialinvoke $r33_5.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("qop", $r13_2);
+
+        interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r33_5);
+
+        $r33_6 = new ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
+        specialinvoke $r33_6.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("nc", $r20_2);
+
+        interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r33_6);
+
+        $r33_7 = new ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
+        $r13_3 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String cnonce>;
+
+        specialinvoke $r33_7.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("cnonce", $r13_3);
+
+(23)    interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r33_7);
+
+     label18:
+        $r13_5 = Phi($r13 #21, $r13_3 #23);
+
+        $r33_8 = Phi($r33_4 #21, $r33_7 #23);
+
+(24)    if $r19_2 == null goto label19;
+
+        $r33_9 = new ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
+        specialinvoke $r33_9.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("algorithm", $r19_2);
+
+(25)    interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r33_9);
+
+     label19:
+        $r33_10 = Phi($r33_8 #24, $r33_9 #25);
+
+(26)    if $r16 == null goto label20;
+
+        $r33_11 = new ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
+        specialinvoke $r33_11.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("opaque", $r16);
+
+(27)    interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r33_11);
+
+     label20:
+        $r33_12 = Phi($r33_10 #26, $r33_11 #27);
+
+(28)    $i2 = 0;
+
+     label21:
+        $r19_3 = Phi($r19_2 #28, $r19_7 #33);
+
+        $r16_2 = Phi($r16 #28, $r16_6 #33);
+
+        $i2_1 = Phi($i2 #28, $i2_2 #33);
+
+        $z0_12 = Phi($z0_11 #28, $z0_20 #33);
+
+        $r33_13 = Phi($r33_12 #28, $r33_14 #33);
+
+        $i3 = interfaceinvoke $r7.<java.util.List: int size()>();
+
+        if $i2_1 >= $i3 goto label45;
+
+        $r34 = interfaceinvoke $r7.<java.util.List: java.lang.Object get(int)>($i2_1);
+
+        $r33_14 = (ch.boye.httpclientandroidlib.message.BasicNameValuePair) $r34;
+
+        if $i2_1 <= 0 goto label22;
+
+        virtualinvoke $r6.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>(", ");
+
+     label22:
+        $r16_3 = "nc";
+
+        $r19_4 = virtualinvoke $r33_14.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: java.lang.String getName()>();
+
+        $z0_13 = virtualinvoke $r16_3.<java.lang.String: boolean equals(java.lang.Object)>($r19_4);
+
+(29)    if $z0_13 != 0 goto label23;
+
+        $r16_4 = "qop";
+
+        $r19_5 = virtualinvoke $r33_14.<ch.boye.httpclientandroidlib.message.BasicNameValuePair: java.lang.String getName()>();
+
+        $z0_14 = virtualinvoke $r16_4.<java.lang.String: boolean equals(java.lang.Object)>($r19_5);
+
+(30)    if $z0_14 == 0 goto label43;
+
+     label23:
+        $r19_6 = Phi($r19_4 #29, $r19_5 #30);
+
+        $r16_5 = Phi($r16_3 #29, $r16_4 #30);
+
+        $z0_16 = Phi($z0_13 #29, $z0_14 #30);
+
+(31)    $z0_17 = 1;
+
+     label24:
+        $r19_7 = Phi($r19_6 #31, $r19_5 #47);
+
+        $r16_6 = Phi($r16_5 #31, $r16_4 #47);
+
+        $z0_18 = Phi($z0_17 #31, $z0_15 #47);
+
+        $r8 = <ch.boye.httpclientandroidlib.message.BasicHeaderValueFormatter: ch.boye.httpclientandroidlib.message.BasicHeaderValueFormatter DEFAULT>;
+
+        if $z0_18 != 0 goto label44;
+
+(32)    $z0_19 = 1;
+
+     label25:
+        $z0_20 = Phi($z0_19 #32, $z0_21 #48);
+
+        virtualinvoke $r8.<ch.boye.httpclientandroidlib.message.BasicHeaderValueFormatter: ch.boye.httpclientandroidlib.util.CharArrayBuffer formatNameValuePair(ch.boye.httpclientandroidlib.util.CharArrayBuffer,ch.boye.httpclientandroidlib.NameValuePair,boolean)>($r6, $r33_14, $z0_20);
+
+        $i2_2 = $i2_1 + 1;
+
+(33)    goto label21;
+
+     label26:
+        $r9 := @caughtexception;
+
+        $r18_6 = Phi($r18_2 #12, $r18_3 #13, $r18_4 #14);
+
+        $r23_3 = new ch.boye.httpclientandroidlib.auth.AuthenticationException;
+
+        $r24_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r24_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r24_5 = virtualinvoke $r24_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unsuppported digest algorithm: ");
+
+        $r24_6 = virtualinvoke $r24_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r18_6);
+
+        $r16_7 = virtualinvoke $r24_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r23_3.<ch.boye.httpclientandroidlib.auth.AuthenticationException: void <init>(java.lang.String)>($r16_7);
+
+        throw $r23_3;
+
+     label27:
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: long nounceCount> = 1L;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String cnonce> = null;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String lastNonce> = $r15;
+
+(34)    goto label11;
+
+     label28:
+        virtualinvoke $r24_3.<java.lang.StringBuilder: void setLength(int)>(0);
+
+        $r31_43 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r18_5);
+
+        $r31_44 = virtualinvoke $r31_43.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r31_45 = virtualinvoke $r31_44.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14);
+
+        $r31_46 = virtualinvoke $r31_45.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        virtualinvoke $r31_46.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r27);
+
+        $r27_8 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a1> = $r27_8;
+
+(35)    goto label13;
+
+     label29:
+        if $b0_3 != 1 goto label37;
+
+        $r35_1 = null;
+
+        $z0_22 = $r2 instanceof ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest;
+
+(36)    if $z0_22 == 0 goto label30;
+
+        $r36 = (ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest) $r2;
+
+(37)    $r35_2 = interfaceinvoke $r36.<ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+     label30:
+        $r35_3 = Phi($r35_1 #36, $r35_2 #37);
+
+(38)    if $r35_3 == null goto label32;
+
+        $z0_23 = interfaceinvoke $r35_3.<ch.boye.httpclientandroidlib.HttpEntity: boolean isRepeatable()>();
+
+(39)    if $z0_23 != 0 goto label32;
+
+        $z0_24 = interfaceinvoke $r3.<java.util.Set: boolean contains(java.lang.Object)>("auth");
+
+        if $z0_24 == 0 goto label31;
+
+        $b0_5 = 2;
+
+        $r31_29 = new java.lang.StringBuilder;
+
+        specialinvoke $r31_29.<java.lang.StringBuilder: void <init>()>();
+
+        $r31_30 = virtualinvoke $r31_29.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17);
+
+        $r31_31 = virtualinvoke $r31_30.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r31_32 = virtualinvoke $r31_31.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13);
+
+        $r17_9 = virtualinvoke $r31_32.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a2> = $r17_9;
+
+(40)    goto label14;
+
+     label31:
+        $r23_1 = new ch.boye.httpclientandroidlib.auth.AuthenticationException;
+
+        specialinvoke $r23_1.<ch.boye.httpclientandroidlib.auth.AuthenticationException: void <init>(java.lang.String)>("Qop auth-int cannot be used with a non-repeatable entity");
+
+        throw $r23_1;
+
+     label32:
+        $z0_25 = Phi($z0_22 #38, $z0_23 #39);
+
+        $r10 = new ch.boye.httpclientandroidlib.impl.auth.HttpEntityDigester;
+
+        specialinvoke $r10.<ch.boye.httpclientandroidlib.impl.auth.HttpEntityDigester: void <init>(java.security.MessageDigest)>($r25);
+
+        if $r35_3 == null goto label34;
+
+     label33:
+        interfaceinvoke $r35_3.<ch.boye.httpclientandroidlib.HttpEntity: void writeTo(java.io.OutputStream)>($r10);
+
+     label34:
+        virtualinvoke $r10.<ch.boye.httpclientandroidlib.impl.auth.HttpEntityDigester: void close()>();
+
+     label35:
+        $r31_33 = new java.lang.StringBuilder;
+
+        specialinvoke $r31_33.<java.lang.StringBuilder: void <init>()>();
+
+        $r31_34 = virtualinvoke $r31_33.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17);
+
+        $r31_35 = virtualinvoke $r31_34.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r31_36 = virtualinvoke $r31_35.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13);
+
+        $r31_37 = virtualinvoke $r31_36.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r32_10 = virtualinvoke $r10.<ch.boye.httpclientandroidlib.impl.auth.HttpEntityDigester: byte[] getDigest()>();
+
+        $r17_10 = staticinvoke <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String encode(byte[])>($r32_10);
+
+        $r31_38 = virtualinvoke $r31_37.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17_10);
+
+        $r17_11 = virtualinvoke $r31_38.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a2> = $r17_11;
+
+(41)    goto label14;
+
+     label36:
+        $r11 := @caughtexception;
+
+        $r23_2 = new ch.boye.httpclientandroidlib.auth.AuthenticationException;
+
+        specialinvoke $r23_2.<ch.boye.httpclientandroidlib.auth.AuthenticationException: void <init>(java.lang.String,java.lang.Throwable)>("I/O error reading entity content", $r11);
+
+        throw $r23_2;
+
+     label37:
+        $r31_39 = new java.lang.StringBuilder;
+
+        specialinvoke $r31_39.<java.lang.StringBuilder: void <init>()>();
+
+        $r31_40 = virtualinvoke $r31_39.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17);
+
+        $r31_41 = virtualinvoke $r31_40.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r31_42 = virtualinvoke $r31_41.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13);
+
+        $r17_12 = virtualinvoke $r31_42.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a2> = $r17_12;
+
+(42)    goto label14;
+
+     label38:
+        virtualinvoke $r24_3.<java.lang.StringBuilder: void setLength(int)>(0);
+
+        $r31_19 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r27_7);
+
+        $r31_20 = virtualinvoke $r31_19.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r31_21 = virtualinvoke $r31_20.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r15);
+
+        $r31_22 = virtualinvoke $r31_21.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r31_23 = virtualinvoke $r31_22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r20_2);
+
+        $r31_24 = virtualinvoke $r31_23.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        $r17_5 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String cnonce>;
+
+        $r31_25 = virtualinvoke $r31_24.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17_5);
+
+        $r31_26 = virtualinvoke $r31_25.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        if $b0_4 != 1 goto label40;
+
+(43)    $r17_6 = "auth-int";
+
+     label39:
+        $r17_7 = Phi($r17_6 #43, $r17_8 #45);
+
+        $r31_27 = virtualinvoke $r31_26.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17_7);
+
+        $r31_28 = virtualinvoke $r31_27.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(58);
+
+        virtualinvoke $r31_28.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r21_8);
+
+        $r21_12 = virtualinvoke $r24_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(44)    goto label15;
+
+     label40:
+        $r17_8 = "auth";
+
+(45)    goto label39;
+
+     label41:
+        virtualinvoke $r6.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>("Authorization");
+
+        goto label16;
+
+     label42:
+        $r13_4 = "auth";
+
+(46)    goto label17;
+
+     label43:
+        $z0_15 = 0;
+
+(47)    goto label24;
+
+     label44:
+        $z0_21 = 0;
+
+(48)    goto label25;
+
+     label45:
+        $r12 = new ch.boye.httpclientandroidlib.message.BufferedHeader;
+
+        specialinvoke $r12.<ch.boye.httpclientandroidlib.message.BufferedHeader: void <init>(ch.boye.httpclientandroidlib.util.CharArrayBuffer)>($r6);
+
+        return $r12;
+
+        catch ch.boye.httpclientandroidlib.impl.auth.UnsupportedDigestAlgorithmException from label09 to label10 with label26;
+        catch java.io.IOException from label33 to label35 with label36;
+    }
+
+    private static java.security.MessageDigest createMessageDigest(java.lang.String) throws ch.boye.httpclientandroidlib.impl.auth.UnsupportedDigestAlgorithmException
+    {
+        java.lang.Exception $r0;
+        ch.boye.httpclientandroidlib.impl.auth.UnsupportedDigestAlgorithmException $r1;
+        java.lang.String $r2, $r2_1;
+        java.security.MessageDigest $r3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2;
+
+        $r2 := @parameter0: java.lang.String;
+
+     label1:
+        $r3 = staticinvoke <java.security.MessageDigest: java.security.MessageDigest getInstance(java.lang.String)>($r2);
+
+     label2:
+        return $r3;
+
+     label3:
+        $r0 := @caughtexception;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.auth.UnsupportedDigestAlgorithmException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unsupported algorithm in HTTP Digest authentication: ");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2_1 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.auth.UnsupportedDigestAlgorithmException: void <init>(java.lang.String)>($r2_1);
+
+        throw $r1;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    static java.lang.String encode(byte[])
+    {
+        byte[] $r0;
+        int $i0, $i3, $i5, $i3_1, $i3_2, $i5_1, $i5_2, $i5_3, $i3_3;
+        char[] $r1, $r3, $r3_1, $r3_2;
+        byte $b1, $b4, $b1_1, $b1_2, $b1_3;
+        short $s2, $s2_1, $s2_2;
+        java.lang.String $r2;
+        char $c6, $c6_1, $c6_2;
+
+        $r0 := @parameter0: byte[];
+
+        $i0 = lengthof $r0;
+
+        $i3 = $i0 * 2;
+
+        $r1 = newarray (char)[$i3];
+
+(0)     $i3_1 = 0;
+
+     label1:
+        $s2 = Phi($s2 #0, $s2_2 #1);
+
+        $c6 = Phi($c6 #0, $c6_2 #1);
+
+        $i5 = Phi($i5 #0, $i5_3 #1);
+
+        $b1 = Phi($b1 #0, $b1_3 #1);
+
+        $i3_2 = Phi($i3_1 #0, $i3_3 #1);
+
+        $r3 = Phi($r3 #0, $r3_2 #1);
+
+        if $i3_2 >= $i0 goto label2;
+
+        $b1_1 = $r0[$i3_2];
+
+        $b1_2 = $b1_1 & 15;
+
+        $b4 = $b1_2;
+
+        $b1_3 = $r0[$i3_2];
+
+        $s2_1 = $b1_3 & 240;
+
+        $s2_2 = $s2_1 >> 4;
+
+        $i5_1 = $i3_2 * 2;
+
+        $r3_1 = <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: char[] HEXADECIMAL>;
+
+        $c6_1 = $r3_1[$s2_2];
+
+        $r1[$i5_1] = $c6_1;
+
+        $i5_2 = $i3_2 * 2;
+
+        $i5_3 = $i5_2 + 1;
+
+        $r3_2 = <ch.boye.httpclientandroidlib.impl.auth.DigestScheme: char[] HEXADECIMAL>;
+
+        $c6_2 = $r3_2[$b4];
+
+        $r1[$i5_3] = $c6_2;
+
+        $i3_3 = $i3_2 + 1;
+
+(1)     goto label1;
+
+     label2:
+        $r2 = new java.lang.String;
+
+        specialinvoke $r2.<java.lang.String: void <init>(char[])>($r1);
+
+        return $r2;
+    }
+
+    public ch.boye.httpclientandroidlib.Header authenticate(ch.boye.httpclientandroidlib.auth.Credentials, ch.boye.httpclientandroidlib.HttpRequest) throws ch.boye.httpclientandroidlib.auth.AuthenticationException
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+        ch.boye.httpclientandroidlib.auth.Credentials $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpContext $r3;
+        ch.boye.httpclientandroidlib.Header $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.auth.Credentials;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 = new ch.boye.httpclientandroidlib.protocol.BasicHttpContext;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.protocol.BasicHttpContext: void <init>()>();
+
+        $r4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: ch.boye.httpclientandroidlib.Header authenticate(ch.boye.httpclientandroidlib.auth.Credentials,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2, $r3);
+
+        return $r4;
+    }
+
+    public ch.boye.httpclientandroidlib.Header authenticate(ch.boye.httpclientandroidlib.auth.Credentials, ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.auth.AuthenticationException
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+        ch.boye.httpclientandroidlib.auth.Credentials $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        java.lang.IllegalArgumentException $r4, $r4_1;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6;
+        ch.boye.httpclientandroidlib.auth.AuthenticationException $r6, $r6_1;
+        java.util.Map $r7, $r7_1, $r7_2, $r7_3;
+        ch.boye.httpclientandroidlib.RequestLine $r8, $r8_1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r9;
+        ch.boye.httpclientandroidlib.Header $r10;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.auth.Credentials;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Credentials may not be null");
+
+        throw $r4;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r4_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request may not be null");
+
+        throw $r4_1;
+
+     label2:
+        $r5 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("realm");
+
+        if $r5 != null goto label3;
+
+        $r6 = new ch.boye.httpclientandroidlib.auth.AuthenticationException;
+
+        specialinvoke $r6.<ch.boye.httpclientandroidlib.auth.AuthenticationException: void <init>(java.lang.String)>("missing realm in challenge");
+
+        throw $r6;
+
+     label3:
+        $r5_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("nonce");
+
+        if $r5_1 != null goto label4;
+
+        $r6_1 = new ch.boye.httpclientandroidlib.auth.AuthenticationException;
+
+        specialinvoke $r6_1.<ch.boye.httpclientandroidlib.auth.AuthenticationException: void <init>(java.lang.String)>("missing nonce in challenge");
+
+        throw $r6_1;
+
+     label4:
+        $r7 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.util.Map getParameters()>();
+
+        $r8 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r5_2 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getMethod()>();
+
+        interfaceinvoke $r7.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("methodname", $r5_2);
+
+        $r7_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.util.Map getParameters()>();
+
+        $r8_1 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r5_3 = interfaceinvoke $r8_1.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getUri()>();
+
+        interfaceinvoke $r7_1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("uri", $r5_3);
+
+        $r5_4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("charset");
+
+(0)     if $r5_4 != null goto label5;
+
+        $r9 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        $r5_5 = staticinvoke <ch.boye.httpclientandroidlib.auth.params.AuthParams: java.lang.String getCredentialCharset(ch.boye.httpclientandroidlib.params.HttpParams)>($r9);
+
+        $r7_2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.util.Map getParameters()>();
+
+(1)     interfaceinvoke $r7_2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("charset", $r5_5);
+
+     label5:
+        $r5_6 = Phi($r5_4 #0, $r5_5 #1);
+
+        $r7_3 = Phi($r7_1 #0, $r7_2 #1);
+
+        $r10 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: ch.boye.httpclientandroidlib.Header createDigestHeader(ch.boye.httpclientandroidlib.auth.Credentials,ch.boye.httpclientandroidlib.HttpRequest)>($r1, $r2);
+
+        return $r10;
+    }
+
+    java.lang.String getA1()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+        java.lang.String r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a1>;
+
+        return r1;
+    }
+
+    java.lang.String getA2()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+        java.lang.String r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String a2>;
+
+        return r1;
+    }
+
+    java.lang.String getCnonce()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+        java.lang.String r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String cnonce>;
+
+        return r1;
+    }
+
+    public java.lang.String getSchemeName()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        return "digest";
+    }
+
+    public boolean isComplete()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+        java.lang.String $r1, $r2;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.lang.String getParameter(java.lang.String)>("stale");
+
+        $r1 = "true";
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r2);
+
+        if $z0 == 0 goto label1;
+
+        return 0;
+
+     label1:
+        $z0_1 = $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: boolean complete>;
+
+        return $z0_1;
+    }
+
+    public boolean isConnectionBased()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        return 0;
+    }
+
+    public void overrideParamter(java.lang.String, java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+        java.lang.String $r1, $r2;
+        java.util.Map $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: java.util.Map getParameters()>();
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+        return;
+    }
+
+    public void processChallenge(ch.boye.httpclientandroidlib.Header) throws ch.boye.httpclientandroidlib.auth.MalformedChallengeException
+    {
+        ch.boye.httpclientandroidlib.impl.auth.DigestScheme $r0;
+        ch.boye.httpclientandroidlib.Header $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.DigestScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.Header;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.RFC2617Scheme: void processChallenge(ch.boye.httpclientandroidlib.Header)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.DigestScheme: boolean complete> = 1;
+
+        return;
+    }
+}

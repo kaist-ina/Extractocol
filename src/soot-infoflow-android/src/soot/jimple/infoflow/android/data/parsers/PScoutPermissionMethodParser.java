@@ -15,7 +15,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,8 +23,8 @@ import java.util.regex.Pattern;
 
 import soot.jimple.infoflow.android.data.AndroidMethod;
 import soot.jimple.infoflow.android.data.AndroidMethod.CATEGORY;
-import soot.jimple.infoflow.android.source.data.ISourceSinkDefinitionProvider;
-import soot.jimple.infoflow.android.source.data.SourceSinkDefinition;
+import soot.jimple.infoflow.source.data.ISourceSinkDefinitionProvider;
+import soot.jimple.infoflow.source.data.SourceSinkDefinition;
 
 /**
  * Parser of the permissions to method map from the University of Toronto (PScout)
@@ -149,8 +148,13 @@ public class PScoutPermissionMethodParser implements ISourceSinkDefinitionProvid
 				methodParameters.add(parameter.trim());
 		
 		//create method signature
+		Set<String> permissions = null;
+		if (currentPermission != null) {
+			permissions = new HashSet<>();
+			permissions.add(currentPermission);
+		}
 		singleMethod = new AndroidMethod(methodName, methodParameters, returnType, className,
-				currentPermission != null ? Collections.singleton(currentPermission) : Collections.<String>emptySet());
+				permissions);
 		
 		if(m.group(5) != null){
 			String targets = m.group(5).substring(3);

@@ -1,0 +1,450 @@
+public class com.android.volley.toolbox.ImageRequest extends com.android.volley.Request
+{
+    private static final float IMAGE_BACKOFF_MULT;
+    private static final int IMAGE_MAX_RETRIES;
+    private static final int IMAGE_TIMEOUT_MS;
+    private static final java.lang.Object sDecodeLock;
+    private final android.graphics.Bitmap$Config mDecodeConfig;
+    private final com.android.volley.Response$Listener mListener;
+    private final int mMaxHeight;
+    private final int mMaxWidth;
+
+    static void <clinit>()
+    {
+        java.lang.Object $r0;
+
+        $r0 = new java.lang.Object;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        <com.android.volley.toolbox.ImageRequest: java.lang.Object sDecodeLock> = $r0;
+
+        return;
+    }
+
+    public void <init>(java.lang.String, com.android.volley.Response$Listener, int, int, android.graphics.Bitmap$Config, com.android.volley.Response$ErrorListener)
+    {
+        com.android.volley.toolbox.ImageRequest $r0;
+        java.lang.String $r1;
+        com.android.volley.Response$Listener $r2;
+        int $i0, $i1;
+        android.graphics.Bitmap$Config $r3;
+        com.android.volley.Response$ErrorListener $r4;
+        com.android.volley.DefaultRetryPolicy $r5;
+
+        $r0 := @this: com.android.volley.toolbox.ImageRequest;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.android.volley.Response$Listener;
+
+        $i0 := @parameter2: int;
+
+        $i1 := @parameter3: int;
+
+        $r3 := @parameter4: android.graphics.Bitmap$Config;
+
+        $r4 := @parameter5: com.android.volley.Response$ErrorListener;
+
+        specialinvoke $r0.<com.android.volley.Request: void <init>(int,java.lang.String,com.android.volley.Response$ErrorListener)>(0, $r1, $r4);
+
+        $r5 = new com.android.volley.DefaultRetryPolicy;
+
+        specialinvoke $r5.<com.android.volley.DefaultRetryPolicy: void <init>(int,int,float)>(1000, 2, 2.0F);
+
+        virtualinvoke $r0.<com.android.volley.toolbox.ImageRequest: com.android.volley.Request setRetryPolicy(com.android.volley.RetryPolicy)>($r5);
+
+        $r0.<com.android.volley.toolbox.ImageRequest: com.android.volley.Response$Listener mListener> = $r2;
+
+        $r0.<com.android.volley.toolbox.ImageRequest: android.graphics.Bitmap$Config mDecodeConfig> = $r3;
+
+        $r0.<com.android.volley.toolbox.ImageRequest: int mMaxWidth> = $i0;
+
+        $r0.<com.android.volley.toolbox.ImageRequest: int mMaxHeight> = $i1;
+
+        return;
+    }
+
+    private com.android.volley.Response doParse(com.android.volley.NetworkResponse)
+    {
+        com.android.volley.toolbox.ImageRequest $r0;
+        com.android.volley.NetworkResponse $r1;
+        byte[] $r2;
+        android.graphics.BitmapFactory$Options $r3;
+        android.graphics.Bitmap$Config $r4;
+        com.android.volley.ParseError $r5;
+        int $i0, $i1, $i2, $i3, $i4, $i2_1, $i2_2, $i2_3, $i2_4, $i2_5, $i0_1, $i2_6, $i1_1, $i2_7, $i1_2, $i1_3, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7;
+        android.graphics.Bitmap $r6, $r7, $r7_1, $r7_2, $r7_3;
+        com.android.volley.Response $r8, $r8_1;
+        com.android.volley.Cache$Entry $r9;
+
+        $r0 := @this: com.android.volley.toolbox.ImageRequest;
+
+        $r1 := @parameter0: com.android.volley.NetworkResponse;
+
+        $r2 = $r1.<com.android.volley.NetworkResponse: byte[] data>;
+
+        $r3 = new android.graphics.BitmapFactory$Options;
+
+        specialinvoke $r3.<android.graphics.BitmapFactory$Options: void <init>()>();
+
+        $i2 = $r0.<com.android.volley.toolbox.ImageRequest: int mMaxWidth>;
+
+(0)     if $i2 != 0 goto label2;
+
+        $i2_1 = $r0.<com.android.volley.toolbox.ImageRequest: int mMaxHeight>;
+
+(1)     if $i2_1 != 0 goto label2;
+
+        $r4 = $r0.<com.android.volley.toolbox.ImageRequest: android.graphics.Bitmap$Config mDecodeConfig>;
+
+        $r3.<android.graphics.BitmapFactory$Options: android.graphics.Bitmap$Config inPreferredConfig> = $r4;
+
+        $i2_2 = lengthof $r2;
+
+(2)     $r7 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeByteArray(byte[],int,int,android.graphics.BitmapFactory$Options)>($r2, 0, $i2_2, $r3);
+
+     label1:
+        $r7_1 = Phi($r7 #2, $r7_2 #6, $r7_3 #7);
+
+        $i1 = Phi($i1 #2, $i1_3 #6, $i1_3 #7);
+
+        $i0 = Phi($i0 #2, $i0_6 #6, $i0_7 #7);
+
+        $i2_3 = Phi($i2_2 #2, $i2_7 #6, $i2_7 #7);
+
+        if $r7_1 != null goto label5;
+
+        $r5 = new com.android.volley.ParseError;
+
+        specialinvoke $r5.<com.android.volley.ParseError: void <init>(com.android.volley.NetworkResponse)>($r1);
+
+        $r8 = staticinvoke <com.android.volley.Response: com.android.volley.Response error(com.android.volley.VolleyError)>($r5);
+
+        return $r8;
+
+     label2:
+        $i2_4 = Phi($i2 #0, $i2_1 #1);
+
+        $r3.<android.graphics.BitmapFactory$Options: boolean inJustDecodeBounds> = 1;
+
+        $i2_5 = lengthof $r2;
+
+        staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeByteArray(byte[],int,int,android.graphics.BitmapFactory$Options)>($r2, 0, $i2_5, $r3);
+
+        $i0_1 = $r3.<android.graphics.BitmapFactory$Options: int outWidth>;
+
+        $i3 = $r3.<android.graphics.BitmapFactory$Options: int outHeight>;
+
+        $i2_6 = $r0.<com.android.volley.toolbox.ImageRequest: int mMaxWidth>;
+
+        $i1_1 = $r0.<com.android.volley.toolbox.ImageRequest: int mMaxHeight>;
+
+        $i2_7 = staticinvoke <com.android.volley.toolbox.ImageRequest: int getResizedDimension(int,int,int,int)>($i2_6, $i1_1, $i0_1, $i3);
+
+        $i4 = $r0.<com.android.volley.toolbox.ImageRequest: int mMaxHeight>;
+
+        $i1_2 = $r0.<com.android.volley.toolbox.ImageRequest: int mMaxWidth>;
+
+        $i1_3 = staticinvoke <com.android.volley.toolbox.ImageRequest: int getResizedDimension(int,int,int,int)>($i4, $i1_2, $i3, $i0_1);
+
+        $r3.<android.graphics.BitmapFactory$Options: boolean inJustDecodeBounds> = 0;
+
+        $i0_2 = staticinvoke <com.android.volley.toolbox.ImageRequest: int findBestSampleSize(int,int,int,int)>($i0_1, $i3, $i2_7, $i1_3);
+
+        $r3.<android.graphics.BitmapFactory$Options: int inSampleSize> = $i0_2;
+
+        $i0_3 = lengthof $r2;
+
+        $r6 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeByteArray(byte[],int,int,android.graphics.BitmapFactory$Options)>($r2, 0, $i0_3, $r3);
+
+(3)     if $r6 == null goto label4;
+
+        $i0_4 = virtualinvoke $r6.<android.graphics.Bitmap: int getWidth()>();
+
+(4)     if $i0_4 > $i2_7 goto label3;
+
+        $i0_5 = virtualinvoke $r6.<android.graphics.Bitmap: int getHeight()>();
+
+(5)     if $i0_5 <= $i1_3 goto label4;
+
+     label3:
+        $i0_6 = Phi($i0_4 #4, $i0_5 #5);
+
+        $r7_2 = staticinvoke <android.graphics.Bitmap: android.graphics.Bitmap createScaledBitmap(android.graphics.Bitmap,int,int,boolean)>($r6, $i2_7, $i1_3, 1);
+
+        virtualinvoke $r6.<android.graphics.Bitmap: void recycle()>();
+
+(6)     goto label1;
+
+     label4:
+        $i0_7 = Phi($i0_3 #3, $i0_5 #5);
+
+        $r7_3 = $r6;
+
+(7)     goto label1;
+
+     label5:
+        $r9 = staticinvoke <com.android.volley.toolbox.HttpHeaderParser: com.android.volley.Cache$Entry parseCacheHeaders(com.android.volley.NetworkResponse)>($r1);
+
+        $r8_1 = staticinvoke <com.android.volley.Response: com.android.volley.Response success(java.lang.Object,com.android.volley.Cache$Entry)>($r7_1, $r9);
+
+        return $r8_1;
+    }
+
+    static int findBestSampleSize(int, int, int, int)
+    {
+        int $i0, $i1, $i2, $i4, $i4_1;
+        double $d0, $d1, $d2, $d1_1, $d0_1, $d0_2, $d1_2, $d0_3, $d0_4;
+        float $f0, $f1, $f1_1, $f1_2;
+        byte $b3;
+
+        $i4 := @parameter0: int;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 := @parameter3: int;
+
+        $d1 = (double) $i4;
+
+        $d0 = (double) $i1;
+
+        $d1_1 = $d1 / $d0;
+
+        $d2 = (double) $i0;
+
+        $d0_1 = (double) $i2;
+
+        $d0_2 = $d2 / $d0_1;
+
+        $d1_2 = staticinvoke <java.lang.Math: double min(double,double)>($d1_1, $d0_2);
+
+(0)     $f1 = 1.0F;
+
+     label1:
+        $f1_1 = Phi($f1 #0, $f1_2 #1);
+
+        $d0_3 = Phi($d0_2 #0, $d0_4 #1);
+
+        $f0 = 2.0F * $f1_1;
+
+        $d0_4 = (double) $f0;
+
+        $b3 = $d0_4 cmpg $d1_2;
+
+        if $b3 > 0 goto label2;
+
+        $f1_2 = $f1_1 * 2.0F;
+
+(1)     goto label1;
+
+     label2:
+        $i4_1 = (int) $f1_1;
+
+        return $i4_1;
+    }
+
+    private static int getResizedDimension(int, int, int, int)
+    {
+        int $i0, $i1, $i3, $i4, $i3_1, $i3_2, $i3_3;
+        double $d0, $d1, $d2, $d1_1, $d0_1, $d1_2, $d1_3, $d0_2, $d1_4, $d0_3, $d0_4, $d0_5, $d1_5, $d1_6, $d0_6;
+        byte $b2;
+
+        $i3 := @parameter0: int;
+
+        $i0 := @parameter1: int;
+
+        $i4 := @parameter2: int;
+
+        $i1 := @parameter3: int;
+
+        if $i3 != 0 goto label1;
+
+        if $i0 != 0 goto label1;
+
+        return $i4;
+
+     label1:
+        if $i3 != 0 goto label2;
+
+        $d1 = (double) $i0;
+
+        $d0 = (double) $i1;
+
+        $d1_1 = $d1 / $d0;
+
+        $d0_1 = (double) $i4;
+
+        $d1_2 = $d0_1 * $d1_1;
+
+        $i3_1 = (int) $d1_2;
+
+        return $i3_1;
+
+     label2:
+        if $i0 != 0 goto label3;
+
+        return $i3;
+
+     label3:
+        $d1_3 = (double) $i1;
+
+        $d0_2 = (double) $i4;
+
+        $d1_4 = $d1_3 / $d0_2;
+
+        $d0_3 = (double) $i3;
+
+        $d2 = $d0_3 * $d1_4;
+
+        $d0_4 = (double) $i0;
+
+        $b2 = $d2 cmpl $d0_4;
+
+(0)     if $b2 <= 0 goto label4;
+
+        $d0_5 = (double) $i0;
+
+        $d1_5 = $d0_5 / $d1_4;
+
+(1)     $i3_2 = (int) $d1_5;
+
+     label4:
+        $d1_6 = Phi($d1_4 #0, $d1_5 #1);
+
+        $i3_3 = Phi($i3 #0, $i3_2 #1);
+
+        $d0_6 = Phi($d0_4 #0, $d0_5 #1);
+
+        return $i3_3;
+    }
+
+    protected void deliverResponse(android.graphics.Bitmap)
+    {
+        com.android.volley.toolbox.ImageRequest $r0;
+        android.graphics.Bitmap $r1;
+        com.android.volley.Response$Listener $r2;
+
+        $r0 := @this: com.android.volley.toolbox.ImageRequest;
+
+        $r1 := @parameter0: android.graphics.Bitmap;
+
+        $r2 = $r0.<com.android.volley.toolbox.ImageRequest: com.android.volley.Response$Listener mListener>;
+
+        interfaceinvoke $r2.<com.android.volley.Response$Listener: void onResponse(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    protected volatile void deliverResponse(java.lang.Object)
+    {
+        com.android.volley.toolbox.ImageRequest $r0;
+        java.lang.Object $r1;
+        android.graphics.Bitmap $r2;
+
+        $r0 := @this: com.android.volley.toolbox.ImageRequest;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = (android.graphics.Bitmap) $r1;
+
+        virtualinvoke $r0.<com.android.volley.toolbox.ImageRequest: void deliverResponse(android.graphics.Bitmap)>($r2);
+
+        return;
+    }
+
+    public com.android.volley.Request$Priority getPriority()
+    {
+        com.android.volley.toolbox.ImageRequest $r0;
+        com.android.volley.Request$Priority r1;
+
+        $r0 := @this: com.android.volley.toolbox.ImageRequest;
+
+        r1 = <com.android.volley.Request$Priority: com.android.volley.Request$Priority LOW>;
+
+        return r1;
+    }
+
+    protected com.android.volley.Response parseNetworkResponse(com.android.volley.NetworkResponse)
+    {
+        com.android.volley.toolbox.ImageRequest $r0;
+        com.android.volley.NetworkResponse $r1;
+        java.lang.Object $r2;
+        java.lang.OutOfMemoryError $r3;
+        java.lang.Object[] $r4;
+        byte[] $r5;
+        int $i0;
+        com.android.volley.ParseError $r6;
+        java.lang.Throwable $r7;
+        com.android.volley.Response $r8, $r8_1, $r8_2, $r8_3;
+        java.lang.Integer $r9;
+        java.lang.String $r10;
+
+        $r0 := @this: com.android.volley.toolbox.ImageRequest;
+
+        $r1 := @parameter0: com.android.volley.NetworkResponse;
+
+        $r2 = <com.android.volley.toolbox.ImageRequest: java.lang.Object sDecodeLock>;
+
+(0)     entermonitor $r2;
+
+     label1:
+        $r8 = specialinvoke $r0.<com.android.volley.toolbox.ImageRequest: com.android.volley.Response doParse(com.android.volley.NetworkResponse)>($r1);
+
+     label2:
+        exitmonitor $r2;
+
+     label3:
+        return $r8;
+
+     label4:
+(1)     $r3 := @caughtexception;
+
+        $r8_1 = Phi($r8 #0);
+
+        $r4 = newarray (java.lang.Object)[2];
+
+        $r5 = $r1.<com.android.volley.NetworkResponse: byte[] data>;
+
+        $i0 = lengthof $r5;
+
+        $r9 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r4[0] = $r9;
+
+        $r10 = virtualinvoke $r0.<com.android.volley.toolbox.ImageRequest: java.lang.String getUrl()>();
+
+        $r4[1] = $r10;
+
+        staticinvoke <com.android.volley.VolleyLog: void e(java.lang.String,java.lang.Object[])>("Caught OOM for %d byte image, url=%s", $r4);
+
+        $r6 = new com.android.volley.ParseError;
+
+        specialinvoke $r6.<com.android.volley.ParseError: void <init>(java.lang.Throwable)>($r3);
+
+(2)     $r8_2 = staticinvoke <com.android.volley.Response: com.android.volley.Response error(com.android.volley.VolleyError)>($r6);
+
+        exitmonitor $r2;
+
+     label5:
+        return $r8_2;
+
+     label6:
+        $r7 := @caughtexception;
+
+(3)     $r8_3 = Phi($r8 #0, $r8_1 #1, $r8_2 #2, $r8_3 #3);
+
+        exitmonitor $r2;
+
+     label7:
+        throw $r7;
+
+        catch java.lang.OutOfMemoryError from label1 to label2 with label4;
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label2 to label3 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+        catch java.lang.Throwable from label6 to label7 with label6;
+    }
+}

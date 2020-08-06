@@ -1,0 +1,602 @@
+abstract class ch.boye.httpclientandroidlib.pool.RouteSpecificPool extends java.lang.Object
+{
+    private final java.util.LinkedList available;
+    private final java.util.Set leased;
+    private final java.util.LinkedList pending;
+    private final java.lang.Object route;
+
+    void <init>(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.lang.Object $r1;
+        java.util.HashSet $r2;
+        java.util.LinkedList $r3, $r3_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.lang.Object route> = $r1;
+
+        $r2 = new java.util.HashSet;
+
+        specialinvoke $r2.<java.util.HashSet: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased> = $r2;
+
+        $r3 = new java.util.LinkedList;
+
+        specialinvoke $r3.<java.util.LinkedList: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available> = $r3;
+
+        $r3_1 = new java.util.LinkedList;
+
+        specialinvoke $r3_1.<java.util.LinkedList: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList pending> = $r3_1;
+
+        return;
+    }
+
+    public ch.boye.httpclientandroidlib.pool.PoolEntry add(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.lang.Object $r1;
+        java.util.Set $r2;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: ch.boye.httpclientandroidlib.pool.PoolEntry createEntry(java.lang.Object)>($r1);
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased>;
+
+        interfaceinvoke $r2.<java.util.Set: boolean add(java.lang.Object)>($r3);
+
+        return $r3;
+    }
+
+    protected abstract ch.boye.httpclientandroidlib.pool.PoolEntry createEntry(java.lang.Object);
+
+    public void free(ch.boye.httpclientandroidlib.pool.PoolEntry, boolean)
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r1;
+        boolean $z0, $z1;
+        java.lang.IllegalArgumentException $r2;
+        java.util.Set $r3;
+        java.lang.IllegalStateException $r4;
+        java.util.LinkedList $r5;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3;
+        java.lang.String $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.pool.PoolEntry;
+
+        $z0 := @parameter1: boolean;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Pool entry may not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased>;
+
+        $z1 = interfaceinvoke $r3.<java.util.Set: boolean remove(java.lang.Object)>($r1);
+
+        if $z1 != 0 goto label2;
+
+        $r4 = new java.lang.IllegalStateException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Entry ");
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r6_3 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" has not been leased from this pool");
+
+        $r7 = virtualinvoke $r6_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r7);
+
+        throw $r4;
+
+     label2:
+        if $z0 == 0 goto label3;
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+        virtualinvoke $r5.<java.util.LinkedList: void addFirst(java.lang.Object)>($r1);
+
+     label3:
+        return;
+    }
+
+    public int getAllocatedCount()
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.util.LinkedList $r1;
+        java.util.Set $r2;
+        int $i0, $i1, $i0_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+        $i0 = virtualinvoke $r1.<java.util.LinkedList: int size()>();
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased>;
+
+        $i1 = interfaceinvoke $r2.<java.util.Set: int size()>();
+
+        $i0_1 = $i0 + $i1;
+
+        return $i0_1;
+    }
+
+    public int getAvailableCount()
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.util.LinkedList $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+        $i0 = virtualinvoke $r1.<java.util.LinkedList: int size()>();
+
+        return $i0;
+    }
+
+    public ch.boye.httpclientandroidlib.pool.PoolEntry getFree(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.lang.Object $r1, $r4, $r4_1, $r4_2, $r4_3, $r1_1, $r1_2, $r1_3, $r4_4, $r1_4;
+        java.util.LinkedList $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+        java.util.Iterator $r3, $r3_1, $r3_2, $r3_3;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        java.util.Set $r6, $r6_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+        $z0 = virtualinvoke $r2.<java.util.LinkedList: boolean isEmpty()>();
+
+(0)     if $z0 != 0 goto label4;
+
+(1)     if $r1 == null goto label2;
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+(2)     $r3 = virtualinvoke $r2_1.<java.util.LinkedList: java.util.Iterator iterator()>();
+
+     label1:
+        $r5 = Phi($r5 #2, $r5_1 #4);
+
+        $r4 = Phi($r4 #2, $r4_2 #4);
+
+        $z0_1 = Phi($z0 #2, $z0_3 #4);
+
+        $z0_2 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+(3)     if $z0_2 == 0 goto label2;
+
+        $r4_1 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5_1 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r4_1;
+
+        $r4_2 = virtualinvoke $r5_1.<ch.boye.httpclientandroidlib.pool.PoolEntry: java.lang.Object getState()>();
+
+        $z0_3 = virtualinvoke $r1.<java.lang.Object: boolean equals(java.lang.Object)>($r4_2);
+
+(4)     if $z0_3 == 0 goto label1;
+
+        interfaceinvoke $r3.<java.util.Iterator: void remove()>();
+
+        $r6 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased>;
+
+        interfaceinvoke $r6.<java.util.Set: boolean add(java.lang.Object)>($r5_1);
+
+        return $r5_1;
+
+     label2:
+        $r5_2 = Phi($r5 #1, $r5 #3);
+
+        $r4_3 = Phi($r4 #1, $r4 #3);
+
+        $r2_2 = Phi($r2 #1, $r2_1 #3);
+
+        $r3_1 = Phi($r3 #1, $r3 #3);
+
+        $z0_4 = Phi($z0 #1, $z0_2 #3);
+
+        $r2_3 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+(5)     $r3_2 = virtualinvoke $r2_3.<java.util.LinkedList: java.util.Iterator iterator()>();
+
+     label3:
+        $r5_3 = Phi($r5_2 #5, $r5_4 #7);
+
+        $r1_1 = Phi($r1 #5, $r1_3 #7);
+
+        $z0_5 = Phi($z0_4 #5, $z0_6 #7);
+
+        $z0_6 = interfaceinvoke $r3_2.<java.util.Iterator: boolean hasNext()>();
+
+(6)     if $z0_6 == 0 goto label4;
+
+        $r1_2 = interfaceinvoke $r3_2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5_4 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r1_2;
+
+        $r1_3 = virtualinvoke $r5_4.<ch.boye.httpclientandroidlib.pool.PoolEntry: java.lang.Object getState()>();
+
+(7)     if $r1_3 != null goto label3;
+
+        interfaceinvoke $r3_2.<java.util.Iterator: void remove()>();
+
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased>;
+
+        interfaceinvoke $r6_1.<java.util.Set: boolean add(java.lang.Object)>($r5_4);
+
+        return $r5_4;
+
+     label4:
+        $r5_5 = Phi($r5 #0, $r5_3 #6);
+
+        $r4_4 = Phi($r4 #0, $r4_3 #6);
+
+        $r1_4 = Phi($r1 #0, $r1_1 #6);
+
+        $r2_4 = Phi($r2 #0, $r2_3 #6);
+
+        $r3_3 = Phi($r3 #0, $r3_2 #6);
+
+        $z0_7 = Phi($z0 #0, $z0_6 #6);
+
+        return null;
+    }
+
+    public ch.boye.httpclientandroidlib.pool.PoolEntry getLastUsed()
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.util.LinkedList $r1, $r1_1;
+        boolean $z0;
+        java.lang.Object $r2;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+        $z0 = virtualinvoke $r1.<java.util.LinkedList: boolean isEmpty()>();
+
+        if $z0 != 0 goto label1;
+
+        $r1_1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+        $r2 = virtualinvoke $r1_1.<java.util.LinkedList: java.lang.Object getLast()>();
+
+        $r3 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r2;
+
+        return $r3;
+
+     label1:
+        return null;
+    }
+
+    public int getLeasedCount()
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.util.Set $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased>;
+
+        $i0 = interfaceinvoke $r1.<java.util.Set: int size()>();
+
+        return $i0;
+    }
+
+    public int getPendingCount()
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.util.LinkedList $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList pending>;
+
+        $i0 = virtualinvoke $r1.<java.util.LinkedList: int size()>();
+
+        return $i0;
+    }
+
+    public final java.lang.Object getRoute()
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.lang.Object r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.lang.Object route>;
+
+        return r1;
+    }
+
+    public ch.boye.httpclientandroidlib.pool.PoolEntryFuture nextPending()
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.util.LinkedList $r1;
+        java.lang.Object $r2;
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList pending>;
+
+        $r2 = virtualinvoke $r1.<java.util.LinkedList: java.lang.Object poll()>();
+
+        $r3 = (ch.boye.httpclientandroidlib.pool.PoolEntryFuture) $r2;
+
+        return $r3;
+    }
+
+    public void queue(ch.boye.httpclientandroidlib.pool.PoolEntryFuture)
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r1;
+        java.util.LinkedList $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList pending>;
+
+        virtualinvoke $r2.<java.util.LinkedList: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public boolean remove(ch.boye.httpclientandroidlib.pool.PoolEntry)
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r1;
+        java.lang.IllegalArgumentException $r2;
+        java.util.LinkedList $r3;
+        java.util.Set $r4;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.pool.PoolEntry;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Pool entry may not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+        $z0 = virtualinvoke $r3.<java.util.LinkedList: boolean remove(java.lang.Object)>($r1);
+
+(0)     if $z0 != 0 goto label2;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased>;
+
+        $z0_1 = interfaceinvoke $r4.<java.util.Set: boolean remove(java.lang.Object)>($r1);
+
+(1)     if $z0_1 != 0 goto label2;
+
+        return 0;
+
+     label2:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 1;
+    }
+
+    public void shutdown()
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.util.LinkedList $r1, $r1_1, $r1_2, $r1_3;
+        java.util.Iterator $r2, $r2_1, $r2_2;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.lang.Object $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r4;
+        ch.boye.httpclientandroidlib.pool.PoolEntry $r5, $r5_1, $r5_2, $r5_3;
+        java.util.Set $r6, $r6_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList pending>;
+
+(0)     $r2 = virtualinvoke $r1.<java.util.LinkedList: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = Phi($z0 #0, $z0_1 #1);
+
+        $r3 = Phi($r3 #0, $r3_1 #1);
+
+        $z0_1 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label2;
+
+        $r3_1 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r4 = (ch.boye.httpclientandroidlib.pool.PoolEntryFuture) $r3_1;
+
+        virtualinvoke $r4.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean cancel(boolean)>(1);
+
+(1)     goto label1;
+
+     label2:
+        $r1_1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList pending>;
+
+        virtualinvoke $r1_1.<java.util.LinkedList: void clear()>();
+
+        $r1_2 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+(2)     $r2_1 = virtualinvoke $r1_2.<java.util.LinkedList: java.util.Iterator iterator()>();
+
+     label3:
+        $r5 = Phi($r5 #2, $r5_1 #3);
+
+        $z0_2 = Phi($z0_1 #2, $z0_3 #3);
+
+        $r3_2 = Phi($r3 #2, $r3_3 #3);
+
+        $z0_3 = interfaceinvoke $r2_1.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_3 == 0 goto label4;
+
+        $r3_3 = interfaceinvoke $r2_1.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5_1 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r3_3;
+
+        virtualinvoke $r5_1.<ch.boye.httpclientandroidlib.pool.PoolEntry: void close()>();
+
+(3)     goto label3;
+
+     label4:
+        $r1_3 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+        virtualinvoke $r1_3.<java.util.LinkedList: void clear()>();
+
+        $r6 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased>;
+
+(4)     $r2_2 = interfaceinvoke $r6.<java.util.Set: java.util.Iterator iterator()>();
+
+     label5:
+        $r5_2 = Phi($r5 #4, $r5_3 #5);
+
+        $z0_4 = Phi($z0_3 #4, $z0_5 #5);
+
+        $r3_4 = Phi($r3_2 #4, $r3_5 #5);
+
+        $z0_5 = interfaceinvoke $r2_2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_5 == 0 goto label6;
+
+        $r3_5 = interfaceinvoke $r2_2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5_3 = (ch.boye.httpclientandroidlib.pool.PoolEntry) $r3_5;
+
+        virtualinvoke $r5_3.<ch.boye.httpclientandroidlib.pool.PoolEntry: void close()>();
+
+(5)     goto label5;
+
+     label6:
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased>;
+
+        interfaceinvoke $r6_1.<java.util.Set: void clear()>();
+
+        return;
+    }
+
+    public java.lang.String toString()
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        java.lang.StringBuilder $r1;
+        java.lang.Object $r2;
+        java.util.Set $r3;
+        int $i0, $i0_1, $i0_2;
+        java.util.LinkedList $r4, $r4_1;
+        java.lang.String $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[route: ");
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.lang.Object route>;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("][leased: ");
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.Set leased>;
+
+        $i0 = interfaceinvoke $r3.<java.util.Set: int size()>();
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("][available: ");
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList available>;
+
+        $i0_1 = virtualinvoke $r4.<java.util.LinkedList: int size()>();
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_1);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("][pending: ");
+
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList pending>;
+
+        $i0_2 = virtualinvoke $r4_1.<java.util.LinkedList: int size()>();
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_2);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r5 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r5;
+    }
+
+    public void unqueue(ch.boye.httpclientandroidlib.pool.PoolEntryFuture)
+    {
+        ch.boye.httpclientandroidlib.pool.RouteSpecificPool $r0;
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r1;
+        java.util.LinkedList $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.RouteSpecificPool;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.pool.RouteSpecificPool: java.util.LinkedList pending>;
+
+        virtualinvoke $r2.<java.util.LinkedList: boolean remove(java.lang.Object)>($r1);
+
+        return;
+    }
+}

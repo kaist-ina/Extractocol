@@ -1,0 +1,865 @@
+public class bolts.WebViewAppLinkResolver extends java.lang.Object implements bolts.AppLinkResolver
+{
+    private static final java.lang.String KEY_AL_VALUE;
+    private static final java.lang.String KEY_ANDROID;
+    private static final java.lang.String KEY_APP_NAME;
+    private static final java.lang.String KEY_CLASS;
+    private static final java.lang.String KEY_PACKAGE;
+    private static final java.lang.String KEY_SHOULD_FALLBACK;
+    private static final java.lang.String KEY_URL;
+    private static final java.lang.String KEY_WEB;
+    private static final java.lang.String KEY_WEB_URL;
+    private static final java.lang.String META_TAG_PREFIX;
+    private static final java.lang.String PREFER_HEADER;
+    private static final java.lang.String TAG_EXTRACTION_JAVASCRIPT;
+    private final android.content.Context context;
+
+    public void <init>(android.content.Context)
+    {
+        bolts.WebViewAppLinkResolver $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: bolts.WebViewAppLinkResolver;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<bolts.WebViewAppLinkResolver: android.content.Context context> = $r1;
+
+        return;
+    }
+
+    static java.util.Map access$000(org.json.JSONArray) throws org.json.JSONException
+    {
+        org.json.JSONArray $r0;
+        java.util.Map $r1;
+
+        $r0 := @parameter0: org.json.JSONArray;
+
+        $r1 = staticinvoke <bolts.WebViewAppLinkResolver: java.util.Map parseAlData(org.json.JSONArray)>($r0);
+
+        return $r1;
+    }
+
+    static bolts.AppLink access$100(java.util.Map, android.net.Uri)
+    {
+        java.util.Map $r0;
+        android.net.Uri $r1;
+        bolts.AppLink $r2;
+
+        $r0 := @parameter0: java.util.Map;
+
+        $r1 := @parameter1: android.net.Uri;
+
+        $r2 = staticinvoke <bolts.WebViewAppLinkResolver: bolts.AppLink makeAppLinkFromAlData(java.util.Map,android.net.Uri)>($r0, $r1);
+
+        return $r2;
+    }
+
+    static android.content.Context access$200(bolts.WebViewAppLinkResolver)
+    {
+        bolts.WebViewAppLinkResolver $r0;
+        android.content.Context r1;
+
+        $r0 := @parameter0: bolts.WebViewAppLinkResolver;
+
+        r1 = $r0.<bolts.WebViewAppLinkResolver: android.content.Context context>;
+
+        return r1;
+    }
+
+    static java.lang.String access$300(java.net.URLConnection) throws java.io.IOException
+    {
+        java.net.URLConnection $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: java.net.URLConnection;
+
+        $r1 = staticinvoke <bolts.WebViewAppLinkResolver: java.lang.String readFromConnection(java.net.URLConnection)>($r0);
+
+        return $r1;
+    }
+
+    private static java.util.List getAlList(java.util.Map, java.lang.String)
+    {
+        java.util.Map $r0;
+        java.lang.String $r1;
+        java.lang.Object $r2;
+        java.util.List $r3, $r3_1, $r3_2;
+
+        $r0 := @parameter0: java.util.Map;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = interfaceinvoke $r0.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r3 = (java.util.List) $r2;
+
+(0)     if $r3 != null goto label1;
+
+(1)     $r3_1 = staticinvoke <java.util.Collections: java.util.List emptyList()>();
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return $r3_2;
+    }
+
+    private static bolts.AppLink makeAppLinkFromAlData(java.util.Map, android.net.Uri)
+    {
+        android.net.Uri $r0, $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7;
+        java.util.ArrayList $r1;
+        bolts.AppLink$Target $r2;
+        bolts.AppLink $r3;
+        java.util.Map $r4, $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        java.lang.Object $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8, $r5_9, $r5_10, $r5_11, $r5_12, $r5_13, $r5_14, $r5_15, $r5_16, $r5_17, $r5_18, $r5_19, $r5_20, $r5_21, $r5_22, $r5_23, $r5_24, $r5_25, $r5_26, $r5_27, $r5_28, $r5_29;
+        java.util.List $r6, $r7, $r10, $r11, $r7_1, $r7_2, $r7_3, $r6_1, $r6_2, $r7_4, $r6_3, $r6_4, $r7_5, $r7_6, $r7_7, $r7_8, $r6_5;
+        java.util.Iterator $r8;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        int $i0, $i1, $i2, $i3, $i0_1, $i1_1, $i2_1, $i2_2, $i1_2, $i0_2, $i1_3, $i1_4, $i2_3, $i2_4, $i2_5, $i2_6, $i2_7, $i1_5, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7;
+        java.lang.String $r12, $r14, $r15, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8;
+        java.lang.String[] $r16;
+
+        $r4 := @parameter0: java.util.Map;
+
+        $r0 := @parameter1: android.net.Uri;
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $r5 = interfaceinvoke $r4.<java.util.Map: java.lang.Object get(java.lang.Object)>("android");
+
+        $r6 = (java.util.List) $r5;
+
+        $r7 = $r6;
+
+(0)     if $r6 != null goto label01;
+
+(1)     $r7_1 = staticinvoke <java.util.Collections: java.util.List emptyList()>();
+
+     label01:
+        $r7_2 = Phi($r7 #0, $r7_1 #1);
+
+(2)     $r8 = interfaceinvoke $r7_2.<java.util.List: java.util.Iterator iterator()>();
+
+     label02:
+        $z0 = Phi($z0 #2, $z0_1 #4);
+
+        $r9 = Phi($r9 #2, $r9_2 #4);
+
+        $r7_3 = Phi($r7_2 #2, $r7_4 #4);
+
+        $i0 = Phi($i0 #2, $i0_2 #4);
+
+        $i1 = Phi($i1 #2, $i1_4 #4);
+
+        $i2 = Phi($i2 #2, $i2_3 #4);
+
+        $r12 = Phi($r12 #2, $r12_1 #4);
+
+        $r13 = Phi($r13 #2, $r13_1 #4);
+
+        $r5_1 = Phi($r5 #2, $r5_3 #4);
+
+        $r6_1 = Phi($r6 #2, $r6_2 #4);
+
+        $z0_1 = interfaceinvoke $r8.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label12;
+
+        $r5_2 = interfaceinvoke $r8.<java.util.Iterator: java.lang.Object next()>();
+
+        $r9_1 = (java.util.Map) $r5_2;
+
+        $r6_2 = staticinvoke <bolts.WebViewAppLinkResolver: java.util.List getAlList(java.util.Map,java.lang.String)>($r9_1, "url");
+
+        $r7_4 = staticinvoke <bolts.WebViewAppLinkResolver: java.util.List getAlList(java.util.Map,java.lang.String)>($r9_1, "package");
+
+        $r10 = staticinvoke <bolts.WebViewAppLinkResolver: java.util.List getAlList(java.util.Map,java.lang.String)>($r9_1, "class");
+
+        $r11 = staticinvoke <bolts.WebViewAppLinkResolver: java.util.List getAlList(java.util.Map,java.lang.String)>($r9_1, "app_name");
+
+        $i0_1 = interfaceinvoke $r6_2.<java.util.List: int size()>();
+
+        $i1_1 = interfaceinvoke $r7_4.<java.util.List: int size()>();
+
+        $i2_1 = interfaceinvoke $r10.<java.util.List: int size()>();
+
+        $i3 = interfaceinvoke $r11.<java.util.List: int size()>();
+
+        $i2_2 = staticinvoke <java.lang.Math: int max(int,int)>($i2_1, $i3);
+
+        $i1_2 = staticinvoke <java.lang.Math: int max(int,int)>($i1_1, $i2_2);
+
+        $i0_2 = staticinvoke <java.lang.Math: int max(int,int)>($i0_1, $i1_2);
+
+(3)     $i1_3 = 0;
+
+     label03:
+        $r9_2 = Phi($r9_1 #3, $r9_10 #9);
+
+        $i1_4 = Phi($i1_3 #3, $i1_5 #9);
+
+        $i2_3 = Phi($i2_2 #3, $i2_7 #9);
+
+        $r12_1 = Phi($r12 #3, $r12_3 #9);
+
+        $r13_1 = Phi($r13 #3, $r13_2 #9);
+
+        $r5_3 = Phi($r5_2 #3, $r5_15 #9);
+
+(4)     if $i1_4 >= $i0_2 goto label02;
+
+        $i2_4 = interfaceinvoke $r6_2.<java.util.List: int size()>();
+
+        if $i2_4 <= $i1_4 goto label08;
+
+        $r5_4 = interfaceinvoke $r6_2.<java.util.List: java.lang.Object get(int)>($i1_4);
+
+        $r9_3 = (java.util.Map) $r5_4;
+
+(5)     $r5_5 = interfaceinvoke $r9_3.<java.util.Map: java.lang.Object get(java.lang.Object)>("value");
+
+     label04:
+        $r9_4 = Phi($r9_3 #5, $r9_2 #10);
+
+        $r5_6 = Phi($r5_5 #5, $r5_19 #10);
+
+        $r12_2 = (java.lang.String) $r5_6;
+
+        $r13_2 = staticinvoke <bolts.WebViewAppLinkResolver: android.net.Uri tryCreateUrl(java.lang.String)>($r12_2);
+
+        $i2_5 = interfaceinvoke $r7_4.<java.util.List: int size()>();
+
+        if $i2_5 <= $i1_4 goto label09;
+
+        $r5_7 = interfaceinvoke $r7_4.<java.util.List: java.lang.Object get(int)>($i1_4);
+
+        $r9_5 = (java.util.Map) $r5_7;
+
+(6)     $r5_8 = interfaceinvoke $r9_5.<java.util.Map: java.lang.Object get(java.lang.Object)>("value");
+
+     label05:
+        $r9_6 = Phi($r9_5 #6, $r9_4 #11);
+
+        $r5_9 = Phi($r5_8 #6, $r5_18 #11);
+
+        $r12_3 = (java.lang.String) $r5_9;
+
+        $i2_6 = interfaceinvoke $r10.<java.util.List: int size()>();
+
+        if $i2_6 <= $i1_4 goto label10;
+
+        $r5_10 = interfaceinvoke $r10.<java.util.List: java.lang.Object get(int)>($i1_4);
+
+        $r9_7 = (java.util.Map) $r5_10;
+
+(7)     $r5_11 = interfaceinvoke $r9_7.<java.util.Map: java.lang.Object get(java.lang.Object)>("value");
+
+     label06:
+        $r9_8 = Phi($r9_7 #7, $r9_6 #12);
+
+        $r5_12 = Phi($r5_11 #7, $r5_17 #12);
+
+        $r14 = (java.lang.String) $r5_12;
+
+        $i2_7 = interfaceinvoke $r11.<java.util.List: int size()>();
+
+        if $i2_7 <= $i1_4 goto label11;
+
+        $r5_13 = interfaceinvoke $r11.<java.util.List: java.lang.Object get(int)>($i1_4);
+
+        $r9_9 = (java.util.Map) $r5_13;
+
+(8)     $r5_14 = interfaceinvoke $r9_9.<java.util.Map: java.lang.Object get(java.lang.Object)>("value");
+
+     label07:
+        $r9_10 = Phi($r9_9 #8, $r9_8 #13);
+
+        $r5_15 = Phi($r5_14 #8, $r5_16 #13);
+
+        $r15 = (java.lang.String) $r5_15;
+
+        $r2 = new bolts.AppLink$Target;
+
+        specialinvoke $r2.<bolts.AppLink$Target: void <init>(java.lang.String,java.lang.String,android.net.Uri,java.lang.String)>($r12_3, $r14, $r13_2, $r15);
+
+        interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+        $i1_5 = $i1_4 + 1;
+
+(9)     goto label03;
+
+     label08:
+        $r5_19 = null;
+
+(10)    goto label04;
+
+     label09:
+        $r5_18 = null;
+
+(11)    goto label05;
+
+     label10:
+        $r5_17 = null;
+
+(12)    goto label06;
+
+     label11:
+        $r5_16 = null;
+
+(13)    goto label07;
+
+     label12:
+        $r13_3 = $r0;
+
+        $r5_20 = interfaceinvoke $r4.<java.util.Map: java.lang.Object get(java.lang.Object)>("web");
+
+        $r6_3 = (java.util.List) $r5_20;
+
+(14)    if $r6_3 == null goto label14;
+
+        $i0_3 = interfaceinvoke $r6_3.<java.util.List: int size()>();
+
+(15)    if $i0_3 <= 0 goto label14;
+
+        $r5_21 = interfaceinvoke $r6_3.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r4_1 = (java.util.Map) $r5_21;
+
+        $r5_22 = interfaceinvoke $r4_1.<java.util.Map: java.lang.Object get(java.lang.Object)>("url");
+
+        $r6_4 = (java.util.List) $r5_22;
+
+        $r5_23 = interfaceinvoke $r4_1.<java.util.Map: java.lang.Object get(java.lang.Object)>("should_fallback");
+
+        $r7_5 = (java.util.List) $r5_23;
+
+(16)    if $r7_5 == null goto label13;
+
+        $i0_4 = interfaceinvoke $r7_5.<java.util.List: int size()>();
+
+(17)    if $i0_4 <= 0 goto label13;
+
+        $r5_24 = interfaceinvoke $r7_5.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r4_2 = (java.util.Map) $r5_24;
+
+        $r5_25 = interfaceinvoke $r4_2.<java.util.Map: java.lang.Object get(java.lang.Object)>("value");
+
+        $r12_4 = (java.lang.String) $r5_25;
+
+        $r16 = newarray (java.lang.String)[3];
+
+        $r16[0] = "no";
+
+        $r16[1] = "false";
+
+        $r16[2] = "0";
+
+        $r7_6 = staticinvoke <java.util.Arrays: java.util.List asList(java.lang.Object[])>($r16);
+
+        $r12_5 = virtualinvoke $r12_4.<java.lang.String: java.lang.String toLowerCase()>();
+
+        $z0_2 = interfaceinvoke $r7_6.<java.util.List: boolean contains(java.lang.Object)>($r12_5);
+
+(18)    if $z0_2 == 0 goto label13;
+
+(19)    $r13_4 = null;
+
+     label13:
+        $z0_3 = Phi($z0_1 #16, $z0_1 #17, $z0_2 #18, $z0_2 #19);
+
+        $r7_7 = Phi($r7_5 #16, $r7_5 #17, $r7_6 #18, $r7_6 #19);
+
+        $i0_5 = Phi($i0_3 #16, $i0_4 #17, $i0_4 #18, $i0_4 #19);
+
+        $r12_6 = Phi($r12 #16, $r12 #17, $r12_5 #18, $r12_5 #19);
+
+        $r4_3 = Phi($r4_1 #16, $r4_1 #17, $r4_2 #18, $r4_2 #19);
+
+        $r13_5 = Phi($r13_3 #16, $r13_3 #17, $r13_3 #18, $r13_4 #19);
+
+        $r5_26 = Phi($r5_23 #16, $r5_23 #17, $r5_25 #18, $r5_25 #19);
+
+(20)    if $r13_5 == null goto label14;
+
+(21)    if $r6_4 == null goto label14;
+
+        $i0_6 = interfaceinvoke $r6_4.<java.util.List: int size()>();
+
+(22)    if $i0_6 <= 0 goto label14;
+
+        $r5_27 = interfaceinvoke $r6_4.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r4_4 = (java.util.Map) $r5_27;
+
+        $r5_28 = interfaceinvoke $r4_4.<java.util.Map: java.lang.Object get(java.lang.Object)>("value");
+
+        $r12_7 = (java.lang.String) $r5_28;
+
+(23)    $r13_6 = staticinvoke <bolts.WebViewAppLinkResolver: android.net.Uri tryCreateUrl(java.lang.String)>($r12_7);
+
+     label14:
+        $z0_4 = Phi($z0_1 #14, $z0_1 #15, $z0_3 #20, $z0_3 #21, $z0_3 #22, $z0_3 #23);
+
+        $r7_8 = Phi($r7_3 #14, $r7_3 #15, $r7_7 #20, $r7_7 #21, $r7_7 #22, $r7_7 #23);
+
+        $i0_7 = Phi($i0 #14, $i0_3 #15, $i0_5 #20, $i0_5 #21, $i0_6 #22, $i0_6 #23);
+
+        $r12_8 = Phi($r12 #14, $r12 #15, $r12_6 #20, $r12_6 #21, $r12_6 #22, $r12_7 #23);
+
+        $r4_5 = Phi($r4 #14, $r4 #15, $r4_3 #20, $r4_3 #21, $r4_3 #22, $r4_4 #23);
+
+        $r13_7 = Phi($r13_3 #14, $r13_3 #15, $r13_5 #20, $r13_5 #21, $r13_5 #22, $r13_6 #23);
+
+        $r5_29 = Phi($r5_20 #14, $r5_20 #15, $r5_26 #20, $r5_26 #21, $r5_26 #22, $r5_28 #23);
+
+        $r6_5 = Phi($r6_3 #14, $r6_3 #15, $r6_4 #20, $r6_4 #21, $r6_4 #22, $r6_4 #23);
+
+        $r3 = new bolts.AppLink;
+
+        specialinvoke $r3.<bolts.AppLink: void <init>(android.net.Uri,java.util.List,android.net.Uri)>($r0, $r1, $r13_7);
+
+        return $r3;
+    }
+
+    private static java.util.Map parseAlData(org.json.JSONArray) throws org.json.JSONException
+    {
+        org.json.JSONArray $r0;
+        java.util.ArrayList $r1;
+        java.util.HashMap $r2, $r10;
+        int $i0, $i1, $i2, $i0_1, $i1_1, $i1_2, $i2_1, $i0_2, $i1_3, $i1_4, $i2_2, $i2_3, $i2_4, $i2_5, $i2_6, $i2_7, $i2_8, $i2_9, $i2_10, $i2_11, $i1_5;
+        org.json.JSONObject $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8;
+        java.lang.String[] $r5;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.util.Map $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8;
+        java.lang.Object $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        java.util.List $r8, $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5;
+
+        $r0 := @parameter0: org.json.JSONArray;
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+(0)     $i0 = 0;
+
+     label01:
+        $r9 = Phi($r9 #0, $r9_1 #2);
+
+        $i1 = Phi($i1 #0, $i1_2 #2);
+
+        $i2 = Phi($i2 #0, $i2_1 #2);
+
+        $r7 = Phi($r7 #0, $r7_1 #2);
+
+        $i0_1 = Phi($i0 #0, $i0_2 #2);
+
+        $r6 = Phi($r6 #0, $r6_1 #2);
+
+        $z0 = Phi($z0 #0, $z0_2 #2);
+
+        $r4 = Phi($r4 #0, $r4_3 #2);
+
+        $i1_1 = virtualinvoke $r0.<org.json.JSONArray: int length()>();
+
+        if $i0_1 >= $i1_1 goto label12;
+
+        $r3 = virtualinvoke $r0.<org.json.JSONArray: org.json.JSONObject getJSONObject(int)>($i0_1);
+
+        $r4_1 = virtualinvoke $r3.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("property");
+
+        $r5 = virtualinvoke $r4_1.<java.lang.String: java.lang.String[] split(java.lang.String)>(":");
+
+        $r4_2 = $r5[0];
+
+        $z0_1 = virtualinvoke $r4_2.<java.lang.String: boolean equals(java.lang.Object)>("al");
+
+(1)     if $z0_1 != 0 goto label03;
+
+     label02:
+        $r9_1 = Phi($r9 #1, $r9_2 #12, $r9_2 #13, $r9_2 #14);
+
+        $i1_2 = Phi($i1_1 #1, $i1_4 #12, $i1_4 #13, $i1_4 #14);
+
+        $i2_1 = Phi($i2 #1, $i2_3 #12, $i2_3 #13, $i2_3 #14);
+
+        $r7_1 = Phi($r7 #1, $r7_2 #12, $r7_2 #13, $r7_2 #14);
+
+        $r6_1 = Phi($r6 #1, $r6_3 #12, $r6_3 #13, $r6_3 #14);
+
+        $z0_2 = Phi($z0_1 #1, $z0_3 #12, $z0_4 #13, $z0_4 #14);
+
+        $r4_3 = Phi($r4_2 #1, $r4_4 #12, $r4_4 #13, $r4_8 #14);
+
+        $i0_2 = $i0_1 + 1;
+
+(2)     goto label01;
+
+     label03:
+        $r6_2 = $r2;
+
+(3)     $i1_3 = 1;
+
+     label04:
+        $r9_2 = Phi($r9 #3, $r9_5 #10);
+
+        $i1_4 = Phi($i1_3 #3, $i1_5 #10);
+
+        $i2_2 = Phi($i2 #3, $i2_11 #10);
+
+        $r7_2 = Phi($r7 #3, $r7_5 #10);
+
+        $r6_3 = Phi($r6_2 #3, $r6_7 #10);
+
+        $r4_4 = Phi($r4_2 #3, $r4_7 #10);
+
+        $i2_3 = lengthof $r5;
+
+        if $i1_4 >= $i2_3 goto label10;
+
+        $r4_5 = $r5[$i1_4];
+
+        $r7_3 = interfaceinvoke $r6_3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r4_5);
+
+        $r8 = (java.util.List) $r7_3;
+
+        $r9_3 = $r8;
+
+(4)     if $r8 != null goto label05;
+
+        $r1 = new java.util.ArrayList;
+
+        $r9_4 = $r1;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $r4_6 = $r5[$i1_4];
+
+(5)     interfaceinvoke $r6_3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r4_6, $r1);
+
+     label05:
+        $r9_5 = Phi($r9_3 #4, $r9_4 #5);
+
+        $r4_7 = Phi($r4_5 #4, $r4_6 #5);
+
+        $i2_4 = interfaceinvoke $r9_5.<java.util.List: int size()>();
+
+        if $i2_4 <= 0 goto label09;
+
+        $i2_5 = interfaceinvoke $r9_5.<java.util.List: int size()>();
+
+        $i2_6 = $i2_5 + -1;
+
+        $r7_4 = interfaceinvoke $r9_5.<java.util.List: java.lang.Object get(int)>($i2_6);
+
+(6)     $r6_4 = (java.util.Map) $r7_4;
+
+     label06:
+        $i2_7 = Phi($i2_6 #6, $i2_4 #11);
+
+        $r7_5 = Phi($r7_4 #6, $r7_3 #11);
+
+        $r6_5 = Phi($r6_4 #6, $r6_8 #11);
+
+(7)     if $r6_5 == null goto label07;
+
+        $i2_8 = lengthof $r5;
+
+        $i2_9 = $i2_8 + -1;
+
+(8)     if $i1_4 != $i2_9 goto label08;
+
+     label07:
+        $i2_10 = Phi($i2_7 #7, $i2_9 #8);
+
+        $r10 = new java.util.HashMap;
+
+        $r6_6 = $r10;
+
+        specialinvoke $r10.<java.util.HashMap: void <init>()>();
+
+(9)     interfaceinvoke $r9_5.<java.util.List: boolean add(java.lang.Object)>($r10);
+
+     label08:
+        $i2_11 = Phi($i2_9 #8, $i2_10 #9);
+
+        $r6_7 = Phi($r6_5 #8, $r6_6 #9);
+
+        $i1_5 = $i1_4 + 1;
+
+(10)    goto label04;
+
+     label09:
+        $r6_8 = null;
+
+(11)    goto label06;
+
+     label10:
+        $z0_3 = virtualinvoke $r3.<org.json.JSONObject: boolean has(java.lang.String)>("content");
+
+(12)    if $z0_3 == 0 goto label02;
+
+        $z0_4 = virtualinvoke $r3.<org.json.JSONObject: boolean isNull(java.lang.String)>("content");
+
+        if $z0_4 == 0 goto label11;
+
+        interfaceinvoke $r6_3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("value", null);
+
+(13)    goto label02;
+
+     label11:
+        $r4_8 = virtualinvoke $r3.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("content");
+
+        interfaceinvoke $r6_3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("value", $r4_8);
+
+(14)    goto label02;
+
+     label12:
+        return $r2;
+    }
+
+    private static java.lang.String readFromConnection(java.net.URLConnection) throws java.io.IOException
+    {
+        java.net.URLConnection $r0;
+        java.io.ByteArrayOutputStream $r1;
+        java.lang.Throwable $r2;
+        java.lang.Exception $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.net.HttpURLConnection $r4;
+        java.io.InputStream $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        byte[] $r6, $r6_1, $r6_2;
+        int $i0, $i1, $i0_1, $i0_2, $i1_1, $i0_3, $i1_2, $i0_4, $i1_3, $i0_5, $i1_4, $i0_6;
+        java.lang.String $r7, $r8, $r7_1, $r7_2, $r7_3, $r7_4, $r8_1, $r8_2, $r7_5, $r8_3, $r8_4, $r7_6, $r8_5, $r7_7, $r7_8, $r8_6;
+        java.lang.String[] $r9;
+
+        $r0 := @parameter0: java.net.URLConnection;
+
+        $z0 = $r0 instanceof java.net.HttpURLConnection;
+
+        if $z0 == 0 goto label09;
+
+(0)     $r4 = (java.net.HttpURLConnection) $r0;
+
+     label01:
+(1)     $r5 = virtualinvoke $r0.<java.net.URLConnection: java.io.InputStream getInputStream()>();
+
+     label02:
+        $r5_3 = Phi($r5 #1, $r5_2 #6, $r5_5 #7);
+
+(2)     $r1 = new java.io.ByteArrayOutputStream;
+
+        specialinvoke $r1.<java.io.ByteArrayOutputStream: void <init>()>();
+
+(3)     $r6 = newarray (byte)[1024];
+
+     label03:
+        $i0 = Phi($i0 #3, $i0_1 #5);
+
+(4)     $i0_1 = virtualinvoke $r5_3.<java.io.InputStream: int read(byte[])>($r6);
+
+     label04:
+        if $i0_1 == -1 goto label10;
+
+     label05:
+        virtualinvoke $r1.<java.io.ByteArrayOutputStream: void write(byte[],int,int)>($r6, 0, $i0_1);
+
+     label06:
+(5)     goto label03;
+
+     label07:
+        $r2 := @caughtexception;
+
+        $i1_4 = Phi($i1 #1, $i1 #6, $i1 #7, $i1 #2, $i1_1 #12, $i1_3 #21);
+
+        $r7_8 = Phi($r7 #1, $r7 #6, $r7 #7, $r7 #2, $r7_1 #9, $r7_2 #12, $r7_3 #13, $r7_4 #14, $r7_5 #19, $r7_7 #21);
+
+        $i0_6 = Phi($i0 #1, $i0 #6, $i0 #7, $i0 #2, $i0_1 #4, $i0_2 #10, $i0_3 #17, $i0_4 #19, $i0_5 #21);
+
+        $r6_2 = Phi($r6 #1, $r6 #6, $r6 #7, $r6 #2, $r6_1 #22);
+
+        $r8_6 = Phi($r8 #1, $r8 #6, $r8 #7, $r8 #2, $r8_1 #16, $r8_2 #18, $r8_3 #19, $r8_4 #20, $r8_5 #21);
+
+        $z0_5 = Phi($z0 #1, $z0 #6, $z0 #7, $z0 #2, $z0_1 #12, $z0_2 #15, $z0_3 #19, $z0_4 #21);
+
+        $r5_4 = Phi($r5 #1, $r5_2 #6, $r5_5 #7, $r5_3 #2);
+
+        virtualinvoke $r5_4.<java.io.InputStream: void close()>();
+
+        throw $r2;
+
+     label08:
+        $r3 := @caughtexception;
+
+        $r5_1 = Phi($r5 #0);
+
+        $r5_2 = virtualinvoke $r4.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+(6)     goto label02;
+
+     label09:
+        $r5_5 = virtualinvoke $r0.<java.net.URLConnection: java.io.InputStream getInputStream()>();
+
+(7)     goto label02;
+
+     label10:
+        $r7 = virtualinvoke $r0.<java.net.URLConnection: java.lang.String getContentEncoding()>();
+
+     label11:
+        $r8 = $r7;
+
+(8)     if $r7 != null goto label19;
+
+     label12:
+(9)     $r7_1 = virtualinvoke $r0.<java.net.URLConnection: java.lang.String getContentType()>();
+
+        $r9 = virtualinvoke $r7_1.<java.lang.String: java.lang.String[] split(java.lang.String)>(";");
+
+(10)    $i0_2 = lengthof $r9;
+
+     label13:
+(11)    $i1 = 0;
+
+     label14:
+        $i1_1 = Phi($i1 #11, $i1_2 #23);
+
+        $r7_2 = Phi($r7_1 #11, $r7_4 #23);
+
+        $z0_1 = Phi($z0 #11, $z0_2 #23);
+
+(12)    if $i1_1 >= $i0_2 goto label18;
+
+     label15:
+(13)    $r7_3 = $r9[$i1_1];
+
+(14)    $r7_4 = virtualinvoke $r7_3.<java.lang.String: java.lang.String trim()>();
+
+(15)    $z0_2 = virtualinvoke $r7_4.<java.lang.String: boolean startsWith(java.lang.String)>("charset=");
+
+     label16:
+        if $z0_2 == 0 goto label21;
+
+(16)    $r8_1 = "charset=";
+
+     label17:
+(17)    $i0_3 = virtualinvoke $r8_1.<java.lang.String: int length()>();
+
+(18)    $r8_2 = virtualinvoke $r7_4.<java.lang.String: java.lang.String substring(int)>($i0_3);
+
+     label18:
+        $r7_5 = Phi($r7_2 #12, $r7_4 #18);
+
+        $i0_4 = Phi($i0_2 #12, $i0_3 #18);
+
+        $r8_3 = Phi($r8 #12, $r8_2 #18);
+
+        $z0_3 = Phi($z0_1 #12, $z0_2 #18);
+
+(19)    if $r8_3 != null goto label19;
+
+(20)    $r8_4 = "UTF-8";
+
+     label19:
+        $i1_3 = Phi($i1 #8, $i1_1 #19, $i1_1 #20);
+
+        $r7_6 = Phi($r7 #8, $r7_5 #19, $r7_5 #20);
+
+        $i0_5 = Phi($i0_1 #8, $i0_4 #19, $i0_4 #20);
+
+        $r8_5 = Phi($r8 #8, $r8_3 #19, $r8_4 #20);
+
+        $z0_4 = Phi($z0 #8, $z0_3 #19, $z0_3 #20);
+
+(21)    $r7_7 = new java.lang.String;
+
+(22)    $r6_1 = virtualinvoke $r1.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        specialinvoke $r7_7.<java.lang.String: void <init>(byte[],java.lang.String)>($r6_1, $r8_5);
+
+     label20:
+        virtualinvoke $r5_3.<java.io.InputStream: void close()>();
+
+        return $r7_7;
+
+     label21:
+        $i1_2 = $i1_1 + 1;
+
+(23)    goto label14;
+
+        catch java.lang.Exception from label01 to label02 with label08;
+        catch java.lang.Throwable from label02 to label04 with label07;
+        catch java.lang.Throwable from label05 to label06 with label07;
+        catch java.lang.Throwable from label10 to label11 with label07;
+        catch java.lang.Throwable from label12 to label13 with label07;
+        catch java.lang.Throwable from label15 to label16 with label07;
+        catch java.lang.Throwable from label17 to label18 with label07;
+        catch java.lang.Throwable from label19 to label20 with label07;
+    }
+
+    private static android.net.Uri tryCreateUrl(java.lang.String)
+    {
+        java.lang.String $r0;
+        android.net.Uri $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r0);
+
+        return $r1;
+    }
+
+    public bolts.Task getAppLinkFromUrlInBackground(android.net.Uri)
+    {
+        bolts.WebViewAppLinkResolver $r0;
+        android.net.Uri $r1;
+        bolts.Capture $r2, $r3;
+        bolts.WebViewAppLinkResolver$3 $r4;
+        bolts.WebViewAppLinkResolver$2 $r5;
+        java.util.concurrent.Executor $r6;
+        bolts.WebViewAppLinkResolver$1 $r7;
+        bolts.Task $r8, $r8_1, $r8_2;
+
+        $r0 := @this: bolts.WebViewAppLinkResolver;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 = new bolts.Capture;
+
+        specialinvoke $r2.<bolts.Capture: void <init>()>();
+
+        $r3 = new bolts.Capture;
+
+        specialinvoke $r3.<bolts.Capture: void <init>()>();
+
+        $r4 = new bolts.WebViewAppLinkResolver$3;
+
+        specialinvoke $r4.<bolts.WebViewAppLinkResolver$3: void <init>(bolts.WebViewAppLinkResolver,android.net.Uri,bolts.Capture,bolts.Capture)>($r0, $r1, $r2, $r3);
+
+        $r8 = staticinvoke <bolts.Task: bolts.Task callInBackground(java.util.concurrent.Callable)>($r4);
+
+        $r5 = new bolts.WebViewAppLinkResolver$2;
+
+        specialinvoke $r5.<bolts.WebViewAppLinkResolver$2: void <init>(bolts.WebViewAppLinkResolver,bolts.Capture,android.net.Uri,bolts.Capture)>($r0, $r3, $r1, $r2);
+
+        $r6 = <bolts.Task: java.util.concurrent.Executor UI_THREAD_EXECUTOR>;
+
+        $r8_1 = virtualinvoke $r8.<bolts.Task: bolts.Task onSuccessTask(bolts.Continuation,java.util.concurrent.Executor)>($r5, $r6);
+
+        $r7 = new bolts.WebViewAppLinkResolver$1;
+
+        specialinvoke $r7.<bolts.WebViewAppLinkResolver$1: void <init>(bolts.WebViewAppLinkResolver,android.net.Uri)>($r0, $r1);
+
+        $r8_2 = virtualinvoke $r8_1.<bolts.Task: bolts.Task onSuccess(bolts.Continuation)>($r7);
+
+        return $r8_2;
+    }
+}

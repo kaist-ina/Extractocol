@@ -1,0 +1,712 @@
+public abstract class ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer extends java.lang.Object implements ch.boye.httpclientandroidlib.io.BufferInfo, ch.boye.httpclientandroidlib.io.SessionOutputBuffer
+{
+    private static final java.nio.charset.Charset ASCII;
+    private static final byte[] CRLF;
+    private boolean ascii;
+    private java.nio.ByteBuffer bbuf;
+    private ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer;
+    private java.nio.charset.Charset charset;
+    private java.nio.charset.CharsetEncoder encoder;
+    private ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl metrics;
+    private int minChunkLimit;
+    private java.nio.charset.CodingErrorAction onMalformedInputAction;
+    private java.nio.charset.CodingErrorAction onUnMappableInputAction;
+    private java.io.OutputStream outstream;
+
+    static void <clinit>()
+    {
+        byte[] $r0;
+        java.nio.charset.Charset $r1;
+
+        $r1 = staticinvoke <java.nio.charset.Charset: java.nio.charset.Charset forName(java.lang.String)>("US-ASCII");
+
+        <ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.Charset ASCII> = $r1;
+
+        $r0 = newarray (byte)[2];
+
+        $r0[0] = 13;
+
+        $r0[1] = 10;
+
+        <ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: byte[] CRLF> = $r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: boolean ascii> = 1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: int minChunkLimit> = 512;
+
+        return;
+    }
+
+    private void handleEncodingResult(java.nio.charset.CoderResult) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        java.nio.charset.CoderResult $r1;
+        boolean $z0, $z0_1, $z0_2;
+        java.nio.ByteBuffer $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        byte $b0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r1 := @parameter0: java.nio.charset.CoderResult;
+
+        $z0 = virtualinvoke $r1.<java.nio.charset.CoderResult: boolean isError()>();
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r1.<java.nio.charset.CoderResult: void throwException()>();
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.ByteBuffer bbuf>;
+
+(0)     virtualinvoke $r2.<java.nio.ByteBuffer: java.nio.Buffer flip()>();
+
+     label2:
+        $r2_1 = Phi($r2 #0, $r2_3 #1);
+
+        $z0_1 = Phi($z0 #0, $z0_2 #1);
+
+        $r2_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.ByteBuffer bbuf>;
+
+        $z0_2 = virtualinvoke $r2_2.<java.nio.ByteBuffer: boolean hasRemaining()>();
+
+        if $z0_2 == 0 goto label3;
+
+        $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.ByteBuffer bbuf>;
+
+        $b0 = virtualinvoke $r2_3.<java.nio.ByteBuffer: byte get()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void write(int)>($b0);
+
+(1)     goto label2;
+
+     label3:
+        $r2_4 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.ByteBuffer bbuf>;
+
+        virtualinvoke $r2_4.<java.nio.ByteBuffer: java.nio.ByteBuffer compact()>();
+
+        return;
+    }
+
+    private void writeEncoded(java.nio.CharBuffer) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        java.nio.CharBuffer $r1;
+        java.nio.charset.Charset $r2;
+        boolean $z0, $z0_1, $z0_2;
+        java.nio.charset.CharsetEncoder $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8;
+        java.nio.charset.CodingErrorAction $r4, $r4_1, $r4_2;
+        java.nio.ByteBuffer $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6;
+        java.nio.charset.CoderResult $r6, $r6_1, $r6_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r1 := @parameter0: java.nio.CharBuffer;
+
+        $z0 = virtualinvoke $r1.<java.nio.CharBuffer: boolean hasRemaining()>();
+
+        if $z0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CharsetEncoder encoder>;
+
+(0)     if $r3 != null goto label2;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.Charset charset>;
+
+        $r3_1 = virtualinvoke $r2.<java.nio.charset.Charset: java.nio.charset.CharsetEncoder newEncoder()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CharsetEncoder encoder> = $r3_1;
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CharsetEncoder encoder>;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CodingErrorAction onMalformedInputAction>;
+
+        virtualinvoke $r3_2.<java.nio.charset.CharsetEncoder: java.nio.charset.CharsetEncoder onMalformedInput(java.nio.charset.CodingErrorAction)>($r4);
+
+        $r3_3 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CharsetEncoder encoder>;
+
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CodingErrorAction onUnMappableInputAction>;
+
+(1)     virtualinvoke $r3_3.<java.nio.charset.CharsetEncoder: java.nio.charset.CharsetEncoder onUnmappableCharacter(java.nio.charset.CodingErrorAction)>($r4_1);
+
+     label2:
+        $r3_4 = Phi($r3 #0, $r3_3 #1);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.ByteBuffer bbuf>;
+
+(2)     if $r5 != null goto label3;
+
+        $r5_1 = staticinvoke <java.nio.ByteBuffer: java.nio.ByteBuffer allocate(int)>(1024);
+
+(3)     $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.ByteBuffer bbuf> = $r5_1;
+
+     label3:
+        $r5_2 = Phi($r5 #2, $r5_1 #3);
+
+        $r3_5 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CharsetEncoder encoder>;
+
+(4)     virtualinvoke $r3_5.<java.nio.charset.CharsetEncoder: java.nio.charset.CharsetEncoder reset()>();
+
+     label4:
+        $r6 = Phi($r6 #4, $r6_1 #5);
+
+        $r3_6 = Phi($r3_5 #4, $r3_7 #5);
+
+        $z0_1 = Phi($z0 #4, $z0_2 #5);
+
+        $r5_3 = Phi($r5_2 #4, $r5_4 #5);
+
+        $z0_2 = virtualinvoke $r1.<java.nio.CharBuffer: boolean hasRemaining()>();
+
+        if $z0_2 == 0 goto label5;
+
+        $r3_7 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CharsetEncoder encoder>;
+
+        $r5_4 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.ByteBuffer bbuf>;
+
+        $r6_1 = virtualinvoke $r3_7.<java.nio.charset.CharsetEncoder: java.nio.charset.CoderResult encode(java.nio.CharBuffer,java.nio.ByteBuffer,boolean)>($r1, $r5_4, 1);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void handleEncodingResult(java.nio.charset.CoderResult)>($r6_1);
+
+(5)     goto label4;
+
+     label5:
+        $r3_8 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CharsetEncoder encoder>;
+
+        $r5_5 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.ByteBuffer bbuf>;
+
+        $r6_2 = virtualinvoke $r3_8.<java.nio.charset.CharsetEncoder: java.nio.charset.CoderResult flush(java.nio.ByteBuffer)>($r5_5);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void handleEncodingResult(java.nio.charset.CoderResult)>($r6_2);
+
+        $r5_6 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.ByteBuffer bbuf>;
+
+        virtualinvoke $r5_6.<java.nio.ByteBuffer: java.nio.Buffer clear()>();
+
+        return;
+    }
+
+    public int available()
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        int $i0, $i1, $i0_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $i0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: int capacity()>();
+
+        $i1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: int length()>();
+
+        $i0_1 = $i0 - $i1;
+
+        return $i0_1;
+    }
+
+    public int capacity()
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        ch.boye.httpclientandroidlib.util.ByteArrayBuffer $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $i0 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: int capacity()>();
+
+        return $i0;
+    }
+
+    protected ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl createTransportMetrics()
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl: void <init>()>();
+
+        return $r1;
+    }
+
+    public void flush() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        java.io.OutputStream $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void flushBuffer()>();
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.io.OutputStream outstream>;
+
+        virtualinvoke $r1.<java.io.OutputStream: void flush()>();
+
+        return;
+    }
+
+    protected void flushBuffer() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        java.io.OutputStream $r1;
+        ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl $r2;
+        long $l0;
+        ch.boye.httpclientandroidlib.util.ByteArrayBuffer $r3, $r3_1, $r3_2, $r3_3;
+        int $i1;
+        byte[] $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $i1 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: int length()>();
+
+(0)     if $i1 <= 0 goto label1;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.io.OutputStream outstream>;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $r4 = virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: byte[] buffer()>();
+
+        virtualinvoke $r1.<java.io.OutputStream: void write(byte[],int,int)>($r4, 0, $i1);
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        virtualinvoke $r3_2.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: void clear()>();
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl metrics>;
+
+        $l0 = (long) $i1;
+
+(1)     virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl: void incrementBytesTransferred(long)>($l0);
+
+     label1:
+        $r3_3 = Phi($r3 #0, $r3_2 #1);
+
+        return;
+    }
+
+    public ch.boye.httpclientandroidlib.io.HttpTransportMetrics getMetrics()
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl metrics>;
+
+        return r1;
+    }
+
+    protected void init(java.io.OutputStream, int, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        java.io.OutputStream $r1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        ch.boye.httpclientandroidlib.util.ByteArrayBuffer $r3;
+        java.nio.charset.Charset $r4, $r7, $r4_1;
+        int $i0, $i0_1;
+        java.lang.IllegalArgumentException $r5, $r5_1, $r5_2;
+        java.lang.String $r6;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl $r8;
+        java.nio.charset.CodingErrorAction $r9, $r9_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r1 := @parameter0: java.io.OutputStream;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        if $r1 != null goto label1;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Input stream may not be null");
+
+        throw $r5;
+
+     label1:
+        if $i0 > 0 goto label2;
+
+        $r5_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Buffer size may not be negative or zero");
+
+        throw $r5_1;
+
+     label2:
+        if $r2 != null goto label3;
+
+        $r5_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP parameters may not be null");
+
+        throw $r5_2;
+
+     label3:
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.io.OutputStream outstream> = $r1;
+
+        $r3 = new ch.boye.httpclientandroidlib.util.ByteArrayBuffer;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: void <init>(int)>($i0);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer> = $r3;
+
+        $r6 = staticinvoke <ch.boye.httpclientandroidlib.params.HttpProtocolParams: java.lang.String getHttpElementCharset(ch.boye.httpclientandroidlib.params.HttpParams)>($r2);
+
+        $r4 = staticinvoke <java.nio.charset.Charset: java.nio.charset.Charset forName(java.lang.String)>($r6);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.Charset charset> = $r4;
+
+        $r7 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.Charset charset>;
+
+        $r4_1 = <ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.Charset ASCII>;
+
+        $z0 = virtualinvoke $r7.<java.nio.charset.Charset: boolean equals(java.lang.Object)>($r4_1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: boolean ascii> = $z0;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CharsetEncoder encoder> = null;
+
+        $i0_1 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.params.HttpParams: int getIntParameter(java.lang.String,int)>("http.connection.min-chunk-limit", 512);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: int minChunkLimit> = $i0_1;
+
+        $r8 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl createTransportMetrics()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl metrics> = $r8;
+
+        $r9 = staticinvoke <ch.boye.httpclientandroidlib.params.HttpProtocolParams: java.nio.charset.CodingErrorAction getMalformedInputAction(ch.boye.httpclientandroidlib.params.HttpParams)>($r2);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CodingErrorAction onMalformedInputAction> = $r9;
+
+        $r9_1 = staticinvoke <ch.boye.httpclientandroidlib.params.HttpProtocolParams: java.nio.charset.CodingErrorAction getUnmappableInputAction(ch.boye.httpclientandroidlib.params.HttpParams)>($r2);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.nio.charset.CodingErrorAction onUnMappableInputAction> = $r9_1;
+
+        return;
+    }
+
+    public int length()
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        ch.boye.httpclientandroidlib.util.ByteArrayBuffer $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $i0 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: int length()>();
+
+        return $i0;
+    }
+
+    public void write(int) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        int $i0;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.util.ByteArrayBuffer $r1, $r1_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $z0 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: boolean isFull()>();
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void flushBuffer()>();
+
+     label1:
+        $r1_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        virtualinvoke $r1_1.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: void append(int)>($i0);
+
+        return;
+    }
+
+    public void write(byte[]) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        byte[] $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r1 := @parameter0: byte[];
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $i0 = lengthof $r1;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void write(byte[],int,int)>($r1, 0, $i0);
+
+        return;
+    }
+
+    public void write(byte[], int, int) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        byte[] $r1;
+        int $i0, $i1, $i3, $i4, $i3_1, $i3_2, $i3_3, $i3_4;
+        java.io.OutputStream $r2;
+        ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl $r3;
+        long $l2;
+        ch.boye.httpclientandroidlib.util.ByteArrayBuffer $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $i3 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: int minChunkLimit>;
+
+(0)     if $i1 > $i3 goto label2;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $i3_1 = virtualinvoke $r4.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: int capacity()>();
+
+(1)     if $i1 <= $i3_1 goto label3;
+
+     label2:
+        $i3_4 = Phi($i3 #0, $i3_1 #1);
+
+        $r4_4 = Phi($r4 #0, $r4 #1);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void flushBuffer()>();
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: java.io.OutputStream outstream>;
+
+        virtualinvoke $r2.<java.io.OutputStream: void write(byte[],int,int)>($r1, $i0, $i1);
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl metrics>;
+
+        $l2 = (long) $i1;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.io.HttpTransportMetricsImpl: void incrementBytesTransferred(long)>($l2);
+
+        return;
+
+     label3:
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $i3_2 = virtualinvoke $r4_1.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: int capacity()>();
+
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $i4 = virtualinvoke $r4_2.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: int length()>();
+
+        $i3_3 = $i3_2 - $i4;
+
+        if $i1 <= $i3_3 goto label4;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void flushBuffer()>();
+
+     label4:
+        $r4_3 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        virtualinvoke $r4_3.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: void append(byte[],int,int)>($r1, $i0, $i1);
+
+        return;
+    }
+
+    public void writeLine(ch.boye.httpclientandroidlib.util.CharArrayBuffer) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        ch.boye.httpclientandroidlib.util.CharArrayBuffer $r1;
+        byte[] $r2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        int $i0, $i1, $i2, $i3, $i0_1, $i1_1, $i2_1, $i2_2, $i2_3, $i0_2, $i1_2, $i0_3, $i0_4, $i2_4, $i1_3;
+        ch.boye.httpclientandroidlib.util.ByteArrayBuffer $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6;
+        char[] $r4;
+        java.nio.CharBuffer $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.util.CharArrayBuffer;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $z0 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: boolean ascii>;
+
+        if $z0 == 0 goto label5;
+
+        $i0 = 0;
+
+(0)     $i1 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: int length()>();
+
+     label2:
+        $i0_1 = Phi($i0 #0, $i0_2 #4);
+
+        $r3 = Phi($r3 #0, $r3_5 #4);
+
+        $i2 = Phi($i2 #0, $i2_3 #4);
+
+        $z0_1 = Phi($z0 #0, $z0_2 #4);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #4);
+
+(1)     if $i1_1 <= 0 goto label6;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $i2_1 = virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: int capacity()>();
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $i3 = virtualinvoke $r3_2.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: int length()>();
+
+        $i2_2 = $i2_1 - $i3;
+
+        $i2_3 = staticinvoke <java.lang.Math: int min(int,int)>($i2_2, $i1_1);
+
+(2)     if $i2_3 <= 0 goto label3;
+
+        $r3_3 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+(3)     virtualinvoke $r3_3.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: void append(ch.boye.httpclientandroidlib.util.CharArrayBuffer,int,int)>($r1, $i0_1, $i2_3);
+
+     label3:
+        $r3_4 = Phi($r3_2 #2, $r3_3 #3);
+
+        $r3_5 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: ch.boye.httpclientandroidlib.util.ByteArrayBuffer buffer>;
+
+        $z0_2 = virtualinvoke $r3_5.<ch.boye.httpclientandroidlib.util.ByteArrayBuffer: boolean isFull()>();
+
+        if $z0_2 == 0 goto label4;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void flushBuffer()>();
+
+     label4:
+        $i0_2 = $i0_1 + $i2_3;
+
+        $i1_2 = $i1_1 - $i2_3;
+
+(4)     goto label2;
+
+     label5:
+        $r4 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: char[] buffer()>();
+
+        $i0_3 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: int length()>();
+
+        $r5 = staticinvoke <java.nio.CharBuffer: java.nio.CharBuffer wrap(char[],int,int)>($r4, 0, $i0_3);
+
+(5)     specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void writeEncoded(java.nio.CharBuffer)>($r5);
+
+     label6:
+        $i0_4 = Phi($i0_1 #1, $i0_3 #5);
+
+        $r3_6 = Phi($r3 #1, $r3 #5);
+
+        $i2_4 = Phi($i2 #1, $i2 #5);
+
+        $z0_3 = Phi($z0_1 #1, $z0 #5);
+
+        $i1_3 = Phi($i1_1 #1, $i1 #5);
+
+        $r2 = <ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: byte[] CRLF>;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void write(byte[])>($r2);
+
+        return;
+    }
+
+    public void writeLine(java.lang.String) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer $r0;
+        java.lang.String $r1;
+        boolean $z0;
+        byte[] $r2;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4;
+        char $c2;
+        java.nio.CharBuffer $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer;
+
+        $r1 := @parameter0: java.lang.String;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+(0)     if $i0 <= 0 goto label4;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: boolean ascii>;
+
+        if $z0 == 0 goto label3;
+
+(1)     $i0_1 = 0;
+
+     label2:
+        $i0_2 = Phi($i0_1 #1, $i0_3 #3);
+
+        $i1 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+(2)     if $i0_2 >= $i1 goto label4;
+
+        $c2 = virtualinvoke $r1.<java.lang.String: char charAt(int)>($i0_2);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void write(int)>($c2);
+
+        $i0_3 = $i0_2 + 1;
+
+(3)     goto label2;
+
+     label3:
+        $r3 = staticinvoke <java.nio.CharBuffer: java.nio.CharBuffer wrap(java.lang.CharSequence)>($r1);
+
+(4)     specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void writeEncoded(java.nio.CharBuffer)>($r3);
+
+     label4:
+        $i0_4 = Phi($i0 #0, $i0_2 #2, $i0 #4);
+
+        $r2 = <ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: byte[] CRLF>;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.io.AbstractSessionOutputBuffer: void write(byte[])>($r2);
+
+        return;
+    }
+}

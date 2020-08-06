@@ -1,0 +1,448 @@
+public abstract class ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry extends java.lang.Object
+{
+    protected final ch.boye.httpclientandroidlib.conn.ClientConnectionOperator connOperator;
+    protected final ch.boye.httpclientandroidlib.conn.OperatedClientConnection connection;
+    protected volatile ch.boye.httpclientandroidlib.conn.routing.HttpRoute route;
+    protected volatile java.lang.Object state;
+    protected volatile ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker;
+
+    protected void <init>(ch.boye.httpclientandroidlib.conn.ClientConnectionOperator, ch.boye.httpclientandroidlib.conn.routing.HttpRoute)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r0;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionOperator $r1;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r2;
+        java.lang.IllegalArgumentException $r3;
+        ch.boye.httpclientandroidlib.conn.OperatedClientConnection $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Connection operator may not be null");
+
+        throw $r3;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator connOperator> = $r1;
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.conn.ClientConnectionOperator: ch.boye.httpclientandroidlib.conn.OperatedClientConnection createConnection()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.OperatedClientConnection connection> = $r4;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.HttpRoute route> = $r2;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker> = null;
+
+        return;
+    }
+
+    public java.lang.Object getState()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r0;
+        java.lang.Object r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: java.lang.Object state>;
+
+        return r1;
+    }
+
+    public void layerProtocol(ch.boye.httpclientandroidlib.protocol.HttpContext, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r0;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        java.lang.IllegalArgumentException $r3;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionOperator $r4;
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.lang.IllegalStateException $r6, $r6_1, $r6_2;
+        ch.boye.httpclientandroidlib.HttpHost $r7;
+        ch.boye.httpclientandroidlib.conn.OperatedClientConnection $r8, $r8_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        if $r2 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Parameters must not be null.");
+
+        throw $r3;
+
+     label1:
+        $r5 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+(0)     if $r5 == null goto label2;
+
+        $r5_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $z0 = virtualinvoke $r5_1.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean isConnected()>();
+
+(1)     if $z0 != 0 goto label3;
+
+     label2:
+        $r5_6 = Phi($r5 #0, $r5_1 #1);
+
+        $z0_4 = Phi($z0 #0, $z0 #1);
+
+        $r6_2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r6_2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Connection not open.");
+
+        throw $r6_2;
+
+     label3:
+        $r5_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $z0_1 = virtualinvoke $r5_2.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean isTunnelled()>();
+
+        if $z0_1 != 0 goto label4;
+
+        $r6 = new java.lang.IllegalStateException;
+
+        specialinvoke $r6.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Protocol layering without a tunnel not supported.");
+
+        throw $r6;
+
+     label4:
+        $r5_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $z0_2 = virtualinvoke $r5_3.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean isLayered()>();
+
+        if $z0_2 == 0 goto label5;
+
+        $r6_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r6_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Multiple protocol layering not supported.");
+
+        throw $r6_1;
+
+     label5:
+        $r5_4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $r7 = virtualinvoke $r5_4.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost getTargetHost()>();
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator connOperator>;
+
+        $r8 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.OperatedClientConnection connection>;
+
+        interfaceinvoke $r4.<ch.boye.httpclientandroidlib.conn.ClientConnectionOperator: void updateSecureConnection(ch.boye.httpclientandroidlib.conn.OperatedClientConnection,ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.protocol.HttpContext,ch.boye.httpclientandroidlib.params.HttpParams)>($r8, $r7, $r1, $r2);
+
+        $r5_5 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $r8_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.OperatedClientConnection connection>;
+
+        $z0_3 = interfaceinvoke $r8_1.<ch.boye.httpclientandroidlib.conn.OperatedClientConnection: boolean isSecure()>();
+
+        virtualinvoke $r5_5.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: void layerProtocol(boolean)>($z0_3);
+
+        return;
+    }
+
+    public void open(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, ch.boye.httpclientandroidlib.protocol.HttpContext, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r3;
+        java.lang.IllegalStateException $r4;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionOperator $r5;
+        java.io.InterruptedIOException $r6;
+        java.lang.IllegalArgumentException $r7, $r7_1;
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        ch.boye.httpclientandroidlib.HttpHost $r9, $r11, $r11_1, $r11_2;
+        ch.boye.httpclientandroidlib.conn.OperatedClientConnection $r10, $r10_1, $r10_2;
+        java.net.InetAddress $r12;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        if $r1 != null goto label1;
+
+        $r7 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r7.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Route must not be null.");
+
+        throw $r7;
+
+     label1:
+        if $r3 != null goto label2;
+
+        $r7_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r7_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Parameters must not be null.");
+
+        throw $r7_1;
+
+     label2:
+        $r8 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+(0)     if $r8 == null goto label3;
+
+        $r8_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $z0 = virtualinvoke $r8_1.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean isConnected()>();
+
+(1)     if $z0 == 0 goto label3;
+
+        $r4 = new java.lang.IllegalStateException;
+
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Connection already open.");
+
+        throw $r4;
+
+     label3:
+        $z0_1 = Phi($z0 #0, $z0 #1);
+
+        $r8_2 = Phi($r8 #0, $r8_1 #1);
+
+        $r8_3 = new ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        specialinvoke $r8_3.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: void <init>(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker> = $r8_3;
+
+        $r9 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getProxyHost()>();
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator connOperator>;
+
+        $r10 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.OperatedClientConnection connection>;
+
+        if $r9 == null goto label5;
+
+(2)     $r11 = $r9;
+
+     label4:
+        $r11_1 = Phi($r11 #2, $r11_2 #3);
+
+        $r12 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: java.net.InetAddress getLocalAddress()>();
+
+        interfaceinvoke $r5.<ch.boye.httpclientandroidlib.conn.ClientConnectionOperator: void openConnection(ch.boye.httpclientandroidlib.conn.OperatedClientConnection,ch.boye.httpclientandroidlib.HttpHost,java.net.InetAddress,ch.boye.httpclientandroidlib.protocol.HttpContext,ch.boye.httpclientandroidlib.params.HttpParams)>($r10, $r11_1, $r12, $r2, $r3);
+
+        $r8_4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        if $r8_4 != null goto label6;
+
+        $r6 = new java.io.InterruptedIOException;
+
+        specialinvoke $r6.<java.io.InterruptedIOException: void <init>(java.lang.String)>("Request aborted");
+
+        throw $r6;
+
+     label5:
+        $r11_2 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getTargetHost()>();
+
+(3)     goto label4;
+
+     label6:
+        if $r9 != null goto label7;
+
+        $r10_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.OperatedClientConnection connection>;
+
+        $z0_2 = interfaceinvoke $r10_1.<ch.boye.httpclientandroidlib.conn.OperatedClientConnection: boolean isSecure()>();
+
+        virtualinvoke $r8_4.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: void connectTarget(boolean)>($z0_2);
+
+        return;
+
+     label7:
+        $r10_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.OperatedClientConnection connection>;
+
+        $z0_3 = interfaceinvoke $r10_2.<ch.boye.httpclientandroidlib.conn.OperatedClientConnection: boolean isSecure()>();
+
+        virtualinvoke $r8_4.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: void connectProxy(ch.boye.httpclientandroidlib.HttpHost,boolean)>($r9, $z0_3);
+
+        return;
+    }
+
+    public void setState(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r0;
+        java.lang.Object $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: java.lang.Object state> = $r1;
+
+        return;
+    }
+
+    protected void shutdownEntry()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker> = null;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: java.lang.Object state> = null;
+
+        return;
+    }
+
+    public void tunnelProxy(ch.boye.httpclientandroidlib.HttpHost, boolean, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        boolean $z0, $z1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        java.lang.IllegalStateException $r3;
+        ch.boye.httpclientandroidlib.conn.OperatedClientConnection $r4;
+        java.lang.IllegalArgumentException $r5, $r5_1;
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r6, $r6_1, $r6_2, $r6_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        if $r1 != null goto label1;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Next proxy must not be null.");
+
+        throw $r5;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r5_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Parameters must not be null.");
+
+        throw $r5_1;
+
+     label2:
+        $r6 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+(0)     if $r6 == null goto label3;
+
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $z1 = virtualinvoke $r6_1.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean isConnected()>();
+
+(1)     if $z1 != 0 goto label4;
+
+     label3:
+        $r6_3 = Phi($r6 #0, $r6_1 #1);
+
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Connection not open.");
+
+        throw $r3;
+
+     label4:
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.OperatedClientConnection connection>;
+
+        interfaceinvoke $r4.<ch.boye.httpclientandroidlib.conn.OperatedClientConnection: void update(java.net.Socket,ch.boye.httpclientandroidlib.HttpHost,boolean,ch.boye.httpclientandroidlib.params.HttpParams)>(null, $r1, $z0, $r2);
+
+        $r6_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        virtualinvoke $r6_2.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: void tunnelProxy(ch.boye.httpclientandroidlib.HttpHost,boolean)>($r1, $z0);
+
+        return;
+    }
+
+    public void tunnelTarget(boolean, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r0;
+        boolean $z0, $z1, $z1_1, $z1_2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r1;
+        java.lang.IllegalArgumentException $r2;
+        ch.boye.httpclientandroidlib.conn.OperatedClientConnection $r3;
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        java.lang.IllegalStateException $r5, $r5_1;
+        ch.boye.httpclientandroidlib.HttpHost $r6;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 := @parameter1: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Parameters must not be null.");
+
+        throw $r2;
+
+     label1:
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+(0)     if $r4 == null goto label2;
+
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $z1 = virtualinvoke $r4_1.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean isConnected()>();
+
+(1)     if $z1 != 0 goto label3;
+
+     label2:
+        $r4_5 = Phi($r4 #0, $r4_1 #1);
+
+        $z1_2 = Phi($z1 #0, $z1 #1);
+
+        $r5_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Connection not open.");
+
+        throw $r5_1;
+
+     label3:
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $z1_1 = virtualinvoke $r4_2.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean isTunnelled()>();
+
+        if $z1_1 == 0 goto label4;
+
+        $r5 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Connection is already tunnelled.");
+
+        throw $r5;
+
+     label4:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.OperatedClientConnection connection>;
+
+        $r4_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $r6 = virtualinvoke $r4_3.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost getTargetHost()>();
+
+        interfaceinvoke $r3.<ch.boye.httpclientandroidlib.conn.OperatedClientConnection: void update(java.net.Socket,ch.boye.httpclientandroidlib.HttpHost,boolean,ch.boye.httpclientandroidlib.params.HttpParams)>(null, $r6, $z0, $r1);
+
+        $r4_4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        virtualinvoke $r4_4.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: void tunnelTarget(boolean)>($z0);
+
+        return;
+    }
+}

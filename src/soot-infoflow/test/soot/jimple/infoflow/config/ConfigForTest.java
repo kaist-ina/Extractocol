@@ -43,6 +43,7 @@ public class ConfigForTest implements IInfoflowConfig{
 		options.set_output_format(Options.output_format_none);
 		Options.v().setPhaseOption("jb", "use-original-names:true");
 //		Options.v().setPhaseOption("cg.spark", "string-constants:true");
+		Options.v().set_ignore_classpath_errors(true);
 	}
 
 }

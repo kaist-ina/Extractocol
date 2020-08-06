@@ -1,0 +1,910 @@
+public final class ch.boye.httpclientandroidlib.conn.routing.RouteTracker extends java.lang.Object implements ch.boye.httpclientandroidlib.conn.routing.RouteInfo, java.lang.Cloneable
+{
+    private boolean connected;
+    private ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered;
+    private final java.net.InetAddress localAddress;
+    private ch.boye.httpclientandroidlib.HttpHost[] proxyChain;
+    private boolean secure;
+    private final ch.boye.httpclientandroidlib.HttpHost targetHost;
+    private ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled;
+
+    public void <init>(ch.boye.httpclientandroidlib.HttpHost, java.net.InetAddress)
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        java.net.InetAddress $r2;
+        java.lang.IllegalArgumentException $r3;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType $r4;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: java.net.InetAddress;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Target host may not be null.");
+
+        throw $r3;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost targetHost> = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: java.net.InetAddress localAddress> = $r2;
+
+        $r4 = <ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType PLAIN>;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled> = $r4;
+
+        $r5 = <ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType PLAIN>;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered> = $r5;
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        ch.boye.httpclientandroidlib.HttpHost $r2;
+        java.net.InetAddress $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: ch.boye.httpclientandroidlib.HttpHost getTargetHost()>();
+
+        $r3 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: java.net.InetAddress getLocalAddress()>();
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: void <init>(ch.boye.httpclientandroidlib.HttpHost,java.net.InetAddress)>($r2, $r3);
+
+        return;
+    }
+
+    public java.lang.Object clone() throws java.lang.CloneNotSupportedException
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        java.lang.Object $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r1 = specialinvoke $r0.<java.lang.Object: java.lang.Object clone()>();
+
+        return $r1;
+    }
+
+    public final void connectProxy(ch.boye.httpclientandroidlib.HttpHost, boolean)
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        boolean $z0, $z1;
+        java.lang.IllegalArgumentException $r2;
+        java.lang.IllegalStateException $r3;
+        ch.boye.httpclientandroidlib.HttpHost[] $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $z0 := @parameter1: boolean;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Proxy host may not be null.");
+
+        throw $r2;
+
+     label1:
+        $z1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        if $z1 == 0 goto label2;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Already connected.");
+
+        throw $r3;
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected> = 1;
+
+        $r4 = newarray (ch.boye.httpclientandroidlib.HttpHost)[1];
+
+        $r4[0] = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain> = $r4;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure> = $z0;
+
+        return;
+    }
+
+    public final void connectTarget(boolean)
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        boolean $z0, $z1;
+        java.lang.IllegalStateException $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        if $z1 == 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Already connected.");
+
+        throw $r1;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected> = 1;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure> = $z0;
+
+        return;
+    }
+
+    public final boolean equals(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0, $r11;
+        java.lang.Object $r1;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType $r2, $r3;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType $r4, $r5;
+        ch.boye.httpclientandroidlib.HttpHost $r6, $r7;
+        java.net.InetAddress $r8, $r9;
+        ch.boye.httpclientandroidlib.HttpHost[] $r10, $r12;
+        boolean $z0, $z1, $z0_1, $z0_2, $z1_1, $z0_3, $z0_4, $z0_5, $z1_2, $z0_6;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        if $r1 != $r0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0 = $r1 instanceof ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        if $z0 != 0 goto label2;
+
+        return 0;
+
+     label2:
+        $r11 = (ch.boye.httpclientandroidlib.conn.routing.RouteTracker) $r1;
+
+        $z0_1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        $z1 = $r11.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+(0)     if $z0_1 != $z1 goto label3;
+
+        $z0_2 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure>;
+
+        $z1_1 = $r11.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure>;
+
+(1)     if $z0_2 != $z1_1 goto label3;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled>;
+
+        $r3 = $r11.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled>;
+
+(2)     if $r2 != $r3 goto label3;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered>;
+
+        $r5 = $r11.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered>;
+
+(3)     if $r4 != $r5 goto label3;
+
+        $r6 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost targetHost>;
+
+        $r7 = $r11.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost targetHost>;
+
+        $z0_3 = staticinvoke <ch.boye.httpclientandroidlib.util.LangUtils: boolean equals(java.lang.Object,java.lang.Object)>($r6, $r7);
+
+(4)     if $z0_3 == 0 goto label3;
+
+        $r8 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: java.net.InetAddress localAddress>;
+
+        $r9 = $r11.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: java.net.InetAddress localAddress>;
+
+        $z0_4 = staticinvoke <ch.boye.httpclientandroidlib.util.LangUtils: boolean equals(java.lang.Object,java.lang.Object)>($r8, $r9);
+
+(5)     if $z0_4 == 0 goto label3;
+
+        $r10 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $r12 = $r11.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $z0_5 = staticinvoke <ch.boye.httpclientandroidlib.util.LangUtils: boolean equals(java.lang.Object[],java.lang.Object[])>($r10, $r12);
+
+(6)     if $z0_5 != 0 goto label4;
+
+     label3:
+        $z1_2 = Phi($z1 #0, $z1_1 #1, $z1_1 #2, $z1_1 #3, $z1_1 #4, $z1_1 #5, $z1_1 #6);
+
+        $z0_6 = Phi($z0_1 #0, $z0_2 #1, $z0_2 #2, $z0_2 #3, $z0_3 #4, $z0_4 #5, $z0_5 #6);
+
+        return 0;
+
+     label4:
+        return 1;
+    }
+
+    public final int getHopCount()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.HttpHost[] $r1, $r1_1;
+        int $i0, $i0_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        if $z0 == 0 goto label2;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        if $r1 != null goto label1;
+
+        return 1;
+
+     label1:
+        $r1_1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $i0 = lengthof $r1_1;
+
+        $i0_1 = $i0 + 1;
+
+        return $i0_1;
+
+     label2:
+        return 0;
+    }
+
+    public final ch.boye.httpclientandroidlib.HttpHost getHopTarget(int)
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        int $i0, $i1, $i1_1;
+        ch.boye.httpclientandroidlib.HttpHost[] $r1;
+        java.lang.IllegalArgumentException $r2, $r2_1;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8;
+        java.lang.String $r4, $r4_1;
+        ch.boye.httpclientandroidlib.HttpHost $r5, $r5_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $i0 := @parameter0: int;
+
+        if $i0 >= 0 goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Hop index must not be negative: ");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label1:
+        $i1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: int getHopCount()>();
+
+        if $i0 < $i1 goto label2;
+
+        $r2_1 = new java.lang.IllegalArgumentException;
+
+        $r3_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Hop index ");
+
+        $r3_5 = virtualinvoke $r3_4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r3_6 = virtualinvoke $r3_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" exceeds tracked route length ");
+
+        $r3_7 = virtualinvoke $r3_6.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r3_8 = virtualinvoke $r3_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".");
+
+        $r4_1 = virtualinvoke $r3_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4_1);
+
+        throw $r2_1;
+
+     label2:
+        $i1_1 = $i1 + -1;
+
+        if $i0 >= $i1_1 goto label3;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $r5 = $r1[$i0];
+
+        return $r5;
+
+     label3:
+        $r5_1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost targetHost>;
+
+        return $r5_1;
+    }
+
+    public final ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType getLayerType()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered>;
+
+        return r1;
+    }
+
+    public final java.net.InetAddress getLocalAddress()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        java.net.InetAddress r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: java.net.InetAddress localAddress>;
+
+        return r1;
+    }
+
+    public final ch.boye.httpclientandroidlib.HttpHost getProxyHost()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.HttpHost[] $r2, $r2_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        if $r2 != null goto label1;
+
+        return null;
+
+     label1:
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $r1 = $r2_1[0];
+
+        return $r1;
+    }
+
+    public final ch.boye.httpclientandroidlib.HttpHost getTargetHost()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.HttpHost r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost targetHost>;
+
+        return r1;
+    }
+
+    public final ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType getTunnelType()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled>;
+
+        return r1;
+    }
+
+    public final int hashCode()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        java.net.InetAddress $r1;
+        int $i0, $i1, $i2, $i1_1, $i2_1, $i1_2, $i2_2, $i1_3, $i2_3, $i1_4, $i1_5, $i1_6, $i1_7, $i1_8;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType $r2;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType $r3;
+        ch.boye.httpclientandroidlib.HttpHost $r4, $r4_1, $r4_2, $r4_3;
+        ch.boye.httpclientandroidlib.HttpHost[] $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost targetHost>;
+
+        $i1 = staticinvoke <ch.boye.httpclientandroidlib.util.LangUtils: int hashCode(int,java.lang.Object)>(17, $r4);
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: java.net.InetAddress localAddress>;
+
+        $i2 = staticinvoke <ch.boye.httpclientandroidlib.util.LangUtils: int hashCode(int,java.lang.Object)>($i1, $r1);
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+(0)     if $r5 == null goto label2;
+
+(1)     $i1_1 = 0;
+
+     label1:
+        $r5_1 = Phi($r5 #1, $r5_3 #3);
+
+        $i2_1 = Phi($i2 #1, $i2_2 #3);
+
+        $i1_2 = Phi($i1_1 #1, $i1_3 #3);
+
+        $r4_1 = Phi($r4 #1, $r4_2 #3);
+
+        $r5_2 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $i0 = lengthof $r5_2;
+
+(2)     if $i1_2 >= $i0 goto label2;
+
+        $r5_3 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $r4_2 = $r5_3[$i1_2];
+
+        $i2_2 = staticinvoke <ch.boye.httpclientandroidlib.util.LangUtils: int hashCode(int,java.lang.Object)>($i2_1, $r4_2);
+
+        $i1_3 = $i1_2 + 1;
+
+(3)     goto label1;
+
+     label2:
+        $r5_4 = Phi($r5 #0, $r5_2 #2);
+
+        $i2_3 = Phi($i2 #0, $i2_1 #2);
+
+        $i1_4 = Phi($i1 #0, $i1_2 #2);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #2);
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        $i1_5 = staticinvoke <ch.boye.httpclientandroidlib.util.LangUtils: int hashCode(int,boolean)>($i2_3, $z0);
+
+        $z0_1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure>;
+
+        $i1_6 = staticinvoke <ch.boye.httpclientandroidlib.util.LangUtils: int hashCode(int,boolean)>($i1_5, $z0_1);
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled>;
+
+        $i1_7 = staticinvoke <ch.boye.httpclientandroidlib.util.LangUtils: int hashCode(int,java.lang.Object)>($i1_6, $r2);
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered>;
+
+        $i1_8 = staticinvoke <ch.boye.httpclientandroidlib.util.LangUtils: int hashCode(int,java.lang.Object)>($i1_7, $r3);
+
+        return $i1_8;
+    }
+
+    public final boolean isConnected()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        boolean z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        z0 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        return z0;
+    }
+
+    public final boolean isLayered()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType $r1, $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered>;
+
+        $r2 = <ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType LAYERED>;
+
+        if $r1 != $r2 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public final boolean isSecure()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        boolean z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        z0 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure>;
+
+        return z0;
+    }
+
+    public final boolean isTunnelled()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType $r1, $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled>;
+
+        $r2 = <ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType TUNNELLED>;
+
+        if $r1 != $r2 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public final void layerProtocol(boolean)
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        boolean $z0, $z1;
+        java.lang.IllegalStateException $r1;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        if $z1 != 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("No layered protocol unless connected.");
+
+        throw $r1;
+
+     label1:
+        $r2 = <ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType LAYERED>;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered> = $r2;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure> = $z0;
+
+        return;
+    }
+
+    public void reset()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType $r1;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected> = 0;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain> = null;
+
+        $r1 = <ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType PLAIN>;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled> = $r1;
+
+        $r2 = <ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType PLAIN>;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered> = $r2;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure> = 0;
+
+        return;
+    }
+
+    public final ch.boye.httpclientandroidlib.conn.routing.HttpRoute toRoute()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        ch.boye.httpclientandroidlib.HttpHost $r2;
+        java.net.InetAddress $r3;
+        ch.boye.httpclientandroidlib.HttpHost[] $r4;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType $r5;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType $r6;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        if $z0 != 0 goto label1;
+
+        return null;
+
+     label1:
+        $r1 = new ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost targetHost>;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: java.net.InetAddress localAddress>;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $z0_1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure>;
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled>;
+
+        $r6 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered>;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: void <init>(ch.boye.httpclientandroidlib.HttpHost,java.net.InetAddress,ch.boye.httpclientandroidlib.HttpHost[],boolean,ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType,ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType)>($r2, $r3, $r4, $z0_1, $r5, $r6);
+
+        return $r1;
+    }
+
+    public final java.lang.String toString()
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        java.lang.StringBuilder $r1;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType $r2, $r3;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType $r4, $r5;
+        int $i0, $i1, $i0_1, $i0_2, $i1_1, $i0_3, $i0_4, $i1_2, $i1_3, $i0_5;
+        java.net.InetAddress $r6, $r6_1, $r6_2;
+        boolean $z0, $z0_1;
+        ch.boye.httpclientandroidlib.HttpHost[] $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+        ch.boye.httpclientandroidlib.HttpHost $r8, $r8_1, $r8_2, $r8_3;
+        java.lang.String $r9;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r1 = new java.lang.StringBuilder;
+
+        $i0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: int getHopCount()>();
+
+        $i0_1 = $i0 * 30;
+
+        $i0_2 = $i0_1 + 50;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(int)>($i0_2);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("RouteTracker[");
+
+        $r6 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: java.net.InetAddress localAddress>;
+
+(0)     if $r6 == null goto label1;
+
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: java.net.InetAddress localAddress>;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6_1);
+
+(1)     virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("->");
+
+     label1:
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(123);
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(99);
+
+     label2:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled>;
+
+        $r3 = <ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType TUNNELLED>;
+
+        if $r2 != $r3 goto label3;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(116);
+
+     label3:
+        $r4 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType layered>;
+
+        $r5 = <ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$LayerType LAYERED>;
+
+        if $r4 != $r5 goto label4;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(108);
+
+     label4:
+        $z0_1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure>;
+
+        if $z0_1 == 0 goto label5;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(115);
+
+     label5:
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}->");
+
+        $r7 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+(2)     if $r7 == null goto label7;
+
+(3)     $i1 = 0;
+
+     label6:
+        $r7_1 = Phi($r7 #3, $r7_3 #5);
+
+        $r8 = Phi($r8 #3, $r8_1 #5);
+
+        $i1_1 = Phi($i1 #3, $i1_2 #5);
+
+        $i0_3 = Phi($i0_2 #3, $i0_4 #5);
+
+        $r7_2 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $i0_4 = lengthof $r7_2;
+
+(4)     if $i1_1 >= $i0_4 goto label7;
+
+        $r7_3 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $r8_1 = $r7_3[$i1_1];
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8_1);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("->");
+
+        $i1_2 = $i1_1 + 1;
+
+(5)     goto label6;
+
+     label7:
+        $r7_4 = Phi($r7 #2, $r7_2 #4);
+
+        $r8_2 = Phi($r8 #2, $r8 #4);
+
+        $i1_3 = Phi($i1 #2, $i1_1 #4);
+
+        $i0_5 = Phi($i0_2 #2, $i0_4 #4);
+
+        $r8_3 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost targetHost>;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8_3);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(93);
+
+        $r9 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r9;
+    }
+
+    public final void tunnelProxy(ch.boye.httpclientandroidlib.HttpHost, boolean)
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        boolean $z0, $z1;
+        java.lang.IllegalArgumentException $r2;
+        ch.boye.httpclientandroidlib.HttpHost[] $r3, $r4, $r6, $r3_1, $r3_2;
+        java.lang.IllegalStateException $r5, $r5_1;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $z0 := @parameter1: boolean;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Proxy host may not be null.");
+
+        throw $r2;
+
+     label1:
+        $z1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        if $z1 != 0 goto label2;
+
+        $r5 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5.<java.lang.IllegalStateException: void <init>(java.lang.String)>("No tunnel unless connected.");
+
+        throw $r5;
+
+     label2:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        if $r3 != null goto label3;
+
+        $r5_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("No proxy tunnel without proxy.");
+
+        throw $r5_1;
+
+     label3:
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $i0 = lengthof $r3_1;
+
+        $i0_1 = $i0 + 1;
+
+        $r6 = newarray (ch.boye.httpclientandroidlib.HttpHost)[$i0_1];
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        $i0_2 = lengthof $r4;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r3_2, 0, $r6, 0, $i0_2);
+
+        $i0_3 = lengthof $r6;
+
+        $i0_4 = $i0_3 + -1;
+
+        $r6[$i0_4] = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain> = $r6;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure> = $z0;
+
+        return;
+    }
+
+    public final void tunnelTarget(boolean)
+    {
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r0;
+        boolean $z0, $z1;
+        ch.boye.httpclientandroidlib.HttpHost[] $r1;
+        ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType $r2;
+        java.lang.IllegalStateException $r3, $r3_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.routing.RouteTracker;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean connected>;
+
+        if $z1 != 0 goto label1;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("No tunnel unless connected.");
+
+        throw $r3;
+
+     label1:
+        $r1 = $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.HttpHost[] proxyChain>;
+
+        if $r1 != null goto label2;
+
+        $r3_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("No tunnel without proxy.");
+
+        throw $r3_1;
+
+     label2:
+        $r2 = <ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType TUNNELLED>;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.RouteInfo$TunnelType tunnelled> = $r2;
+
+        $r0.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: boolean secure> = $z0;
+
+        return;
+    }
+}

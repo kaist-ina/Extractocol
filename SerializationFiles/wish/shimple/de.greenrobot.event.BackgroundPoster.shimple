@@ -1,0 +1,229 @@
+final class de.greenrobot.event.BackgroundPoster extends java.lang.Object implements java.lang.Runnable
+{
+    private final de.greenrobot.event.EventBus eventBus;
+    private volatile boolean executorRunning;
+    private final de.greenrobot.event.PendingPostQueue queue;
+
+    void <init>(de.greenrobot.event.EventBus)
+    {
+        de.greenrobot.event.BackgroundPoster $r0;
+        de.greenrobot.event.EventBus $r1;
+        de.greenrobot.event.PendingPostQueue $r2;
+
+        $r0 := @this: de.greenrobot.event.BackgroundPoster;
+
+        $r1 := @parameter0: de.greenrobot.event.EventBus;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<de.greenrobot.event.BackgroundPoster: de.greenrobot.event.EventBus eventBus> = $r1;
+
+        $r2 = new de.greenrobot.event.PendingPostQueue;
+
+        specialinvoke $r2.<de.greenrobot.event.PendingPostQueue: void <init>()>();
+
+        $r0.<de.greenrobot.event.BackgroundPoster: de.greenrobot.event.PendingPostQueue queue> = $r2;
+
+        return;
+    }
+
+    public void enqueue(de.greenrobot.event.Subscription, java.lang.Object)
+    {
+        de.greenrobot.event.BackgroundPoster $r0;
+        de.greenrobot.event.Subscription $r1;
+        java.lang.Object $r2;
+        de.greenrobot.event.PendingPostQueue $r3;
+        boolean $z0;
+        java.util.concurrent.ExecutorService $r4;
+        java.lang.Throwable $r5;
+        de.greenrobot.event.PendingPost $r6;
+
+        $r0 := @this: de.greenrobot.event.BackgroundPoster;
+
+        $r1 := @parameter0: de.greenrobot.event.Subscription;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r6 = staticinvoke <de.greenrobot.event.PendingPost: de.greenrobot.event.PendingPost obtainPendingPost(de.greenrobot.event.Subscription,java.lang.Object)>($r1, $r2);
+
+        entermonitor $r0;
+
+     label1:
+        $r3 = $r0.<de.greenrobot.event.BackgroundPoster: de.greenrobot.event.PendingPostQueue queue>;
+
+        virtualinvoke $r3.<de.greenrobot.event.PendingPostQueue: void enqueue(de.greenrobot.event.PendingPost)>($r6);
+
+        $z0 = $r0.<de.greenrobot.event.BackgroundPoster: boolean executorRunning>;
+
+        if $z0 != 0 goto label2;
+
+        $r0.<de.greenrobot.event.BackgroundPoster: boolean executorRunning> = 1;
+
+        $r4 = <de.greenrobot.event.EventBus: java.util.concurrent.ExecutorService executorService>;
+
+        interfaceinvoke $r4.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r0);
+
+     label2:
+        exitmonitor $r0;
+
+     label3:
+        return;
+
+     label4:
+        $r5 := @caughtexception;
+
+        exitmonitor $r0;
+
+     label5:
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label4 to label5 with label4;
+    }
+
+    public void run()
+    {
+        de.greenrobot.event.BackgroundPoster $r0;
+        de.greenrobot.event.EventBus $r1;
+        java.lang.InterruptedException $r2;
+        java.lang.Throwable $r3, $r4;
+        de.greenrobot.event.PendingPostQueue $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6;
+        de.greenrobot.event.PendingPost $r6, $r7, $r6_1, $r7_1, $r6_2, $r7_2, $r7_3, $r6_3, $r7_4, $r6_4, $r7_5, $r6_5, $r7_6, $r6_6;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3;
+        java.lang.Thread $r9;
+        java.lang.String $r10, $r10_1, $r10_2;
+
+(0)     $r0 := @this: de.greenrobot.event.BackgroundPoster;
+
+     label01:
+        $r7 = Phi($r7 #0, $r7_4 #10);
+
+        $r5 = Phi($r5 #0, $r5_4 #10);
+
+        $r6 = Phi($r6 #0, $r6_4 #10);
+
+(1)     $r5_1 = $r0.<de.greenrobot.event.BackgroundPoster: de.greenrobot.event.PendingPostQueue queue>;
+
+     label02:
+(2)     $r6_1 = virtualinvoke $r5_1.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost poll(int)>(1000);
+
+     label03:
+        $r7_1 = $r6_1;
+
+(3)     if $r6_1 != null goto label08;
+
+     label04:
+(4)     entermonitor $r0;
+
+     label05:
+(5)     $r5_2 = $r0.<de.greenrobot.event.BackgroundPoster: de.greenrobot.event.PendingPostQueue queue>;
+
+(6)     $r6_2 = virtualinvoke $r5_2.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost poll()>();
+
+(7)     $r7_2 = $r6_2;
+
+        if $r6_2 != null goto label07;
+
+        $r0.<de.greenrobot.event.BackgroundPoster: boolean executorRunning> = 0;
+
+        exitmonitor $r0;
+
+     label06:
+        $r0.<de.greenrobot.event.BackgroundPoster: boolean executorRunning> = 0;
+
+        return;
+
+     label07:
+(8)     exitmonitor $r0;
+
+     label08:
+        $r7_4 = Phi($r7_1 #3, $r7_2 #8);
+
+        $r5_4 = Phi($r5_1 #3, $r5_2 #8);
+
+        $r6_4 = Phi($r6_1 #3, $r6_2 #8);
+
+(9)     $r1 = $r0.<de.greenrobot.event.BackgroundPoster: de.greenrobot.event.EventBus eventBus>;
+
+     label09:
+        virtualinvoke $r1.<de.greenrobot.event.EventBus: void invokeSubscriber(de.greenrobot.event.PendingPost)>($r7_4);
+
+     label10:
+(10)    goto label01;
+
+     label11:
+        $r2 := @caughtexception;
+
+        $r7_5 = Phi($r7 #1, $r7_4 #9, $r7_3 #17);
+
+        $r5_5 = Phi($r5_1 #1, $r5_4 #9, $r5_3 #17);
+
+(11)    $r6_5 = Phi($r6 #1, $r6_1 #2, $r6_4 #9, $r6_3 #17);
+
+     label12:
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r9 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        $r10 = virtualinvoke $r9.<java.lang.Thread: java.lang.String getName()>();
+
+(12)    $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+(13)    $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" was interruppted");
+
+(14)    $r10_1 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>("Event", $r10_1, $r2);
+
+     label13:
+        $r0.<de.greenrobot.event.BackgroundPoster: boolean executorRunning> = 0;
+
+        return;
+
+     label14:
+        $r3 := @caughtexception;
+
+        $r7_3 = Phi($r7_1 #4, $r7_2 #7, $r7_3 #15);
+
+        $r5_3 = Phi($r5_1 #4, $r5_2 #5, $r5_3 #15);
+
+(15)    $r6_3 = Phi($r6_1 #4, $r6_2 #6, $r6_3 #15);
+
+     label15:
+(16)    exitmonitor $r0;
+
+     label16:
+(17)    throw $r3;
+
+     label17:
+        $r4 := @caughtexception;
+
+        $r7_6 = Phi($r7 #1, $r7_1 #3, $r7_4 #9, $r7_5 #11, $r7_3 #16);
+
+        $r5_6 = Phi($r5_1 #1, $r5_4 #9, $r5_5 #11, $r5_3 #16);
+
+        $r10_2 = Phi($r10 #1, $r10_1 #14);
+
+        $r8_3 = Phi($r8 #1, $r8_1 #12, $r8_2 #13);
+
+        $r6_6 = Phi($r6 #1, $r6_1 #2, $r6_4 #9, $r6_5 #11, $r6_3 #16);
+
+        $r0.<de.greenrobot.event.BackgroundPoster: boolean executorRunning> = 0;
+
+        throw $r4;
+
+        catch java.lang.InterruptedException from label02 to label03 with label11;
+        catch java.lang.Throwable from label02 to label03 with label17;
+        catch java.lang.Throwable from label04 to label05 with label17;
+        catch java.lang.Throwable from label05 to label06 with label14;
+        catch java.lang.Throwable from label07 to label08 with label14;
+        catch java.lang.InterruptedException from label09 to label10 with label11;
+        catch java.lang.Throwable from label09 to label10 with label17;
+        catch java.lang.Throwable from label12 to label13 with label17;
+        catch java.lang.Throwable from label15 to label16 with label14;
+        catch java.lang.InterruptedException from label16 to label17 with label11;
+        catch java.lang.Throwable from label16 to label17 with label17;
+    }
+}

@@ -1,0 +1,825 @@
+public class ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection extends ch.boye.httpclientandroidlib.impl.SocketHttpClientConnection implements ch.boye.httpclientandroidlib.conn.OperatedClientConnection, ch.boye.httpclientandroidlib.protocol.HttpContext
+{
+    private final java.util.Map attributes;
+    private boolean connSecure;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog headerLog;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+    private volatile boolean shutdown;
+    private volatile java.net.Socket socket;
+    private ch.boye.httpclientandroidlib.HttpHost targetHost;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog wireLog;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.util.HashMap $r1;
+        java.lang.Class $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3, $r3_1, $r3_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpClientConnection: void <init>()>();
+
+        $r3 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r2 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r2);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r3;
+
+        $r3_1 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        specialinvoke $r3_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>("ch.boye.httpclientandroidlib.headers");
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog headerLog> = $r3_1;
+
+        $r3_2 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        specialinvoke $r3_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>("ch.boye.httpclientandroidlib.wire");
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog wireLog> = $r3_2;
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: java.util.Map attributes> = $r1;
+
+        return;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.io.IOException $r1;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        boolean $z0;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        java.lang.String $r4;
+
+(0)     $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+     label1:
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpClientConnection: void close()>();
+
+     label2:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label3:
+        $z0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+     label4:
+(1)     if $z0 == 0 goto label8;
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(2)     $r3 = new java.lang.StringBuilder;
+
+     label5:
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+(3)     $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Connection ");
+
+(4)     $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+(5)     $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" closed");
+
+        $r4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r4);
+
+     label6:
+        return;
+
+     label7:
+        $r1 := @caughtexception;
+
+        $r3_4 = Phi($r3 #0, $r3_1 #3, $r3_2 #4, $r3_3 #5);
+
+        $r2_2 = Phi($r2 #0, $r2_1 #2);
+
+        $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(6)     virtualinvoke $r2_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>("I/O error closing connection", $r1);
+
+     label8:
+        $r3_5 = Phi($r3 #1, $r3_4 #6);
+
+        $r2_4 = Phi($r2 #1, $r2_3 #6);
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label7;
+        catch java.io.IOException from label3 to label4 with label7;
+        catch java.io.IOException from label5 to label6 with label7;
+    }
+
+    protected ch.boye.httpclientandroidlib.io.HttpMessageParser createResponseParser(ch.boye.httpclientandroidlib.io.SessionInputBuffer, ch.boye.httpclientandroidlib.HttpResponseFactory, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        ch.boye.httpclientandroidlib.HttpResponseFactory $r2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r3;
+        ch.boye.httpclientandroidlib.impl.conn.DefaultHttpResponseParser $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpResponseFactory;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r4 = new ch.boye.httpclientandroidlib.impl.conn.DefaultHttpResponseParser;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.impl.conn.DefaultHttpResponseParser: void <init>(ch.boye.httpclientandroidlib.io.SessionInputBuffer,ch.boye.httpclientandroidlib.message.LineParser,ch.boye.httpclientandroidlib.HttpResponseFactory,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, null, $r2, $r3);
+
+        return $r4;
+    }
+
+    protected ch.boye.httpclientandroidlib.io.SessionInputBuffer createSessionInputBuffer(java.net.Socket, int, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.net.Socket $r1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        ch.boye.httpclientandroidlib.impl.conn.LoggingSessionInputBuffer $r3;
+        ch.boye.httpclientandroidlib.impl.conn.Wire $r4;
+        int $i0, $i0_1, $i0_2;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r5;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r6, $r6_1;
+        boolean $z0;
+        java.lang.String $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $r1 := @parameter0: java.net.Socket;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+(0)     if $i0 != -1 goto label1;
+
+(1)     $i0_1 = 8192;
+
+     label1:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $r5 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpClientConnection: ch.boye.httpclientandroidlib.io.SessionInputBuffer createSessionInputBuffer(java.net.Socket,int,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $i0_2, $r2);
+
+        $r6 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog wireLog>;
+
+        $z0 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+        if $z0 == 0 goto label2;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.conn.LoggingSessionInputBuffer;
+
+        $r4 = new ch.boye.httpclientandroidlib.impl.conn.Wire;
+
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog wireLog>;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.impl.conn.Wire: void <init>(ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog)>($r6_1);
+
+        $r7 = staticinvoke <ch.boye.httpclientandroidlib.params.HttpProtocolParams: java.lang.String getHttpElementCharset(ch.boye.httpclientandroidlib.params.HttpParams)>($r2);
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.conn.LoggingSessionInputBuffer: void <init>(ch.boye.httpclientandroidlib.io.SessionInputBuffer,ch.boye.httpclientandroidlib.impl.conn.Wire,java.lang.String)>($r5, $r4, $r7);
+
+        return $r3;
+
+     label2:
+        return $r5;
+    }
+
+    protected ch.boye.httpclientandroidlib.io.SessionOutputBuffer createSessionOutputBuffer(java.net.Socket, int, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.net.Socket $r1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        ch.boye.httpclientandroidlib.impl.conn.LoggingSessionOutputBuffer $r3;
+        ch.boye.httpclientandroidlib.impl.conn.Wire $r4;
+        int $i0, $i0_1, $i0_2;
+        ch.boye.httpclientandroidlib.io.SessionOutputBuffer $r5;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r6, $r6_1;
+        boolean $z0;
+        java.lang.String $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $r1 := @parameter0: java.net.Socket;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+(0)     if $i0 != -1 goto label1;
+
+(1)     $i0_1 = 8192;
+
+     label1:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $r5 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpClientConnection: ch.boye.httpclientandroidlib.io.SessionOutputBuffer createSessionOutputBuffer(java.net.Socket,int,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $i0_2, $r2);
+
+        $r6 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog wireLog>;
+
+        $z0 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+        if $z0 == 0 goto label2;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.conn.LoggingSessionOutputBuffer;
+
+        $r4 = new ch.boye.httpclientandroidlib.impl.conn.Wire;
+
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog wireLog>;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.impl.conn.Wire: void <init>(ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog)>($r6_1);
+
+        $r7 = staticinvoke <ch.boye.httpclientandroidlib.params.HttpProtocolParams: java.lang.String getHttpElementCharset(ch.boye.httpclientandroidlib.params.HttpParams)>($r2);
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.conn.LoggingSessionOutputBuffer: void <init>(ch.boye.httpclientandroidlib.io.SessionOutputBuffer,ch.boye.httpclientandroidlib.impl.conn.Wire,java.lang.String)>($r5, $r4, $r7);
+
+        return $r3;
+
+     label2:
+        return $r5;
+    }
+
+    public java.lang.Object getAttribute(java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.lang.String $r1;
+        java.util.Map $r2;
+        java.lang.Object $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: java.util.Map attributes>;
+
+        $r3 = interfaceinvoke $r2.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        return $r3;
+    }
+
+    public final java.net.Socket getSocket()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.net.Socket r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: java.net.Socket socket>;
+
+        return r1;
+    }
+
+    public final ch.boye.httpclientandroidlib.HttpHost getTargetHost()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        ch.boye.httpclientandroidlib.HttpHost r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.HttpHost targetHost>;
+
+        return r1;
+    }
+
+    public final boolean isSecure()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        boolean z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        z0 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: boolean connSecure>;
+
+        return z0;
+    }
+
+    public void openCompleted(boolean, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r1;
+        java.lang.IllegalArgumentException $r2;
+        java.net.Socket $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 := @parameter1: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: void assertNotOpen()>();
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Parameters must not be null.");
+
+        throw $r2;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: boolean connSecure> = $z0;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: java.net.Socket socket>;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: void bind(java.net.Socket,ch.boye.httpclientandroidlib.params.HttpParams)>($r3, $r1);
+
+        return;
+    }
+
+    public void opening(java.net.Socket, ch.boye.httpclientandroidlib.HttpHost) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.net.Socket $r1;
+        ch.boye.httpclientandroidlib.HttpHost $r2;
+        boolean $z0;
+        java.io.InterruptedIOException $r3;
+        java.lang.Throwable $r4;
+        java.io.IOException $r5, $r6;
+        java.lang.UnsupportedOperationException $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $r1 := @parameter0: java.net.Socket;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpHost;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: void assertNotOpen()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: java.net.Socket socket> = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.HttpHost targetHost> = $r2;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: boolean shutdown>;
+
+        if $z0 == 0 goto label8;
+
+        if $r1 == null goto label4;
+
+     label1:
+        virtualinvoke $r1.<java.net.Socket: void shutdownOutput()>();
+
+     label2:
+        virtualinvoke $r1.<java.net.Socket: void shutdownInput()>();
+
+     label3:
+        virtualinvoke $r1.<java.net.Socket: void close()>();
+
+     label4:
+        $r3 = new java.io.InterruptedIOException;
+
+        specialinvoke $r3.<java.io.InterruptedIOException: void <init>(java.lang.String)>("Connection already shutdown");
+
+        throw $r3;
+
+     label5:
+        $r4 := @caughtexception;
+
+        virtualinvoke $r1.<java.net.Socket: void close()>();
+
+        throw $r4;
+
+     label6:
+        $r5 := @caughtexception;
+
+        goto label2;
+
+     label7:
+        $r6 := @caughtexception;
+
+        goto label3;
+
+     label8:
+        return;
+
+     label9:
+        $r7 := @caughtexception;
+
+        goto label3;
+
+        catch java.io.IOException from label1 to label2 with label6;
+        catch java.lang.UnsupportedOperationException from label1 to label2 with label9;
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.io.IOException from label2 to label3 with label7;
+        catch java.lang.UnsupportedOperationException from label2 to label3 with label9;
+        catch java.lang.Throwable from label2 to label3 with label5;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpResponse receiveResponseHeader() throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3;
+        ch.boye.httpclientandroidlib.Header $r1;
+        ch.boye.httpclientandroidlib.HttpResponse $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7;
+        boolean $z0, $z0_1;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9, $r4_10, $r4_11;
+        ch.boye.httpclientandroidlib.StatusLine $r5, $r5_1, $r5_2, $r5_3;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7;
+        ch.boye.httpclientandroidlib.Header[] $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $r2 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpClientConnection: ch.boye.httpclientandroidlib.HttpResponse receiveResponseHeader()>();
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Receiving response: ");
+
+        $r5 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5);
+
+        $r6 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r6);
+
+     label1:
+        $r5_1 = Phi($r5 #0, $r5 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $r4_3 = Phi($r4 #0, $r4_2 #1);
+
+        $r6_1 = Phi($r6 #0, $r6 #1);
+
+        $r3_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog headerLog>;
+
+        $z0_1 = virtualinvoke $r3_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(2)     if $z0_1 == 0 goto label3;
+
+        $r3_4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog headerLog>;
+
+        $r4_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("<< ");
+
+        $r5_2 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $r6_2 = virtualinvoke $r5_2.<java.lang.Object: java.lang.String toString()>();
+
+        $r4_6 = virtualinvoke $r4_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6_2);
+
+        $r6_3 = virtualinvoke $r4_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r6_3);
+
+        $r7 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header[] getAllHeaders()>();
+
+        $i0 = lengthof $r7;
+
+(3)     $i1 = 0;
+
+     label2:
+        $i1_1 = Phi($i1 #3, $i1_2 #5);
+
+        $r3_5 = Phi($r3_4 #3, $r3_6 #5);
+
+        $r4_7 = Phi($r4_6 #3, $r4_10 #5);
+
+        $r6_4 = Phi($r6_3 #3, $r6_6 #5);
+
+(4)     if $i1_1 >= $i0 goto label3;
+
+        $r1 = $r7[$i1_1];
+
+        $r3_6 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog headerLog>;
+
+        $r4_8 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_8.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_9 = virtualinvoke $r4_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("<< ");
+
+        $r6_5 = virtualinvoke $r1.<java.lang.Object: java.lang.String toString()>();
+
+        $r4_10 = virtualinvoke $r4_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6_5);
+
+        $r6_6 = virtualinvoke $r4_10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3_6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r6_6);
+
+        $i1_2 = $i1_1 + 1;
+
+(5)     goto label2;
+
+     label3:
+        $i1_3 = Phi($i1 #2, $i1_1 #4);
+
+        $r5_3 = Phi($r5_1 #2, $r5_2 #4);
+
+        $r3_7 = Phi($r3_3 #2, $r3_5 #4);
+
+        $r4_11 = Phi($r4_3 #2, $r4_7 #4);
+
+        $r6_7 = Phi($r6_1 #2, $r6_4 #4);
+
+        return $r2;
+    }
+
+    public java.lang.Object removeAttribute(java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.lang.String $r1;
+        java.util.Map $r2;
+        java.lang.Object $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: java.util.Map attributes>;
+
+        $r3 = interfaceinvoke $r2.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r1);
+
+        return $r3;
+    }
+
+    public void sendRequestHeader(ch.boye.httpclientandroidlib.HttpRequest) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3;
+        ch.boye.httpclientandroidlib.Header $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7;
+        boolean $z0, $z0_1;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9, $r4_10, $r4_11;
+        ch.boye.httpclientandroidlib.RequestLine $r5, $r5_1, $r5_2, $r5_3;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7;
+        ch.boye.httpclientandroidlib.Header[] $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Sending request: ");
+
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5);
+
+        $r6 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r6);
+
+     label1:
+        $r5_1 = Phi($r5 #0, $r5 #1);
+
+        $r4_3 = Phi($r4 #0, $r4_2 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $r6_1 = Phi($r6 #0, $r6 #1);
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpClientConnection: void sendRequestHeader(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        $r3_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog headerLog>;
+
+        $z0_1 = virtualinvoke $r3_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(2)     if $z0_1 == 0 goto label3;
+
+        $r3_4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog headerLog>;
+
+        $r4_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(">> ");
+
+        $r5_2 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r6_2 = virtualinvoke $r5_2.<java.lang.Object: java.lang.String toString()>();
+
+        $r4_6 = virtualinvoke $r4_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6_2);
+
+        $r6_3 = virtualinvoke $r4_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3_4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r6_3);
+
+        $r7 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header[] getAllHeaders()>();
+
+        $i0 = lengthof $r7;
+
+(3)     $i1 = 0;
+
+     label2:
+        $i1_1 = Phi($i1 #3, $i1_2 #5);
+
+        $r4_7 = Phi($r4_6 #3, $r4_10 #5);
+
+        $r3_5 = Phi($r3_4 #3, $r3_6 #5);
+
+        $r6_4 = Phi($r6_3 #3, $r6_6 #5);
+
+(4)     if $i1_1 >= $i0 goto label3;
+
+        $r2 = $r7[$i1_1];
+
+        $r3_6 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog headerLog>;
+
+        $r4_8 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_8.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_9 = virtualinvoke $r4_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(">> ");
+
+        $r6_5 = virtualinvoke $r2.<java.lang.Object: java.lang.String toString()>();
+
+        $r4_10 = virtualinvoke $r4_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6_5);
+
+        $r6_6 = virtualinvoke $r4_10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3_6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r6_6);
+
+        $i1_2 = $i1_1 + 1;
+
+(5)     goto label2;
+
+     label3:
+        $r5_3 = Phi($r5_1 #2, $r5_2 #4);
+
+        $i1_3 = Phi($i1 #2, $i1_1 #4);
+
+        $r4_11 = Phi($r4_3 #2, $r4_7 #4);
+
+        $r3_7 = Phi($r3_3 #2, $r3_5 #4);
+
+        $r6_7 = Phi($r6_1 #2, $r6_4 #4);
+
+        return;
+    }
+
+    public void setAttribute(java.lang.String, java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.lang.String $r1;
+        java.lang.Object $r2;
+        java.util.Map $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: java.util.Map attributes>;
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+        return;
+    }
+
+    public void shutdown() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.io.IOException $r1;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        boolean $z0;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        java.lang.String $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+(0)     $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: boolean shutdown> = 1;
+
+     label1:
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.SocketHttpClientConnection: void shutdown()>();
+
+     label2:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+     label3:
+        $z0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+     label4:
+(1)     if $z0 == 0 goto label8;
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(2)     $r3 = new java.lang.StringBuilder;
+
+     label5:
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+(3)     $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Connection ");
+
+(4)     $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+(5)     $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" shut down");
+
+        $r4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r4);
+
+     label6:
+        return;
+
+     label7:
+        $r1 := @caughtexception;
+
+        $r3_4 = Phi($r3 #0, $r3_1 #3, $r3_2 #4, $r3_3 #5);
+
+        $r2_2 = Phi($r2 #0, $r2_1 #2);
+
+        $r2_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(6)     virtualinvoke $r2_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>("I/O error shutting down connection", $r1);
+
+     label8:
+        $r3_5 = Phi($r3 #1, $r3_4 #6);
+
+        $r2_4 = Phi($r2 #1, $r2_3 #6);
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label7;
+        catch java.io.IOException from label3 to label4 with label7;
+        catch java.io.IOException from label5 to label6 with label7;
+    }
+
+    public void update(java.net.Socket, ch.boye.httpclientandroidlib.HttpHost, boolean, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection $r0;
+        java.net.Socket $r1;
+        ch.boye.httpclientandroidlib.HttpHost $r2;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r3;
+        java.lang.IllegalArgumentException $r4, $r4_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection;
+
+        $r1 := @parameter0: java.net.Socket;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpHost;
+
+        $z0 := @parameter2: boolean;
+
+        $r3 := @parameter3: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: void assertOpen()>();
+
+        if $r2 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Target host must not be null.");
+
+        throw $r4;
+
+     label1:
+        if $r3 != null goto label2;
+
+        $r4_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Parameters must not be null.");
+
+        throw $r4_1;
+
+     label2:
+        if $r1 == null goto label3;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: java.net.Socket socket> = $r1;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: void bind(java.net.Socket,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $r3);
+
+     label3:
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: ch.boye.httpclientandroidlib.HttpHost targetHost> = $r2;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnection: boolean connSecure> = $z0;
+
+        return;
+    }
+}

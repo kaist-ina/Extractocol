@@ -1,0 +1,479 @@
+class de.greenrobot.event.SubscriberMethodFinder extends java.lang.Object
+{
+    private static final int MODIFIERS_IGNORE;
+    private static final java.util.Map methodCache;
+    private static final java.util.Map skipMethodVerificationForClasses;
+
+    static void <clinit>()
+    {
+        java.util.HashMap $r0;
+        java.util.concurrent.ConcurrentHashMap $r1;
+
+        $r0 = new java.util.HashMap;
+
+        specialinvoke $r0.<java.util.HashMap: void <init>()>();
+
+        <de.greenrobot.event.SubscriberMethodFinder: java.util.Map methodCache> = $r0;
+
+        $r1 = new java.util.concurrent.ConcurrentHashMap;
+
+        specialinvoke $r1.<java.util.concurrent.ConcurrentHashMap: void <init>()>();
+
+        <de.greenrobot.event.SubscriberMethodFinder: java.util.Map skipMethodVerificationForClasses> = $r1;
+
+        return;
+    }
+
+    void <init>()
+    {
+        de.greenrobot.event.SubscriberMethodFinder $r0;
+
+        $r0 := @this: de.greenrobot.event.SubscriberMethodFinder;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static void clearCaches()
+    {
+        java.util.Map $r0, $r1;
+        java.lang.Throwable $r2;
+
+        $r0 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map methodCache>;
+
+        entermonitor $r0;
+
+     label1:
+        $r1 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map methodCache>;
+
+        interfaceinvoke $r1.<java.util.Map: void clear()>();
+
+        exitmonitor $r0;
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+     label4:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public static void clearSkipMethodVerifications()
+    {
+        java.util.Map $r0;
+
+        $r0 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map skipMethodVerificationForClasses>;
+
+        interfaceinvoke $r0.<java.util.Map: void clear()>();
+
+        return;
+    }
+
+    static void skipMethodVerificationFor(java.lang.Class)
+    {
+        java.lang.Class $r0;
+        java.lang.IllegalStateException $r1;
+        boolean $z0;
+        java.util.Map $r2, $r2_1;
+
+        $r0 := @parameter0: java.lang.Class;
+
+        $r2 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map methodCache>;
+
+        $z0 = interfaceinvoke $r2.<java.util.Map: boolean isEmpty()>();
+
+        if $z0 != 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("This method must be called before registering anything");
+
+        throw $r1;
+
+     label1:
+        $r2_1 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map skipMethodVerificationForClasses>;
+
+        interfaceinvoke $r2_1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r0, $r0);
+
+        return;
+    }
+
+    java.util.List findSubscriberMethods(java.lang.Class, java.lang.String)
+    {
+        de.greenrobot.event.SubscriberMethodFinder $r0;
+        java.lang.Class $r1, $r6, $r16, $r16_1, $r16_2;
+        java.lang.Throwable $r2, $r8;
+        java.util.ArrayList $r3;
+        java.util.HashSet $r4;
+        java.lang.reflect.Method $r5;
+        int $i0, $i1, $i2, $i3, $i2_1, $i2_2, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7, $i0_8, $i2_3;
+        de.greenrobot.event.SubscriberMethod $r7;
+        java.lang.String $r9, $r11, $r17, $r21, $r11_1, $r17_1, $r21_1, $r17_2, $r17_3, $r21_2, $r17_4, $r17_5, $r9_1, $r21_3, $r17_6, $r21_4, $r17_7, $r17_8, $r9_2;
+        java.lang.StringBuilder $r10, $r23, $r10_1, $r10_2, $r10_3, $r10_4, $r23_1, $r23_2, $r10_5, $r10_6, $r10_7, $r23_3, $r23_4, $r23_5, $r23_6, $r23_7, $r23_8, $r10_8, $r10_9, $r10_10, $r10_11, $r10_12;
+        java.util.Map $r12, $r13, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r13_1, $r13_2, $r13_3;
+        java.lang.Object $r14;
+        java.util.List $r15;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11, $z0_12, $z0_13, $z0_14, $z0_15;
+        de.greenrobot.event.EventBusException $r18, $r18_1;
+        java.lang.reflect.Method[] $r19;
+        java.lang.Class[] $r20;
+        de.greenrobot.event.ThreadMode $r22, $r22_1, $r22_2, $r22_3, $r22_4, $r22_5, $r22_6, $r22_7;
+
+        $r0 := @this: de.greenrobot.event.SubscriberMethodFinder;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $r9 := @parameter1: java.lang.String;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r11 = virtualinvoke $r1.<java.lang.Class: java.lang.String getName()>();
+
+        $r10_1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r11);
+
+        $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(46);
+
+        $r10_3 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r11_1 = virtualinvoke $r10_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r12 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map methodCache>;
+
+(0)     entermonitor $r12;
+
+     label01:
+        $r13 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map methodCache>;
+
+        $r14 = interfaceinvoke $r13.<java.util.Map: java.lang.Object get(java.lang.Object)>($r11_1);
+
+        $r15 = (java.util.List) $r14;
+
+        exitmonitor $r12;
+
+     label02:
+        if $r15 == null goto label05;
+
+        return $r15;
+
+     label03:
+        $r2 := @caughtexception;
+
+(1)     $r13_3 = Phi($r13 #0, $r13_3 #1);
+
+        exitmonitor $r12;
+
+     label04:
+        throw $r2;
+
+     label05:
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        $r16 = $r1;
+
+        $r4 = new java.util.HashSet;
+
+        specialinvoke $r4.<java.util.HashSet: void <init>()>();
+
+        $r10_4 = new java.lang.StringBuilder;
+
+(2)     specialinvoke $r10_4.<java.lang.StringBuilder: void <init>()>();
+
+     label06:
+        $r21 = Phi($r21 #2, $r21_1 #22);
+
+        $r17 = Phi($r17 #2, $r17_2 #22);
+
+        $z0 = Phi($z0 #2, $z0_4 #22);
+
+        $r16_1 = Phi($r16 #2, $r16_2 #22);
+
+        $r12_1 = Phi($r12 #2, $r12_2 #22);
+
+        $i2 = Phi($i2 #2, $i2_2 #22);
+
+        $r23 = Phi($r23 #2, $r23_1 #22);
+
+        $r22 = Phi($r22 #2, $r22_1 #22);
+
+        $i0 = Phi($i0 #2, $i0_1 #22);
+
+(3)     if $r16_1 == null goto label07;
+
+        $r17_1 = virtualinvoke $r16_1.<java.lang.Class: java.lang.String getName()>();
+
+        $z0_1 = virtualinvoke $r17_1.<java.lang.String: boolean startsWith(java.lang.String)>("java.");
+
+(4)     if $z0_1 != 0 goto label07;
+
+        $z0_2 = virtualinvoke $r17_1.<java.lang.String: boolean startsWith(java.lang.String)>("javax.");
+
+(5)     if $z0_2 != 0 goto label07;
+
+        $z0_3 = virtualinvoke $r17_1.<java.lang.String: boolean startsWith(java.lang.String)>("android.");
+
+(6)     if $z0_3 == 0 goto label08;
+
+     label07:
+        $r17_8 = Phi($r17 #3, $r17_1 #4, $r17_1 #5, $r17_1 #6);
+
+        $z0_14 = Phi($z0 #3, $z0_1 #4, $z0_2 #5, $z0_3 #6);
+
+        $z0_15 = interfaceinvoke $r3.<java.util.List: boolean isEmpty()>();
+
+        if $z0_15 == 0 goto label18;
+
+        $r18_1 = new de.greenrobot.event.EventBusException;
+
+        $r10_8 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_8.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_9 = virtualinvoke $r10_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Subscriber ");
+
+        $r10_10 = virtualinvoke $r10_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r10_11 = virtualinvoke $r10_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" has no public methods called ");
+
+        $r10_12 = virtualinvoke $r10_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9_2 = virtualinvoke $r10_12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r18_1.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>($r9_2);
+
+        throw $r18_1;
+
+     label08:
+        $r19 = virtualinvoke $r16_1.<java.lang.Class: java.lang.reflect.Method[] getMethods()>();
+
+        $i1 = lengthof $r19;
+
+(7)     $i2_1 = 0;
+
+     label09:
+        $r21_1 = Phi($r21 #7, $r21_4 #15);
+
+        $r17_2 = Phi($r17_1 #7, $r17_7 #15);
+
+        $z0_4 = Phi($z0_3 #7, $z0_13 #15);
+
+        $r12_2 = Phi($r12_1 #7, $r12_5 #15);
+
+        $i2_2 = Phi($i2_1 #7, $i2_3 #15);
+
+        $r23_1 = Phi($r23 #7, $r23_8 #15);
+
+        $r22_1 = Phi($r22 #7, $r22_7 #15);
+
+        $i0_1 = Phi($i0 #7, $i0_8 #15);
+
+        if $i2_2 >= $i1 goto label17;
+
+        $r5 = $r19[$i2_2];
+
+        $r17_3 = virtualinvoke $r5.<java.lang.reflect.Method: java.lang.String getName()>();
+
+        $z0_5 = virtualinvoke $r17_3.<java.lang.String: boolean startsWith(java.lang.String)>($r9);
+
+(8)     if $z0_5 == 0 goto label11;
+
+        $i3 = virtualinvoke $r5.<java.lang.reflect.Method: int getModifiers()>();
+
+        $i0_2 = $i3 & 1;
+
+(9)     if $i0_2 == 0 goto label16;
+
+        $i0_3 = $i3 & 1032;
+
+(10)    if $i0_3 != 0 goto label16;
+
+        $r20 = virtualinvoke $r5.<java.lang.reflect.Method: java.lang.Class[] getParameterTypes()>();
+
+        $i0_4 = lengthof $r20;
+
+(11)    if $i0_4 != 1 goto label11;
+
+        $i0_5 = virtualinvoke $r9.<java.lang.String: int length()>();
+
+        $r21_2 = virtualinvoke $r17_3.<java.lang.String: java.lang.String substring(int)>($i0_5);
+
+        $i0_6 = virtualinvoke $r21_2.<java.lang.String: int length()>();
+
+        if $i0_6 != 0 goto label12;
+
+(12)    $r22_2 = <de.greenrobot.event.ThreadMode: de.greenrobot.event.ThreadMode PostThread>;
+
+     label10:
+        $z0_6 = Phi($z0_5 #12, $z0_8 #16, $z0_9 #17, $z0_10 #18);
+
+        $r22_3 = Phi($r22_2 #12, $r22_4 #16, $r22_5 #17, $r22_6 #18);
+
+        $r6 = $r20[0];
+
+        virtualinvoke $r10_4.<java.lang.StringBuilder: void setLength(int)>(0);
+
+        virtualinvoke $r10_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17_3);
+
+        $r23_2 = virtualinvoke $r10_4.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(62);
+
+        $r17_4 = virtualinvoke $r6.<java.lang.Class: java.lang.String getName()>();
+
+        virtualinvoke $r23_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17_4);
+
+        $r17_5 = virtualinvoke $r10_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $z0_7 = virtualinvoke $r4.<java.util.HashSet: boolean add(java.lang.Object)>($r17_5);
+
+(13)    if $z0_7 == 0 goto label11;
+
+        $r7 = new de.greenrobot.event.SubscriberMethod;
+
+        specialinvoke $r7.<de.greenrobot.event.SubscriberMethod: void <init>(java.lang.reflect.Method,de.greenrobot.event.ThreadMode,java.lang.Class)>($r5, $r22_3, $r6);
+
+(14)    interfaceinvoke $r3.<java.util.List: boolean add(java.lang.Object)>($r7);
+
+     label11:
+        $r21_4 = Phi($r21_1 #8, $r21_1 #11, $r21_2 #13, $r21_2 #14, $r21_2 #19, $r21_1 #20, $r21_3 #21);
+
+        $r17_7 = Phi($r17_3 #8, $r17_3 #11, $r17_5 #13, $r17_5 #14, $r17_3 #19, $r17_3 #20, $r17_6 #21);
+
+        $z0_13 = Phi($z0_5 #8, $z0_5 #11, $z0_7 #13, $z0_7 #14, $z0_11 #19, $z0_12 #20, $z0_12 #21);
+
+        $r12_5 = Phi($r12_2 #8, $r12_2 #11, $r12_2 #13, $r12_2 #14, $r12_3 #19, $r12_4 #20, $r12_4 #21);
+
+        $r23_8 = Phi($r23_1 #8, $r23_1 #11, $r23_2 #13, $r23_2 #14, $r23_1 #19, $r23_1 #20, $r23_7 #21);
+
+        $r22_7 = Phi($r22_1 #8, $r22_1 #11, $r22_3 #13, $r22_3 #14, $r22_1 #19, $r22_1 #20, $r22_1 #21);
+
+        $i0_8 = Phi($i0_1 #8, $i0_4 #11, $i0_6 #13, $i0_6 #14, $i0_6 #19, $i0_7 #20, $i0_7 #21);
+
+        $i2_3 = $i2_2 + 1;
+
+(15)    goto label09;
+
+     label12:
+        $z0_8 = virtualinvoke $r21_2.<java.lang.String: boolean equals(java.lang.Object)>("MainThread");
+
+        if $z0_8 == 0 goto label13;
+
+        $r22_4 = <de.greenrobot.event.ThreadMode: de.greenrobot.event.ThreadMode MainThread>;
+
+(16)    goto label10;
+
+     label13:
+        $z0_9 = virtualinvoke $r21_2.<java.lang.String: boolean equals(java.lang.Object)>("BackgroundThread");
+
+        if $z0_9 == 0 goto label14;
+
+        $r22_5 = <de.greenrobot.event.ThreadMode: de.greenrobot.event.ThreadMode BackgroundThread>;
+
+(17)    goto label10;
+
+     label14:
+        $z0_10 = virtualinvoke $r21_2.<java.lang.String: boolean equals(java.lang.Object)>("Async");
+
+        if $z0_10 == 0 goto label15;
+
+        $r22_6 = <de.greenrobot.event.ThreadMode: de.greenrobot.event.ThreadMode Async>;
+
+(18)    goto label10;
+
+     label15:
+        $r12_3 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map skipMethodVerificationForClasses>;
+
+        $z0_11 = interfaceinvoke $r12_3.<java.util.Map: boolean containsKey(java.lang.Object)>($r16_1);
+
+(19)    if $z0_11 != 0 goto label11;
+
+        $r18 = new de.greenrobot.event.EventBusException;
+
+        $r10_5 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_5.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_6 = virtualinvoke $r10_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Illegal onEvent method, check for typos: ");
+
+        $r10_7 = virtualinvoke $r10_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5);
+
+        $r9_1 = virtualinvoke $r10_7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r18.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>($r9_1);
+
+        throw $r18;
+
+     label16:
+        $i0_7 = Phi($i0_2 #9, $i0_3 #10);
+
+        $r12_4 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map skipMethodVerificationForClasses>;
+
+        $z0_12 = interfaceinvoke $r12_4.<java.util.Map: boolean containsKey(java.lang.Object)>($r16_1);
+
+(20)    if $z0_12 != 0 goto label11;
+
+        $r21_3 = <de.greenrobot.event.EventBus: java.lang.String TAG>;
+
+        $r23_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r23_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r23_4 = virtualinvoke $r23_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Skipping method (not public, static or abstract): ");
+
+        $r23_5 = virtualinvoke $r23_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r16_1);
+
+        $r23_6 = virtualinvoke $r23_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".");
+
+        $r23_7 = virtualinvoke $r23_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17_3);
+
+        $r17_6 = virtualinvoke $r23_7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r21_3, $r17_6);
+
+(21)    goto label11;
+
+     label17:
+        $r16_2 = virtualinvoke $r16_1.<java.lang.Class: java.lang.Class getSuperclass()>();
+
+(22)    goto label06;
+
+     label18:
+        $r12_6 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map methodCache>;
+
+(23)    entermonitor $r12_6;
+
+     label19:
+(24)    $r13_1 = <de.greenrobot.event.SubscriberMethodFinder: java.util.Map methodCache>;
+
+        interfaceinvoke $r13_1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r11_1, $r3);
+
+        exitmonitor $r12_6;
+
+     label20:
+        return $r3;
+
+     label21:
+        $r8 := @caughtexception;
+
+(25)    $r13_2 = Phi($r13 #23, $r13_1 #24, $r13_2 #25);
+
+        exitmonitor $r12_6;
+
+     label22:
+        throw $r8;
+
+        catch java.lang.Throwable from label01 to label02 with label03;
+        catch java.lang.Throwable from label03 to label04 with label03;
+        catch java.lang.Throwable from label19 to label20 with label21;
+        catch java.lang.Throwable from label21 to label22 with label21;
+    }
+}

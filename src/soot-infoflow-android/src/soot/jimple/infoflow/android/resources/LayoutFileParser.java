@@ -46,6 +46,8 @@ public class LayoutFileParser extends AbstractResourceParser {
 	private final String packageName;
 	private final ARSCFileParser resParser;
 	
+	private boolean loadAdditionalAttributes = false;
+	
 	private final static int TYPE_NUMBER_VARIATION_PASSWORD = 0x00000010;
 	private final static int TYPE_TEXT_VARIATION_PASSWORD = 0x00000080;
 	private final static int TYPE_TEXT_VARIATION_VISIBLE_PASSWORD = 0x00000090;
@@ -54,6 +56,12 @@ public class LayoutFileParser extends AbstractResourceParser {
 	public LayoutFileParser(String packageName, ARSCFileParser resParser) {
 		this.packageName = packageName;
 		this.resParser = resParser;
+	}
+	
+	private boolean isRealClass(SootClass sc) {
+		if (sc == null)
+			return false;
+		return !(sc.isPhantom() && sc.getMethodCount() == 0 && sc.getFieldCount() == 0);
 	}
 	
 	private SootClass getLayoutClass(String className) {
@@ -69,13 +77,13 @@ public class LayoutFileParser extends AbstractResourceParser {
 		SootClass sc = Scene.v().forceResolve(className, SootClass.BODIES);
 		if ((sc == null || sc.isPhantom()) && !packageName.isEmpty())
 			sc = Scene.v().forceResolve(packageName + "." + className, SootClass.BODIES);
-		if (sc == null || sc.isPhantom())
+		if (!isRealClass(sc))
 			sc = Scene.v().forceResolve("android.view." + className, SootClass.BODIES);
-		if (sc == null || sc.isPhantom())
+		if (!isRealClass(sc))
 			sc = Scene.v().forceResolve("android.widget." + className, SootClass.BODIES);
-		if (sc == null || sc.isPhantom())
+		if (!isRealClass(sc))
 			sc = Scene.v().forceResolve("android.webkit." + className, SootClass.BODIES);
-		if (sc == null || sc.isPhantom()) {
+		if (!isRealClass(sc)) {
    			System.err.println("Could not find layout class " + className);
    			return null;
 		}
@@ -161,60 +169,72 @@ public class LayoutFileParser extends AbstractResourceParser {
 	
 	/**
 	 * Parses all layout XML files in the given APK file and loads the IDs of
-	 * the user controls in it.
+	 * the user controls in it. This method only registers a Soot phase that is
+	 * run when the Soot packs are next run
 	 * @param fileName The APK file in which to look for user controls
 	 */
-	public void parseLayoutFile(final String fileName, final Set<String> classes) {
+	public void parseLayoutFile(final String fileName) {
 		Transform transform = new Transform("wjtp.lfp", new SceneTransformer() {
 			protected void internalTransform(String phaseName, @SuppressWarnings("rawtypes") Map options) {
-				handleAndroidResourceFiles(fileName, /*classes,*/ null, new IResourceHandler() {
-						
-					@Override
-					public void handleResourceFile(final String fileName, Set<String> fileNameFilter, InputStream stream) {
-						// We only process valid layout XML files
-						if (!fileName.startsWith("res/layout"))
-							return;
-						if (!fileName.endsWith(".xml")) {
-							System.err.println("Skipping file " + fileName + " in layout folder...");
-							return;
-						}
-						
-						// Get the fully-qualified class name
-						String entryClass = fileName.substring(0, fileName.lastIndexOf("."));
-						if (!packageName.isEmpty())
-							entryClass = packageName + "." + entryClass;
-						
-						// We are dealing with resource files
-						if (!fileName.startsWith("res/layout"))
-							return;
-						if (fileNameFilter != null) {
-							boolean found = false;
-							for (String s : fileNameFilter)
-								if (s.equalsIgnoreCase(entryClass)) {
-									found = true;
-									break;
-								}
-							if (!found)
-								return;
-						}
-						
-						try {
-							AXmlHandler handler = new AXmlHandler(stream, new AXML20Parser());
-							parseLayoutNode(fileName, handler.getDocument().getRootNode());
-							System.out.println("Found " + userControls.size() + " layout controls in file "
-									+ fileName);
-						}
-						catch (Exception ex) {
-							System.err.println("Could not read binary XML file: " + ex.getMessage());
-							ex.printStackTrace();
-						}
-					}
-				});
+				parseLayoutFileDirect(fileName);
 			}
+
 		});
 		PackManager.v().getPack("wjtp").add(transform);
 	}
 	
+	/**
+	 * Parses all layout XML files in the given APK file and loads the IDs of
+	 * the user controls in it. This method directly executes the analyses witout
+	 * registering any Soot phases.<
+	 * @param fileName The APK file in which to look for user controls
+	 */
+	public void parseLayoutFileDirect(final String fileName) {
+		handleAndroidResourceFiles(fileName, /*classes,*/ null, new IResourceHandler() {
+				
+			@Override
+			public void handleResourceFile(final String fileName, Set<String> fileNameFilter, InputStream stream) {
+				// We only process valid layout XML files
+				if (!fileName.startsWith("res/layout"))
+					return;
+				if (!fileName.endsWith(".xml")) {
+					System.err.println("Skipping file " + fileName + " in layout folder...");
+					return;
+				}
+				
+				// Get the fully-qualified class name
+				String entryClass = fileName.substring(0, fileName.lastIndexOf("."));
+				if (!packageName.isEmpty())
+					entryClass = packageName + "." + entryClass;
+				
+				// We are dealing with resource files
+				if (!fileName.startsWith("res/layout"))
+					return;
+				if (fileNameFilter != null) {
+					boolean found = false;
+					for (String s : fileNameFilter)
+						if (s.equalsIgnoreCase(entryClass)) {
+							found = true;
+							break;
+						}
+					if (!found)
+						return;
+				}
+				
+				try {
+					AXmlHandler handler = new AXmlHandler(stream, new AXML20Parser());
+					parseLayoutNode(fileName, handler.getDocument().getRootNode());
+					System.out.println("Found " + userControls.size() + " layout controls in file "
+							+ fileName);
+				}
+				catch (Exception ex) {
+					System.err.println("Could not read binary XML file: " + ex.getMessage());
+					ex.printStackTrace();
+				}
+			}
+		});
+	}
+
 	/**
 	 * Parses the layout file with the given root node
 	 * @param layoutFile The full path and file name of the file being parsed
@@ -311,8 +331,13 @@ public class LayoutFileParser extends AbstractResourceParser {
 	private void parseLayoutAttributes(String layoutFile, SootClass layoutClass, AXmlNode rootNode) {
 		boolean isSensitive = false;
 		int id = -1;
+		Map<String, Object> additionalAttributes = loadAdditionalAttributes
+				? new HashMap<String, Object>() : null;
 		
 		for (Entry<String, AXmlAttribute<?>> entry : rootNode.getAttributes().entrySet()) {
+			if (entry.getKey() == null)
+				continue;
+			
 			String attrName = entry.getKey().trim();
 			AXmlAttribute<?> attr = entry.getValue();
 			
@@ -352,13 +377,17 @@ public class LayoutFileParser extends AbstractResourceParser {
 			else if (attr.getType() == AxmlVisitor.TYPE_STRING && attrName.equals("text")) {
 				// To avoid unrecognized attribute for "text" field
 			}
+			else if (loadAdditionalAttributes) {
+				additionalAttributes.put(attrName, attr.getValue());
+			}
 			else if (DEBUG && attr.getType() == AxmlVisitor.TYPE_STRING) {
 				System.out.println("Found unrecognized XML attribute:  " + attrName);
 			}
 		}
 		
 		// Register the new user control
-		addToMapSet(this.userControls, layoutFile, new LayoutControl(id, layoutClass, isSensitive));
+		addToMapSet(this.userControls, layoutFile, new LayoutControl(
+				id, layoutClass, isSensitive, additionalAttributes));
 	}
 
 	/**
@@ -403,6 +432,17 @@ public class LayoutFileParser extends AbstractResourceParser {
 	 */
 	public Map<String, Set<String>> getCallbackMethods() {
 		return this.callbackMethods;
+	}
+	
+	/**
+	 * Sets whether the parser should load all additional attributes as well. If
+	 * this option is disabled, it only loads those well-known attributes that
+	 * influence the data flow analysis.
+	 * @param loadAdditionalAttributes True to load all attributes present in the
+	 * layout XML files, false to only load the ones required for FlowDroid.
+	 */
+	public void setLoadAdditionalAttributes(boolean loadAdditionalAttributes) {
+		this.loadAdditionalAttributes = loadAdditionalAttributes;
 	}
 	
 }

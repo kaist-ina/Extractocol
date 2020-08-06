@@ -17,7 +17,7 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 /**
  * test taint propagation within java.net.URL and java.net.HttpURLConnection classes
  */
@@ -26,7 +26,7 @@ public class HTTPTests extends JUnitTests {
 	
     @Test(timeout=300000)
     public void testURL() throws IOException{
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.HTTPTestCode: void testURL()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -37,7 +37,7 @@ public class HTTPTests extends JUnitTests {
     @Test(timeout=300000)
     public void testConnection() throws IOException{
 //    	this.taintWrapper = true;
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.HTTPTestCode: void method1()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);

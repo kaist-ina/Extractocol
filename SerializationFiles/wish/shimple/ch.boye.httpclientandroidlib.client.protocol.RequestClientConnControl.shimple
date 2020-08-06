@@ -1,0 +1,124 @@
+public class ch.boye.httpclientandroidlib.client.protocol.RequestClientConnControl extends java.lang.Object implements ch.boye.httpclientandroidlib.HttpRequestInterceptor
+{
+    private static final java.lang.String PROXY_CONN_DIRECTIVE;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.client.protocol.RequestClientConnControl $r0;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r1;
+        java.lang.Class $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.protocol.RequestClientConnControl;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r2 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r2);
+
+        $r0.<ch.boye.httpclientandroidlib.client.protocol.RequestClientConnControl: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r1;
+
+        return;
+    }
+
+    public void process(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.client.protocol.RequestClientConnControl $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        java.lang.IllegalArgumentException $r3;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r4;
+        ch.boye.httpclientandroidlib.RequestLine $r5;
+        java.lang.String $r6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+        java.lang.Object $r7;
+        ch.boye.httpclientandroidlib.conn.HttpRoutedConnection $r8;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r9;
+        int $i0, $i0_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.protocol.RequestClientConnControl;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request may not be null");
+
+        throw $r3;
+
+     label1:
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r6 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getMethod()>();
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("CONNECT");
+
+        if $z0 == 0 goto label2;
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void setHeader(java.lang.String,java.lang.String)>("Proxy-Connection", "Keep-Alive");
+
+        return;
+
+     label2:
+        $r7 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: java.lang.Object getAttribute(java.lang.String)>("http.connection");
+
+        $r8 = (ch.boye.httpclientandroidlib.conn.HttpRoutedConnection) $r7;
+
+        if $r8 != null goto label3;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.client.protocol.RequestClientConnControl: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("HTTP connection not set in the context");
+
+        return;
+
+     label3:
+        $r9 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.conn.HttpRoutedConnection: ch.boye.httpclientandroidlib.conn.routing.HttpRoute getRoute()>();
+
+        $i0 = virtualinvoke $r9.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: int getHopCount()>();
+
+(0)     if $i0 == 1 goto label4;
+
+        $z0_1 = virtualinvoke $r9.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: boolean isTunnelled()>();
+
+(1)     if $z0_1 == 0 goto label5;
+
+     label4:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $z0_3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: boolean containsHeader(java.lang.String)>("Connection");
+
+(2)     if $z0_3 != 0 goto label5;
+
+(3)     interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void addHeader(java.lang.String,java.lang.String)>("Connection", "Keep-Alive");
+
+     label5:
+        $z0_4 = Phi($z0_1 #1, $z0_3 #2, $z0_3 #3);
+
+        $i0_1 = virtualinvoke $r9.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: int getHopCount()>();
+
+(4)     if $i0_1 != 2 goto label6;
+
+        $z0_5 = virtualinvoke $r9.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: boolean isTunnelled()>();
+
+(5)     if $z0_5 != 0 goto label6;
+
+        $z0_6 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: boolean containsHeader(java.lang.String)>("Proxy-Connection");
+
+(6)     if $z0_6 != 0 goto label6;
+
+(7)     interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: void addHeader(java.lang.String,java.lang.String)>("Proxy-Connection", "Keep-Alive");
+
+     label6:
+        $z0_7 = Phi($z0_4 #4, $z0_5 #5, $z0_6 #6, $z0_6 #7);
+
+        return;
+    }
+}

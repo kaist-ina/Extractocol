@@ -1,0 +1,1222 @@
+class android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase extends java.lang.Object implements android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImpl
+{
+    private static final int DOUBLE_TAP_TIMEOUT;
+    private static final int LONGPRESS_TIMEOUT;
+    private static final int LONG_PRESS;
+    private static final int SHOW_PRESS;
+    private static final int TAP;
+    private static final int TAP_TIMEOUT;
+    private boolean mAlwaysInBiggerTapRegion;
+    private boolean mAlwaysInTapRegion;
+    private android.view.MotionEvent mCurrentDownEvent;
+    private boolean mDeferConfirmSingleTap;
+    private android.view.GestureDetector$OnDoubleTapListener mDoubleTapListener;
+    private int mDoubleTapSlopSquare;
+    private float mDownFocusX;
+    private float mDownFocusY;
+    private final android.os.Handler mHandler;
+    private boolean mInLongPress;
+    private boolean mIsDoubleTapping;
+    private boolean mIsLongpressEnabled;
+    private float mLastFocusX;
+    private float mLastFocusY;
+    private final android.view.GestureDetector$OnGestureListener mListener;
+    private int mMaximumFlingVelocity;
+    private int mMinimumFlingVelocity;
+    private android.view.MotionEvent mPreviousUpEvent;
+    private boolean mStillDown;
+    private int mTouchSlopSquare;
+    private android.view.VelocityTracker mVelocityTracker;
+
+    static void <clinit>()
+    {
+        int $i0, $i0_1, $i0_2;
+
+        $i0 = staticinvoke <android.view.ViewConfiguration: int getLongPressTimeout()>();
+
+        <android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int LONGPRESS_TIMEOUT> = $i0;
+
+        $i0_1 = staticinvoke <android.view.ViewConfiguration: int getTapTimeout()>();
+
+        <android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int TAP_TIMEOUT> = $i0_1;
+
+        $i0_2 = staticinvoke <android.view.ViewConfiguration: int getDoubleTapTimeout()>();
+
+        <android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int DOUBLE_TAP_TIMEOUT> = $i0_2;
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.view.GestureDetector$OnGestureListener, android.os.Handler)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        android.content.Context $r1;
+        android.view.GestureDetector$OnGestureListener $r2;
+        android.os.Handler $r3;
+        boolean $z0;
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase$GestureHandler $r4, $r4_1, $r4_2;
+        android.view.GestureDetector$OnDoubleTapListener $r5;
+
+        $r0 := @this: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.view.GestureDetector$OnGestureListener;
+
+        $r3 := @parameter2: android.os.Handler;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r3 == null goto label3;
+
+        $r4 = new android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase$GestureHandler;
+
+        specialinvoke $r4.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase$GestureHandler: void <init>(android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase,android.os.Handler)>($r0, $r3);
+
+(0)     $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler> = $r4;
+
+     label1:
+        $r4_1 = Phi($r4 #0, $r4_2 #1);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnGestureListener mListener> = $r2;
+
+        $z0 = $r2 instanceof android.view.GestureDetector$OnDoubleTapListener;
+
+        if $z0 == 0 goto label2;
+
+        $r5 = (android.view.GestureDetector$OnDoubleTapListener) $r2;
+
+        virtualinvoke $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: void setOnDoubleTapListener(android.view.GestureDetector$OnDoubleTapListener)>($r5);
+
+     label2:
+        specialinvoke $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: void init(android.content.Context)>($r1);
+
+        return;
+
+     label3:
+        $r4_2 = new android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase$GestureHandler;
+
+        specialinvoke $r4_2.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase$GestureHandler: void <init>(android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase)>($r0);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler> = $r4_2;
+
+(1)     goto label1;
+    }
+
+    static android.view.MotionEvent access$000(android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        android.view.MotionEvent r1;
+
+        $r0 := @parameter0: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        r1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+        return r1;
+    }
+
+    static android.view.GestureDetector$OnGestureListener access$100(android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        android.view.GestureDetector$OnGestureListener r1;
+
+        $r0 := @parameter0: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        r1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnGestureListener mListener>;
+
+        return r1;
+    }
+
+    static void access$200(android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+
+        $r0 := @parameter0: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        specialinvoke $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: void dispatchLongPress()>();
+
+        return;
+    }
+
+    static android.view.GestureDetector$OnDoubleTapListener access$300(android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        android.view.GestureDetector$OnDoubleTapListener r1;
+
+        $r0 := @parameter0: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        r1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnDoubleTapListener mDoubleTapListener>;
+
+        return r1;
+    }
+
+    static boolean access$400(android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        boolean z0;
+
+        $r0 := @parameter0: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        z0 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mStillDown>;
+
+        return z0;
+    }
+
+    static boolean access$502(android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase, boolean)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mDeferConfirmSingleTap> = $z0;
+
+        return $z0;
+    }
+
+    private void cancel()
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        android.view.VelocityTracker $r1;
+        boolean $z0;
+        android.os.Handler $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        $r2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r2.<android.os.Handler: void removeMessages(int)>(1);
+
+        $r2_1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r2_1.<android.os.Handler: void removeMessages(int)>(2);
+
+        $r2_2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r2_2.<android.os.Handler: void removeMessages(int)>(3);
+
+        $r1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+        virtualinvoke $r1.<android.view.VelocityTracker: void recycle()>();
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker> = null;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mIsDoubleTapping> = 0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mStillDown> = 0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInTapRegion> = 0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInBiggerTapRegion> = 0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mDeferConfirmSingleTap> = 0;
+
+        $z0 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mInLongPress>;
+
+        if $z0 == 0 goto label1;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mInLongPress> = 0;
+
+     label1:
+        return;
+    }
+
+    private void cancelTaps()
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        boolean $z0;
+        android.os.Handler $r1, $r1_1, $r1_2;
+
+        $r0 := @this: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        $r1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r1.<android.os.Handler: void removeMessages(int)>(1);
+
+        $r1_1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r1_1.<android.os.Handler: void removeMessages(int)>(2);
+
+        $r1_2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r1_2.<android.os.Handler: void removeMessages(int)>(3);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mIsDoubleTapping> = 0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInTapRegion> = 0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInBiggerTapRegion> = 0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mDeferConfirmSingleTap> = 0;
+
+        $z0 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mInLongPress>;
+
+        if $z0 == 0 goto label1;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mInLongPress> = 0;
+
+     label1:
+        return;
+    }
+
+    private void dispatchLongPress()
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        android.os.Handler $r1;
+        android.view.GestureDetector$OnGestureListener $r2;
+        android.view.MotionEvent $r3;
+
+        $r0 := @this: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        $r1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r1.<android.os.Handler: void removeMessages(int)>(3);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mDeferConfirmSingleTap> = 0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mInLongPress> = 1;
+
+        $r2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnGestureListener mListener>;
+
+        $r3 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+        interfaceinvoke $r2.<android.view.GestureDetector$OnGestureListener: void onLongPress(android.view.MotionEvent)>($r3);
+
+        return;
+    }
+
+    private void init(android.content.Context)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        android.content.Context $r1;
+        android.view.GestureDetector$OnGestureListener $r2;
+        java.lang.IllegalArgumentException $r3, $r3_1;
+        android.view.ViewConfiguration $r4;
+        int $i0, $i1, $i2, $i2_1, $i0_1, $i1_1;
+
+        $r0 := @this: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        $r1 := @parameter0: android.content.Context;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Context must not be null");
+
+        throw $r3;
+
+     label1:
+        $r2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnGestureListener mListener>;
+
+        if $r2 != null goto label2;
+
+        $r3_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("OnGestureListener must not be null");
+
+        throw $r3_1;
+
+     label2:
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mIsLongpressEnabled> = 1;
+
+        $r4 = staticinvoke <android.view.ViewConfiguration: android.view.ViewConfiguration get(android.content.Context)>($r1);
+
+        $i0 = virtualinvoke $r4.<android.view.ViewConfiguration: int getScaledTouchSlop()>();
+
+        $i1 = virtualinvoke $r4.<android.view.ViewConfiguration: int getScaledDoubleTapSlop()>();
+
+        $i2 = virtualinvoke $r4.<android.view.ViewConfiguration: int getScaledMinimumFlingVelocity()>();
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mMinimumFlingVelocity> = $i2;
+
+        $i2_1 = virtualinvoke $r4.<android.view.ViewConfiguration: int getScaledMaximumFlingVelocity()>();
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mMaximumFlingVelocity> = $i2_1;
+
+        $i0_1 = $i0 * $i0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mTouchSlopSquare> = $i0_1;
+
+        $i1_1 = $i1 * $i1;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mDoubleTapSlopSquare> = $i1_1;
+
+        return;
+    }
+
+    private boolean isConsideredDoubleTap(android.view.MotionEvent, android.view.MotionEvent, android.view.MotionEvent)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        android.view.MotionEvent $r1, $r2, $r3;
+        boolean $z0;
+        byte $b0;
+        int $i1, $i4, $i5, $i4_1, $i4_2, $i1_1, $i1_2, $i4_3, $i1_3, $i4_4, $i1_4, $i4_5, $i1_5;
+        long $l2, $l3, $l2_1, $l3_1;
+        float $f0, $f0_1, $f0_2, $f0_3, $f0_4;
+
+        $r0 := @this: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $r2 := @parameter1: android.view.MotionEvent;
+
+        $r3 := @parameter2: android.view.MotionEvent;
+
+        $z0 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInBiggerTapRegion>;
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $l2 = virtualinvoke $r3.<android.view.MotionEvent: long getEventTime()>();
+
+        $l3 = virtualinvoke $r2.<android.view.MotionEvent: long getEventTime()>();
+
+        $l2_1 = $l2 - $l3;
+
+        $i4 = <android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int DOUBLE_TAP_TIMEOUT>;
+
+        $l3_1 = (long) $i4;
+
+        $b0 = $l2_1 cmp $l3_1;
+
+(0)     if $b0 > 0 goto label2;
+
+        $f0 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $i4_1 = (int) $f0;
+
+        $f0_1 = virtualinvoke $r3.<android.view.MotionEvent: float getX()>();
+
+        $i1 = (int) $f0_1;
+
+        $i4_2 = $i4_1 - $i1;
+
+        $f0_2 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $i5 = (int) $f0_2;
+
+        $f0_3 = virtualinvoke $r3.<android.view.MotionEvent: float getY()>();
+
+        $i1_1 = (int) $f0_3;
+
+        $i1_2 = $i5 - $i1_1;
+
+        $i4_3 = $i4_2 * $i4_2;
+
+        $i1_3 = $i1_2 * $i1_2;
+
+        $i4_4 = $i4_3 + $i1_3;
+
+        $i1_4 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mDoubleTapSlopSquare>;
+
+(1)     if $i4_4 >= $i1_4 goto label2;
+
+        return 1;
+
+     label2:
+        $i4_5 = Phi($i4 #0, $i4_4 #1);
+
+        $f0_4 = Phi($f0 #0, $f0_3 #1);
+
+        $i1_5 = Phi($i1 #0, $i1_4 #1);
+
+        return 0;
+    }
+
+    public boolean isLongpressEnabled()
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        boolean z0;
+
+        $r0 := @this: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        z0 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mIsLongpressEnabled>;
+
+        return z0;
+    }
+
+    public boolean onTouchEvent(android.view.MotionEvent)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        boolean $z0, $z1, $z0_1, $z0_2, $z1_1, $z0_3, $z1_2, $z0_4, $z1_3, $z0_5, $z1_4, $z1_5, $z1_6, $z0_6, $z1_7, $z1_8, $z0_7, $z1_9, $z0_8, $z0_9, $z0_10, $z1_10, $z0_11, $z0_12, $z1_11, $z1_12, $z1_13, $z0_13, $z1_14, $z0_14, $z1_15, $z0_15;
+        android.view.MotionEvent $r1, $r5, $r6, $r5_1, $r5_2, $r5_3, $r6_1, $r5_4, $r6_2, $r5_5, $r5_6, $r5_7, $r5_8, $r5_9, $r5_10, $r5_11, $r5_12, $r5_13, $r5_14, $r5_15, $r5_16, $r6_3, $r1_1, $r1_2, $r1_3, $r6_4;
+        int $i0, $i1, $i2, $i3, $i2_1, $i1_1, $i3_1, $i3_2, $i2_2, $i2_3, $i0_1, $i0_2, $i0_3, $i2_4, $i2_5, $i2_6, $i3_3, $i3_4, $i2_7, $i3_5, $i1_2, $i1_3, $i1_4, $i1_5, $i1_6, $i1_7, $i0_4, $i1_8, $i0_5, $i1_9, $i1_10, $i0_6, $i0_7, $i1_11, $i0_8, $i1_12, $i0_9, $i1_13, $i1_14, $i1_15, $i2_8, $i3_6, $i0_10, $i2_9, $i2_10;
+        android.view.VelocityTracker $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6, $r2_7, $r2_8, $r2_9, $r2_10, $r2_11, $r2_12, $r2_13, $r2_14, $r2_15, $r2_16, $r2_17;
+        float $f0, $f1, $f2, $f3, $f4, $f1_1, $f0_1, $f1_2, $f2_1, $f0_2, $f2_2, $f0_3, $f2_3, $f1_3, $f2_4, $f0_4, $f2_5, $f1_4, $f0_5, $f0_6, $f1_5, $f2_6, $f2_7, $f3_1, $f2_8, $f2_9, $f3_2, $f3_3, $f2_10, $f2_11, $f2_12, $f3_4, $f3_5, $f4_1, $f4_2, $f4_3, $f4_4, $f4_5, $f4_6, $f1_6, $f2_13, $f3_6, $f0_7, $f0_8, $f0_9, $f1_7, $f2_14, $f3_7, $f2_15, $f3_8, $f2_16, $f3_9, $f1_8, $f2_17, $f3_10, $f0_10;
+        byte $b4, $b4_1, $b4_2, $b4_3, $b4_4, $b4_5, $b4_6, $b4_7, $b4_8, $b4_9, $b4_10;
+        android.view.GestureDetector$OnDoubleTapListener $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8;
+        android.os.Handler $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9, $r4_10, $r4_11, $r4_12, $r4_13, $r4_14, $r4_15, $r4_16;
+        long $l5, $l6, $l5_1, $l5_2, $l5_3, $l6_1, $l5_4, $l6_2, $l5_5, $l5_6, $l6_3, $l5_7;
+        android.view.GestureDetector$OnGestureListener $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6;
+
+        $r0 := @this: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $i0 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+        $r2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+(0)     if $r2 != null goto label01;
+
+        $r2_1 = staticinvoke <android.view.VelocityTracker: android.view.VelocityTracker obtain()>();
+
+(1)     $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker> = $r2_1;
+
+     label01:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        $r2_3 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+        virtualinvoke $r2_3.<android.view.VelocityTracker: void addMovement(android.view.MotionEvent)>($r1);
+
+        $i1 = $i0 & 255;
+
+        if $i1 != 6 goto label06;
+
+(2)     $z0 = 1;
+
+     label02:
+        $z0_1 = Phi($z0 #2, $z0_15 #7);
+
+        if $z0_1 == 0 goto label07;
+
+(3)     $i2 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionIndex(android.view.MotionEvent)>($r1);
+
+     label03:
+        $i2_1 = Phi($i2 #3, $i2_10 #8);
+
+        $f0 = 0.0F;
+
+        $f1 = 0.0F;
+
+        $i1_1 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerCount(android.view.MotionEvent)>($r1);
+
+(4)     $i3 = 0;
+
+     label04:
+        $i3_1 = Phi($i3 #4, $i3_2 #6);
+
+        $f1_1 = Phi($f1 #4, $f1_2 #6);
+
+        $f2 = Phi($f2 #4, $f2_1 #6);
+
+        $f0_1 = Phi($f0 #4, $f0_2 #6);
+
+        if $i3_1 >= $i1_1 goto label09;
+
+(5)     if $i2_1 != $i3_1 goto label08;
+
+     label05:
+        $f1_2 = Phi($f1_1 #5, $f1_3 #9);
+
+        $f2_1 = Phi($f2 #5, $f2_3 #9);
+
+        $f0_2 = Phi($f0_1 #5, $f0_3 #9);
+
+        $i3_2 = $i3_1 + 1;
+
+(6)     goto label04;
+
+     label06:
+        $z0_15 = 0;
+
+(7)     goto label02;
+
+     label07:
+        $i2_10 = -1;
+
+(8)     goto label03;
+
+     label08:
+        $f2_2 = staticinvoke <android.support.v4.view.MotionEventCompat: float getX(android.view.MotionEvent,int)>($r1, $i3_1);
+
+        $f0_3 = $f0_1 + $f2_2;
+
+        $f2_3 = staticinvoke <android.support.v4.view.MotionEventCompat: float getY(android.view.MotionEvent,int)>($r1, $i3_1);
+
+        $f1_3 = $f1_1 + $f2_3;
+
+(9)     goto label05;
+
+     label09:
+        if $z0_1 == 0 goto label13;
+
+(10)    $i2_2 = $i1_1 + -1;
+
+     label10:
+        $i2_3 = Phi($i2_2 #10, $i2_9 #11);
+
+        $f2_4 = (float) $i2_3;
+
+        $f0_4 = $f0_1 / $f2_4;
+
+        $f2_5 = (float) $i2_3;
+
+        $f1_4 = $f1_1 / $f2_5;
+
+        $z0_2 = 0;
+
+        $i0_1 = $i0 & 255;
+
+        lookupswitch($i0_1)
+        {
+            case 0: goto label19;
+            case 1: goto label30;
+            case 2: goto label25;
+            case 3: goto label38;
+            case 4: goto label12;
+            case 5: goto label14;
+            case 6: goto label15;
+            default: goto label11;
+        };
+
+     label11:
+        goto label12;
+
+     label12:
+        return 0;
+
+     label13:
+        $i2_9 = $i1_1;
+
+(11)    goto label10;
+
+     label14:
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusX> = $f0_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mDownFocusX> = $f0_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusY> = $f1_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mDownFocusY> = $f1_4;
+
+        specialinvoke $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: void cancelTaps()>();
+
+        return 0;
+
+     label15:
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusX> = $f0_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mDownFocusX> = $f0_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusY> = $f1_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mDownFocusY> = $f1_4;
+
+        $r2_4 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+        $i0_2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mMaximumFlingVelocity>;
+
+        $f0_5 = (float) $i0_2;
+
+        virtualinvoke $r2_4.<android.view.VelocityTracker: void computeCurrentVelocity(int,float)>(1000, $f0_5);
+
+        $i0_3 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionIndex(android.view.MotionEvent)>($r1);
+
+        $i2_4 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $i0_3);
+
+        $r2_5 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+        $f0_6 = staticinvoke <android.support.v4.view.VelocityTrackerCompat: float getXVelocity(android.view.VelocityTracker,int)>($r2_5, $i2_4);
+
+        $r2_6 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+        $f1_5 = staticinvoke <android.support.v4.view.VelocityTrackerCompat: float getYVelocity(android.view.VelocityTracker,int)>($r2_6, $i2_4);
+
+(12)    $i2_5 = 0;
+
+     label16:
+        $i2_6 = Phi($i2_5 #12, $i2_7 #15);
+
+        $b4 = Phi($b4 #12, $b4_1 #15);
+
+        $i3_3 = Phi($i3_1 #12, $i3_4 #15);
+
+        $f2_6 = Phi($f2_5 #12, $f2_7 #15);
+
+        $f3 = Phi($f3 #12, $f3_1 #15);
+
+        $r2_7 = Phi($r2_6 #12, $r2_8 #15);
+
+(13)    if $i2_6 >= $i1_1 goto label39;
+
+(14)    if $i2_6 != $i0_3 goto label18;
+
+     label17:
+        $b4_1 = Phi($b4 #14, $b4_2 #16);
+
+        $i3_4 = Phi($i3_3 #14, $i3_5 #16);
+
+        $f2_7 = Phi($f2_6 #14, $f2_10 #16);
+
+        $f3_1 = Phi($f3 #14, $f3_3 #16);
+
+        $r2_8 = Phi($r2_7 #14, $r2_10 #16);
+
+        $i2_7 = $i2_6 + 1;
+
+(15)    goto label16;
+
+     label18:
+        $i3_5 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $i2_6);
+
+        $r2_9 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+        $f2_8 = staticinvoke <android.support.v4.view.VelocityTrackerCompat: float getXVelocity(android.view.VelocityTracker,int)>($r2_9, $i3_5);
+
+        $f2_9 = $f0_6 * $f2_8;
+
+        $r2_10 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+        $f3_2 = staticinvoke <android.support.v4.view.VelocityTrackerCompat: float getYVelocity(android.view.VelocityTracker,int)>($r2_10, $i3_5);
+
+        $f3_3 = $f1_5 * $f3_2;
+
+        $f2_10 = $f2_9 + $f3_3;
+
+        $b4_2 = $f2_10 cmpg 0.0F;
+
+(16)    if $b4_2 >= 0 goto label17;
+
+        $r2_11 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+        virtualinvoke $r2_11.<android.view.VelocityTracker: void clear()>();
+
+        return 0;
+
+     label19:
+        $r3 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnDoubleTapListener mDoubleTapListener>;
+
+(17)    if $r3 == null goto label21;
+
+        $r4 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        $z1 = virtualinvoke $r4.<android.os.Handler: boolean hasMessages(int)>(3);
+
+(18)    if $z1 == 0 goto label20;
+
+        $r4_1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+(19)    virtualinvoke $r4_1.<android.os.Handler: void removeMessages(int)>(3);
+
+     label20:
+        $r4_2 = Phi($r4 #18, $r4_1 #19);
+
+        $r5 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+(20)    if $r5 == null goto label24;
+
+        $r5_1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mPreviousUpEvent>;
+
+(21)    if $r5_1 == null goto label24;
+
+(22)    if $z1 == 0 goto label24;
+
+        $r5_2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+        $r6 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mPreviousUpEvent>;
+
+        $z1_1 = specialinvoke $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean isConsideredDoubleTap(android.view.MotionEvent,android.view.MotionEvent,android.view.MotionEvent)>($r5_2, $r6, $r1);
+
+(23)    if $z1_1 == 0 goto label24;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mIsDoubleTapping> = 1;
+
+        $r3_1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnDoubleTapListener mDoubleTapListener>;
+
+        $r5_3 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+        $z0_3 = interfaceinvoke $r3_1.<android.view.GestureDetector$OnDoubleTapListener: boolean onDoubleTap(android.view.MotionEvent)>($r5_3);
+
+        $r3_2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnDoubleTapListener mDoubleTapListener>;
+
+        $z1_2 = interfaceinvoke $r3_2.<android.view.GestureDetector$OnDoubleTapListener: boolean onDoubleTapEvent(android.view.MotionEvent)>($r1);
+
+(24)    $z0_4 = $z0_3 | $z1_2;
+
+     label21:
+        $i1_3 = Phi($i1_1 #17, $i1_1 #24, $i1_2 #29);
+
+        $l5_1 = Phi($l5 #17, $l5 #24, $l5 #29);
+
+        $z0_5 = Phi($z0_2 #17, $z0_4 #24, $z0_2 #29);
+
+        $r6_2 = Phi($r6 #17, $r6 #24, $r6_1 #29);
+
+        $r5_5 = Phi($r5 #17, $r5_3 #24, $r5_4 #29);
+
+        $z1_4 = Phi($z1 #17, $z1_2 #24, $z1_3 #29);
+
+        $r4_4 = Phi($r4 #17, $r4_2 #24, $r4_3 #29);
+
+        $r3_3 = Phi($r3 #17, $r3_2 #24, $r3 #29);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusX> = $f0_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mDownFocusX> = $f0_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusY> = $f1_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mDownFocusY> = $f1_4;
+
+        $r5_6 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+(25)    if $r5_6 == null goto label22;
+
+        $r5_7 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+(26)    virtualinvoke $r5_7.<android.view.MotionEvent: void recycle()>();
+
+     label22:
+        $r5_8 = Phi($r5_6 #25, $r5_7 #26);
+
+        $r5_9 = staticinvoke <android.view.MotionEvent: android.view.MotionEvent obtain(android.view.MotionEvent)>($r1);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent> = $r5_9;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInTapRegion> = 1;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInBiggerTapRegion> = 1;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mStillDown> = 1;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mInLongPress> = 0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mDeferConfirmSingleTap> = 0;
+
+        $z1_5 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mIsLongpressEnabled>;
+
+(27)    if $z1_5 == 0 goto label23;
+
+        $r4_5 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r4_5.<android.os.Handler: void removeMessages(int)>(2);
+
+        $r4_6 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        $r5_10 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+        $l5_2 = virtualinvoke $r5_10.<android.view.MotionEvent: long getDownTime()>();
+
+        $i1_4 = <android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int TAP_TIMEOUT>;
+
+        $l6 = (long) $i1_4;
+
+        $l5_3 = $l5_2 + $l6;
+
+        $i1_5 = <android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int LONGPRESS_TIMEOUT>;
+
+        $l6_1 = (long) $i1_5;
+
+        $l5_4 = $l5_3 + $l6_1;
+
+(28)    virtualinvoke $r4_6.<android.os.Handler: boolean sendEmptyMessageAtTime(int,long)>(2, $l5_4);
+
+     label23:
+        $i1_6 = Phi($i1_3 #27, $i1_5 #28);
+
+        $l6_2 = Phi($l6 #27, $l6_1 #28);
+
+        $l5_5 = Phi($l5_1 #27, $l5_4 #28);
+
+        $r5_11 = Phi($r5_9 #27, $r5_10 #28);
+
+        $r4_7 = Phi($r4_4 #27, $r4_6 #28);
+
+        $r4_8 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        $r5_12 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+        $l5_6 = virtualinvoke $r5_12.<android.view.MotionEvent: long getDownTime()>();
+
+        $i1_7 = <android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int TAP_TIMEOUT>;
+
+        $l6_3 = (long) $i1_7;
+
+        $l5_7 = $l5_6 + $l6_3;
+
+        virtualinvoke $r4_8.<android.os.Handler: boolean sendEmptyMessageAtTime(int,long)>(1, $l5_7);
+
+        $r7 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnGestureListener mListener>;
+
+        $z1_6 = interfaceinvoke $r7.<android.view.GestureDetector$OnGestureListener: boolean onDown(android.view.MotionEvent)>($r1);
+
+        $z0_6 = $z0_5 | $z1_6;
+
+        return $z0_6;
+
+     label24:
+        $r6_1 = Phi($r6 #20, $r6 #21, $r6 #22, $r6 #23);
+
+        $r5_4 = Phi($r5 #20, $r5_1 #21, $r5_1 #22, $r5_2 #23);
+
+        $z1_3 = Phi($z1 #20, $z1 #21, $z1 #22, $z1_1 #23);
+
+        $r4_3 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        $i1_2 = <android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int DOUBLE_TAP_TIMEOUT>;
+
+        $l5 = (long) $i1_2;
+
+        virtualinvoke $r4_3.<android.os.Handler: boolean sendEmptyMessageDelayed(int,long)>(3, $l5);
+
+(29)    goto label21;
+
+     label25:
+        $z1_7 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mInLongPress>;
+
+(30)    if $z1_7 != 0 goto label39;
+
+        $f2_11 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusX>;
+
+        $f2_12 = $f2_11 - $f0_4;
+
+        $f3_4 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusY>;
+
+        $f3_5 = $f3_4 - $f1_4;
+
+        $z1_8 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mIsDoubleTapping>;
+
+        if $z1_8 == 0 goto label26;
+
+        $r3_4 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnDoubleTapListener mDoubleTapListener>;
+
+        $z0_7 = interfaceinvoke $r3_4.<android.view.GestureDetector$OnDoubleTapListener: boolean onDoubleTapEvent(android.view.MotionEvent)>($r1);
+
+        return $z0_7;
+
+     label26:
+        $z1_9 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInTapRegion>;
+
+        if $z1_9 == 0 goto label28;
+
+        $f4 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mDownFocusX>;
+
+        $f4_1 = $f0_4 - $f4;
+
+        $i0_4 = (int) $f4_1;
+
+        $f4_2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mDownFocusY>;
+
+        $f4_3 = $f1_4 - $f4_2;
+
+        $i1_8 = (int) $f4_3;
+
+        $i0_5 = $i0_4 * $i0_4;
+
+        $i1_9 = $i1_8 * $i1_8;
+
+        $i1_10 = $i0_5 + $i1_9;
+
+        $i0_6 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mTouchSlopSquare>;
+
+(31)    if $i1_10 <= $i0_6 goto label27;
+
+        $r7_1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnGestureListener mListener>;
+
+        $r5_13 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+        $z0_8 = interfaceinvoke $r7_1.<android.view.GestureDetector$OnGestureListener: boolean onScroll(android.view.MotionEvent,android.view.MotionEvent,float,float)>($r5_13, $r1, $f2_12, $f3_5);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusX> = $f0_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusY> = $f1_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInTapRegion> = 0;
+
+        $r4_9 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r4_9.<android.os.Handler: void removeMessages(int)>(3);
+
+        $r4_10 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r4_10.<android.os.Handler: void removeMessages(int)>(1);
+
+        $r4_11 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+(32)    virtualinvoke $r4_11.<android.os.Handler: void removeMessages(int)>(2);
+
+     label27:
+        $z0_9 = Phi($z0_2 #31, $z0_8 #32);
+
+        $r5_14 = Phi($r5 #31, $r5_13 #32);
+
+        $r4_12 = Phi($r4 #31, $r4_11 #32);
+
+        $r7_2 = Phi($r7 #31, $r7_1 #32);
+
+        $i0_7 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mTouchSlopSquare>;
+
+        if $i1_10 <= $i0_7 goto label40;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInBiggerTapRegion> = 0;
+
+        return $z0_9;
+
+     label28:
+        $f4_4 = staticinvoke <java.lang.Math: float abs(float)>($f2_12);
+
+        $b4_3 = $f4_4 cmpl 1.0F;
+
+(33)    if $b4_3 >= 0 goto label29;
+
+        $f4_5 = staticinvoke <java.lang.Math: float abs(float)>($f3_5);
+
+        $b4_4 = $f4_5 cmpl 1.0F;
+
+(34)    if $b4_4 < 0 goto label41;
+
+     label29:
+        $b4_5 = Phi($b4_3 #33, $b4_4 #34);
+
+        $f4_6 = Phi($f4_4 #33, $f4_5 #34);
+
+        $r7_3 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnGestureListener mListener>;
+
+        $r5_15 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+        $z0_10 = interfaceinvoke $r7_3.<android.view.GestureDetector$OnGestureListener: boolean onScroll(android.view.MotionEvent,android.view.MotionEvent,float,float)>($r5_15, $r1, $f2_12, $f3_5);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusX> = $f0_4;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: float mLastFocusY> = $f1_4;
+
+        return $z0_10;
+
+     label30:
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mStillDown> = 0;
+
+        $r5_16 = staticinvoke <android.view.MotionEvent: android.view.MotionEvent obtain(android.view.MotionEvent)>($r1);
+
+        $z1_10 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mIsDoubleTapping>;
+
+        if $z1_10 == 0 goto label34;
+
+        $r3_5 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnDoubleTapListener mDoubleTapListener>;
+
+(35)    $z0_11 = interfaceinvoke $r3_5.<android.view.GestureDetector$OnDoubleTapListener: boolean onDoubleTapEvent(android.view.MotionEvent)>($r1);
+
+     label31:
+        $i1_11 = Phi($i1_1 #35, $i1_1 #40, $i1_1 #41, $i1_1 #42, $i1_1 #43, $i1_14 #45, $i1_15 #46);
+
+        $b4_6 = Phi($b4 #35, $b4 #40, $b4 #41, $b4 #42, $b4 #43, $b4_8 #45, $b4_9 #46);
+
+        $z0_12 = Phi($z0_11 #35, $z0_2 #40, $z0_13 #41, $z0_13 #42, $z0_13 #43, $z0_2 #45, $z0_14 #46);
+
+        $f1_6 = Phi($f1_4 #35, $f1_4 #40, $f1_4 #41, $f1_4 #42, $f1_4 #43, $f1_7 #45, $f1_7 #46);
+
+        $r6_3 = Phi($r6 #35, $r6 #40, $r6 #41, $r6 #42, $r6 #43, $r6 #45, $r6_4 #46);
+
+        $z1_11 = Phi($z1_10 #35, $z1_12 #40, $z1_14 #41, $z1_14 #42, $z1_14 #43, $z1_13 #45, $z1_13 #46);
+
+        $f2_13 = Phi($f2_5 #35, $f2_5 #40, $f2_5 #41, $f2_5 #42, $f2_5 #43, $f2_15 #45, $f2_16 #46);
+
+        $f3_6 = Phi($f3 #35, $f3 #40, $f3 #41, $f3 #42, $f3 #43, $f3_8 #45, $f3_9 #46);
+
+        $r4_13 = Phi($r4 #35, $r4_16 #40, $r4 #41, $r4 #42, $r4 #43, $r4 #45, $r4 #46);
+
+        $r3_6 = Phi($r3_5 #35, $r3 #40, $r3 #41, $r3_7 #42, $r3_8 #43, $r3 #45, $r3 #46);
+
+        $i0_8 = Phi($i0_1 #35, $i0_1 #40, $i0_1 #41, $i0_1 #42, $i0_1 #43, $i0_9 #45, $i0_9 #46);
+
+        $r7_4 = Phi($r7 #35, $r7 #40, $r7_5 #41, $r7_5 #42, $r7_5 #43, $r7 #45, $r7_6 #46);
+
+        $f0_7 = Phi($f0_4 #35, $f0_4 #40, $f0_4 #41, $f0_4 #42, $f0_4 #43, $f0_9 #45, $f0_9 #46);
+
+        $r2_12 = Phi($r2_3 #35, $r2_3 #40, $r2_3 #41, $r2_3 #42, $r2_3 #43, $r2_16 #45, $r2_16 #46);
+
+        $r1_1 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mPreviousUpEvent>;
+
+(36)    if $r1_1 == null goto label32;
+
+        $r1_2 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mPreviousUpEvent>;
+
+(37)    virtualinvoke $r1_2.<android.view.MotionEvent: void recycle()>();
+
+     label32:
+        $r1_3 = Phi($r1_1 #36, $r1_2 #37);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mPreviousUpEvent> = $r5_16;
+
+        $r2_13 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+(38)    if $r2_13 == null goto label33;
+
+        $r2_14 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+        virtualinvoke $r2_14.<android.view.VelocityTracker: void recycle()>();
+
+(39)    $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker> = null;
+
+     label33:
+        $r2_15 = Phi($r2_13 #38, $r2_14 #39);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mIsDoubleTapping> = 0;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mDeferConfirmSingleTap> = 0;
+
+        $r4_14 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r4_14.<android.os.Handler: void removeMessages(int)>(1);
+
+        $r4_15 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r4_15.<android.os.Handler: void removeMessages(int)>(2);
+
+        return $z0_12;
+
+     label34:
+        $z1_12 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mInLongPress>;
+
+        if $z1_12 == 0 goto label35;
+
+        $r4_16 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.os.Handler mHandler>;
+
+        virtualinvoke $r4_16.<android.os.Handler: void removeMessages(int)>(3);
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mInLongPress> = 0;
+
+(40)    goto label31;
+
+     label35:
+        $z1_13 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mAlwaysInTapRegion>;
+
+        if $z1_13 == 0 goto label36;
+
+        $r7_5 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnGestureListener mListener>;
+
+        $z0_13 = interfaceinvoke $r7_5.<android.view.GestureDetector$OnGestureListener: boolean onSingleTapUp(android.view.MotionEvent)>($r1);
+
+        $z1_14 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mDeferConfirmSingleTap>;
+
+(41)    if $z1_14 == 0 goto label31;
+
+        $r3_7 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnDoubleTapListener mDoubleTapListener>;
+
+(42)    if $r3_7 == null goto label31;
+
+        $r3_8 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnDoubleTapListener mDoubleTapListener>;
+
+        interfaceinvoke $r3_8.<android.view.GestureDetector$OnDoubleTapListener: boolean onSingleTapConfirmed(android.view.MotionEvent)>($r1);
+
+(43)    goto label31;
+
+     label36:
+        $r2_16 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.VelocityTracker mVelocityTracker>;
+
+        $i1_12 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, 0);
+
+        $i0_9 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mMaximumFlingVelocity>;
+
+        $f0_8 = (float) $i0_9;
+
+        virtualinvoke $r2_16.<android.view.VelocityTracker: void computeCurrentVelocity(int,float)>(1000, $f0_8);
+
+        $f0_9 = staticinvoke <android.support.v4.view.VelocityTrackerCompat: float getYVelocity(android.view.VelocityTracker,int)>($r2_16, $i1_12);
+
+        $f1_7 = staticinvoke <android.support.v4.view.VelocityTrackerCompat: float getXVelocity(android.view.VelocityTracker,int)>($r2_16, $i1_12);
+
+        $f2_14 = staticinvoke <java.lang.Math: float abs(float)>($f0_9);
+
+        $i1_13 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mMinimumFlingVelocity>;
+
+        $f3_7 = (float) $i1_13;
+
+        $b4_7 = $f2_14 cmpl $f3_7;
+
+(44)    if $b4_7 > 0 goto label37;
+
+        $f2_15 = staticinvoke <java.lang.Math: float abs(float)>($f1_7);
+
+        $i1_14 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: int mMinimumFlingVelocity>;
+
+        $f3_8 = (float) $i1_14;
+
+        $b4_8 = $f2_15 cmpl $f3_8;
+
+(45)    if $b4_8 <= 0 goto label31;
+
+     label37:
+        $i1_15 = Phi($i1_13 #44, $i1_14 #45);
+
+        $b4_9 = Phi($b4_7 #44, $b4_8 #45);
+
+        $f2_16 = Phi($f2_14 #44, $f2_15 #45);
+
+        $f3_9 = Phi($f3_7 #44, $f3_8 #45);
+
+        $r7_6 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnGestureListener mListener>;
+
+        $r6_4 = $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.MotionEvent mCurrentDownEvent>;
+
+        $z0_14 = interfaceinvoke $r7_6.<android.view.GestureDetector$OnGestureListener: boolean onFling(android.view.MotionEvent,android.view.MotionEvent,float,float)>($r6_4, $r1, $f1_7, $f0_9);
+
+(46)    goto label31;
+
+     label38:
+(47)    specialinvoke $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: void cancel()>();
+
+     label39:
+        $i2_8 = Phi($i2_6 #13, $i2_3 #30, $i2_3 #47);
+
+        $b4_10 = Phi($b4 #13, $b4 #30, $b4 #47);
+
+        $i3_6 = Phi($i3_3 #13, $i3_1 #30, $i3_1 #47);
+
+        $f1_8 = Phi($f1_5 #13, $f1_4 #30, $f1_4 #47);
+
+        $z1_15 = Phi($z1 #13, $z1_7 #30, $z1 #47);
+
+        $f2_17 = Phi($f2_6 #13, $f2_5 #30, $f2_5 #47);
+
+        $f3_10 = Phi($f3 #13, $f3 #30, $f3 #47);
+
+        $i0_10 = Phi($i0_3 #13, $i0_1 #30, $i0_1 #47);
+
+        $f0_10 = Phi($f0_6 #13, $f0_4 #30, $f0_4 #47);
+
+        $r2_17 = Phi($r2_7 #13, $r2_3 #30, $r2_3 #47);
+
+        return 0;
+
+     label40:
+        return $z0_9;
+
+     label41:
+        return 0;
+    }
+
+    public void setIsLongpressEnabled(boolean)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: boolean mIsLongpressEnabled> = $z0;
+
+        return;
+    }
+
+    public void setOnDoubleTapListener(android.view.GestureDetector$OnDoubleTapListener)
+    {
+        android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase $r0;
+        android.view.GestureDetector$OnDoubleTapListener $r1;
+
+        $r0 := @this: android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase;
+
+        $r1 := @parameter0: android.view.GestureDetector$OnDoubleTapListener;
+
+        $r0.<android.support.v4.view.GestureDetectorCompat$GestureDetectorCompatImplBase: android.view.GestureDetector$OnDoubleTapListener mDoubleTapListener> = $r1;
+
+        return;
+    }
+}

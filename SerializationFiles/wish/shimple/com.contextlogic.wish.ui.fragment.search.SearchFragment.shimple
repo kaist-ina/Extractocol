@@ -1,0 +1,1407 @@
+public class com.contextlogic.wish.ui.fragment.search.SearchFragment extends com.contextlogic.wish.ui.fragment.base.BaseContentFragment implements com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener
+{
+    private java.util.ArrayList categories;
+    private com.contextlogic.wish.ui.fragment.search.SearchCategoryAdapter categoryAdapter;
+    private com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView categoryList;
+    private android.view.View categorySection;
+    private android.view.View errorView;
+    private android.view.View itemsView;
+    private boolean loadingComplete;
+    private boolean loadingErrored;
+    private android.view.View loadingView;
+    private android.view.View noItemsView;
+    private java.util.ArrayList recentlyViewed;
+    private com.contextlogic.wish.ui.fragment.search.SearchRecentlyViewedAdapter recentlyViewedAdapter;
+    private com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView recentlyViewedList;
+    private android.view.View recentlyViewedSection;
+    private android.view.View recentlyViewedViewAll;
+    private java.util.ArrayList searchHistory;
+    private android.widget.LinearLayout searchHistoryMainContainer;
+    private android.widget.LinearLayout searchHistorySecondaryContainer;
+    private android.view.View searchHistorySection;
+    private android.view.View searchHistoryViewAll;
+    private com.contextlogic.wish.api.service.SearchLandingPageService searchLandingPageService;
+    private com.contextlogic.wish.ui.fragment.search.SearchTrendingAdapter trendingAdapter;
+    private com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView trendingList;
+    private java.util.ArrayList trendingSearches;
+    private android.view.View trendingSection;
+    private int visibleSectionCount;
+
+    public void <init>()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void <init>()>();
+
+        return;
+    }
+
+    static android.widget.LinearLayout access$000(com.contextlogic.wish.ui.fragment.search.SearchFragment)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        android.widget.LinearLayout r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        r1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.widget.LinearLayout searchHistorySecondaryContainer>;
+
+        return r1;
+    }
+
+    static android.view.View access$100(com.contextlogic.wish.ui.fragment.search.SearchFragment)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        android.view.View r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        r1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View searchHistoryViewAll>;
+
+        return r1;
+    }
+
+    static void access$200(com.contextlogic.wish.ui.fragment.search.SearchFragment)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void showRecentlyViewed()>();
+
+        return;
+    }
+
+    static void access$300(com.contextlogic.wish.ui.fragment.search.SearchFragment, java.util.ArrayList, java.util.ArrayList, java.util.ArrayList, java.util.ArrayList)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        java.util.ArrayList $r1, $r2, $r3, $r4;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 := @parameter1: java.util.ArrayList;
+
+        $r2 := @parameter2: java.util.ArrayList;
+
+        $r3 := @parameter3: java.util.ArrayList;
+
+        $r4 := @parameter4: java.util.ArrayList;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void handleLoadingSuccess(java.util.ArrayList,java.util.ArrayList,java.util.ArrayList,java.util.ArrayList)>($r1, $r2, $r3, $r4);
+
+        return;
+    }
+
+    static void access$400(com.contextlogic.wish.ui.fragment.search.SearchFragment)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void handleLoadingFailure()>();
+
+        return;
+    }
+
+    static void access$500(com.contextlogic.wish.ui.fragment.search.SearchFragment, java.lang.String)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 := @parameter1: java.lang.String;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void showSearchHistory(java.lang.String)>($r1);
+
+        return;
+    }
+
+    private void addSearchHistoryRow(java.lang.String, android.widget.LinearLayout)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        java.lang.String $r1;
+        android.widget.LinearLayout $r2;
+        com.contextlogic.wish.ui.components.text.UnifiedFontTextView $r3;
+        android.widget.LinearLayout$LayoutParams $r4;
+        com.contextlogic.wish.ui.fragment.search.SearchFragment$5 $r5;
+        android.support.v4.app.FragmentActivity $r6;
+        android.content.res.Resources $r7, $r7_1, $r7_2;
+        int $i0, $i0_1, $i0_2;
+        android.util.DisplayMetrics $r8, $r8_1;
+        float $f0, $f0_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.widget.LinearLayout;
+
+        $r3 = new com.contextlogic.wish.ui.components.text.UnifiedFontTextView;
+
+        $r6 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void <init>(android.content.Context)>($r6);
+
+        $r7 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.content.res.Resources getResources()>();
+
+        $i0 = virtualinvoke $r7.<android.content.res.Resources: int getColor(int)>(2131493062);
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void setTextColor(int)>($i0);
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void setText(java.lang.CharSequence)>($r1);
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void setTextSize(int,float)>(1, 13.0F);
+
+        $r7_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.content.res.Resources getResources()>();
+
+        $r8 = virtualinvoke $r7_1.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0 = staticinvoke <android.util.TypedValue: float applyDimension(int,float,android.util.DisplayMetrics)>(1, 40.0F, $r8);
+
+        $i0_1 = (int) $f0;
+
+        $r4 = new android.widget.LinearLayout$LayoutParams;
+
+        specialinvoke $r4.<android.widget.LinearLayout$LayoutParams: void <init>(int,int)>(-1, $i0_1);
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void setGravity(int)>(19);
+
+        $r7_2 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.content.res.Resources getResources()>();
+
+        $r8_1 = virtualinvoke $r7_2.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0_1 = staticinvoke <android.util.TypedValue: float applyDimension(int,float,android.util.DisplayMetrics)>(1, 10.0F, $r8_1);
+
+        $i0_2 = (int) $f0_1;
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void setPadding(int,int,int,int)>($i0_2, 0, $i0_2, 0);
+
+        $r5 = new com.contextlogic.wish.ui.fragment.search.SearchFragment$5;
+
+        specialinvoke $r5.<com.contextlogic.wish.ui.fragment.search.SearchFragment$5: void <init>(com.contextlogic.wish.ui.fragment.search.SearchFragment,java.lang.String)>($r0, $r1);
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.components.text.UnifiedFontTextView: void setOnClickListener(android.view.View$OnClickListener)>($r5);
+
+        virtualinvoke $r2.<android.widget.LinearLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r3, $r4);
+
+        return;
+    }
+
+    private void handleLoadingFailure()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: boolean loadingErrored> = 1;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void refreshViewState()>();
+
+        return;
+    }
+
+    private void handleLoadingSuccess(java.util.ArrayList, java.util.ArrayList, java.util.ArrayList, java.util.ArrayList)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        java.util.ArrayList $r1, $r2, $r3, $r4, $r5, $r5_1, $r5_2, $r5_3, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9, $r4_10, $r4_11, $r4_12, $r4_13, $r4_14, $r4_15, $r4_16;
+        java.util.Iterator $r6, $r6_1, $r6_2, $r6_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10;
+        java.lang.Object $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8, $r7_9, $r7_10, $r7_11, $r7_12;
+        com.contextlogic.wish.api.data.WishCategory $r8;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7, $i0_8, $i0_9, $i0_10, $i0_11, $i0_12, $i0_13, $i0_14, $i0_15, $i0_16, $i0_17, $i0_18, $i0_19;
+        android.view.View $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r9_11, $r9_12, $r9_13, $r9_14;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r10, $r10_1, $r10_2, $r10_3;
+        java.lang.String $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6;
+        android.widget.LinearLayout $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5;
+        com.contextlogic.wish.api.data.WishProduct $r13;
+        com.contextlogic.wish.api.data.WishTrendingSearch $r14;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r4 := @parameter0: java.util.ArrayList;
+
+        $r1 := @parameter1: java.util.ArrayList;
+
+        $r2 := @parameter2: java.util.ArrayList;
+
+        $r5 := @parameter3: java.util.ArrayList;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: boolean loadingComplete> = 1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount> = 0;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList categories>;
+
+        virtualinvoke $r3.<java.util.ArrayList: void clear()>();
+
+(0)     $r6 = virtualinvoke $r5.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label01:
+        $r7 = Phi($r7 #0, $r7_1 #1);
+
+        $r5_1 = Phi($r5 #0, $r5_2 #1);
+
+        $z0 = Phi($z0 #0, $z0_1 #1);
+
+        $z0_1 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label02;
+
+        $r7_1 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r8 = (com.contextlogic.wish.api.data.WishCategory) $r7_1;
+
+        $r5_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList categories>;
+
+        virtualinvoke $r5_2.<java.util.ArrayList: boolean add(java.lang.Object)>($r8);
+
+(1)     goto label01;
+
+     label02:
+        $r5_3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList categories>;
+
+        $i0 = virtualinvoke $r5_3.<java.util.ArrayList: int size()>();
+
+(2)     if $i0 <= 0 goto label05;
+
+        $z0_2 = staticinvoke <com.contextlogic.wish.util.ExperimentManager: boolean shouldShowCategoryInSearchPage()>();
+
+(3)     if $z0_2 == 0 goto label05;
+
+        $i0_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount>;
+
+        $i0_2 = $i0_1 + 1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount> = $i0_2;
+
+        $r9 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View categorySection>;
+
+        virtualinvoke $r9.<android.view.View: void setVisibility(int)>(0);
+
+        $r10 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView categoryList>;
+
+(4)     virtualinvoke $r10.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void reloadData()>();
+
+     label03:
+        $r10_1 = Phi($r10 #4, $r10 #7);
+
+        $z0_3 = Phi($z0_2 #4, $z0_10 #7);
+
+        $r9_1 = Phi($r9 #4, $r9_14 #7);
+
+        $i0_3 = Phi($i0_2 #4, $i0 #7);
+
+(5)     $r6_1 = virtualinvoke $r4.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label04:
+        $r7_2 = Phi($r7 #5, $r7_3 #6);
+
+        $z0_4 = Phi($z0_3 #5, $z0_5 #6);
+
+        $r4_1 = Phi($r4 #5, $r4_2 #6);
+
+        $r11 = Phi($r11 #5, $r11_1 #6);
+
+        $z0_5 = interfaceinvoke $r6_1.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_5 == 0 goto label06;
+
+        $r7_3 = interfaceinvoke $r6_1.<java.util.Iterator: java.lang.Object next()>();
+
+        $r11_1 = (java.lang.String) $r7_3;
+
+        $r4_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList searchHistory>;
+
+        virtualinvoke $r4_2.<java.util.ArrayList: boolean add(java.lang.Object)>($r11_1);
+
+(6)     goto label04;
+
+     label05:
+        $z0_10 = Phi($z0_1 #2, $z0_2 #3);
+
+        $r9_14 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View categorySection>;
+
+        virtualinvoke $r9_14.<android.view.View: void setVisibility(int)>(8);
+
+(7)     goto label03;
+
+     label06:
+        $r4_3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList searchHistory>;
+
+        $i0_4 = virtualinvoke $r4_3.<java.util.ArrayList: int size()>();
+
+        if $i0_4 <= 0 goto label12;
+
+        $i0_5 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount>;
+
+        $i0_6 = $i0_5 + 1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount> = $i0_6;
+
+        $r9_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View searchHistorySection>;
+
+        virtualinvoke $r9_2.<android.view.View: void setVisibility(int)>(0);
+
+        $r12 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.widget.LinearLayout searchHistorySecondaryContainer>;
+
+        virtualinvoke $r12.<android.widget.LinearLayout: void setVisibility(int)>(8);
+
+        $r4_4 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList searchHistory>;
+
+        $i0_7 = virtualinvoke $r4_4.<java.util.ArrayList: int size()>();
+
+        if $i0_7 <= 4 goto label10;
+
+        $r9_3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View searchHistoryViewAll>;
+
+(8)     virtualinvoke $r9_3.<android.view.View: void setVisibility(int)>(0);
+
+     label07:
+        $r9_4 = Phi($r9_3 #8, $r9_5 #13);
+
+(9)     $i0_8 = 0;
+
+     label08:
+        $r7_4 = Phi($r7_2 #9, $r7_6 #12);
+
+        $r4_5 = Phi($r4_4 #9, $r4_8 #12);
+
+        $r11_2 = Phi($r11 #9, $r11_4 #12);
+
+        $r12_1 = Phi($r12 #9, $r12_3 #12);
+
+        $i0_9 = Phi($i0_8 #9, $i0_10 #12);
+
+        $r4_6 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList searchHistory>;
+
+        $i1 = virtualinvoke $r4_6.<java.util.ArrayList: int size()>();
+
+(10)    if $i0_9 >= $i1 goto label13;
+
+        if $i0_9 >= 4 goto label11;
+
+        $r4_7 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList searchHistory>;
+
+        $r7_5 = virtualinvoke $r4_7.<java.util.ArrayList: java.lang.Object get(int)>($i0_9);
+
+        $r11_3 = (java.lang.String) $r7_5;
+
+        $r12_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.widget.LinearLayout searchHistoryMainContainer>;
+
+(11)    specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void addSearchHistoryRow(java.lang.String,android.widget.LinearLayout)>($r11_3, $r12_2);
+
+     label09:
+        $r7_6 = Phi($r7_5 #11, $r7_7 #14);
+
+        $r4_8 = Phi($r4_7 #11, $r4_9 #14);
+
+        $r11_4 = Phi($r11_3 #11, $r11_5 #14);
+
+        $r12_3 = Phi($r12_2 #11, $r12_4 #14);
+
+        $i0_10 = $i0_9 + 1;
+
+(12)    goto label08;
+
+     label10:
+        $r9_5 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View searchHistoryViewAll>;
+
+        virtualinvoke $r9_5.<android.view.View: void setVisibility(int)>(8);
+
+(13)    goto label07;
+
+     label11:
+        $r4_9 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList searchHistory>;
+
+        $r7_7 = virtualinvoke $r4_9.<java.util.ArrayList: java.lang.Object get(int)>($i0_9);
+
+        $r11_5 = (java.lang.String) $r7_7;
+
+        $r12_4 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.widget.LinearLayout searchHistorySecondaryContainer>;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void addSearchHistoryRow(java.lang.String,android.widget.LinearLayout)>($r11_5, $r12_4);
+
+(14)    goto label09;
+
+     label12:
+        $r9_6 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View searchHistorySection>;
+
+(15)    virtualinvoke $r9_6.<android.view.View: void setVisibility(int)>(8);
+
+     label13:
+        $r7_8 = Phi($r7_4 #10, $r7_2 #15);
+
+        $r4_10 = Phi($r4_6 #10, $r4_3 #15);
+
+        $r9_7 = Phi($r9_4 #10, $r9_6 #15);
+
+        $r11_6 = Phi($r11_2 #10, $r11 #15);
+
+        $r12_5 = Phi($r12_1 #10, $r12 #15);
+
+        $i0_11 = Phi($i0_9 #10, $i0_4 #15);
+
+(16)    $r6_2 = virtualinvoke $r1.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label14:
+        $r7_9 = Phi($r7_8 #16, $r7_10 #17);
+
+        $z0_6 = Phi($z0_5 #16, $z0_7 #17);
+
+        $r4_11 = Phi($r4_10 #16, $r4_12 #17);
+
+        $z0_7 = interfaceinvoke $r6_2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_7 == 0 goto label15;
+
+        $r7_10 = interfaceinvoke $r6_2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r13 = (com.contextlogic.wish.api.data.WishProduct) $r7_10;
+
+        $r4_12 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList recentlyViewed>;
+
+        virtualinvoke $r4_12.<java.util.ArrayList: boolean add(java.lang.Object)>($r13);
+
+(17)    goto label14;
+
+     label15:
+        $r4_13 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList recentlyViewed>;
+
+        $i0_12 = virtualinvoke $r4_13.<java.util.ArrayList: int size()>();
+
+        if $i0_12 <= 0 goto label18;
+
+        $i0_13 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount>;
+
+        $i0_14 = $i0_13 + 1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount> = $i0_14;
+
+        $r9_8 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View recentlyViewedSection>;
+
+(18)    virtualinvoke $r9_8.<android.view.View: void setVisibility(int)>(0);
+
+     label16:
+        $r9_9 = Phi($r9_8 #18, $r9_13 #21);
+
+        $i0_15 = Phi($i0_14 #18, $i0_12 #21);
+
+        $r10_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView recentlyViewedList>;
+
+        virtualinvoke $r10_2.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void reloadData()>();
+
+(19)    $r6_3 = virtualinvoke $r2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label17:
+        $r7_11 = Phi($r7_9 #19, $r7_12 #20);
+
+        $z0_8 = Phi($z0_7 #19, $z0_9 #20);
+
+        $r4_14 = Phi($r4_13 #19, $r4_15 #20);
+
+        $z0_9 = interfaceinvoke $r6_3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_9 == 0 goto label19;
+
+        $r7_12 = interfaceinvoke $r6_3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r14 = (com.contextlogic.wish.api.data.WishTrendingSearch) $r7_12;
+
+        $r4_15 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList trendingSearches>;
+
+        virtualinvoke $r4_15.<java.util.ArrayList: boolean add(java.lang.Object)>($r14);
+
+(20)    goto label17;
+
+     label18:
+        $r9_13 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View recentlyViewedSection>;
+
+        virtualinvoke $r9_13.<android.view.View: void setVisibility(int)>(8);
+
+(21)    goto label16;
+
+     label19:
+        $r4_16 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList trendingSearches>;
+
+        $i0_16 = virtualinvoke $r4_16.<java.util.ArrayList: int size()>();
+
+        if $i0_16 <= 0 goto label21;
+
+        $i0_17 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount>;
+
+        $i0_18 = $i0_17 + 1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount> = $i0_18;
+
+        $r9_10 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View trendingSection>;
+
+(22)    virtualinvoke $r9_10.<android.view.View: void setVisibility(int)>(0);
+
+     label20:
+        $r9_11 = Phi($r9_10 #22, $r9_12 #23);
+
+        $i0_19 = Phi($i0_18 #22, $i0_16 #23);
+
+        $r10_3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView trendingList>;
+
+        virtualinvoke $r10_3.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void reloadData()>();
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void refreshViewState()>();
+
+        return;
+
+     label21:
+        $r9_12 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View trendingSection>;
+
+        virtualinvoke $r9_12.<android.view.View: void setVisibility(int)>(8);
+
+(23)    goto label20;
+    }
+
+    private void hideAllUiElements()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        android.view.View $r1, $r1_1, $r1_2, $r1_3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View itemsView>;
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>(8);
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View errorView>;
+
+        virtualinvoke $r1_1.<android.view.View: void setVisibility(int)>(8);
+
+        $r1_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View noItemsView>;
+
+        virtualinvoke $r1_2.<android.view.View: void setVisibility(int)>(8);
+
+        $r1_3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View loadingView>;
+
+        virtualinvoke $r1_3.<android.view.View: void setVisibility(int)>(8);
+
+        return;
+    }
+
+    private void loadSearchInformation()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        com.contextlogic.wish.api.service.SearchLandingPageService $r1;
+        com.contextlogic.wish.ui.fragment.search.SearchFragment$3 $r2;
+        com.contextlogic.wish.ui.fragment.search.SearchFragment$4 $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: boolean loadingErrored> = 0;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.api.service.SearchLandingPageService searchLandingPageService>;
+
+        $r2 = new com.contextlogic.wish.ui.fragment.search.SearchFragment$3;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.search.SearchFragment$3: void <init>(com.contextlogic.wish.ui.fragment.search.SearchFragment)>($r0);
+
+        $r3 = new com.contextlogic.wish.ui.fragment.search.SearchFragment$4;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.search.SearchFragment$4: void <init>(com.contextlogic.wish.ui.fragment.search.SearchFragment)>($r0);
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.SearchLandingPageService: void requestService(com.contextlogic.wish.api.service.SearchLandingPageService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($r2, $r3);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void refreshViewState()>();
+
+        return;
+    }
+
+    private void performSearch(java.lang.String)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment $r2;
+        android.os.Bundle $r3;
+        com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode $r4;
+        int $i0;
+        android.support.v4.app.FragmentActivity $r5;
+        com.contextlogic.wish.ui.activity.root.RootActivity $r6;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment: void <init>()>();
+
+        $r3 = new android.os.Bundle;
+
+        specialinvoke $r3.<android.os.Bundle: void <init>()>();
+
+        $r4 = <com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode: com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode Search>;
+
+        $i0 = virtualinvoke $r4.<com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment$DataMode: int ordinal()>();
+
+        virtualinvoke $r3.<android.os.Bundle: void putInt(java.lang.String,int)>("ArgDataMode", $i0);
+
+        virtualinvoke $r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("ArgDataValue", $r1);
+
+        virtualinvoke $r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("ArgDataTitle", $r1);
+
+        virtualinvoke $r2.<com.contextlogic.wish.ui.fragment.productfeed.ProductFeedFragment: void setArguments(android.os.Bundle)>($r3);
+
+        $r5 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r6 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r5;
+
+        if $r6 == null goto label1;
+
+        virtualinvoke $r6.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r2, 0);
+
+        virtualinvoke $r6.<com.contextlogic.wish.ui.activity.root.RootActivity: void hideKeyboard()>();
+
+     label1:
+        return;
+    }
+
+    private void refreshViewState()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        int $i0;
+        com.contextlogic.wish.api.service.SearchLandingPageService $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.view.View $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void hideAllUiElements()>();
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: boolean loadingErrored>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View errorView>;
+
+        virtualinvoke $r2.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label1:
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: boolean loadingComplete>;
+
+        if $z0_1 == 0 goto label2;
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount>;
+
+        if $i0 != 0 goto label2;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View noItemsView>;
+
+        virtualinvoke $r2_1.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label2:
+        $z0_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: boolean loadingComplete>;
+
+        if $z0_2 == 0 goto label3;
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View itemsView>;
+
+        virtualinvoke $r2_2.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label3:
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.api.service.SearchLandingPageService searchLandingPageService>;
+
+        $z0_3 = virtualinvoke $r1.<com.contextlogic.wish.api.service.SearchLandingPageService: boolean isPending()>();
+
+(0)     if $z0_3 == 0 goto label4;
+
+        $r2_3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View loadingView>;
+
+(1)     virtualinvoke $r2_3.<android.view.View: void setVisibility(int)>(0);
+
+     label4:
+        $r2_4 = Phi($r2 #0, $r2_3 #1);
+
+        return;
+    }
+
+    private void showCategory(com.contextlogic.wish.api.data.WishCategory)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        com.contextlogic.wish.api.data.WishCategory $r1;
+        java.util.HashMap $r2;
+        com.contextlogic.wish.api.service.LogService $r3;
+        com.contextlogic.wish.analytics.WishAnalyticsEvent $r4;
+        com.contextlogic.wish.ui.fragment.category.SubCategoryFragment $r5;
+        android.os.Bundle $r6;
+        java.lang.String $r7, $r7_1, $r7_2;
+        int $i0;
+        android.support.v4.app.FragmentActivity $r8;
+        com.contextlogic.wish.ui.activity.root.RootActivity $r9;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.WishCategory;
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        $r7 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishCategory: java.lang.String getFilterId()>();
+
+        virtualinvoke $r2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>("category_id", $r7);
+
+        $r7_1 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>(0);
+
+        virtualinvoke $r2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>("category_level", $r7_1);
+
+        $r3 = new com.contextlogic.wish.api.service.LogService;
+
+        specialinvoke $r3.<com.contextlogic.wish.api.service.LogService: void <init>()>();
+
+        $r4 = <com.contextlogic.wish.analytics.WishAnalyticsEvent: com.contextlogic.wish.analytics.WishAnalyticsEvent CLICK_MOBILE_SELECT_CATEGORY>;
+
+        $i0 = virtualinvoke $r4.<com.contextlogic.wish.analytics.WishAnalyticsEvent: int getValue()>();
+
+        $r7_2 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        virtualinvoke $r3.<com.contextlogic.wish.api.service.LogService: void requestService(java.lang.String,java.lang.String,java.util.HashMap,com.contextlogic.wish.api.service.LogService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($r7_2, null, $r2, null, null);
+
+        $r5 = new com.contextlogic.wish.ui.fragment.category.SubCategoryFragment;
+
+        specialinvoke $r5.<com.contextlogic.wish.ui.fragment.category.SubCategoryFragment: void <init>()>();
+
+        $r6 = new android.os.Bundle;
+
+        specialinvoke $r6.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke $r6.<android.os.Bundle: void putSerializable(java.lang.String,java.io.Serializable)>("ArgCategory", $r1);
+
+        virtualinvoke $r5.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void setArguments(android.os.Bundle)>($r6);
+
+        $r8 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r9 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r8;
+
+        virtualinvoke $r9.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r5, 0);
+
+        return;
+    }
+
+    private void showProduct(com.contextlogic.wish.api.data.WishProduct)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        com.contextlogic.wish.api.data.WishProduct $r1;
+        com.contextlogic.wish.api.service.LogService $r2;
+        com.contextlogic.wish.analytics.WishAnalyticsEvent $r3;
+        int $i0;
+        java.lang.String $r4;
+        android.support.v4.app.FragmentActivity $r5;
+        com.contextlogic.wish.ui.activity.root.RootActivity $r6;
+        com.contextlogic.wish.ui.fragment.base.BaseContentFragment $r7;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.WishProduct;
+
+        $r2 = new com.contextlogic.wish.api.service.LogService;
+
+        specialinvoke $r2.<com.contextlogic.wish.api.service.LogService: void <init>()>();
+
+        $r3 = <com.contextlogic.wish.analytics.WishAnalyticsEvent: com.contextlogic.wish.analytics.WishAnalyticsEvent CLICK_STANDALONE_SEARCH_RECENTLY_VIEWED>;
+
+        $i0 = virtualinvoke $r3.<com.contextlogic.wish.analytics.WishAnalyticsEvent: int getValue()>();
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        virtualinvoke $r2.<com.contextlogic.wish.api.service.LogService: void requestService(java.lang.String,java.lang.String,com.contextlogic.wish.api.service.LogService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($r4, null, null, null);
+
+        $r5 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r6 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r5;
+
+        if $r6 == null goto label1;
+
+        $r7 = staticinvoke <com.contextlogic.wish.ui.activity.root.RootActivity: com.contextlogic.wish.ui.fragment.base.BaseContentFragment getProductDetailFragment(com.contextlogic.wish.api.data.WishProduct,java.lang.String,java.lang.String,com.contextlogic.wish.api.data.WishUserProductBucket)>($r1, null, null, null);
+
+        virtualinvoke $r6.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r7, 0);
+
+        virtualinvoke $r6.<com.contextlogic.wish.ui.activity.root.RootActivity: void hideKeyboard()>();
+
+     label1:
+        return;
+    }
+
+    private void showRecentlyViewed()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        android.os.Bundle $r1;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r2;
+        android.support.v4.app.FragmentActivity $r3;
+        com.contextlogic.wish.ui.activity.root.RootActivity $r4;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 = new android.os.Bundle;
+
+        specialinvoke $r1.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("ArgInitialCategory", "recently_viewed__tab");
+
+        $r2 = new com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: void <init>()>();
+
+        virtualinvoke $r2.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: void setArguments(android.os.Bundle)>($r1);
+
+        $r3 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r4 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r3;
+
+        if $r4 == null goto label1;
+
+        virtualinvoke $r4.<com.contextlogic.wish.ui.activity.root.RootActivity: void setContentFragment(com.contextlogic.wish.ui.fragment.base.BaseContentFragment,boolean)>($r2, 0);
+
+     label1:
+        return;
+    }
+
+    private void showSearchHistory(java.lang.String)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        java.lang.String $r1, $r4;
+        com.contextlogic.wish.api.service.LogService $r2;
+        com.contextlogic.wish.analytics.WishAnalyticsEvent $r3;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new com.contextlogic.wish.api.service.LogService;
+
+        specialinvoke $r2.<com.contextlogic.wish.api.service.LogService: void <init>()>();
+
+        $r3 = <com.contextlogic.wish.analytics.WishAnalyticsEvent: com.contextlogic.wish.analytics.WishAnalyticsEvent CLICK_STANDALONE_SEARCH_HISTORY_ITEM>;
+
+        $i0 = virtualinvoke $r3.<com.contextlogic.wish.analytics.WishAnalyticsEvent: int getValue()>();
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        virtualinvoke $r2.<com.contextlogic.wish.api.service.LogService: void requestService(java.lang.String,java.lang.String,com.contextlogic.wish.api.service.LogService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($r4, null, null, null);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void performSearch(java.lang.String)>($r1);
+
+        return;
+    }
+
+    private void showTrendingSearch(com.contextlogic.wish.api.data.WishTrendingSearch)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        com.contextlogic.wish.api.data.WishTrendingSearch $r1;
+        com.contextlogic.wish.api.service.LogService $r2;
+        com.contextlogic.wish.analytics.WishAnalyticsEvent $r3;
+        int $i0;
+        java.lang.String $r4, $r4_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.WishTrendingSearch;
+
+        $r2 = new com.contextlogic.wish.api.service.LogService;
+
+        specialinvoke $r2.<com.contextlogic.wish.api.service.LogService: void <init>()>();
+
+        $r3 = <com.contextlogic.wish.analytics.WishAnalyticsEvent: com.contextlogic.wish.analytics.WishAnalyticsEvent CLICK_STANDALONE_SEARCH_TRENDING>;
+
+        $i0 = virtualinvoke $r3.<com.contextlogic.wish.analytics.WishAnalyticsEvent: int getValue()>();
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        virtualinvoke $r2.<com.contextlogic.wish.api.service.LogService: void requestService(java.lang.String,java.lang.String,com.contextlogic.wish.api.service.LogService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($r4, null, null, null);
+
+        $r4_1 = virtualinvoke $r1.<com.contextlogic.wish.api.data.WishTrendingSearch: java.lang.String getQuery()>();
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void performSearch(java.lang.String)>($r4_1);
+
+        return;
+    }
+
+    protected com.contextlogic.wish.analytics.Analytics$PageViewType getAnalyticsPageViewType()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        com.contextlogic.wish.analytics.Analytics$PageViewType r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        r1 = <com.contextlogic.wish.analytics.Analytics$PageViewType: com.contextlogic.wish.analytics.Analytics$PageViewType Search>;
+
+        return r1;
+    }
+
+    protected int getLayoutResourceId()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        return 2130903198;
+    }
+
+    public void handleResume()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        boolean $z0;
+        android.support.v4.app.FragmentActivity $r1;
+        com.contextlogic.wish.ui.activity.root.RootActivity $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void handleResume()>();
+
+        $r1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r2 = (com.contextlogic.wish.ui.activity.root.RootActivity) $r1;
+
+        if $r2 == null goto label1;
+
+        virtualinvoke $r2.<com.contextlogic.wish.ui.activity.root.RootActivity: boolean onSearchRequested(boolean,boolean)>(1, 0);
+
+     label1:
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: boolean loadingComplete>;
+
+        if $z0 != 0 goto label2;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void loadSearchInformation()>();
+
+     label2:
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void refreshViewState()>();
+
+        return;
+    }
+
+    protected void initializeUi(android.view.View)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        com.contextlogic.wish.ui.fragment.search.SearchFragment$1 $r1;
+        com.contextlogic.wish.ui.fragment.search.SearchFragment$2 $r2;
+        android.view.View $r3, $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9, $r4_10, $r4_11, $r4_12, $r4_13, $r4_14, $r4_15, $r3_1;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8, $r5_9, $r5_10, $r5_11;
+        com.contextlogic.wish.ui.fragment.search.SearchCategoryAdapter $r6, $r6_1;
+        android.support.v4.app.FragmentActivity $r7, $r7_1, $r7_2;
+        java.util.ArrayList $r8, $r8_1, $r8_2;
+        android.widget.LinearLayout $r9, $r9_1;
+        com.contextlogic.wish.ui.fragment.search.SearchRecentlyViewedAdapter $r10, $r10_1;
+        com.contextlogic.wish.ui.fragment.search.SearchTrendingAdapter $r11, $r11_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r3 := @parameter0: android.view.View;
+
+        $r4 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559206);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View itemsView> = $r4;
+
+        $r4_1 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559218);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View loadingView> = $r4_1;
+
+        $r4_2 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559219);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View noItemsView> = $r4_2;
+
+        $r4_3 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559220);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View errorView> = $r4_3;
+
+        $r4_4 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559207);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View categorySection> = $r4_4;
+
+        $r4_5 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559208);
+
+        $r5 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView) $r4_5;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView categoryList> = $r5;
+
+        $r6 = new com.contextlogic.wish.ui.fragment.search.SearchCategoryAdapter;
+
+        $r7 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r8 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList categories>;
+
+        $r5_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView categoryList>;
+
+        specialinvoke $r6.<com.contextlogic.wish.ui.fragment.search.SearchCategoryAdapter: void <init>(android.content.Context,java.util.ArrayList,com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView)>($r7, $r8, $r5_1);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.fragment.search.SearchCategoryAdapter categoryAdapter> = $r6;
+
+        $r5_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView categoryList>;
+
+        $r6_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.fragment.search.SearchCategoryAdapter categoryAdapter>;
+
+        virtualinvoke $r5_2.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void setAdapter(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter)>($r6_1);
+
+        $r5_3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView categoryList>;
+
+        virtualinvoke $r5_3.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void setListener(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener)>($r0);
+
+        $r4_6 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559209);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View searchHistorySection> = $r4_6;
+
+        $r4_7 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559210);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View searchHistoryViewAll> = $r4_7;
+
+        $r4_8 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View searchHistoryViewAll>;
+
+        $r1 = new com.contextlogic.wish.ui.fragment.search.SearchFragment$1;
+
+        specialinvoke $r1.<com.contextlogic.wish.ui.fragment.search.SearchFragment$1: void <init>(com.contextlogic.wish.ui.fragment.search.SearchFragment)>($r0);
+
+        virtualinvoke $r4_8.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>($r1);
+
+        $r4_9 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559211);
+
+        $r9 = (android.widget.LinearLayout) $r4_9;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.widget.LinearLayout searchHistoryMainContainer> = $r9;
+
+        $r4_10 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559212);
+
+        $r9_1 = (android.widget.LinearLayout) $r4_10;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.widget.LinearLayout searchHistorySecondaryContainer> = $r9_1;
+
+        $r4_11 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559213);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View recentlyViewedSection> = $r4_11;
+
+        $r4_12 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559214);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View recentlyViewedViewAll> = $r4_12;
+
+        $r4_13 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View recentlyViewedViewAll>;
+
+        $r2 = new com.contextlogic.wish.ui.fragment.search.SearchFragment$2;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.search.SearchFragment$2: void <init>(com.contextlogic.wish.ui.fragment.search.SearchFragment)>($r0);
+
+        virtualinvoke $r4_13.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>($r2);
+
+        $r4_14 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559215);
+
+        $r5_4 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView) $r4_14;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView recentlyViewedList> = $r5_4;
+
+        $r10 = new com.contextlogic.wish.ui.fragment.search.SearchRecentlyViewedAdapter;
+
+        $r7_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r8_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList recentlyViewed>;
+
+        $r5_5 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView recentlyViewedList>;
+
+        specialinvoke $r10.<com.contextlogic.wish.ui.fragment.search.SearchRecentlyViewedAdapter: void <init>(android.content.Context,java.util.ArrayList,com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView)>($r7_1, $r8_1, $r5_5);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.fragment.search.SearchRecentlyViewedAdapter recentlyViewedAdapter> = $r10;
+
+        $r5_6 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView recentlyViewedList>;
+
+        virtualinvoke $r5_6.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void setListener(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener)>($r0);
+
+        $r5_7 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView recentlyViewedList>;
+
+        $r10_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.fragment.search.SearchRecentlyViewedAdapter recentlyViewedAdapter>;
+
+        virtualinvoke $r5_7.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void setAdapter(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter)>($r10_1);
+
+        $r4_15 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559216);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.view.View trendingSection> = $r4_15;
+
+        $r3_1 = virtualinvoke $r3.<android.view.View: android.view.View findViewById(int)>(2131559217);
+
+        $r5_8 = (com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView) $r3_1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView trendingList> = $r5_8;
+
+        $r11 = new com.contextlogic.wish.ui.fragment.search.SearchTrendingAdapter;
+
+        $r7_2 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r8_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList trendingSearches>;
+
+        $r5_9 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView trendingList>;
+
+        specialinvoke $r11.<com.contextlogic.wish.ui.fragment.search.SearchTrendingAdapter: void <init>(android.content.Context,java.util.ArrayList,com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView)>($r7_2, $r8_2, $r5_9);
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.fragment.search.SearchTrendingAdapter trendingAdapter> = $r11;
+
+        $r5_10 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView trendingList>;
+
+        virtualinvoke $r5_10.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void setListener(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewListener)>($r0);
+
+        $r5_11 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView trendingList>;
+
+        $r11_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.fragment.search.SearchTrendingAdapter trendingAdapter>;
+
+        virtualinvoke $r5_11.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void setAdapter(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewAdapter)>($r11_1);
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        android.os.Bundle $r1;
+        com.contextlogic.wish.api.service.SearchLandingPageService $r2;
+        java.util.ArrayList $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onCreate(android.os.Bundle)>($r1);
+
+        $r2 = new com.contextlogic.wish.api.service.SearchLandingPageService;
+
+        specialinvoke $r2.<com.contextlogic.wish.api.service.SearchLandingPageService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.api.service.SearchLandingPageService searchLandingPageService> = $r2;
+
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList categories> = $r3;
+
+        $r3_1 = new java.util.ArrayList;
+
+        specialinvoke $r3_1.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList searchHistory> = $r3_1;
+
+        $r3_2 = new java.util.ArrayList;
+
+        specialinvoke $r3_2.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList trendingSearches> = $r3_2;
+
+        $r3_3 = new java.util.ArrayList;
+
+        specialinvoke $r3_3.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList recentlyViewed> = $r3_3;
+
+        $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: int visibleSectionCount> = 0;
+
+        return;
+    }
+
+    public void onPause()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        com.contextlogic.wish.api.service.SearchLandingPageService $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onPause()>();
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.api.service.SearchLandingPageService searchLandingPageService>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.SearchLandingPageService: void cancelAllRequests()>();
+
+        return;
+    }
+
+    public void onScrollChanged(int, int, int)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        int $i0, $i1, $i2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        return;
+    }
+
+    public void onSelectCell(com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell, int)
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell $r1;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.util.ArrayList $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+        java.lang.Object $r3, $r3_1, $r3_2, $r3_3;
+        com.contextlogic.wish.api.data.WishTrendingSearch $r4;
+        com.contextlogic.wish.api.data.WishProduct $r5;
+        com.contextlogic.wish.api.data.WishCategory $r6;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListViewCell;
+
+        $i0 := @parameter1: int;
+
+        $z0 = $r1 instanceof com.contextlogic.wish.ui.fragment.search.SearchTrendingCell;
+
+        if $z0 == 0 goto label1;
+
+(0)     if $i0 < 0 goto label3;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList trendingSearches>;
+
+        $i1 = virtualinvoke $r2.<java.util.ArrayList: int size()>();
+
+(1)     if $i0 >= $i1 goto label3;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList trendingSearches>;
+
+        $r3 = virtualinvoke $r2_1.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r4 = (com.contextlogic.wish.api.data.WishTrendingSearch) $r3;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void showTrendingSearch(com.contextlogic.wish.api.data.WishTrendingSearch)>($r4);
+
+        return;
+
+     label1:
+        $z0_1 = $r1 instanceof com.contextlogic.wish.ui.fragment.search.SearchRecentlyViewedCell;
+
+        if $z0_1 == 0 goto label2;
+
+(2)     if $i0 < 0 goto label3;
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList recentlyViewed>;
+
+        $i1_1 = virtualinvoke $r2_2.<java.util.ArrayList: int size()>();
+
+(3)     if $i0 >= $i1_1 goto label3;
+
+        $r2_3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList recentlyViewed>;
+
+        $r3_1 = virtualinvoke $r2_3.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r5 = (com.contextlogic.wish.api.data.WishProduct) $r3_1;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void showProduct(com.contextlogic.wish.api.data.WishProduct)>($r5);
+
+        return;
+
+     label2:
+        $z0_2 = $r1 instanceof com.contextlogic.wish.ui.fragment.search.SearchCategoryCell;
+
+(4)     if $z0_2 == 0 goto label3;
+
+(5)     if $i0 < 0 goto label3;
+
+        $r2_4 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList recentlyViewed>;
+
+        $i1_2 = virtualinvoke $r2_4.<java.util.ArrayList: int size()>();
+
+(6)     if $i0 >= $i1_2 goto label3;
+
+        $r2_5 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: java.util.ArrayList categories>;
+
+        $r3_2 = virtualinvoke $r2_5.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r6 = (com.contextlogic.wish.api.data.WishCategory) $r3_2;
+
+(7)     specialinvoke $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: void showCategory(com.contextlogic.wish.api.data.WishCategory)>($r6);
+
+     label3:
+        $r2_6 = Phi($r2 #0, $r2 #1, $r2 #2, $r2_2 #3, $r2 #4, $r2 #5, $r2_4 #6, $r2_5 #7);
+
+        $z0_3 = Phi($z0 #0, $z0 #1, $z0_1 #2, $z0_1 #3, $z0_2 #4, $z0_2 #5, $z0_2 #6, $z0_2 #7);
+
+        $r3_3 = Phi($r3 #0, $r3 #1, $r3 #2, $r3 #3, $r3 #4, $r3 #5, $r3 #6, $r3_2 #7);
+
+        $i1_3 = Phi($i1 #0, $i1 #1, $i1 #2, $i1_1 #3, $i1 #4, $i1 #5, $i1_2 #6, $i1_2 #7);
+
+        return;
+    }
+
+    protected void releaseImages()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView recentlyViewedList>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView recentlyViewedList>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void releaseImages()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $r1_3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView trendingList>;
+
+(2)     if $r1_3 == null goto label2;
+
+        $r1_4 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView trendingList>;
+
+(3)     virtualinvoke $r1_4.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void releaseImages()>();
+
+     label2:
+        $r1_5 = Phi($r1_3 #2, $r1_4 #3);
+
+        return;
+    }
+
+    protected void restoreImages()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+        com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView recentlyViewedList>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView recentlyViewedList>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void restoreImages()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $r1_3 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView trendingList>;
+
+(2)     if $r1_3 == null goto label2;
+
+        $r1_4 = $r0.<com.contextlogic.wish.ui.fragment.search.SearchFragment: com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView trendingList>;
+
+(3)     virtualinvoke $r1_4.<com.contextlogic.wish.ui.components.list.horizontal.HorizontalListView: void restoreImages()>();
+
+     label2:
+        $r1_5 = Phi($r1_3 #2, $r1_4 #3);
+
+        return;
+    }
+
+    public boolean useCanvasBackground()
+    {
+        com.contextlogic.wish.ui.fragment.search.SearchFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.search.SearchFragment;
+
+        return 1;
+    }
+}

@@ -1,0 +1,680 @@
+class io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform extends java.lang.Object implements io.fabric.sdk.android.services.settings.SettingsJsonTransform
+{
+
+    void <init>()
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private io.fabric.sdk.android.services.settings.AnalyticsSettingsData buildAnalyticsSessionDataFrom(org.json.JSONObject)
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        org.json.JSONObject $r1;
+        io.fabric.sdk.android.services.settings.AnalyticsSettingsData $r2;
+        java.lang.String $r3;
+        int $i0, $i1, $i2, $i3, $i4;
+        boolean $z0, $z1;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+        $r3 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("url", "https://e.crashlytics.com/spi/v2/events");
+
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("flush_interval_secs", 600);
+
+        $i1 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("max_byte_size_per_file", 8000);
+
+        $i2 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("max_file_count_per_send", 1);
+
+        $i3 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("max_pending_send_file_count", 100);
+
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean optBoolean(java.lang.String,boolean)>("track_custom_events", 1);
+
+        $z1 = virtualinvoke $r1.<org.json.JSONObject: boolean optBoolean(java.lang.String,boolean)>("track_predefined_events", 1);
+
+        $i4 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("sampling_rate", 1);
+
+        $r2 = new io.fabric.sdk.android.services.settings.AnalyticsSettingsData;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.settings.AnalyticsSettingsData: void <init>(java.lang.String,int,int,int,int,boolean,boolean,int)>($r3, $i0, $i1, $i2, $i3, $z0, $z1, $i4);
+
+        return $r2;
+    }
+
+    private io.fabric.sdk.android.services.settings.AppSettingsData buildAppDataFrom(org.json.JSONObject) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.settings.AppSettingsData $r1;
+        org.json.JSONObject $r2, $r8, $r2_1, $r2_2;
+        java.lang.String $r3, $r4, $r5, $r6;
+        boolean $z0, $z1, $z1_1, $z1_2;
+        io.fabric.sdk.android.services.settings.AppIconSettingsData $r7, $r7_1, $r7_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r2 := @parameter0: org.json.JSONObject;
+
+        $r3 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("identifier");
+
+        $r4 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("status");
+
+        $r5 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("url");
+
+        $r6 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("reports_url");
+
+        $z0 = virtualinvoke $r2.<org.json.JSONObject: boolean optBoolean(java.lang.String,boolean)>("update_required", 0);
+
+        $r7 = null;
+
+        $z1 = virtualinvoke $r2.<org.json.JSONObject: boolean has(java.lang.String)>("icon");
+
+(0)     if $z1 == 0 goto label1;
+
+        $r8 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("icon");
+
+        $z1_1 = virtualinvoke $r8.<org.json.JSONObject: boolean has(java.lang.String)>("hash");
+
+(1)     if $z1_1 == 0 goto label1;
+
+        $r2_1 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("icon");
+
+(2)     $r7_1 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: io.fabric.sdk.android.services.settings.AppIconSettingsData buildIconDataFrom(org.json.JSONObject)>($r2_1);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2 #1, $r2_1 #2);
+
+        $z1_2 = Phi($z1 #0, $z1_1 #1, $z1_1 #2);
+
+        $r7_2 = Phi($r7 #0, $r7 #1, $r7_1 #2);
+
+        $r1 = new io.fabric.sdk.android.services.settings.AppSettingsData;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.settings.AppSettingsData: void <init>(java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean,io.fabric.sdk.android.services.settings.AppIconSettingsData)>($r3, $r4, $r5, $r6, $z0, $r7_2);
+
+        return $r1;
+    }
+
+    private io.fabric.sdk.android.services.settings.BetaSettingsData buildBetaSettingsDataFrom(org.json.JSONObject) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        org.json.JSONObject $r1;
+        io.fabric.sdk.android.services.settings.BetaSettingsData $r2;
+        java.lang.String $r3, $r3_1;
+        int $i0;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+        $r3 = <io.fabric.sdk.android.services.settings.SettingsJsonConstants: java.lang.String BETA_UPDATE_ENDPOINT_DEFAULT>;
+
+        $r3_1 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("update_endpoint", $r3);
+
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("update_suspend_duration", 3600);
+
+        $r2 = new io.fabric.sdk.android.services.settings.BetaSettingsData;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.settings.BetaSettingsData: void <init>(java.lang.String,int)>($r3_1, $i0);
+
+        return $r2;
+    }
+
+    private io.fabric.sdk.android.services.settings.FeaturesSettingsData buildFeaturesSessionDataFrom(org.json.JSONObject)
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        org.json.JSONObject $r1;
+        io.fabric.sdk.android.services.settings.FeaturesSettingsData $r2;
+        boolean $z0, $z1, $z2, $z3;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean optBoolean(java.lang.String,boolean)>("prompt_enabled", 0);
+
+        $z1 = virtualinvoke $r1.<org.json.JSONObject: boolean optBoolean(java.lang.String,boolean)>("collect_logged_exceptions", 1);
+
+        $z2 = virtualinvoke $r1.<org.json.JSONObject: boolean optBoolean(java.lang.String,boolean)>("collect_reports", 1);
+
+        $z3 = virtualinvoke $r1.<org.json.JSONObject: boolean optBoolean(java.lang.String,boolean)>("collect_analytics", 0);
+
+        $r2 = new io.fabric.sdk.android.services.settings.FeaturesSettingsData;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.settings.FeaturesSettingsData: void <init>(boolean,boolean,boolean,boolean)>($z0, $z1, $z2, $z3);
+
+        return $r2;
+    }
+
+    private io.fabric.sdk.android.services.settings.AppIconSettingsData buildIconDataFrom(org.json.JSONObject) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        org.json.JSONObject $r1;
+        io.fabric.sdk.android.services.settings.AppIconSettingsData $r2;
+        java.lang.String $r3;
+        int $i0, $i1;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+        $r3 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("hash");
+
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int getInt(java.lang.String)>("width");
+
+        $i1 = virtualinvoke $r1.<org.json.JSONObject: int getInt(java.lang.String)>("height");
+
+        $r2 = new io.fabric.sdk.android.services.settings.AppIconSettingsData;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.settings.AppIconSettingsData: void <init>(java.lang.String,int,int)>($r3, $i0, $i1);
+
+        return $r2;
+    }
+
+    private io.fabric.sdk.android.services.settings.PromptSettingsData buildPromptDataFrom(org.json.JSONObject) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        org.json.JSONObject $r1;
+        io.fabric.sdk.android.services.settings.PromptSettingsData $r2;
+        java.lang.String $r3, $r4, $r5, $r6, $r7;
+        boolean $z0, $z1;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+        $r3 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("title", "Send Crash Report?");
+
+        $r4 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("message", "Looks like we crashed! Please help us fix the problem by sending a crash report.");
+
+        $r5 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("send_button_title", "Send");
+
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean optBoolean(java.lang.String,boolean)>("show_cancel_button", 1);
+
+        $r6 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("cancel_button_title", "Don\'t Send");
+
+        $z1 = virtualinvoke $r1.<org.json.JSONObject: boolean optBoolean(java.lang.String,boolean)>("show_always_send_button", 1);
+
+        $r7 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("always_send_button_title", "Always Send");
+
+        $r2 = new io.fabric.sdk.android.services.settings.PromptSettingsData;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.settings.PromptSettingsData: void <init>(java.lang.String,java.lang.String,java.lang.String,boolean,java.lang.String,boolean,java.lang.String)>($r3, $r4, $r5, $z0, $r6, $z1, $r7);
+
+        return $r2;
+    }
+
+    private io.fabric.sdk.android.services.settings.SessionSettingsData buildSessionDataFrom(org.json.JSONObject) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        org.json.JSONObject $r1;
+        io.fabric.sdk.android.services.settings.SessionSettingsData $r2;
+        int $i0, $i1, $i2, $i3, $i4;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("log_buffer_size", 64000);
+
+        $i1 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("max_chained_exception_depth", 8);
+
+        $i2 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("max_custom_exception_events", 64);
+
+        $i3 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("max_custom_key_value_pairs", 64);
+
+        $i4 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("identifier_mask", 255);
+
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean optBoolean(java.lang.String,boolean)>("send_session_without_crash", 0);
+
+        $r2 = new io.fabric.sdk.android.services.settings.SessionSettingsData;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.settings.SessionSettingsData: void <init>(int,int,int,int,int,boolean)>($i0, $i1, $i2, $i3, $i4, $z0);
+
+        return $r2;
+    }
+
+    private long getExpiresAtFrom(io.fabric.sdk.android.services.common.CurrentTimeProvider, long, org.json.JSONObject) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.common.CurrentTimeProvider $r1;
+        org.json.JSONObject $r2;
+        long $l0, $l1, $l0_1, $l0_2, $l0_3;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.common.CurrentTimeProvider;
+
+        $l0 := @parameter1: long;
+
+        $r2 := @parameter2: org.json.JSONObject;
+
+        $z0 = virtualinvoke $r2.<org.json.JSONObject: boolean has(java.lang.String)>("expires_at");
+
+        if $z0 == 0 goto label1;
+
+        $l0_1 = virtualinvoke $r2.<org.json.JSONObject: long getLong(java.lang.String)>("expires_at");
+
+        return $l0_1;
+
+     label1:
+        $l1 = interfaceinvoke $r1.<io.fabric.sdk.android.services.common.CurrentTimeProvider: long getCurrentTimeMillis()>();
+
+        $l0_2 = 1000L * $l0;
+
+        $l0_3 = $l1 + $l0_2;
+
+        return $l0_3;
+    }
+
+    private org.json.JSONObject toAnalyticsJson(io.fabric.sdk.android.services.settings.AnalyticsSettingsData) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.settings.AnalyticsSettingsData $r1;
+        java.lang.String $r2;
+        org.json.JSONObject $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        int $i0, $i0_1, $i0_2, $i0_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.AnalyticsSettingsData;
+
+        $r3 = new org.json.JSONObject;
+
+        specialinvoke $r3.<org.json.JSONObject: void <init>()>();
+
+        $r2 = $r1.<io.fabric.sdk.android.services.settings.AnalyticsSettingsData: java.lang.String analyticsURL>;
+
+        $r3_1 = virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("url", $r2);
+
+        $i0 = $r1.<io.fabric.sdk.android.services.settings.AnalyticsSettingsData: int flushIntervalSeconds>;
+
+        $r3_2 = virtualinvoke $r3_1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("flush_interval_secs", $i0);
+
+        $i0_1 = $r1.<io.fabric.sdk.android.services.settings.AnalyticsSettingsData: int maxByteSizePerFile>;
+
+        $r3_3 = virtualinvoke $r3_2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("max_byte_size_per_file", $i0_1);
+
+        $i0_2 = $r1.<io.fabric.sdk.android.services.settings.AnalyticsSettingsData: int maxFileCountPerSend>;
+
+        $r3_4 = virtualinvoke $r3_3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("max_file_count_per_send", $i0_2);
+
+        $i0_3 = $r1.<io.fabric.sdk.android.services.settings.AnalyticsSettingsData: int maxPendingSendFileCount>;
+
+        $r3_5 = virtualinvoke $r3_4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("max_pending_send_file_count", $i0_3);
+
+        return $r3_5;
+    }
+
+    private org.json.JSONObject toAppJson(io.fabric.sdk.android.services.settings.AppSettingsData) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.settings.AppSettingsData $r1;
+        boolean $z0;
+        org.json.JSONObject $r2, $r5, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+        java.lang.String $r3, $r3_1, $r3_2, $r3_3;
+        io.fabric.sdk.android.services.settings.AppIconSettingsData $r4, $r4_1, $r4_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.AppSettingsData;
+
+        $r2 = new org.json.JSONObject;
+
+        specialinvoke $r2.<org.json.JSONObject: void <init>()>();
+
+        $r3 = $r1.<io.fabric.sdk.android.services.settings.AppSettingsData: java.lang.String identifier>;
+
+        $r2_1 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("identifier", $r3);
+
+        $r3_1 = $r1.<io.fabric.sdk.android.services.settings.AppSettingsData: java.lang.String status>;
+
+        $r2_2 = virtualinvoke $r2_1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("status", $r3_1);
+
+        $r3_2 = $r1.<io.fabric.sdk.android.services.settings.AppSettingsData: java.lang.String url>;
+
+        $r2_3 = virtualinvoke $r2_2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("url", $r3_2);
+
+        $r3_3 = $r1.<io.fabric.sdk.android.services.settings.AppSettingsData: java.lang.String reportsUrl>;
+
+        $r2_4 = virtualinvoke $r2_3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("reports_url", $r3_3);
+
+        $z0 = $r1.<io.fabric.sdk.android.services.settings.AppSettingsData: boolean updateRequired>;
+
+        $r2_5 = virtualinvoke $r2_4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,boolean)>("update_required", $z0);
+
+        $r4 = $r1.<io.fabric.sdk.android.services.settings.AppSettingsData: io.fabric.sdk.android.services.settings.AppIconSettingsData icon>;
+
+(0)     if $r4 == null goto label1;
+
+        $r4_1 = $r1.<io.fabric.sdk.android.services.settings.AppSettingsData: io.fabric.sdk.android.services.settings.AppIconSettingsData icon>;
+
+        $r5 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: org.json.JSONObject toIconJson(io.fabric.sdk.android.services.settings.AppIconSettingsData)>($r4_1);
+
+(1)     virtualinvoke $r2_5.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("icon", $r5);
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        return $r2_5;
+    }
+
+    private org.json.JSONObject toBetaJson(io.fabric.sdk.android.services.settings.BetaSettingsData) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.settings.BetaSettingsData $r1;
+        java.lang.String $r2;
+        int $i0;
+        org.json.JSONObject $r3, $r3_1, $r3_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.BetaSettingsData;
+
+        $r3 = new org.json.JSONObject;
+
+        specialinvoke $r3.<org.json.JSONObject: void <init>()>();
+
+        $r2 = $r1.<io.fabric.sdk.android.services.settings.BetaSettingsData: java.lang.String updateUrl>;
+
+        $r3_1 = virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("update_endpoint", $r2);
+
+        $i0 = $r1.<io.fabric.sdk.android.services.settings.BetaSettingsData: int updateSuspendDurationSeconds>;
+
+        $r3_2 = virtualinvoke $r3_1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("update_suspend_duration", $i0);
+
+        return $r3_2;
+    }
+
+    private org.json.JSONObject toFeaturesJson(io.fabric.sdk.android.services.settings.FeaturesSettingsData) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.settings.FeaturesSettingsData $r1;
+        org.json.JSONObject $r2, $r2_1, $r2_2, $r2_3;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.FeaturesSettingsData;
+
+        $r2 = new org.json.JSONObject;
+
+        specialinvoke $r2.<org.json.JSONObject: void <init>()>();
+
+        $z0 = $r1.<io.fabric.sdk.android.services.settings.FeaturesSettingsData: boolean collectLoggedException>;
+
+        $r2_1 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,boolean)>("collect_logged_exceptions", $z0);
+
+        $z0_1 = $r1.<io.fabric.sdk.android.services.settings.FeaturesSettingsData: boolean collectReports>;
+
+        $r2_2 = virtualinvoke $r2_1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,boolean)>("collect_reports", $z0_1);
+
+        $z0_2 = $r1.<io.fabric.sdk.android.services.settings.FeaturesSettingsData: boolean collectAnalytics>;
+
+        $r2_3 = virtualinvoke $r2_2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,boolean)>("collect_analytics", $z0_2);
+
+        return $r2_3;
+    }
+
+    private org.json.JSONObject toIconJson(io.fabric.sdk.android.services.settings.AppIconSettingsData) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.settings.AppIconSettingsData $r1;
+        java.lang.String $r2;
+        org.json.JSONObject $r3, $r3_1, $r3_2, $r3_3;
+        int $i0, $i0_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.AppIconSettingsData;
+
+        $r3 = new org.json.JSONObject;
+
+        specialinvoke $r3.<org.json.JSONObject: void <init>()>();
+
+        $r2 = $r1.<io.fabric.sdk.android.services.settings.AppIconSettingsData: java.lang.String hash>;
+
+        $r3_1 = virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("hash", $r2);
+
+        $i0 = $r1.<io.fabric.sdk.android.services.settings.AppIconSettingsData: int width>;
+
+        $r3_2 = virtualinvoke $r3_1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("width", $i0);
+
+        $i0_1 = $r1.<io.fabric.sdk.android.services.settings.AppIconSettingsData: int height>;
+
+        $r3_3 = virtualinvoke $r3_2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("height", $i0_1);
+
+        return $r3_3;
+    }
+
+    private org.json.JSONObject toPromptJson(io.fabric.sdk.android.services.settings.PromptSettingsData) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.settings.PromptSettingsData $r1;
+        org.json.JSONObject $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6, $r2_7;
+        java.lang.String $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.PromptSettingsData;
+
+        $r2 = new org.json.JSONObject;
+
+        specialinvoke $r2.<org.json.JSONObject: void <init>()>();
+
+        $r3 = $r1.<io.fabric.sdk.android.services.settings.PromptSettingsData: java.lang.String title>;
+
+        $r2_1 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("title", $r3);
+
+        $r3_1 = $r1.<io.fabric.sdk.android.services.settings.PromptSettingsData: java.lang.String message>;
+
+        $r2_2 = virtualinvoke $r2_1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("message", $r3_1);
+
+        $r3_2 = $r1.<io.fabric.sdk.android.services.settings.PromptSettingsData: java.lang.String sendButtonTitle>;
+
+        $r2_3 = virtualinvoke $r2_2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("send_button_title", $r3_2);
+
+        $z0 = $r1.<io.fabric.sdk.android.services.settings.PromptSettingsData: boolean showCancelButton>;
+
+        $r2_4 = virtualinvoke $r2_3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,boolean)>("show_cancel_button", $z0);
+
+        $r3_3 = $r1.<io.fabric.sdk.android.services.settings.PromptSettingsData: java.lang.String cancelButtonTitle>;
+
+        $r2_5 = virtualinvoke $r2_4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("cancel_button_title", $r3_3);
+
+        $z0_1 = $r1.<io.fabric.sdk.android.services.settings.PromptSettingsData: boolean showAlwaysSendButton>;
+
+        $r2_6 = virtualinvoke $r2_5.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,boolean)>("show_always_send_button", $z0_1);
+
+        $r3_4 = $r1.<io.fabric.sdk.android.services.settings.PromptSettingsData: java.lang.String alwaysSendButtonTitle>;
+
+        $r2_7 = virtualinvoke $r2_6.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("always_send_button_title", $r3_4);
+
+        return $r2_7;
+    }
+
+    private org.json.JSONObject toSessionJson(io.fabric.sdk.android.services.settings.SessionSettingsData) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.settings.SessionSettingsData $r1;
+        boolean $z0;
+        org.json.JSONObject $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.SessionSettingsData;
+
+        $r2 = new org.json.JSONObject;
+
+        specialinvoke $r2.<org.json.JSONObject: void <init>()>();
+
+        $i0 = $r1.<io.fabric.sdk.android.services.settings.SessionSettingsData: int logBufferSize>;
+
+        $r2_1 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("log_buffer_size", $i0);
+
+        $i0_1 = $r1.<io.fabric.sdk.android.services.settings.SessionSettingsData: int maxChainedExceptionDepth>;
+
+        $r2_2 = virtualinvoke $r2_1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("max_chained_exception_depth", $i0_1);
+
+        $i0_2 = $r1.<io.fabric.sdk.android.services.settings.SessionSettingsData: int maxCustomExceptionEvents>;
+
+        $r2_3 = virtualinvoke $r2_2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("max_custom_exception_events", $i0_2);
+
+        $i0_3 = $r1.<io.fabric.sdk.android.services.settings.SessionSettingsData: int maxCustomKeyValuePairs>;
+
+        $r2_4 = virtualinvoke $r2_3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("max_custom_key_value_pairs", $i0_3);
+
+        $i0_4 = $r1.<io.fabric.sdk.android.services.settings.SessionSettingsData: int identifierMask>;
+
+        $r2_5 = virtualinvoke $r2_4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("identifier_mask", $i0_4);
+
+        $z0 = $r1.<io.fabric.sdk.android.services.settings.SessionSettingsData: boolean sendSessionWithoutCrash>;
+
+        $r2_6 = virtualinvoke $r2_5.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,boolean)>("send_session_without_crash", $z0);
+
+        return $r2_6;
+    }
+
+    public io.fabric.sdk.android.services.settings.SettingsData buildFromJson(io.fabric.sdk.android.services.common.CurrentTimeProvider, org.json.JSONObject) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.common.CurrentTimeProvider $r1;
+        org.json.JSONObject $r2, $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        io.fabric.sdk.android.services.settings.SettingsData $r3;
+        int $i0, $i1;
+        io.fabric.sdk.android.services.settings.AppSettingsData $r5;
+        io.fabric.sdk.android.services.settings.SessionSettingsData $r6;
+        io.fabric.sdk.android.services.settings.PromptSettingsData $r7;
+        io.fabric.sdk.android.services.settings.FeaturesSettingsData $r8;
+        io.fabric.sdk.android.services.settings.AnalyticsSettingsData $r9;
+        io.fabric.sdk.android.services.settings.BetaSettingsData $r10;
+        long $l2, $l2_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.common.CurrentTimeProvider;
+
+        $r2 := @parameter1: org.json.JSONObject;
+
+        $i0 = virtualinvoke $r2.<org.json.JSONObject: int optInt(java.lang.String,int)>("settings_version", 0);
+
+        $i1 = virtualinvoke $r2.<org.json.JSONObject: int optInt(java.lang.String,int)>("cache_duration", 3600);
+
+        $r4 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("app");
+
+        $r5 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: io.fabric.sdk.android.services.settings.AppSettingsData buildAppDataFrom(org.json.JSONObject)>($r4);
+
+        $r4_1 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("session");
+
+        $r6 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: io.fabric.sdk.android.services.settings.SessionSettingsData buildSessionDataFrom(org.json.JSONObject)>($r4_1);
+
+        $r4_2 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("prompt");
+
+        $r7 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: io.fabric.sdk.android.services.settings.PromptSettingsData buildPromptDataFrom(org.json.JSONObject)>($r4_2);
+
+        $r4_3 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("features");
+
+        $r8 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: io.fabric.sdk.android.services.settings.FeaturesSettingsData buildFeaturesSessionDataFrom(org.json.JSONObject)>($r4_3);
+
+        $r4_4 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("analytics");
+
+        $r9 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: io.fabric.sdk.android.services.settings.AnalyticsSettingsData buildAnalyticsSessionDataFrom(org.json.JSONObject)>($r4_4);
+
+        $r4_5 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("beta");
+
+        $r10 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: io.fabric.sdk.android.services.settings.BetaSettingsData buildBetaSettingsDataFrom(org.json.JSONObject)>($r4_5);
+
+        $l2 = (long) $i1;
+
+        $l2_1 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: long getExpiresAtFrom(io.fabric.sdk.android.services.common.CurrentTimeProvider,long,org.json.JSONObject)>($r1, $l2, $r2);
+
+        $r3 = new io.fabric.sdk.android.services.settings.SettingsData;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.settings.SettingsData: void <init>(long,io.fabric.sdk.android.services.settings.AppSettingsData,io.fabric.sdk.android.services.settings.SessionSettingsData,io.fabric.sdk.android.services.settings.PromptSettingsData,io.fabric.sdk.android.services.settings.FeaturesSettingsData,io.fabric.sdk.android.services.settings.AnalyticsSettingsData,io.fabric.sdk.android.services.settings.BetaSettingsData,int,int)>($l2_1, $r5, $r6, $r7, $r8, $r9, $r10, $i0, $i1);
+
+        return $r3;
+    }
+
+    public org.json.JSONObject toJson(io.fabric.sdk.android.services.settings.SettingsData) throws org.json.JSONException
+    {
+        io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform $r0;
+        io.fabric.sdk.android.services.settings.SettingsData $r1;
+        long $l0;
+        io.fabric.sdk.android.services.settings.FeaturesSettingsData $r2;
+        io.fabric.sdk.android.services.settings.AnalyticsSettingsData $r3;
+        io.fabric.sdk.android.services.settings.BetaSettingsData $r4;
+        io.fabric.sdk.android.services.settings.AppSettingsData $r5;
+        io.fabric.sdk.android.services.settings.SessionSettingsData $r6;
+        io.fabric.sdk.android.services.settings.PromptSettingsData $r7;
+        org.json.JSONObject $r8, $r9, $r8_1, $r8_2, $r8_3, $r8_4, $r9_1, $r8_5, $r9_2, $r8_6, $r9_3, $r8_7, $r9_4, $r8_8, $r9_5, $r8_9;
+        int $i1, $i1_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.SettingsData;
+
+        $r8 = new org.json.JSONObject;
+
+        specialinvoke $r8.<org.json.JSONObject: void <init>()>();
+
+        $l0 = $r1.<io.fabric.sdk.android.services.settings.SettingsData: long expiresAtMillis>;
+
+        $r8_1 = virtualinvoke $r8.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,long)>("expires_at", $l0);
+
+        $i1 = $r1.<io.fabric.sdk.android.services.settings.SettingsData: int cacheDuration>;
+
+        $r8_2 = virtualinvoke $r8_1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("cache_duration", $i1);
+
+        $i1_1 = $r1.<io.fabric.sdk.android.services.settings.SettingsData: int settingsVersion>;
+
+        $r8_3 = virtualinvoke $r8_2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("settings_version", $i1_1);
+
+        $r2 = $r1.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.FeaturesSettingsData featuresData>;
+
+        $r9 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: org.json.JSONObject toFeaturesJson(io.fabric.sdk.android.services.settings.FeaturesSettingsData)>($r2);
+
+        $r8_4 = virtualinvoke $r8_3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("features", $r9);
+
+        $r3 = $r1.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.AnalyticsSettingsData analyticsSettingsData>;
+
+        $r9_1 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: org.json.JSONObject toAnalyticsJson(io.fabric.sdk.android.services.settings.AnalyticsSettingsData)>($r3);
+
+        $r8_5 = virtualinvoke $r8_4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("analytics", $r9_1);
+
+        $r4 = $r1.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.BetaSettingsData betaSettingsData>;
+
+        $r9_2 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: org.json.JSONObject toBetaJson(io.fabric.sdk.android.services.settings.BetaSettingsData)>($r4);
+
+        $r8_6 = virtualinvoke $r8_5.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("beta", $r9_2);
+
+        $r5 = $r1.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.AppSettingsData appData>;
+
+        $r9_3 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: org.json.JSONObject toAppJson(io.fabric.sdk.android.services.settings.AppSettingsData)>($r5);
+
+        $r8_7 = virtualinvoke $r8_6.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("app", $r9_3);
+
+        $r6 = $r1.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.SessionSettingsData sessionData>;
+
+        $r9_4 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: org.json.JSONObject toSessionJson(io.fabric.sdk.android.services.settings.SessionSettingsData)>($r6);
+
+        $r8_8 = virtualinvoke $r8_7.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("session", $r9_4);
+
+        $r7 = $r1.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.PromptSettingsData promptData>;
+
+        $r9_5 = specialinvoke $r0.<io.fabric.sdk.android.services.settings.DefaultSettingsJsonTransform: org.json.JSONObject toPromptJson(io.fabric.sdk.android.services.settings.PromptSettingsData)>($r7);
+
+        $r8_9 = virtualinvoke $r8_8.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("prompt", $r9_5);
+
+        return $r8_9;
+    }
+}

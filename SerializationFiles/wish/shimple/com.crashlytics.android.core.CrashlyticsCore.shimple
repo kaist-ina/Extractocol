@@ -1,0 +1,2209 @@
+public class com.crashlytics.android.core.CrashlyticsCore extends io.fabric.sdk.android.Kit
+{
+    static final float CLS_DEFAULT_PROCESS_DELAY;
+    static final java.lang.String COLLECT_CUSTOM_KEYS;
+    static final java.lang.String COLLECT_CUSTOM_LOGS;
+    static final java.lang.String CRASHLYTICS_API_ENDPOINT;
+    static final java.lang.String CRASHLYTICS_REQUIRE_BUILD_ID;
+    static final boolean CRASHLYTICS_REQUIRE_BUILD_ID_DEFAULT;
+    static final int DEFAULT_MAIN_HANDLER_TIMEOUT_SEC;
+    private static final java.lang.String INITIALIZATION_MARKER_FILE_NAME;
+    static final int MAX_ATTRIBUTES;
+    static final int MAX_ATTRIBUTE_SIZE;
+    private static final java.lang.String PREF_ALWAYS_SEND_REPORTS_KEY;
+    private static final boolean SHOULD_PROMPT_BEFORE_SENDING_REPORTS_DEFAULT;
+    public static final java.lang.String TAG;
+    private final java.util.concurrent.ConcurrentHashMap attributes;
+    private java.lang.String buildId;
+    private float delay;
+    private boolean disabled;
+    private com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper;
+    private com.crashlytics.android.core.internal.CrashEventDataProvider externalCrashEventDataProvider;
+    private com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler;
+    private io.fabric.sdk.android.services.network.HttpRequestFactory httpRequestFactory;
+    private java.io.File initializationMarkerFile;
+    private java.lang.String installerPackageName;
+    private com.crashlytics.android.core.CrashlyticsListener listener;
+    private java.lang.String packageName;
+    private final com.crashlytics.android.core.PinningInfoProvider pinningInfo;
+    private java.io.File sdkDir;
+    private final long startTime;
+    private java.lang.String userEmail;
+    private java.lang.String userId;
+    private java.lang.String userName;
+    private java.lang.String versionCode;
+    private java.lang.String versionName;
+
+    public void <init>()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void <init>(float,com.crashlytics.android.core.CrashlyticsListener,com.crashlytics.android.core.PinningInfoProvider,boolean)>(1.0F, null, null, 0);
+
+        return;
+    }
+
+    void <init>(float, com.crashlytics.android.core.CrashlyticsListener, com.crashlytics.android.core.PinningInfoProvider, boolean)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        float $f0;
+        com.crashlytics.android.core.CrashlyticsListener $r1;
+        com.crashlytics.android.core.PinningInfoProvider $r2;
+        boolean $z0;
+        java.util.concurrent.ExecutorService $r3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $f0 := @parameter0: float;
+
+        $r1 := @parameter1: com.crashlytics.android.core.CrashlyticsListener;
+
+        $r2 := @parameter2: com.crashlytics.android.core.PinningInfoProvider;
+
+        $z0 := @parameter3: boolean;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.services.common.ExecutorUtils: java.util.concurrent.ExecutorService buildSingleThreadExecutorService(java.lang.String)>("Crashlytics Exception Handler");
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void <init>(float,com.crashlytics.android.core.CrashlyticsListener,com.crashlytics.android.core.PinningInfoProvider,boolean,java.util.concurrent.ExecutorService)>($f0, $r1, $r2, $z0, $r3);
+
+        return;
+    }
+
+    void <init>(float, com.crashlytics.android.core.CrashlyticsListener, com.crashlytics.android.core.PinningInfoProvider, boolean, java.util.concurrent.ExecutorService)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        float $f0;
+        com.crashlytics.android.core.CrashlyticsListener $r1;
+        com.crashlytics.android.core.PinningInfoProvider $r2;
+        boolean $z0;
+        java.util.concurrent.ExecutorService $r3;
+        java.util.concurrent.ConcurrentHashMap $r4;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r5;
+        long $l0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $f0 := @parameter0: float;
+
+        $r1 := @parameter1: com.crashlytics.android.core.CrashlyticsListener;
+
+        $r2 := @parameter2: com.crashlytics.android.core.PinningInfoProvider;
+
+        $z0 := @parameter3: boolean;
+
+        $r3 := @parameter4: java.util.concurrent.ExecutorService;
+
+        specialinvoke $r0.<io.fabric.sdk.android.Kit: void <init>()>();
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userId> = null;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userEmail> = null;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userName> = null;
+
+        $r4 = new java.util.concurrent.ConcurrentHashMap;
+
+        specialinvoke $r4.<java.util.concurrent.ConcurrentHashMap: void <init>()>();
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.util.concurrent.ConcurrentHashMap attributes> = $r4;
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: long startTime> = $l0;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: float delay> = $f0;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsListener listener> = $r1;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.PinningInfoProvider pinningInfo> = $r2;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean disabled> = $z0;
+
+        $r5 = new com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper;
+
+        specialinvoke $r5.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: void <init>(java.util.concurrent.ExecutorService)>($r3);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper> = $r5;
+
+        return;
+    }
+
+    static java.io.File access$000(com.crashlytics.android.core.CrashlyticsCore)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.io.File r1;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsCore;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.io.File initializationMarkerFile>;
+
+        return r1;
+    }
+
+    static boolean access$100(com.crashlytics.android.core.CrashlyticsCore, android.app.Activity, io.fabric.sdk.android.services.settings.PromptSettingsData)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        android.app.Activity $r1;
+        io.fabric.sdk.android.services.settings.PromptSettingsData $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter1: android.app.Activity;
+
+        $r2 := @parameter2: io.fabric.sdk.android.services.settings.PromptSettingsData;
+
+        $z0 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean getSendDecisionFromUser(android.app.Activity,io.fabric.sdk.android.services.settings.PromptSettingsData)>($r1, $r2);
+
+        return $z0;
+    }
+
+    static int access$300(com.crashlytics.android.core.CrashlyticsCore, float, int)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        float $f0;
+        int $i0, $i0_1;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsCore;
+
+        $f0 := @parameter1: float;
+
+        $i0 := @parameter2: int;
+
+        $i0_1 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: int dipsToPixels(float,int)>($f0, $i0);
+
+        return $i0_1;
+    }
+
+    private int dipsToPixels(float, int)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        float $f0, $f1, $f1_1;
+        int $i0, $i0_1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $f1 := @parameter0: float;
+
+        $i0 := @parameter1: int;
+
+        $f0 = (float) $i0;
+
+        $f1_1 = $f0 * $f1;
+
+        $i0_1 = (int) $f1_1;
+
+        return $i0_1;
+    }
+
+    private void doLog(int, java.lang.String, java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        int $i0;
+        java.lang.String $r1, $r3, $r3_1, $r3_2;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r2;
+        boolean $z0, $z0_1;
+        long $l1, $l2, $l1_1, $l1_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $i0 := @parameter0: int;
+
+        $r3 := @parameter1: java.lang.String;
+
+        $r1 := @parameter2: java.lang.String;
+
+        $z0 = $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean disabled>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $z0_1 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: boolean ensureFabricWithCalled(java.lang.String)>("prior to logging messages.");
+
+(0)     if $z0_1 == 0 goto label2;
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: long startTime>;
+
+        $l1_1 = $l1 - $l2;
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        $r3_1 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: java.lang.String formatLogMessage(int,java.lang.String,java.lang.String)>($i0, $r3, $r1);
+
+(1)     virtualinvoke $r2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeToLog(long,java.lang.String)>($l1_1, $r3_1);
+
+     label2:
+        $l1_2 = Phi($l1 #0, $l1_1 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    private static boolean ensureFabricWithCalled(java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.lang.String $r1, $r1_1;
+        com.crashlytics.android.core.CrashlyticsCore $r2;
+        io.fabric.sdk.android.Logger $r3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsCore getInstance()>();
+
+        if $r2 == null goto label1;
+
+        $r0 = $r2.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        if $r0 != null goto label2;
+
+     label1:
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Crashlytics must be initialized by calling Fabric.with(Context) ");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1_1 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", $r1_1, null);
+
+        return 0;
+
+     label2:
+        return 1;
+    }
+
+    private void finishInitSynchronously()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.CrashlyticsCore$1 $r1;
+        java.util.concurrent.TimeUnit $r2;
+        java.lang.InterruptedException $r3;
+        java.util.concurrent.ExecutionException $r4;
+        java.util.concurrent.TimeoutException $r5;
+        java.util.Collection $r6;
+        java.util.Iterator $r7;
+        boolean $z0;
+        java.lang.Object $r8;
+        io.fabric.sdk.android.services.concurrency.Task $r9;
+        io.fabric.sdk.android.Fabric $r10;
+        java.util.concurrent.ExecutorService $r11;
+        java.util.concurrent.Future $r12;
+        io.fabric.sdk.android.Logger $r13, $r13_1, $r13_2, $r13_3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = new com.crashlytics.android.core.CrashlyticsCore$1;
+
+        specialinvoke $r1.<com.crashlytics.android.core.CrashlyticsCore$1: void <init>(com.crashlytics.android.core.CrashlyticsCore)>($r0);
+
+        $r6 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: java.util.Collection getDependencies()>();
+
+        $r7 = interfaceinvoke $r6.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r8 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r9 = (io.fabric.sdk.android.services.concurrency.Task) $r8;
+
+        virtualinvoke $r1.<io.fabric.sdk.android.services.concurrency.PriorityCallable: void addDependency(io.fabric.sdk.android.services.concurrency.Task)>($r9);
+
+        goto label1;
+
+     label2:
+        $r10 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.Fabric getFabric()>();
+
+        $r11 = virtualinvoke $r10.<io.fabric.sdk.android.Fabric: java.util.concurrent.ExecutorService getExecutorService()>();
+
+        $r12 = interfaceinvoke $r11.<java.util.concurrent.ExecutorService: java.util.concurrent.Future submit(java.util.concurrent.Callable)>($r1);
+
+        $r13 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r13.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Crashlytics detected incomplete initialization on previous app launch. Will initialize synchronously.");
+
+        $r2 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+     label3:
+        interfaceinvoke $r12.<java.util.concurrent.Future: java.lang.Object get(long,java.util.concurrent.TimeUnit)>(4L, $r2);
+
+     label4:
+        return;
+
+     label5:
+        $r3 := @caughtexception;
+
+        $r13_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r13_1.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Crashlytics was interrupted during initialization.", $r3);
+
+        return;
+
+     label6:
+        $r4 := @caughtexception;
+
+        $r13_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r13_2.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Problem encountered during Crashlytics initialization.", $r4);
+
+        return;
+
+     label7:
+        $r5 := @caughtexception;
+
+        $r13_3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r13_3.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Crashlytics timed out during initialization.", $r5);
+
+        return;
+
+        catch java.lang.InterruptedException from label3 to label4 with label5;
+        catch java.util.concurrent.ExecutionException from label3 to label4 with label6;
+        catch java.util.concurrent.TimeoutException from label3 to label4 with label7;
+    }
+
+    private static java.lang.String formatLogMessage(int, java.lang.String, java.lang.String)
+    {
+        int $i0;
+        java.lang.String $r0, $r1, $r3, $r1_1;
+        java.lang.StringBuilder $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r0 := @parameter2: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String logPriorityToString(int)>($i0);
+
+        $r2_1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2_2 = virtualinvoke $r2_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r2_3 = virtualinvoke $r2_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r2_4 = virtualinvoke $r2_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r2_5 = virtualinvoke $r2_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r1_1 = virtualinvoke $r2_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1_1;
+    }
+
+    public static com.crashlytics.android.core.CrashlyticsCore getInstance()
+    {
+        io.fabric.sdk.android.Kit $r0;
+        com.crashlytics.android.core.CrashlyticsCore $r1;
+
+        $r0 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Kit getKit(java.lang.Class)>(class "com/crashlytics/android/core/CrashlyticsCore");
+
+        $r1 = (com.crashlytics.android.core.CrashlyticsCore) $r0;
+
+        return $r1;
+    }
+
+    private boolean getSendDecisionFromUser(android.app.Activity, io.fabric.sdk.android.services.settings.PromptSettingsData)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        android.app.Activity $r1;
+        io.fabric.sdk.android.services.settings.PromptSettingsData $r2;
+        com.crashlytics.android.core.DialogStringResolver $r3;
+        com.crashlytics.android.core.CrashlyticsCore$OptInLatch $r4;
+        com.crashlytics.android.core.CrashlyticsCore$7 $r5;
+        io.fabric.sdk.android.Logger $r6;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: io.fabric.sdk.android.services.settings.PromptSettingsData;
+
+        $r3 = new com.crashlytics.android.core.DialogStringResolver;
+
+        specialinvoke $r3.<com.crashlytics.android.core.DialogStringResolver: void <init>(android.content.Context,io.fabric.sdk.android.services.settings.PromptSettingsData)>($r1, $r2);
+
+        $r4 = new com.crashlytics.android.core.CrashlyticsCore$OptInLatch;
+
+        specialinvoke $r4.<com.crashlytics.android.core.CrashlyticsCore$OptInLatch: void <init>(com.crashlytics.android.core.CrashlyticsCore,com.crashlytics.android.core.CrashlyticsCore$1)>($r0, null);
+
+        $r5 = new com.crashlytics.android.core.CrashlyticsCore$7;
+
+        specialinvoke $r5.<com.crashlytics.android.core.CrashlyticsCore$7: void <init>(com.crashlytics.android.core.CrashlyticsCore,android.app.Activity,com.crashlytics.android.core.CrashlyticsCore$OptInLatch,com.crashlytics.android.core.DialogStringResolver,io.fabric.sdk.android.services.settings.PromptSettingsData)>($r0, $r1, $r4, $r3, $r2);
+
+        virtualinvoke $r1.<android.app.Activity: void runOnUiThread(java.lang.Runnable)>($r5);
+
+        $r6 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r6.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Waiting for user opt-in.");
+
+        virtualinvoke $r4.<com.crashlytics.android.core.CrashlyticsCore$OptInLatch: void await()>();
+
+        $z0 = virtualinvoke $r4.<com.crashlytics.android.core.CrashlyticsCore$OptInLatch: boolean getOptIn()>();
+
+        return $z0;
+    }
+
+    private boolean isRequiringBuildId(android.content.Context)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        android.content.Context $r1;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean getBooleanResourceValue(android.content.Context,java.lang.String,boolean)>($r1, "com.crashlytics.RequireBuildId", 1);
+
+        return $z0;
+    }
+
+    static void recordFatalExceptionEvent(java.lang.String)
+    {
+        java.lang.String $r0;
+        io.fabric.sdk.android.services.common.Crash$FatalException $r1;
+        io.fabric.sdk.android.Kit $r2;
+        com.crashlytics.android.answers.Answers $r3;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Kit getKit(java.lang.Class)>(class "com/crashlytics/android/answers/Answers");
+
+        $r3 = (com.crashlytics.android.answers.Answers) $r2;
+
+        if $r3 == null goto label1;
+
+        $r1 = new io.fabric.sdk.android.services.common.Crash$FatalException;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.common.Crash$FatalException: void <init>(java.lang.String)>($r0);
+
+        virtualinvoke $r3.<com.crashlytics.android.answers.Answers: void onException(io.fabric.sdk.android.services.common.Crash$FatalException)>($r1);
+
+     label1:
+        return;
+    }
+
+    static void recordLoggedExceptionEvent(java.lang.String)
+    {
+        java.lang.String $r0;
+        io.fabric.sdk.android.services.common.Crash$LoggedException $r1;
+        io.fabric.sdk.android.Kit $r2;
+        com.crashlytics.android.answers.Answers $r3;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Kit getKit(java.lang.Class)>(class "com/crashlytics/android/answers/Answers");
+
+        $r3 = (com.crashlytics.android.answers.Answers) $r2;
+
+        if $r3 == null goto label1;
+
+        $r1 = new io.fabric.sdk.android.services.common.Crash$LoggedException;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.common.Crash$LoggedException: void <init>(java.lang.String)>($r0);
+
+        virtualinvoke $r3.<com.crashlytics.android.answers.Answers: void onException(io.fabric.sdk.android.services.common.Crash$LoggedException)>($r1);
+
+     label1:
+        return;
+    }
+
+    private static java.lang.String sanitizeAttribute(java.lang.String)
+    {
+        java.lang.String $r0, $r0_1, $r0_2, $r0_3;
+        int $i0;
+
+        $r0 := @parameter0: java.lang.String;
+
+(0)     if $r0 == null goto label1;
+
+        $r0_1 = virtualinvoke $r0.<java.lang.String: java.lang.String trim()>();
+
+        $i0 = virtualinvoke $r0_1.<java.lang.String: int length()>();
+
+(1)     if $i0 <= 1024 goto label1;
+
+(2)     $r0_2 = virtualinvoke $r0_1.<java.lang.String: java.lang.String substring(int,int)>(0, 1024);
+
+     label1:
+        $r0_3 = Phi($r0 #0, $r0_1 #1, $r0_2 #2);
+
+        return $r0_3;
+    }
+
+    private void setAndValidateKitProperties(android.content.Context, java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        android.content.Context $r1;
+        java.lang.String $r2, $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r9_11, $r9_12, $r9_13, $r9_14;
+        io.fabric.sdk.android.services.network.DefaultHttpRequestFactory $r3;
+        io.fabric.sdk.android.services.network.HttpRequestFactory $r4;
+        int $i0;
+        java.lang.Exception $r5;
+        com.crashlytics.android.core.PinningInfoProvider $r6, $r6_1, $r6_2;
+        com.crashlytics.android.core.CrashlyticsPinningInfoProvider $r7, $r7_1, $r7_2;
+        io.fabric.sdk.android.Logger $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        io.fabric.sdk.android.services.common.IdManager $r10, $r10_1, $r10_2, $r10_3;
+        java.lang.StringBuilder $r11, $r11_1, $r11_2, $r11_3, $r11_4;
+        android.content.pm.PackageManager $r12;
+        android.content.pm.PackageInfo $r13;
+        boolean $z0;
+        com.crashlytics.android.core.BuildIdValidator $r14;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r6 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.PinningInfoProvider pinningInfo>;
+
+        if $r6 == null goto label08;
+
+        $r7 = new com.crashlytics.android.core.CrashlyticsPinningInfoProvider;
+
+        $r6_1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.PinningInfoProvider pinningInfo>;
+
+(0)     specialinvoke $r7.<com.crashlytics.android.core.CrashlyticsPinningInfoProvider: void <init>(com.crashlytics.android.core.PinningInfoProvider)>($r6_1);
+
+     label01:
+        $r6_2 = Phi($r6_1 #0, $r6 #15);
+
+        $r7_1 = Phi($r7 #0, $r7_2 #15);
+
+        $r3 = new io.fabric.sdk.android.services.network.DefaultHttpRequestFactory;
+
+        $r8 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.network.DefaultHttpRequestFactory: void <init>(io.fabric.sdk.android.Logger)>($r8);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.network.HttpRequestFactory httpRequestFactory> = $r3;
+
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.network.HttpRequestFactory httpRequestFactory>;
+
+(1)     interfaceinvoke $r4.<io.fabric.sdk.android.services.network.HttpRequestFactory: void setPinningInfoProvider(io.fabric.sdk.android.services.network.PinningInfoProvider)>($r7_1);
+
+     label02:
+        $r9 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String packageName> = $r9;
+
+        $r10 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.common.IdManager getIdManager()>();
+
+(2)     $r9_1 = virtualinvoke $r10.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getInstallerPackageName()>();
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String installerPackageName> = $r9_1;
+
+(3)     $r8_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+     label03:
+        $r11 = new java.lang.StringBuilder;
+
+     label04:
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+(4)     $r11_1 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Installer package name is: ");
+
+(5)     $r9_2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String installerPackageName>;
+
+(6)     $r11_2 = virtualinvoke $r11_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9_2);
+
+(7)     $r9_3 = virtualinvoke $r11_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r8_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r9_3);
+
+        $r12 = virtualinvoke $r1.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+(8)     $r9_4 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String packageName>;
+
+        $r13 = virtualinvoke $r12.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>($r9_4, 0);
+
+        $i0 = $r13.<android.content.pm.PackageInfo: int versionCode>;
+
+(9)     $r9_5 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String versionCode> = $r9_5;
+
+(10)    $r9_6 = $r13.<android.content.pm.PackageInfo: java.lang.String versionName>;
+
+     label05:
+        if $r9_6 != null goto label09;
+
+(11)    $r9_7 = "0.0";
+
+     label06:
+        $r9_8 = Phi($r9_7 #11, $r9_10 #17);
+
+(12)    $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String versionName> = $r9_8;
+
+(13)    $r9_9 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String resolveBuildId(android.content.Context)>($r1);
+
+(14)    $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String buildId> = $r9_9;
+
+     label07:
+        $r8_2 = Phi($r8_1 #14, $r8_4 #18);
+
+        $r9_11 = Phi($r9_9 #14, $r9_14 #18);
+
+        $r11_3 = Phi($r11_2 #14, $r11_4 #18);
+
+        $r10_1 = Phi($r10 #14, $r10_3 #18);
+
+        $r10_2 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.common.IdManager getIdManager()>();
+
+        virtualinvoke $r10_2.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getBluetoothMacAddress()>();
+
+        $r9_12 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String buildId>;
+
+        $z0 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean isRequiringBuildId(android.content.Context)>($r1);
+
+        $r14 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.BuildIdValidator getBuildIdValidator(java.lang.String,boolean)>($r9_12, $z0);
+
+        $r9_13 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String packageName>;
+
+        virtualinvoke $r14.<com.crashlytics.android.core.BuildIdValidator: void validate(java.lang.String,java.lang.String)>($r2, $r9_13);
+
+        return;
+
+     label08:
+        $r7_2 = null;
+
+(15)    goto label01;
+
+     label09:
+(16)    $r9_10 = $r13.<android.content.pm.PackageInfo: java.lang.String versionName>;
+
+     label10:
+(17)    goto label06;
+
+     label11:
+        $r5 := @caughtexception;
+
+        $r8_3 = Phi($r8 #1, $r8_1 #3);
+
+        $r9_14 = Phi($r9 #1, $r9_1 #2, $r9_2 #5, $r9_3 #7, $r9_4 #8, $r9_5 #9, $r9_6 #10, $r9_7 #11, $r9_8 #12, $r9_9 #13, $r9_10 #16);
+
+        $r11_4 = Phi($r11 #1, $r11_1 #4, $r11_2 #6);
+
+        $r10_3 = Phi($r10 #1);
+
+        $r8_4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r8_4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Error setting up app properties", $r5);
+
+(18)    goto label07;
+
+        catch java.lang.Exception from label02 to label03 with label11;
+        catch java.lang.Exception from label04 to label05 with label11;
+        catch java.lang.Exception from label06 to label07 with label11;
+        catch java.lang.Exception from label09 to label10 with label11;
+    }
+
+    boolean canSendWithUserApproval()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.CrashlyticsCore$6 $r1;
+        io.fabric.sdk.android.services.settings.Settings $r2;
+        java.lang.Boolean $r3, $r3_1;
+        java.lang.Object $r4;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r2 = staticinvoke <io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.Settings getInstance()>();
+
+        $r1 = new com.crashlytics.android.core.CrashlyticsCore$6;
+
+        specialinvoke $r1.<com.crashlytics.android.core.CrashlyticsCore$6: void <init>(com.crashlytics.android.core.CrashlyticsCore)>($r0);
+
+        $r3 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        $r4 = virtualinvoke $r2.<io.fabric.sdk.android.services.settings.Settings: java.lang.Object withSettings(io.fabric.sdk.android.services.settings.Settings$SettingsAccess,java.lang.Object)>($r1, $r3);
+
+        $r3_1 = (java.lang.Boolean) $r4;
+
+        $z0 = virtualinvoke $r3_1.<java.lang.Boolean: boolean booleanValue()>();
+
+        return $z0;
+    }
+
+    public void crash()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.CrashTest $r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = new com.crashlytics.android.core.CrashTest;
+
+        specialinvoke $r1.<com.crashlytics.android.core.CrashTest: void <init>()>();
+
+        virtualinvoke $r1.<com.crashlytics.android.core.CrashTest: void indexOutOfBounds()>();
+
+        return;
+    }
+
+    boolean didPreviousInitializationComplete()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r1;
+        com.crashlytics.android.core.CrashlyticsCore$4 $r2;
+        java.lang.Object $r3;
+        java.lang.Boolean $r4;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r2 = new com.crashlytics.android.core.CrashlyticsCore$4;
+
+        specialinvoke $r2.<com.crashlytics.android.core.CrashlyticsCore$4: void <init>(com.crashlytics.android.core.CrashlyticsCore)>($r0);
+
+        $r3 = virtualinvoke $r1.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.lang.Object executeSyncLoggingException(java.util.concurrent.Callable)>($r2);
+
+        $r4 = (java.lang.Boolean) $r3;
+
+        $z0 = virtualinvoke $r4.<java.lang.Boolean: boolean booleanValue()>();
+
+        return $z0;
+    }
+
+    protected volatile java.lang.Object doInBackground()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.Void $r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.Void doInBackground()>();
+
+        return $r1;
+    }
+
+    protected java.lang.Void doInBackground()
+    {
+        io.fabric.sdk.android.services.settings.FeaturesSettingsData $r0;
+        boolean $z0, $z1, $z1_1, $z1_2, $z1_3, $z1_4, $z1_5;
+        com.crashlytics.android.core.ReportUploader $r1;
+        float $f0;
+        java.lang.Exception $r2, $r3;
+        java.lang.Throwable $r4;
+        com.crashlytics.android.core.CrashlyticsCore $r5, $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        io.fabric.sdk.android.services.settings.Settings $r8;
+        io.fabric.sdk.android.services.settings.SettingsData $r9;
+        io.fabric.sdk.android.Logger $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8, $r10_9;
+        com.crashlytics.android.core.CreateReportSpiCall $r11;
+
+        $r5 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        virtualinvoke $r5.<com.crashlytics.android.core.CrashlyticsCore: void markInitializationStarted()>();
+
+        $r6 = $r5.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        $r7 = $r5;
+
+        virtualinvoke $r6.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void cleanInvalidTempFiles()>();
+
+(0)     $z1 = 1;
+
+     label01:
+        $r8 = staticinvoke <io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.Settings getInstance()>();
+
+        $r9 = virtualinvoke $r8.<io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.SettingsData awaitSettingsData()>();
+
+     label02:
+        if $r9 != null goto label05;
+
+     label03:
+        $r10 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10.<io.fabric.sdk.android.Logger: void w(java.lang.String,java.lang.String)>("CrashlyticsCore", "Received null settings, skipping initialization!");
+
+     label04:
+        virtualinvoke $r5.<com.crashlytics.android.core.CrashlyticsCore: void markInitializationComplete()>();
+
+        return null;
+
+     label05:
+        $r0 = $r9.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.FeaturesSettingsData featuresData>;
+
+        $z0 = $r0.<io.fabric.sdk.android.services.settings.FeaturesSettingsData: boolean collectReports>;
+
+     label06:
+(1)     if $z0 == 0 goto label12;
+
+(2)     $z1_1 = 0;
+
+     label07:
+(3)     $r6_1 = $r5.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+     label08:
+(4)     $r7_1 = $r5;
+
+     label09:
+        virtualinvoke $r6_1.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: boolean finalizeSessions()>();
+
+        $r11 = virtualinvoke $r5.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CreateReportSpiCall getCreateReportSpiCall(io.fabric.sdk.android.services.settings.SettingsData)>($r9);
+
+     label10:
+        if $r11 == null goto label15;
+
+        $r1 = new com.crashlytics.android.core.ReportUploader;
+
+     label11:
+        specialinvoke $r1.<com.crashlytics.android.core.ReportUploader: void <init>(com.crashlytics.android.core.CreateReportSpiCall)>($r11);
+
+        $f0 = $r5.<com.crashlytics.android.core.CrashlyticsCore: float delay>;
+
+(5)     virtualinvoke $r1.<com.crashlytics.android.core.ReportUploader: void uploadReports(float)>($f0);
+
+     label12:
+        $r6_2 = Phi($r6 #1, $r6_1 #5, $r6_1 #10, $r6_3 #13);
+
+        $r10_2 = Phi($r10 #1, $r10 #5, $r10_1 #10, $r10_6 #13);
+
+        $r7_2 = Phi($r7 #1, $r7_1 #5, $r7_1 #10, $r7_3 #13);
+
+        $z1_2 = Phi($z1 #1, $z1_1 #5, $z1_1 #10, $z1_3 #13);
+
+(6)     if $z1_2 == 0 goto label14;
+
+     label13:
+(7)     $r10_3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(8)     interfaceinvoke $r10_3.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Crash reporting disabled.");
+
+     label14:
+        $r10_4 = Phi($r10_2 #6, $r10_3 #8);
+
+        virtualinvoke $r7_2.<com.crashlytics.android.core.CrashlyticsCore: void markInitializationComplete()>();
+
+        return null;
+
+     label15:
+(9)     $r10_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_1.<io.fabric.sdk.android.Logger: void w(java.lang.String,java.lang.String)>("CrashlyticsCore", "Unable to create a call to upload reports.");
+
+     label16:
+(10)    goto label12;
+
+     label17:
+        $r2 := @caughtexception;
+
+        $r6_3 = Phi($r6 #0, $r6_1 #3);
+
+        $r10_5 = Phi($r10 #0, $r10_1 #9);
+
+        $r7_3 = Phi($r7 #0, $r7_1 #4);
+
+(11)    $z1_3 = Phi($z1 #0, $z1_1 #2);
+
+     label18:
+(12)    $r10_6 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_6.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Error dealing with settings", $r2);
+
+     label19:
+(13)    goto label12;
+
+     label20:
+        $r3 := @caughtexception;
+
+        $r6_4 = Phi($r6_2 #6, $r6_3 #11);
+
+        $r10_7 = Phi($r10_2 #6, $r10_3 #7, $r10_5 #11, $r10_6 #12);
+
+        $r7_4 = Phi($r7_2 #6, $r7_3 #11);
+
+(14)    $z1_4 = Phi($z1_2 #6, $z1_3 #11);
+
+     label21:
+(15)    $r10_8 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_8.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Problem encountered during Crashlytics initialization.", $r3);
+
+     label22:
+        virtualinvoke $r7_4.<com.crashlytics.android.core.CrashlyticsCore: void markInitializationComplete()>();
+
+        return null;
+
+     label23:
+        $r4 := @caughtexception;
+
+        $r6_5 = Phi($r6 #0, $r6_1 #3, $r6_2 #6, $r6_3 #11, $r6_4 #14);
+
+        $r10_9 = Phi($r10 #0, $r10_2 #6, $r10_3 #7, $r10_1 #9, $r10_5 #11, $r10_6 #12, $r10_7 #14, $r10_8 #15);
+
+        $r7_5 = Phi($r7 #0, $r7_1 #4, $r7_2 #6, $r7_3 #11, $r7_4 #14);
+
+        $z1_5 = Phi($z1 #0, $z1_1 #2, $z1_2 #6, $z1_3 #11, $z1_4 #14);
+
+        virtualinvoke $r7_5.<com.crashlytics.android.core.CrashlyticsCore: void markInitializationComplete()>();
+
+        throw $r4;
+
+        catch java.lang.Exception from label01 to label02 with label17;
+        catch java.lang.Throwable from label01 to label02 with label23;
+        catch java.lang.Exception from label03 to label04 with label17;
+        catch java.lang.Throwable from label03 to label04 with label23;
+        catch java.lang.Exception from label05 to label06 with label17;
+        catch java.lang.Throwable from label05 to label06 with label23;
+        catch java.lang.Exception from label07 to label08 with label17;
+        catch java.lang.Exception from label09 to label10 with label17;
+        catch java.lang.Throwable from label07 to label08 with label23;
+        catch java.lang.Throwable from label09 to label10 with label23;
+        catch java.lang.Exception from label11 to label12 with label17;
+        catch java.lang.Throwable from label11 to label12 with label23;
+        catch java.lang.Exception from label13 to label14 with label20;
+        catch java.lang.Throwable from label13 to label14 with label23;
+        catch java.lang.Exception from label15 to label16 with label17;
+        catch java.lang.Throwable from label15 to label16 with label23;
+        catch java.lang.Exception from label18 to label19 with label20;
+        catch java.lang.Throwable from label18 to label19 with label23;
+        catch java.lang.Throwable from label21 to label22 with label23;
+    }
+
+    java.util.Map getAttributes()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.util.concurrent.ConcurrentHashMap $r1;
+        java.util.Map $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.util.concurrent.ConcurrentHashMap attributes>;
+
+        $r2 = staticinvoke <java.util.Collections: java.util.Map unmodifiableMap(java.util.Map)>($r1);
+
+        return $r2;
+    }
+
+    java.lang.String getBuildId()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String buildId>;
+
+        return r1;
+    }
+
+    com.crashlytics.android.core.BuildIdValidator getBuildIdValidator(java.lang.String, boolean)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String $r1;
+        boolean $z0;
+        com.crashlytics.android.core.BuildIdValidator $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 = new com.crashlytics.android.core.BuildIdValidator;
+
+        specialinvoke $r2.<com.crashlytics.android.core.BuildIdValidator: void <init>(java.lang.String,boolean)>($r1, $z0);
+
+        return $r2;
+    }
+
+    com.crashlytics.android.core.CreateReportSpiCall getCreateReportSpiCall(io.fabric.sdk.android.services.settings.SettingsData)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        io.fabric.sdk.android.services.settings.SettingsData $r1;
+        com.crashlytics.android.core.DefaultCreateReportSpiCall $r2;
+        io.fabric.sdk.android.services.settings.AppSettingsData $r3;
+        java.lang.String $r4, $r6;
+        io.fabric.sdk.android.services.network.HttpRequestFactory $r5;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.settings.SettingsData;
+
+        if $r1 == null goto label1;
+
+        $r2 = new com.crashlytics.android.core.DefaultCreateReportSpiCall;
+
+        $r6 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getOverridenSpiEndpoint()>();
+
+        $r3 = $r1.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.AppSettingsData appData>;
+
+        $r4 = $r3.<io.fabric.sdk.android.services.settings.AppSettingsData: java.lang.String reportsUrl>;
+
+        $r5 = $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.network.HttpRequestFactory httpRequestFactory>;
+
+        specialinvoke $r2.<com.crashlytics.android.core.DefaultCreateReportSpiCall: void <init>(io.fabric.sdk.android.Kit,java.lang.String,java.lang.String,io.fabric.sdk.android.services.network.HttpRequestFactory)>($r0, $r6, $r4, $r5);
+
+        return $r2;
+
+     label1:
+        return null;
+    }
+
+    com.crashlytics.android.core.internal.models.SessionEventData getExternalCrashEventData()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.internal.models.SessionEventData $r1;
+        com.crashlytics.android.core.internal.CrashEventDataProvider $r2, $r2_1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.internal.CrashEventDataProvider externalCrashEventDataProvider>;
+
+        if $r2 == null goto label1;
+
+        $r2_1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.internal.CrashEventDataProvider externalCrashEventDataProvider>;
+
+        $r1 = interfaceinvoke $r2_1.<com.crashlytics.android.core.internal.CrashEventDataProvider: com.crashlytics.android.core.internal.models.SessionEventData getCrashEventData()>();
+
+        return $r1;
+
+     label1:
+        return null;
+    }
+
+    com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler getHandler()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        return r1;
+    }
+
+    public java.lang.String getIdentifier()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        return "com.crashlytics.sdk.android.crashlytics-core";
+    }
+
+    java.lang.String getInstallerPackageName()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String installerPackageName>;
+
+        return r1;
+    }
+
+    java.lang.String getOverridenSpiEndpoint()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        android.content.Context $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+        $r2 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String getStringsFileValue(android.content.Context,java.lang.String)>($r1, "com.crashlytics.ApiEndpoint");
+
+        return $r2;
+    }
+
+    java.lang.String getPackageName()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String packageName>;
+
+        return r1;
+    }
+
+    public com.crashlytics.android.core.PinningInfoProvider getPinningInfoProvider()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        boolean $z0;
+        com.crashlytics.android.core.PinningInfoProvider r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $z0 = $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean disabled>;
+
+        if $z0 != 0 goto label1;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.PinningInfoProvider pinningInfo>;
+
+        return r1;
+
+     label1:
+        return null;
+    }
+
+    java.io.File getSdkDirectory()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        io.fabric.sdk.android.services.persistence.FileStoreImpl $r1;
+        java.io.File $r2, $r2_1, $r2_2, $r2_3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.io.File sdkDir>;
+
+(0)     if $r2 != null goto label1;
+
+        $r1 = new io.fabric.sdk.android.services.persistence.FileStoreImpl;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.persistence.FileStoreImpl: void <init>(io.fabric.sdk.android.Kit)>($r0);
+
+        $r2_1 = virtualinvoke $r1.<io.fabric.sdk.android.services.persistence.FileStoreImpl: java.io.File getFilesDir()>();
+
+(1)     $r0.<com.crashlytics.android.core.CrashlyticsCore: java.io.File sdkDir> = $r2_1;
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        $r2_3 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.io.File sdkDir>;
+
+        return $r2_3;
+    }
+
+    io.fabric.sdk.android.services.settings.SessionSettingsData getSessionSettingsData()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        io.fabric.sdk.android.services.settings.Settings $r1;
+        io.fabric.sdk.android.services.settings.SettingsData $r2;
+        io.fabric.sdk.android.services.settings.SessionSettingsData r3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = staticinvoke <io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.Settings getInstance()>();
+
+        $r2 = virtualinvoke $r1.<io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.SettingsData awaitSettingsData()>();
+
+        if $r2 != null goto label1;
+
+        return null;
+
+     label1:
+        r3 = $r2.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.SessionSettingsData sessionData>;
+
+        return r3;
+    }
+
+    java.lang.String getUserEmail()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        io.fabric.sdk.android.services.common.IdManager $r1;
+        boolean $z0;
+        java.lang.String r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.common.IdManager getIdManager()>();
+
+        $z0 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.IdManager: boolean canCollectUserIds()>();
+
+        if $z0 == 0 goto label1;
+
+        r2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userEmail>;
+
+        return r2;
+
+     label1:
+        return null;
+    }
+
+    java.lang.String getUserIdentifier()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        io.fabric.sdk.android.services.common.IdManager $r1;
+        boolean $z0;
+        java.lang.String r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.common.IdManager getIdManager()>();
+
+        $z0 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.IdManager: boolean canCollectUserIds()>();
+
+        if $z0 == 0 goto label1;
+
+        r2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userId>;
+
+        return r2;
+
+     label1:
+        return null;
+    }
+
+    java.lang.String getUserName()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        io.fabric.sdk.android.services.common.IdManager $r1;
+        boolean $z0;
+        java.lang.String r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.common.IdManager getIdManager()>();
+
+        $z0 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.IdManager: boolean canCollectUserIds()>();
+
+        if $z0 == 0 goto label1;
+
+        r2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userName>;
+
+        return r2;
+
+     label1:
+        return null;
+    }
+
+    public java.lang.String getVersion()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        return "2.3.5.79";
+    }
+
+    java.lang.String getVersionCode()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String versionCode>;
+
+        return r1;
+    }
+
+    java.lang.String getVersionName()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String versionName>;
+
+        return r1;
+    }
+
+    boolean internalVerifyPinning(java.net.URL)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.net.URL $r1;
+        io.fabric.sdk.android.services.network.HttpRequestFactory $r2;
+        io.fabric.sdk.android.services.network.HttpMethod $r3;
+        com.crashlytics.android.core.PinningInfoProvider $r4;
+        java.lang.String $r5;
+        io.fabric.sdk.android.services.network.HttpRequest $r6;
+        java.net.HttpURLConnection $r7;
+        javax.net.ssl.HttpsURLConnection $r8;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: java.net.URL;
+
+        $r4 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.PinningInfoProvider getPinningInfoProvider()>();
+
+        if $r4 == null goto label1;
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.network.HttpRequestFactory httpRequestFactory>;
+
+        $r3 = <io.fabric.sdk.android.services.network.HttpMethod: io.fabric.sdk.android.services.network.HttpMethod GET>;
+
+        $r5 = virtualinvoke $r1.<java.net.URL: java.lang.String toString()>();
+
+        $r6 = interfaceinvoke $r2.<io.fabric.sdk.android.services.network.HttpRequestFactory: io.fabric.sdk.android.services.network.HttpRequest buildHttpRequest(io.fabric.sdk.android.services.network.HttpMethod,java.lang.String)>($r3, $r5);
+
+        $r7 = virtualinvoke $r6.<io.fabric.sdk.android.services.network.HttpRequest: java.net.HttpURLConnection getConnection()>();
+
+        $r8 = (javax.net.ssl.HttpsURLConnection) $r7;
+
+        virtualinvoke $r8.<javax.net.ssl.HttpsURLConnection: void setInstanceFollowRedirects(boolean)>(0);
+
+        virtualinvoke $r6.<io.fabric.sdk.android.services.network.HttpRequest: int code()>();
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public void log(int, java.lang.String, java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        int $i0;
+        java.lang.String $r1, $r2, $r1_1, $r2_1;
+        io.fabric.sdk.android.Logger $r3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void doLog(int,java.lang.String,java.lang.String)>($i0, $r1, $r2);
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1_1 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $r4_5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2_1 = virtualinvoke $r4_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void log(int,java.lang.String,java.lang.String,boolean)>($i0, $r1_1, $r2_1, 1);
+
+        return;
+    }
+
+    public void log(java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void doLog(int,java.lang.String,java.lang.String)>(3, "CrashlyticsCore", $r1);
+
+        return;
+    }
+
+    public void logException(java.lang.Throwable)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.Throwable $r1;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r2;
+        boolean $z0, $z0_1;
+        io.fabric.sdk.android.Logger $r3;
+        java.lang.Thread $r4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: java.lang.Throwable;
+
+        $z0 = $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean disabled>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $z0_1 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: boolean ensureFabricWithCalled(java.lang.String)>("prior to logging exceptions.");
+
+        if $z0_1 == 0 goto label3;
+
+        if $r1 != null goto label2;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void log(int,java.lang.String,java.lang.String)>(5, "CrashlyticsCore", "Crashlytics is ignoring a request to log a null exception.");
+
+        return;
+
+     label2:
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        $r4 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        virtualinvoke $r2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeNonFatalException(java.lang.Thread,java.lang.Throwable)>($r4, $r1);
+
+     label3:
+        return;
+    }
+
+    void markInitializationComplete()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r1;
+        com.crashlytics.android.core.CrashlyticsCore$3 $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r2 = new com.crashlytics.android.core.CrashlyticsCore$3;
+
+        specialinvoke $r2.<com.crashlytics.android.core.CrashlyticsCore$3: void <init>(com.crashlytics.android.core.CrashlyticsCore)>($r0);
+
+        virtualinvoke $r1.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.util.concurrent.Future executeAsync(java.util.concurrent.Callable)>($r2);
+
+        return;
+    }
+
+    void markInitializationStarted()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r1;
+        com.crashlytics.android.core.CrashlyticsCore$2 $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r2 = new com.crashlytics.android.core.CrashlyticsCore$2;
+
+        specialinvoke $r2.<com.crashlytics.android.core.CrashlyticsCore$2: void <init>(com.crashlytics.android.core.CrashlyticsCore)>($r0);
+
+        virtualinvoke $r1.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.lang.Object executeSyncLoggingException(java.util.concurrent.Callable)>($r2);
+
+        return;
+    }
+
+    protected boolean onPreExecute()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        android.content.Context $r1;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = specialinvoke $r0.<io.fabric.sdk.android.Kit: android.content.Context getContext()>();
+
+        $z0 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean onPreExecute(android.content.Context)>($r1);
+
+        return $z0;
+    }
+
+    boolean onPreExecute(android.content.Context)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        android.content.Context $r1, $r14;
+        io.fabric.sdk.android.services.common.ApiKey $r2;
+        java.io.File $r3, $r13;
+        com.crashlytics.android.core.SessionDataWriter $r4;
+        java.lang.Exception $r5, $r8;
+        com.crashlytics.android.core.CrashlyticsMissingDependencyException $r6;
+        io.fabric.sdk.android.services.concurrency.UnmetDependencyException $r7;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8;
+        java.lang.String $r9, $r12, $r12_1, $r9_1, $r12_2, $r12_3, $r9_2, $r12_4, $r9_3, $r12_5, $r9_4, $r12_6, $r9_5;
+        io.fabric.sdk.android.Logger $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8;
+        java.lang.StringBuilder $r11, $r11_1, $r11_2;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6;
+        java.lang.Thread$UncaughtExceptionHandler $r16;
+        com.crashlytics.android.core.CrashlyticsListener $r17;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r18;
+        io.fabric.sdk.android.services.common.IdManager $r19;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $z0 = $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean disabled>;
+
+        if $z0 == 0 goto label01;
+
+        return 0;
+
+     label01:
+        $r2 = new io.fabric.sdk.android.services.common.ApiKey;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.common.ApiKey: void <init>()>();
+
+        $r9 = virtualinvoke $r2.<io.fabric.sdk.android.services.common.ApiKey: java.lang.String getValue(android.content.Context)>($r1);
+
+        if $r9 != null goto label02;
+
+        return 0;
+
+     label02:
+        $r10 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+        $r11_1 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Initializing Crashlytics ");
+
+        $r12 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getVersion()>();
+
+        $r11_2 = virtualinvoke $r11_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+        $r12_1 = virtualinvoke $r11_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r10.<io.fabric.sdk.android.Logger: void i(java.lang.String,java.lang.String)>("CrashlyticsCore", $r12_1);
+
+        $r3 = new java.io.File;
+
+        $r13 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: java.io.File getSdkDirectory()>();
+
+        specialinvoke $r3.<java.io.File: void <init>(java.io.File,java.lang.String)>($r13, "initialization_marker");
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.io.File initializationMarkerFile> = $r3;
+
+(0)     $z0_1 = 0;
+
+     label03:
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void setAndValidateKitProperties(android.content.Context,java.lang.String)>($r1, $r9);
+
+     label04:
+(1)     $r4 = new com.crashlytics.android.core.SessionDataWriter;
+
+     label05:
+        $r14 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+(2)     $r9_1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String buildId>;
+
+(3)     $r12_2 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getPackageName()>();
+
+        specialinvoke $r4.<com.crashlytics.android.core.SessionDataWriter: void <init>(android.content.Context,java.lang.String,java.lang.String)>($r14, $r9_1, $r12_2);
+
+(4)     $r10_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Installing exception handler...");
+
+     label06:
+        $r15 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+     label07:
+        $r16 = staticinvoke <java.lang.Thread: java.lang.Thread$UncaughtExceptionHandler getDefaultUncaughtExceptionHandler()>();
+
+        $r17 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsListener listener>;
+
+        $r18 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r19 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.common.IdManager getIdManager()>();
+
+        specialinvoke $r15.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void <init>(java.lang.Thread$UncaughtExceptionHandler,com.crashlytics.android.core.CrashlyticsListener,com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper,io.fabric.sdk.android.services.common.IdManager,com.crashlytics.android.core.SessionDataWriter,com.crashlytics.android.core.CrashlyticsCore)>($r16, $r17, $r18, $r19, $r4, $r0);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler> = $r15;
+
+(5)     $z0_2 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean didPreviousInitializationComplete()>();
+
+     label08:
+(6)     $r15_1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        virtualinvoke $r15_1.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void openSession()>();
+
+(7)     $r15_2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        staticinvoke <java.lang.Thread: void setDefaultUncaughtExceptionHandler(java.lang.Thread$UncaughtExceptionHandler)>($r15_2);
+
+(8)     $r10_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(9)     interfaceinvoke $r10_2.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Successfully installed exception handler.");
+
+     label09:
+        $r12_3 = Phi($r12_2 #9, $r12_4 #15);
+
+        $r10_3 = Phi($r10_2 #9, $r10_5 #15);
+
+        $z0_3 = Phi($z0_2 #9, $z0_6 #15);
+
+        $r15_3 = Phi($r15_2 #9, $r15_4 #15);
+
+        $r9_2 = Phi($r9_1 #9, $r9_3 #15);
+
+(10)    if $z0_3 == 0 goto label18;
+
+     label10:
+(11)    $z0_4 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean canTryConnection(android.content.Context)>($r1);
+
+     label11:
+(12)    if $z0_4 == 0 goto label18;
+
+     label12:
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void finishInitSynchronously()>();
+
+     label13:
+        return 0;
+
+     label14:
+        $r5 := @caughtexception;
+
+        $r12_4 = Phi($r12_1 #1, $r12_2 #3);
+
+        $r10_4 = Phi($r10 #1, $r10_1 #4, $r10_2 #8);
+
+        $z0_6 = Phi($z0_1 #1, $z0_2 #5);
+
+        $r15_4 = Phi($r15 #1, $r15_1 #6, $r15_2 #7);
+
+(13)    $r9_3 = Phi($r9 #1, $r9_1 #2);
+
+     label15:
+(14)    $r10_5 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_5.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "There was a problem installing the exception handler.", $r5);
+
+     label16:
+(15)    goto label09;
+
+     label17:
+        $r6 := @caughtexception;
+
+        $r12_5 = Phi($r12_1 #0, $r12_3 #10, $r12_4 #13);
+
+        $r10_6 = Phi($r10 #0, $r10_3 #10, $r10_4 #13, $r10_5 #14);
+
+        $z0_7 = Phi($z0_1 #0, $z0_3 #10, $z0_4 #11, $z0_6 #13);
+
+        $r15_5 = Phi($r15 #0, $r15_3 #10, $r15_4 #13);
+
+        $r9_4 = Phi($r9 #0, $r9_2 #10, $r9_3 #13);
+
+        $r7 = new io.fabric.sdk.android.services.concurrency.UnmetDependencyException;
+
+        specialinvoke $r7.<io.fabric.sdk.android.services.concurrency.UnmetDependencyException: void <init>(java.lang.Throwable)>($r6);
+
+        throw $r7;
+
+     label18:
+        $z0_5 = Phi($z0_3 #10, $z0_4 #12);
+
+        return 1;
+
+     label19:
+        $r8 := @caughtexception;
+
+        $r12_6 = Phi($r12_1 #0, $r12_3 #10, $r12_4 #13);
+
+        $r10_7 = Phi($r10 #0, $r10_3 #10, $r10_4 #13, $r10_5 #14);
+
+        $z0_8 = Phi($z0_1 #0, $z0_3 #10, $z0_4 #11, $z0_6 #13);
+
+        $r15_6 = Phi($r15 #0, $r15_3 #10, $r15_4 #13);
+
+        $r9_5 = Phi($r9 #0, $r9_2 #10, $r9_3 #13);
+
+        $r10_8 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_8.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Crashlytics was not started due to an exception during initialization", $r8);
+
+        return 0;
+
+        catch com.crashlytics.android.core.CrashlyticsMissingDependencyException from label03 to label04 with label17;
+        catch java.lang.Exception from label03 to label04 with label19;
+        catch java.lang.Exception from label05 to label06 with label14;
+        catch java.lang.Exception from label07 to label08 with label14;
+        catch java.lang.Exception from label08 to label09 with label14;
+        catch com.crashlytics.android.core.CrashlyticsMissingDependencyException from label10 to label11 with label17;
+        catch java.lang.Exception from label10 to label11 with label19;
+        catch com.crashlytics.android.core.CrashlyticsMissingDependencyException from label12 to label13 with label17;
+        catch java.lang.Exception from label12 to label13 with label19;
+        catch com.crashlytics.android.core.CrashlyticsMissingDependencyException from label15 to label16 with label17;
+        catch java.lang.Exception from label15 to label16 with label19;
+    }
+
+    public void setBool(java.lang.String, boolean)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 = staticinvoke <java.lang.Boolean: java.lang.String toString(boolean)>($z0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void setString(java.lang.String,java.lang.String)>($r1, $r2);
+
+        return;
+    }
+
+    public void setDouble(java.lang.String, double)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String $r1, $r2;
+        double $d0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $d0 := @parameter1: double;
+
+        $r2 = staticinvoke <java.lang.Double: java.lang.String toString(double)>($d0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void setString(java.lang.String,java.lang.String)>($r1, $r2);
+
+        return;
+    }
+
+    void setExternalCrashEventDataProvider(com.crashlytics.android.core.internal.CrashEventDataProvider)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.internal.CrashEventDataProvider $r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: com.crashlytics.android.core.internal.CrashEventDataProvider;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.internal.CrashEventDataProvider externalCrashEventDataProvider> = $r1;
+
+        return;
+    }
+
+    public void setFloat(java.lang.String, float)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String $r1, $r2;
+        float $f0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $f0 := @parameter1: float;
+
+        $r2 = staticinvoke <java.lang.Float: java.lang.String toString(float)>($f0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void setString(java.lang.String,java.lang.String)>($r1, $r2);
+
+        return;
+    }
+
+    public void setInt(java.lang.String, int)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String $r1, $r2;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 := @parameter1: int;
+
+        $r2 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void setString(java.lang.String,java.lang.String)>($r1, $r2);
+
+        return;
+    }
+
+    public void setListener(com.crashlytics.android.core.CrashlyticsListener)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.CrashlyticsListener $r1;
+        java.lang.IllegalArgumentException $r2;
+        java.lang.Throwable $r3;
+        io.fabric.sdk.android.Logger $r4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: com.crashlytics.android.core.CrashlyticsListener;
+
+        entermonitor $r0;
+
+     label1:
+        $r4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r4.<io.fabric.sdk.android.Logger: void w(java.lang.String,java.lang.String)>("CrashlyticsCore", "Use of setListener is deprecated.");
+
+        if $r1 != null goto label3;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("listener must not be null.");
+
+        throw $r2;
+
+     label2:
+        $r3 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+     label3:
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsListener listener> = $r1;
+
+     label4:
+        exitmonitor $r0;
+
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label2;
+        catch java.lang.Throwable from label3 to label4 with label2;
+    }
+
+    public void setLong(java.lang.String, long)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.String $r1, $r2;
+        long $l0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $l0 := @parameter1: long;
+
+        $r2 = staticinvoke <java.lang.Long: java.lang.String toString(long)>($l0);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: void setString(java.lang.String,java.lang.String)>($r1, $r2);
+
+        return;
+    }
+
+    void setShouldSendUserReportsWithoutPrompting(boolean)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        boolean $z0;
+        io.fabric.sdk.android.services.persistence.PreferenceStoreImpl $r1;
+        android.content.SharedPreferences$Editor $r2, $r2_1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 = new io.fabric.sdk.android.services.persistence.PreferenceStoreImpl;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.persistence.PreferenceStoreImpl: void <init>(io.fabric.sdk.android.Kit)>($r0);
+
+        $r2 = interfaceinvoke $r1.<io.fabric.sdk.android.services.persistence.PreferenceStore: android.content.SharedPreferences$Editor edit()>();
+
+        $r2_1 = interfaceinvoke $r2.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putBoolean(java.lang.String,boolean)>("always_send_reports_opt_in", $z0);
+
+        interfaceinvoke $r1.<io.fabric.sdk.android.services.persistence.PreferenceStore: boolean save(android.content.SharedPreferences$Editor)>($r2_1);
+
+        return;
+    }
+
+    public void setString(java.lang.String, java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.lang.IllegalArgumentException $r1;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r2;
+        java.lang.String $r3, $r4, $r3_1, $r4_1, $r4_2, $r4_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        android.content.Context $r5, $r5_1, $r5_2;
+        io.fabric.sdk.android.Logger $r6, $r6_1;
+        java.util.concurrent.ConcurrentHashMap $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+        int $i0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r4 := @parameter1: java.lang.String;
+
+        $z0 = $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean disabled>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        if $r3 != null goto label3;
+
+        $r5 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+(0)     if $r5 == null goto label2;
+
+        $r5_1 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+        $z0_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isAppDebuggable(android.content.Context)>($r5_1);
+
+(1)     if $z0_1 == 0 goto label2;
+
+        $r1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Custom attribute key must not be null.");
+
+        throw $r1;
+
+     label2:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r6 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r6.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Attempting to set custom attribute with null key, ignoring.", null);
+
+        return;
+
+     label3:
+        $r3_1 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: java.lang.String sanitizeAttribute(java.lang.String)>($r3);
+
+        $r7 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.util.concurrent.ConcurrentHashMap attributes>;
+
+        $i0 = virtualinvoke $r7.<java.util.concurrent.ConcurrentHashMap: int size()>();
+
+(2)     if $i0 < 64 goto label4;
+
+        $r7_1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.util.concurrent.ConcurrentHashMap attributes>;
+
+        $z0_3 = virtualinvoke $r7_1.<java.util.concurrent.ConcurrentHashMap: boolean containsKey(java.lang.Object)>($r3_1);
+
+(3)     if $z0_3 == 0 goto label7;
+
+     label4:
+        $r7_2 = Phi($r7 #2, $r7_1 #3);
+
+        $z0_4 = Phi($z0 #2, $z0_3 #3);
+
+        if $r4 != null goto label6;
+
+(4)     $r4_1 = "";
+
+     label5:
+        $r4_2 = Phi($r4_1 #4, $r4_3 #5);
+
+        $r7_3 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.util.concurrent.ConcurrentHashMap attributes>;
+
+        virtualinvoke $r7_3.<java.util.concurrent.ConcurrentHashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r3_1, $r4_2);
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        $r7_4 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.util.concurrent.ConcurrentHashMap attributes>;
+
+        virtualinvoke $r2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void cacheKeyData(java.util.Map)>($r7_4);
+
+        return;
+
+     label6:
+        $r4_3 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: java.lang.String sanitizeAttribute(java.lang.String)>($r4);
+
+(5)     goto label5;
+
+     label7:
+        $r6_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r6_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Exceeded maximum number of custom attributes (64)");
+
+        return;
+    }
+
+    public void setUserEmail(java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        boolean $z0;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r1;
+        java.lang.String $r2, $r3, $r4, $r2_1, $r2_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $z0 = $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean disabled>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r2_1 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: java.lang.String sanitizeAttribute(java.lang.String)>($r2);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userEmail> = $r2_1;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userId>;
+
+        $r2_2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userName>;
+
+        $r3 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userEmail>;
+
+        virtualinvoke $r1.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void cacheUserData(java.lang.String,java.lang.String,java.lang.String)>($r4, $r2_2, $r3);
+
+        return;
+    }
+
+    public void setUserIdentifier(java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        boolean $z0;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r1;
+        java.lang.String $r2, $r3, $r4, $r2_1, $r2_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $z0 = $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean disabled>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r2_1 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: java.lang.String sanitizeAttribute(java.lang.String)>($r2);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userId> = $r2_1;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userId>;
+
+        $r2_2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userName>;
+
+        $r3 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userEmail>;
+
+        virtualinvoke $r1.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void cacheUserData(java.lang.String,java.lang.String,java.lang.String)>($r4, $r2_2, $r3);
+
+        return;
+    }
+
+    public void setUserName(java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        boolean $z0;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r1;
+        java.lang.String $r2, $r3, $r4, $r2_1, $r2_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $z0 = $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean disabled>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r2_1 = staticinvoke <com.crashlytics.android.core.CrashlyticsCore: java.lang.String sanitizeAttribute(java.lang.String)>($r2);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userName> = $r2_1;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsCore: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler handler>;
+
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userId>;
+
+        $r2_2 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userName>;
+
+        $r3 = $r0.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String userEmail>;
+
+        virtualinvoke $r1.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void cacheUserData(java.lang.String,java.lang.String,java.lang.String)>($r4, $r2_2, $r3);
+
+        return;
+    }
+
+    boolean shouldPromptUserBeforeSendingCrashReports()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        com.crashlytics.android.core.CrashlyticsCore$5 $r1;
+        io.fabric.sdk.android.services.settings.Settings $r2;
+        java.lang.Boolean $r3, $r3_1;
+        java.lang.Object $r4;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r2 = staticinvoke <io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.Settings getInstance()>();
+
+        $r1 = new com.crashlytics.android.core.CrashlyticsCore$5;
+
+        specialinvoke $r1.<com.crashlytics.android.core.CrashlyticsCore$5: void <init>(com.crashlytics.android.core.CrashlyticsCore)>($r0);
+
+        $r3 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        $r4 = virtualinvoke $r2.<io.fabric.sdk.android.services.settings.Settings: java.lang.Object withSettings(io.fabric.sdk.android.services.settings.Settings$SettingsAccess,java.lang.Object)>($r1, $r3);
+
+        $r3_1 = (java.lang.Boolean) $r4;
+
+        $z0 = virtualinvoke $r3_1.<java.lang.Boolean: boolean booleanValue()>();
+
+        return $z0;
+    }
+
+    boolean shouldSendReportsWithoutPrompting()
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        io.fabric.sdk.android.services.persistence.PreferenceStoreImpl $r1;
+        android.content.SharedPreferences $r2;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 = new io.fabric.sdk.android.services.persistence.PreferenceStoreImpl;
+
+        specialinvoke $r1.<io.fabric.sdk.android.services.persistence.PreferenceStoreImpl: void <init>(io.fabric.sdk.android.Kit)>($r0);
+
+        $r2 = interfaceinvoke $r1.<io.fabric.sdk.android.services.persistence.PreferenceStore: android.content.SharedPreferences get()>();
+
+        $z0 = interfaceinvoke $r2.<android.content.SharedPreferences: boolean getBoolean(java.lang.String,boolean)>("always_send_reports_opt_in", 0);
+
+        return $z0;
+    }
+
+    public boolean verifyPinning(java.net.URL)
+    {
+        com.crashlytics.android.core.CrashlyticsCore $r0;
+        java.net.URL $r1;
+        java.lang.Exception $r2;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsCore;
+
+        $r1 := @parameter0: java.net.URL;
+
+     label1:
+        $z0 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsCore: boolean internalVerifyPinning(java.net.URL)>($r1);
+
+     label2:
+        return $z0;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Could not verify SSL pinning", $r2);
+
+        return 0;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+}

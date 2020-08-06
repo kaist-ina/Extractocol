@@ -1,0 +1,324 @@
+public abstract class ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool extends java.lang.Object
+{
+    protected ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler idleConnHandler;
+    protected volatile boolean isShutDown;
+    protected java.util.Set issuedConnections;
+    protected java.util.Set leasedConnections;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+    protected int numConnections;
+    protected final java.util.concurrent.locks.Lock poolLock;
+    protected java.lang.ref.ReferenceQueue refQueue;
+
+    protected void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool $r0;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r1;
+        java.util.HashSet $r2;
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler $r3;
+        java.util.concurrent.locks.ReentrantLock $r4;
+        java.lang.Class $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r5 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r5);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r1;
+
+        $r2 = new java.util.HashSet;
+
+        specialinvoke $r2.<java.util.HashSet: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.Set leasedConnections> = $r2;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler idleConnHandler> = $r3;
+
+        $r4 = new java.util.concurrent.locks.ReentrantLock;
+
+        specialinvoke $r4.<java.util.concurrent.locks.ReentrantLock: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock> = $r4;
+
+        return;
+    }
+
+    protected void closeConnection(ch.boye.httpclientandroidlib.conn.OperatedClientConnection)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool $r0;
+        ch.boye.httpclientandroidlib.conn.OperatedClientConnection $r1;
+        java.io.IOException $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.OperatedClientConnection;
+
+        if $r1 == null goto label4;
+
+     label1:
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.conn.OperatedClientConnection: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>("I/O error closing connection", $r2);
+
+     label4:
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public void closeExpiredConnections()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool $r0;
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler $r1;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.Lock $r3, $r3_1, $r3_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock>;
+
+        interfaceinvoke $r3.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label1:
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler idleConnHandler>;
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: void closeExpiredConnections()>();
+
+     label2:
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock>;
+
+        interfaceinvoke $r3_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock>;
+
+        interfaceinvoke $r3_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void closeIdleConnections(long, java.util.concurrent.TimeUnit)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool $r0;
+        java.util.concurrent.TimeUnit $r1;
+        java.lang.IllegalArgumentException $r2;
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler $r3;
+        java.lang.Throwable $r4;
+        long $l0, $l0_1, $l0_2;
+        java.util.concurrent.locks.Lock $r5, $r5_1, $r5_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.util.concurrent.TimeUnit;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Time unit must not be null.");
+
+        throw $r2;
+
+     label1:
+        $r5 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock>;
+
+(0)     interfaceinvoke $r5.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label2:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler idleConnHandler>;
+
+(1)     $l0_1 = virtualinvoke $r1.<java.util.concurrent.TimeUnit: long toMillis(long)>($l0);
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: void closeIdleConnections(long)>($l0_1);
+
+     label3:
+        $r5_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock>;
+
+        interfaceinvoke $r5_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label4:
+        $r4 := @caughtexception;
+
+        $l0_2 = Phi($l0 #0, $l0_1 #1);
+
+        $r5_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock>;
+
+        interfaceinvoke $r5_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r4;
+
+        catch java.lang.Throwable from label2 to label3 with label4;
+    }
+
+    public abstract void deleteClosedConnections();
+
+    public void enableConnectionGC() throws java.lang.IllegalStateException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool;
+
+        return;
+    }
+
+    public abstract void freeEntry(ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry, boolean, long, java.util.concurrent.TimeUnit);
+
+    public final ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry getEntry(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, java.lang.Object, long, java.util.concurrent.TimeUnit) throws ch.boye.httpclientandroidlib.conn.ConnectionPoolTimeoutException, java.lang.InterruptedException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        java.lang.Object $r2;
+        long $l0;
+        java.util.concurrent.TimeUnit $r3;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.PoolEntryRequest $r4;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $l0 := @parameter2: long;
+
+        $r3 := @parameter3: java.util.concurrent.TimeUnit;
+
+        $r4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: ch.boye.httpclientandroidlib.impl.conn.tsccm.PoolEntryRequest requestPoolEntry(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,java.lang.Object)>($r1, $r2);
+
+        $r5 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.impl.conn.tsccm.PoolEntryRequest: ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry getPoolEntry(long,java.util.concurrent.TimeUnit)>($l0, $r3);
+
+        return $r5;
+    }
+
+    protected abstract void handleLostEntry(ch.boye.httpclientandroidlib.conn.routing.HttpRoute);
+
+    public void handleReference(java.lang.ref.Reference)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool $r0;
+        java.lang.ref.Reference $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool;
+
+        $r1 := @parameter0: java.lang.ref.Reference;
+
+        return;
+    }
+
+    public abstract ch.boye.httpclientandroidlib.impl.conn.tsccm.PoolEntryRequest requestPoolEntry(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, java.lang.Object);
+
+    public void shutdown()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool $r0;
+        java.util.Set $r1;
+        java.lang.Throwable $r2;
+        ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler $r3;
+        java.util.concurrent.locks.Lock $r4, $r4_1, $r4_2, $r4_3;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.util.Iterator $r5;
+        java.lang.Object $r6;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry $r7;
+        ch.boye.httpclientandroidlib.conn.OperatedClientConnection $r8;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock>;
+
+(0)     interfaceinvoke $r4.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label01:
+        $z0 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: boolean isShutDown>;
+
+     label02:
+        if $z0 == 0 goto label03;
+
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock>;
+
+        interfaceinvoke $r4_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label03:
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.Set leasedConnections>;
+
+(1)     $r5 = interfaceinvoke $r1.<java.util.Set: java.util.Iterator iterator()>();
+
+     label04:
+        $z0_1 = Phi($z0 #1, $z0_2 #3);
+
+(2)     $z0_2 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+     label05:
+        if $z0_2 == 0 goto label09;
+
+     label06:
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        $r7 = (ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry) $r6;
+
+        interfaceinvoke $r5.<java.util.Iterator: void remove()>();
+
+        $r8 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry: ch.boye.httpclientandroidlib.conn.OperatedClientConnection getConnection()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: void closeConnection(ch.boye.httpclientandroidlib.conn.OperatedClientConnection)>($r8);
+
+     label07:
+(3)     goto label04;
+
+     label08:
+        $r2 := @caughtexception;
+
+        $z0_3 = Phi($z0 #0, $z0_2 #2);
+
+        $r4_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock>;
+
+        interfaceinvoke $r4_3.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r2;
+
+     label09:
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler idleConnHandler>;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.conn.IdleConnectionHandler: void removeAll()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: boolean isShutDown> = 1;
+
+     label10:
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool: java.util.concurrent.locks.Lock poolLock>;
+
+        interfaceinvoke $r4_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+        catch java.lang.Throwable from label01 to label02 with label08;
+        catch java.lang.Throwable from label03 to label05 with label08;
+        catch java.lang.Throwable from label06 to label07 with label08;
+        catch java.lang.Throwable from label09 to label10 with label08;
+    }
+}

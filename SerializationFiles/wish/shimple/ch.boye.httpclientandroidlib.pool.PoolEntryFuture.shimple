@@ -1,0 +1,437 @@
+abstract class ch.boye.httpclientandroidlib.pool.PoolEntryFuture extends java.lang.Object implements java.util.concurrent.Future
+{
+    private final ch.boye.httpclientandroidlib.concurrent.FutureCallback callback;
+    private volatile boolean cancelled;
+    private volatile boolean completed;
+    private final java.util.concurrent.locks.Condition condition;
+    private final java.util.concurrent.locks.Lock lock;
+    private java.lang.Object result;
+
+    void <init>(java.util.concurrent.locks.Lock, ch.boye.httpclientandroidlib.concurrent.FutureCallback)
+    {
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r0;
+        java.util.concurrent.locks.Lock $r1;
+        ch.boye.httpclientandroidlib.concurrent.FutureCallback $r2;
+        java.util.concurrent.locks.Condition $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        $r1 := @parameter0: java.util.concurrent.locks.Lock;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.concurrent.FutureCallback;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock> = $r1;
+
+        $r3 = interfaceinvoke $r1.<java.util.concurrent.locks.Lock: java.util.concurrent.locks.Condition newCondition()>();
+
+        $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Condition condition> = $r3;
+
+        $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: ch.boye.httpclientandroidlib.concurrent.FutureCallback callback> = $r2;
+
+        return;
+    }
+
+    public boolean await(java.util.Date) throws java.lang.InterruptedException
+    {
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r0;
+        java.util.Date $r1;
+        java.lang.Throwable $r2;
+        boolean $z0, $z1, $z0_1, $z1_1, $z0_2, $z0_3, $z1_2, $z1_3, $z0_4;
+        java.util.concurrent.locks.Lock $r3, $r3_1, $r3_2;
+        java.lang.InterruptedException $r4, $r4_1, $r4_2;
+        java.util.concurrent.locks.Condition $r5, $r5_1, $r5_2, $r5_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        $r1 := @parameter0: java.util.Date;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+(0)     interfaceinvoke $r3.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label01:
+        $z0 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean cancelled>;
+
+     label02:
+        if $z0 == 0 goto label05;
+
+     label03:
+        $r4 = new java.lang.InterruptedException;
+
+        specialinvoke $r4.<java.lang.InterruptedException: void <init>(java.lang.String)>("Operation interrupted");
+
+        throw $r4;
+
+     label04:
+        $r2 := @caughtexception;
+
+        $z1_3 = Phi($z1 #0, $z1_2 #6, $z1_1 #3);
+
+        $z0_4 = Phi($z0 #0, $z0_1 #1, $z0_3 #3);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #4);
+
+        $r5_3 = Phi($r5 #0, $r5_1 #3, $r5_2 #5);
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r2;
+
+     label05:
+        if $r1 == null goto label11;
+
+     label06:
+        $r5 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Condition condition>;
+
+(1)     $z0_1 = interfaceinvoke $r5.<java.util.concurrent.locks.Condition: boolean awaitUntil(java.util.Date)>($r1);
+
+     label07:
+(2)     $z1 = $z0_1;
+
+     label08:
+        $z1_1 = Phi($z1 #2, $z1_2 #6);
+
+        $z0_2 = Phi($z0_1 #2, $z0 #6);
+
+        $r5_1 = Phi($r5 #2, $r5_2 #6);
+
+(3)     $z0_3 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean cancelled>;
+
+     label09:
+        if $z0_3 == 0 goto label13;
+
+     label10:
+(4)     $r4_1 = new java.lang.InterruptedException;
+
+        specialinvoke $r4_1.<java.lang.InterruptedException: void <init>(java.lang.String)>("Operation interrupted");
+
+        throw $r4_1;
+
+     label11:
+(5)     $r5_2 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Condition condition>;
+
+        interfaceinvoke $r5_2.<java.util.concurrent.locks.Condition: void await()>();
+
+     label12:
+        $z1_2 = 1;
+
+(6)     goto label08;
+
+     label13:
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return $z1_1;
+
+        catch java.lang.Throwable from label01 to label02 with label04;
+        catch java.lang.Throwable from label03 to label04 with label04;
+        catch java.lang.Throwable from label06 to label07 with label04;
+        catch java.lang.Throwable from label08 to label09 with label04;
+        catch java.lang.Throwable from label10 to label12 with label04;
+    }
+
+    public boolean cancel(boolean)
+    {
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r0;
+        java.util.concurrent.locks.Condition $r1;
+        java.lang.Throwable $r2;
+        boolean $z0, $z0_1, $z0_2;
+        java.util.concurrent.locks.Lock $r3, $r3_1, $r3_2, $r3_3;
+        ch.boye.httpclientandroidlib.concurrent.FutureCallback $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        $z0 := @parameter0: boolean;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+(0)     interfaceinvoke $r3.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label1:
+(1)     $z0_1 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean completed>;
+
+     label2:
+        if $z0_1 == 0 goto label3;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return 0;
+
+     label3:
+        $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean completed> = 1;
+
+        $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean cancelled> = 1;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: ch.boye.httpclientandroidlib.concurrent.FutureCallback callback>;
+
+     label4:
+(2)     if $r4 == null goto label6;
+
+     label5:
+(3)     $r4_1 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: ch.boye.httpclientandroidlib.concurrent.FutureCallback callback>;
+
+(4)     interfaceinvoke $r4_1.<ch.boye.httpclientandroidlib.concurrent.FutureCallback: void cancelled()>();
+
+     label6:
+        $r4_2 = Phi($r4 #2, $r4_1 #4);
+
+(5)     $r1 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Condition condition>;
+
+        interfaceinvoke $r1.<java.util.concurrent.locks.Condition: void signalAll()>();
+
+     label7:
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return 1;
+
+     label8:
+        $r2 := @caughtexception;
+
+        $r4_3 = Phi($r4 #0, $r4_1 #3, $r4_2 #5);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r3_3 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_3.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label8;
+        catch java.lang.Throwable from label3 to label4 with label8;
+        catch java.lang.Throwable from label5 to label7 with label8;
+    }
+
+    public java.lang.Object get() throws java.lang.InterruptedException, java.util.concurrent.ExecutionException
+    {
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r0;
+        java.util.concurrent.TimeUnit $r1;
+        java.util.concurrent.TimeoutException $r2;
+        java.util.concurrent.ExecutionException $r3;
+        java.lang.Object $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        $r1 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit MILLISECONDS>;
+
+     label1:
+        $r4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.lang.Object get(long,java.util.concurrent.TimeUnit)>(0L, $r1);
+
+     label2:
+        return $r4;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = new java.util.concurrent.ExecutionException;
+
+        specialinvoke $r3.<java.util.concurrent.ExecutionException: void <init>(java.lang.Throwable)>($r2);
+
+        throw $r3;
+
+        catch java.util.concurrent.TimeoutException from label1 to label2 with label3;
+    }
+
+    public java.lang.Object get(long, java.util.concurrent.TimeUnit) throws java.lang.InterruptedException, java.util.concurrent.ExecutionException, java.util.concurrent.TimeoutException
+    {
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r0;
+        long $l0;
+        java.util.concurrent.TimeUnit $r1;
+        boolean $z0;
+        java.io.IOException $r2;
+        java.util.concurrent.ExecutionException $r3;
+        java.lang.Throwable $r4;
+        java.lang.Object $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6;
+        java.util.concurrent.locks.Lock $r6, $r6_1, $r6_2, $r6_3;
+        ch.boye.httpclientandroidlib.concurrent.FutureCallback $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.util.concurrent.TimeUnit;
+
+        $r6 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+(0)     interfaceinvoke $r6.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label01:
+        $z0 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean completed>;
+
+     label02:
+(1)     if $z0 == 0 goto label05;
+
+     label03:
+        $r5 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.lang.Object result>;
+
+     label04:
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r6_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return $r5;
+
+     label05:
+(2)     $r5_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.lang.Object getPoolEntry(long,java.util.concurrent.TimeUnit)>($l0, $r1);
+
+     label06:
+        $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.lang.Object result> = $r5_1;
+
+        $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean completed> = 1;
+
+        $r7 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: ch.boye.httpclientandroidlib.concurrent.FutureCallback callback>;
+
+     label07:
+(3)     if $r7 == null goto label10;
+
+     label08:
+(4)     $r7_1 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: ch.boye.httpclientandroidlib.concurrent.FutureCallback callback>;
+
+(5)     $r5_2 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.lang.Object result>;
+
+     label09:
+(6)     interfaceinvoke $r7_1.<ch.boye.httpclientandroidlib.concurrent.FutureCallback: void completed(java.lang.Object)>($r5_2);
+
+     label10:
+        $r7_2 = Phi($r7 #3, $r7_1 #6);
+
+        $r5_3 = Phi($r5_1 #3, $r5_2 #6);
+
+(7)     $r5_4 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.lang.Object result>;
+
+     label11:
+        $r6_2 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r6_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return $r5_4;
+
+     label12:
+        $r2 := @caughtexception;
+
+        $r7_3 = Phi($r7 #1, $r7_1 #5);
+
+(8)     $r5_5 = Phi($r5 #1, $r5_1 #2, $r5_2 #5);
+
+     label13:
+        $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean completed> = 1;
+
+        $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.lang.Object result> = null;
+
+(9)     $r7_4 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: ch.boye.httpclientandroidlib.concurrent.FutureCallback callback>;
+
+     label14:
+(10)    if $r7_4 == null goto label16;
+
+     label15:
+(11)    $r7_5 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: ch.boye.httpclientandroidlib.concurrent.FutureCallback callback>;
+
+(12)    interfaceinvoke $r7_5.<ch.boye.httpclientandroidlib.concurrent.FutureCallback: void failed(java.lang.Exception)>($r2);
+
+     label16:
+        $r7_6 = Phi($r7_4 #10, $r7_5 #12);
+
+(13)    $r3 = new java.util.concurrent.ExecutionException;
+
+        specialinvoke $r3.<java.util.concurrent.ExecutionException: void <init>(java.lang.Throwable)>($r2);
+
+        throw $r3;
+
+     label17:
+        $r4 := @caughtexception;
+
+        $r7_7 = Phi($r7 #0, $r7_1 #4, $r7_2 #7, $r7_3 #8, $r7_4 #9, $r7_5 #11, $r7_6 #13);
+
+        $r5_6 = Phi($r5 #0, $r5_1 #2, $r5_2 #5, $r5_4 #7, $r5_5 #8);
+
+        $r6_3 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r6_3.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r4;
+
+        catch java.lang.Throwable from label01 to label02 with label17;
+        catch java.lang.Throwable from label03 to label04 with label17;
+        catch java.io.IOException from label05 to label06 with label12;
+        catch java.lang.Throwable from label05 to label06 with label17;
+        catch java.lang.Throwable from label06 to label07 with label17;
+        catch java.lang.Throwable from label08 to label09 with label17;
+        catch java.io.IOException from label09 to label10 with label12;
+        catch java.lang.Throwable from label09 to label10 with label17;
+        catch java.lang.Throwable from label10 to label11 with label17;
+        catch java.lang.Throwable from label13 to label14 with label17;
+        catch java.lang.Throwable from label15 to label17 with label17;
+    }
+
+    protected abstract java.lang.Object getPoolEntry(long, java.util.concurrent.TimeUnit) throws java.io.IOException, java.lang.InterruptedException, java.util.concurrent.TimeoutException;
+
+    public boolean isCancelled()
+    {
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r0;
+        boolean z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        z0 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean cancelled>;
+
+        return z0;
+    }
+
+    public boolean isDone()
+    {
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r0;
+        boolean z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        z0 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: boolean completed>;
+
+        return z0;
+    }
+
+    public void wakeup()
+    {
+        ch.boye.httpclientandroidlib.pool.PoolEntryFuture $r0;
+        java.util.concurrent.locks.Condition $r1;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.Lock $r3, $r3_1, $r3_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.pool.PoolEntryFuture;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label1:
+        $r1 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Condition condition>;
+
+        interfaceinvoke $r1.<java.util.concurrent.locks.Condition: void signalAll()>();
+
+     label2:
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3_2 = $r0.<ch.boye.httpclientandroidlib.pool.PoolEntryFuture: java.util.concurrent.locks.Lock lock>;
+
+        interfaceinvoke $r3_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+}

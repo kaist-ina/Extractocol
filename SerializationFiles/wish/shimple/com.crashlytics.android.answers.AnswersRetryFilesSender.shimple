@@ -1,0 +1,115 @@
+class com.crashlytics.android.answers.AnswersRetryFilesSender extends java.lang.Object implements io.fabric.sdk.android.services.events.FilesSender
+{
+    private static final int BACKOFF_MS;
+    private static final int BACKOFF_POWER;
+    private static final double JITTER_PERCENT;
+    private static final int MAX_RETRIES;
+    private final com.crashlytics.android.answers.SessionAnalyticsFilesSender filesSender;
+    private final com.crashlytics.android.answers.RetryManager retryManager;
+
+    void <init>(com.crashlytics.android.answers.SessionAnalyticsFilesSender, com.crashlytics.android.answers.RetryManager)
+    {
+        com.crashlytics.android.answers.AnswersRetryFilesSender $r0;
+        com.crashlytics.android.answers.SessionAnalyticsFilesSender $r1;
+        com.crashlytics.android.answers.RetryManager $r2;
+
+        $r0 := @this: com.crashlytics.android.answers.AnswersRetryFilesSender;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.SessionAnalyticsFilesSender;
+
+        $r2 := @parameter1: com.crashlytics.android.answers.RetryManager;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.crashlytics.android.answers.AnswersRetryFilesSender: com.crashlytics.android.answers.SessionAnalyticsFilesSender filesSender> = $r1;
+
+        $r0.<com.crashlytics.android.answers.AnswersRetryFilesSender: com.crashlytics.android.answers.RetryManager retryManager> = $r2;
+
+        return;
+    }
+
+    public static com.crashlytics.android.answers.AnswersRetryFilesSender build(com.crashlytics.android.answers.SessionAnalyticsFilesSender)
+    {
+        com.crashlytics.android.answers.SessionAnalyticsFilesSender $r0;
+        com.crashlytics.android.answers.RandomBackoff $r1;
+        io.fabric.sdk.android.services.concurrency.internal.ExponentialBackoff $r2;
+        io.fabric.sdk.android.services.concurrency.internal.DefaultRetryPolicy $r3;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r4;
+        com.crashlytics.android.answers.RetryManager $r5;
+        com.crashlytics.android.answers.AnswersRetryFilesSender $r6;
+
+        $r0 := @parameter0: com.crashlytics.android.answers.SessionAnalyticsFilesSender;
+
+        $r1 = new com.crashlytics.android.answers.RandomBackoff;
+
+        $r2 = new io.fabric.sdk.android.services.concurrency.internal.ExponentialBackoff;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.concurrency.internal.ExponentialBackoff: void <init>(long,int)>(1000L, 8);
+
+        specialinvoke $r1.<com.crashlytics.android.answers.RandomBackoff: void <init>(io.fabric.sdk.android.services.concurrency.internal.Backoff,double)>($r2, 0.1);
+
+        $r3 = new io.fabric.sdk.android.services.concurrency.internal.DefaultRetryPolicy;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.concurrency.internal.DefaultRetryPolicy: void <init>(int)>(5);
+
+        $r4 = new io.fabric.sdk.android.services.concurrency.internal.RetryState;
+
+        specialinvoke $r4.<io.fabric.sdk.android.services.concurrency.internal.RetryState: void <init>(io.fabric.sdk.android.services.concurrency.internal.Backoff,io.fabric.sdk.android.services.concurrency.internal.RetryPolicy)>($r1, $r3);
+
+        $r5 = new com.crashlytics.android.answers.RetryManager;
+
+        specialinvoke $r5.<com.crashlytics.android.answers.RetryManager: void <init>(io.fabric.sdk.android.services.concurrency.internal.RetryState)>($r4);
+
+        $r6 = new com.crashlytics.android.answers.AnswersRetryFilesSender;
+
+        specialinvoke $r6.<com.crashlytics.android.answers.AnswersRetryFilesSender: void <init>(com.crashlytics.android.answers.SessionAnalyticsFilesSender,com.crashlytics.android.answers.RetryManager)>($r0, $r5);
+
+        return $r6;
+    }
+
+    public boolean send(java.util.List)
+    {
+        com.crashlytics.android.answers.AnswersRetryFilesSender $r0;
+        java.util.List $r1;
+        com.crashlytics.android.answers.SessionAnalyticsFilesSender $r2;
+        long $l0;
+        com.crashlytics.android.answers.RetryManager $r3, $r3_1, $r3_2, $r3_3;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: com.crashlytics.android.answers.AnswersRetryFilesSender;
+
+        $r1 := @parameter0: java.util.List;
+
+        $l0 = staticinvoke <java.lang.System: long nanoTime()>();
+
+        $r3 = $r0.<com.crashlytics.android.answers.AnswersRetryFilesSender: com.crashlytics.android.answers.RetryManager retryManager>;
+
+        $z0 = virtualinvoke $r3.<com.crashlytics.android.answers.RetryManager: boolean canRetry(long)>($l0);
+
+(0)     if $z0 == 0 goto label2;
+
+        $r2 = $r0.<com.crashlytics.android.answers.AnswersRetryFilesSender: com.crashlytics.android.answers.SessionAnalyticsFilesSender filesSender>;
+
+        $z0_1 = virtualinvoke $r2.<com.crashlytics.android.answers.SessionAnalyticsFilesSender: boolean send(java.util.List)>($r1);
+
+        if $z0_1 == 0 goto label1;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.AnswersRetryFilesSender: com.crashlytics.android.answers.RetryManager retryManager>;
+
+        virtualinvoke $r3_1.<com.crashlytics.android.answers.RetryManager: void reset()>();
+
+        return 1;
+
+     label1:
+        $r3_2 = $r0.<com.crashlytics.android.answers.AnswersRetryFilesSender: com.crashlytics.android.answers.RetryManager retryManager>;
+
+(1)     virtualinvoke $r3_2.<com.crashlytics.android.answers.RetryManager: void recordRetry(long)>($l0);
+
+     label2:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r3_3 = Phi($r3 #0, $r3_2 #1);
+
+        return 0;
+    }
+}

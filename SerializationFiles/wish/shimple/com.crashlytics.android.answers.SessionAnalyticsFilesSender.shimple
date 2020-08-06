@@ -1,0 +1,154 @@
+class com.crashlytics.android.answers.SessionAnalyticsFilesSender extends io.fabric.sdk.android.services.common.AbstractSpiCall implements io.fabric.sdk.android.services.events.FilesSender
+{
+    static final java.lang.String FILE_CONTENT_TYPE;
+    static final java.lang.String FILE_PARAM_NAME;
+    private final java.lang.String apiKey;
+
+    public void <init>(io.fabric.sdk.android.Kit, java.lang.String, java.lang.String, io.fabric.sdk.android.services.network.HttpRequestFactory, java.lang.String)
+    {
+        com.crashlytics.android.answers.SessionAnalyticsFilesSender $r0;
+        io.fabric.sdk.android.Kit $r1;
+        java.lang.String $r2, $r3, $r5;
+        io.fabric.sdk.android.services.network.HttpRequestFactory $r4;
+        io.fabric.sdk.android.services.network.HttpMethod $r6;
+
+        $r0 := @this: com.crashlytics.android.answers.SessionAnalyticsFilesSender;
+
+        $r1 := @parameter0: io.fabric.sdk.android.Kit;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: io.fabric.sdk.android.services.network.HttpRequestFactory;
+
+        $r5 := @parameter4: java.lang.String;
+
+        $r6 = <io.fabric.sdk.android.services.network.HttpMethod: io.fabric.sdk.android.services.network.HttpMethod POST>;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.AbstractSpiCall: void <init>(io.fabric.sdk.android.Kit,java.lang.String,java.lang.String,io.fabric.sdk.android.services.network.HttpRequestFactory,io.fabric.sdk.android.services.network.HttpMethod)>($r1, $r2, $r3, $r4, $r6);
+
+        $r0.<com.crashlytics.android.answers.SessionAnalyticsFilesSender: java.lang.String apiKey> = $r5;
+
+        return;
+    }
+
+    public boolean send(java.util.List)
+    {
+        com.crashlytics.android.answers.SessionAnalyticsFilesSender $r0;
+        java.util.List $r1;
+        io.fabric.sdk.android.Kit $r2;
+        io.fabric.sdk.android.services.network.HttpRequest $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.String $r4, $r9, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5;
+        java.util.Iterator $r5;
+        boolean $z0;
+        java.lang.Object $r6;
+        java.io.File $r7;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8, $r8_9, $r8_10, $r8_11;
+        io.fabric.sdk.android.Logger $r10, $r10_1;
+
+        $r0 := @this: com.crashlytics.android.answers.SessionAnalyticsFilesSender;
+
+        $r1 := @parameter0: java.util.List;
+
+        $r3 = virtualinvoke $r0.<com.crashlytics.android.answers.SessionAnalyticsFilesSender: io.fabric.sdk.android.services.network.HttpRequest getHttpRequest()>();
+
+        $r3_1 = virtualinvoke $r3.<io.fabric.sdk.android.services.network.HttpRequest: io.fabric.sdk.android.services.network.HttpRequest header(java.lang.String,java.lang.String)>("X-CRASHLYTICS-API-CLIENT-TYPE", "android");
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.AbstractSpiCall: io.fabric.sdk.android.Kit kit>;
+
+        $r4 = virtualinvoke $r2.<io.fabric.sdk.android.Kit: java.lang.String getVersion()>();
+
+        $r3_2 = virtualinvoke $r3_1.<io.fabric.sdk.android.services.network.HttpRequest: io.fabric.sdk.android.services.network.HttpRequest header(java.lang.String,java.lang.String)>("X-CRASHLYTICS-API-CLIENT-VERSION", $r4);
+
+        $r4_1 = $r0.<com.crashlytics.android.answers.SessionAnalyticsFilesSender: java.lang.String apiKey>;
+
+        $r3_3 = virtualinvoke $r3_2.<io.fabric.sdk.android.services.network.HttpRequest: io.fabric.sdk.android.services.network.HttpRequest header(java.lang.String,java.lang.String)>("X-CRASHLYTICS-API-KEY", $r4_1);
+
+        $i0 = 0;
+
+(0)     $r5 = interfaceinvoke $r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        $r8 = Phi($r8 #0, $r8_3 #1);
+
+        $r4_2 = Phi($r4_1 #0, $r4_3 #1);
+
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        $r7 = (java.io.File) $r6;
+
+        $r8_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r8_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("session_analytics_file_");
+
+        $r8_3 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_1);
+
+        $r4_3 = virtualinvoke $r8_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r9 = virtualinvoke $r7.<java.io.File: java.lang.String getName()>();
+
+        virtualinvoke $r3_3.<io.fabric.sdk.android.services.network.HttpRequest: io.fabric.sdk.android.services.network.HttpRequest part(java.lang.String,java.lang.String,java.lang.String,java.io.File)>($r4_3, $r9, "application/vnd.crashlytics.android.events", $r7);
+
+        $i0_2 = $i0_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        $r10 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r8_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r8_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_5 = virtualinvoke $r8_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Sending ");
+
+        $i0_3 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        $r8_6 = virtualinvoke $r8_5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_3);
+
+        $r8_7 = virtualinvoke $r8_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" analytics files to ");
+
+        $r4_4 = virtualinvoke $r0.<com.crashlytics.android.answers.SessionAnalyticsFilesSender: java.lang.String getUrl()>();
+
+        $r8_8 = virtualinvoke $r8_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4_4);
+
+        $r4_5 = virtualinvoke $r8_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r10.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Answers", $r4_5);
+
+        $i0_4 = virtualinvoke $r3_3.<io.fabric.sdk.android.services.network.HttpRequest: int code()>();
+
+        $r10_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r8_9 = new java.lang.StringBuilder;
+
+        specialinvoke $r8_9.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_10 = virtualinvoke $r8_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Response code for analytics file send is ");
+
+        $r8_11 = virtualinvoke $r8_10.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_4);
+
+        $r4_6 = virtualinvoke $r8_11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r10_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Answers", $r4_6);
+
+        $i0_5 = staticinvoke <io.fabric.sdk.android.services.common.ResponseParser: int parse(int)>($i0_4);
+
+        if $i0_5 != 0 goto label3;
+
+        return 1;
+
+     label3:
+        return 0;
+    }
+}

@@ -1,0 +1,2647 @@
+public final class com.contextlogic.wish.cache.DiskLruCache extends java.lang.Object implements java.io.Closeable
+{
+    static final long ANY_SEQUENCE_NUMBER;
+    private static final java.lang.String CLEAN;
+    private static final java.lang.String DIRTY;
+    static final java.lang.String JOURNAL_FILE;
+    static final java.lang.String JOURNAL_FILE_TMP;
+    static final java.lang.String MAGIC;
+    private static final java.lang.String READ;
+    private static final java.lang.String REMOVE;
+    private static final java.nio.charset.Charset UTF_8;
+    static final java.lang.String VERSION_1;
+    private final int appVersion;
+    private final java.util.concurrent.Callable cleanupCallable;
+    private final java.io.File directory;
+    private final java.util.concurrent.ExecutorService executorService;
+    private final java.io.File journalFile;
+    private final java.io.File journalFileTmp;
+    private java.io.Writer journalWriter;
+    private final java.util.LinkedHashMap lruEntries;
+    private final long maxSize;
+    private long nextSequenceNumber;
+    private int redundantOpCount;
+    private long size;
+    private final int valueCount;
+
+    static void <clinit>()
+    {
+        java.nio.charset.Charset $r0;
+
+        $r0 = staticinvoke <java.nio.charset.Charset: java.nio.charset.Charset forName(java.lang.String)>("UTF-8");
+
+        <com.contextlogic.wish.cache.DiskLruCache: java.nio.charset.Charset UTF_8> = $r0;
+
+        return;
+    }
+
+    private void <init>(java.io.File, int, int, long)
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.io.File $r1, $r7, $r7_1;
+        int $i0, $i1;
+        long $l2;
+        java.util.LinkedHashMap $r2;
+        java.util.concurrent.ThreadPoolExecutor $r3;
+        java.util.concurrent.TimeUnit $r4;
+        java.util.concurrent.LinkedBlockingQueue $r5;
+        com.contextlogic.wish.cache.DiskLruCache$1 $r6;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r1 := @parameter0: java.io.File;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $l2 := @parameter3: long;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: long size> = 0L;
+
+        $r2 = new java.util.LinkedHashMap;
+
+        specialinvoke $r2.<java.util.LinkedHashMap: void <init>(int,float,boolean)>(0, 0.75F, 1);
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries> = $r2;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: long nextSequenceNumber> = 0L;
+
+        $r3 = new java.util.concurrent.ThreadPoolExecutor;
+
+        $r4 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+        $r5 = new java.util.concurrent.LinkedBlockingQueue;
+
+        specialinvoke $r5.<java.util.concurrent.LinkedBlockingQueue: void <init>()>();
+
+        specialinvoke $r3.<java.util.concurrent.ThreadPoolExecutor: void <init>(int,int,long,java.util.concurrent.TimeUnit,java.util.concurrent.BlockingQueue)>(0, 1, 60L, $r4, $r5);
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.concurrent.ExecutorService executorService> = $r3;
+
+        $r6 = new com.contextlogic.wish.cache.DiskLruCache$1;
+
+        specialinvoke $r6.<com.contextlogic.wish.cache.DiskLruCache$1: void <init>(com.contextlogic.wish.cache.DiskLruCache)>($r0);
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.concurrent.Callable cleanupCallable> = $r6;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File directory> = $r1;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: int appVersion> = $i0;
+
+        $r7 = new java.io.File;
+
+        specialinvoke $r7.<java.io.File: void <init>(java.io.File,java.lang.String)>($r1, "journal");
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File journalFile> = $r7;
+
+        $r7_1 = new java.io.File;
+
+        specialinvoke $r7_1.<java.io.File: void <init>(java.io.File,java.lang.String)>($r1, "journal.tmp");
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File journalFileTmp> = $r7_1;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount> = $i1;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: long maxSize> = $l2;
+
+        return;
+    }
+
+    static java.io.Writer access$000(com.contextlogic.wish.cache.DiskLruCache)
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.io.Writer r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.DiskLruCache;
+
+        r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+        return r1;
+    }
+
+    static void access$100(com.contextlogic.wish.cache.DiskLruCache) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.DiskLruCache;
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void trimToSize()>();
+
+        return;
+    }
+
+    static com.contextlogic.wish.cache.DiskLruCache$Editor access$1700(com.contextlogic.wish.cache.DiskLruCache, java.lang.String, long) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.lang.String $r1;
+        long $l0;
+        com.contextlogic.wish.cache.DiskLruCache$Editor $r2;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $l0 := @parameter2: long;
+
+        $r2 = specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: com.contextlogic.wish.cache.DiskLruCache$Editor edit(java.lang.String,long)>($r1, $l0);
+
+        return $r2;
+    }
+
+    static java.lang.String access$1800(java.io.InputStream) throws java.io.IOException
+    {
+        java.io.InputStream $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache: java.lang.String inputStreamToString(java.io.InputStream)>($r0);
+
+        return $r1;
+    }
+
+    static void access$1900(java.io.Closeable)
+    {
+        java.io.Closeable $r0;
+
+        $r0 := @parameter0: java.io.Closeable;
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache: void closeQuietly(java.io.Closeable)>($r0);
+
+        return;
+    }
+
+    static boolean access$200(com.contextlogic.wish.cache.DiskLruCache)
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.DiskLruCache;
+
+        $z0 = specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: boolean journalRebuildRequired()>();
+
+        return $z0;
+    }
+
+    static java.nio.charset.Charset access$2100()
+    {
+        java.nio.charset.Charset r0;
+
+        r0 = <com.contextlogic.wish.cache.DiskLruCache: java.nio.charset.Charset UTF_8>;
+
+        return r0;
+    }
+
+    static void access$2200(com.contextlogic.wish.cache.DiskLruCache, com.contextlogic.wish.cache.DiskLruCache$Editor, boolean) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        com.contextlogic.wish.cache.DiskLruCache$Editor $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r1 := @parameter1: com.contextlogic.wish.cache.DiskLruCache$Editor;
+
+        $z0 := @parameter2: boolean;
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void completeEdit(com.contextlogic.wish.cache.DiskLruCache$Editor,boolean)>($r1, $z0);
+
+        return;
+    }
+
+    static int access$2400(com.contextlogic.wish.cache.DiskLruCache)
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        int i0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.DiskLruCache;
+
+        i0 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+        return i0;
+    }
+
+    static java.io.File access$2500(com.contextlogic.wish.cache.DiskLruCache)
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.io.File r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.DiskLruCache;
+
+        r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File directory>;
+
+        return r1;
+    }
+
+    static void access$300(com.contextlogic.wish.cache.DiskLruCache) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.DiskLruCache;
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void rebuildJournal()>();
+
+        return;
+    }
+
+    static int access$402(com.contextlogic.wish.cache.DiskLruCache, int)
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        int $i0;
+
+        $r0 := @parameter0: com.contextlogic.wish.cache.DiskLruCache;
+
+        $i0 := @parameter1: int;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: int redundantOpCount> = $i0;
+
+        return $i0;
+    }
+
+    private void checkNotClosed()
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.io.Writer $r1;
+        java.lang.IllegalStateException $r2;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("cache is closed");
+
+        throw $r2;
+
+     label1:
+        return;
+    }
+
+    private static void closeQuietly(java.io.Closeable)
+    {
+        java.io.Closeable $r0;
+        java.lang.RuntimeException $r1;
+        java.lang.Exception $r2;
+
+        $r0 := @parameter0: java.io.Closeable;
+
+        if $r0 == null goto label5;
+
+     label1:
+        interfaceinvoke $r0.<java.io.Closeable: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        throw $r1;
+
+     label4:
+        $r2 := @caughtexception;
+
+     label5:
+        return;
+
+        catch java.lang.RuntimeException from label1 to label2 with label3;
+        catch java.lang.Exception from label1 to label2 with label4;
+    }
+
+    private void completeEdit(com.contextlogic.wish.cache.DiskLruCache$Editor, boolean) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        com.contextlogic.wish.cache.DiskLruCache$Editor $r1, $r4;
+        java.lang.Throwable $r2;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z1_1, $z1_2, $z1_3, $z1_4, $z0_9;
+        byte $b0;
+        com.contextlogic.wish.cache.DiskLruCache$Entry $r3;
+        java.lang.IllegalStateException $r5, $r5_1, $r5_2;
+        int $i1, $i2, $i1_1, $i2_1, $i1_2, $i2_2, $i1_3, $i1_4, $i2_3, $i1_5, $i2_4, $i1_6, $i1_7, $i1_8, $i2_5, $i1_9;
+        java.io.File $r6, $r9, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8, $r7_9, $r7_10, $r7_11, $r7_12, $r7_13, $r7_14, $r7_15;
+        java.lang.String $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8;
+        long[] $r10, $r10_1, $r10_2, $r10_3, $r10_4;
+        long $l3, $l4, $l5, $l3_1, $l4_1, $l3_2, $l4_2, $l3_3, $l4_3, $l4_4, $l4_5, $l3_4, $l3_5, $l4_6, $l4_7, $l3_6, $l3_7, $l4_8;
+        java.io.Writer $r11, $r11_1, $r11_2, $r11_3;
+        java.util.concurrent.ExecutorService $r12;
+        java.util.concurrent.Callable $r13;
+        java.util.LinkedHashMap $r14;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r1 := @parameter0: com.contextlogic.wish.cache.DiskLruCache$Editor;
+
+        $z1 := @parameter1: boolean;
+
+(0)     entermonitor $r0;
+
+     label01:
+        $r3 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Editor: com.contextlogic.wish.cache.DiskLruCache$Entry access$1600(com.contextlogic.wish.cache.DiskLruCache$Editor)>($r1);
+
+        $r4 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$700(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r3);
+
+        if $r4 == $r1 goto label03;
+
+        $r5 = new java.lang.IllegalStateException;
+
+        specialinvoke $r5.<java.lang.IllegalStateException: void <init>()>();
+
+        throw $r5;
+
+     label02:
+        $r2 := @caughtexception;
+
+        $r5_2 = Phi($r5 #0, $r5_1 #8);
+
+        $l3_7 = Phi($l3 #0, $l3_1 #19, $l3_2 #22, $l3_3 #25, $l3_4 #45, $l3_5 #47, $l3_6 #48);
+
+        $r8_8 = Phi($r8 #0, $r8_1 #34, $r8_2 #39, $r8_3 #42, $r8_4 #47, $r8_5 #54, $r8_6 #58, $r8_7 #61);
+
+        $r6_5 = Phi($r6 #0, $r6_1 #6, $r6_2 #13, $r6_3 #14, $r6_4 #15);
+
+        $z1_4 = Phi($z1 #0, $z1_1 #50, $z1_2 #52);
+
+        $r11_3 = Phi($r11 #0, $r11_1 #47, $r11_2 #55);
+
+        $i2_5 = Phi($i2 #0, $i2_1 #4, $i2_2 #13, $i2_4 #14);
+
+        $l4_8 = Phi($l4 #0, $l4_1 #20, $l4_2 #23, $l4_3 #25, $l4_4 #37, $l4_5 #44, $l4_7 #47);
+
+        $z0_9 = Phi($z0 #0, $z0_1 #4, $z0_2 #7, $z0_3 #13, $z0_4 #14, $z0_5 #16, $z0_6 #25, $z0_7 #30, $z0_8 #31);
+
+        $r10_4 = Phi($r10 #0, $r10_1 #18, $r10_2 #21, $r10_3 #25);
+
+        $i1_9 = Phi($i1 #0, $i1_1 #4, $i1_2 #11, $i1_4 #13, $i1_5 #14, $i1_6 #25, $i1_7 #28, $i1_8 #29);
+
+        $r7_15 = Phi($r7 #0, $r7_1 #9, $r7_2 #10, $r7_3 #32, $r7_4 #33, $r7_5 #35, $r7_6 #36, $r7_7 #38, $r7_8 #40, $r7_9 #41, $r7_10 #47, $r7_11 #56, $r7_12 #57, $r7_13 #59, $r7_14 #60);
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+     label03:
+(1)     if $z1 == 0 goto label07;
+
+     label04:
+        $z0 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: boolean access$600(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r3);
+
+(2)     if $z0 != 0 goto label07;
+
+(3)     $i1 = 0;
+
+     label05:
+        $r6 = Phi($r6 #3, $r6_1 #12);
+
+        $i2 = Phi($i2 #3, $i2_1 #12);
+
+        $z0_1 = Phi($z0 #3, $z0_2 #12);
+
+        $i1_1 = Phi($i1 #3, $i1_2 #12);
+
+(4)     $i2_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+(5)     if $i1_1 >= $i2_1 goto label07;
+
+(6)     $r6_1 = virtualinvoke $r3.<com.contextlogic.wish.cache.DiskLruCache$Entry: java.io.File getDirtyFile(int)>($i1_1);
+
+(7)     $z0_2 = virtualinvoke $r6_1.<java.io.File: boolean exists()>();
+
+        if $z0_2 != 0 goto label06;
+
+        virtualinvoke $r1.<com.contextlogic.wish.cache.DiskLruCache$Editor: void abort()>();
+
+(8)     $r5_1 = new java.lang.IllegalStateException;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+(9)     $r7_1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("edit didn\'t create file ");
+
+(10)    $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1_1);
+
+        $r8 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r5_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r8);
+
+        throw $r5_1;
+
+     label06:
+(11)    $i1_2 = $i1_1 + 1;
+
+(12)    goto label05;
+
+     label07:
+        $r6_2 = Phi($r6 #1, $r6 #2, $r6 #5);
+
+        $i2_2 = Phi($i2 #1, $i2 #2, $i2_1 #5);
+
+        $z0_3 = Phi($z0 #1, $z0 #2, $z0_1 #5);
+
+        $i1_3 = Phi($i1 #1, $i1 #2, $i1_1 #5);
+
+(13)    $i1_4 = 0;
+
+     label08:
+        $l3 = Phi($l3 #13, $l3_3 #26);
+
+        $r6_3 = Phi($r6_2 #13, $r6_4 #26);
+
+        $i2_3 = Phi($i2_2 #13, $i2_4 #26);
+
+        $l4 = Phi($l4 #13, $l4_3 #26);
+
+        $z0_4 = Phi($z0_3 #13, $z0_6 #26);
+
+        $r10 = Phi($r10 #13, $r10_3 #26);
+
+        $i1_5 = Phi($i1_4 #13, $i1_6 #26);
+
+(14)    $i2_4 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+        if $i1_5 >= $i2_4 goto label11;
+
+(15)    $r6_4 = virtualinvoke $r3.<com.contextlogic.wish.cache.DiskLruCache$Entry: java.io.File getDirtyFile(int)>($i1_5);
+
+        if $z1 == 0 goto label10;
+
+(16)    $z0_5 = virtualinvoke $r6_4.<java.io.File: boolean exists()>();
+
+(17)    if $z0_5 == 0 goto label09;
+
+        $r9 = virtualinvoke $r3.<com.contextlogic.wish.cache.DiskLruCache$Entry: java.io.File getCleanFile(int)>($i1_5);
+
+        virtualinvoke $r6_4.<java.io.File: boolean renameTo(java.io.File)>($r9);
+
+(18)    $r10_1 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long[] access$1100(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r3);
+
+(19)    $l3_1 = $r10_1[$i1_5];
+
+(20)    $l4_1 = virtualinvoke $r9.<java.io.File: long length()>();
+
+(21)    $r10_2 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long[] access$1100(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r3);
+
+        $r10_2[$i1_5] = $l4_1;
+
+        $l5 = $r0.<com.contextlogic.wish.cache.DiskLruCache: long size>;
+
+(22)    $l3_2 = $l5 - $l3_1;
+
+(23)    $l4_2 = $l3_2 + $l4_1;
+
+(24)    $r0.<com.contextlogic.wish.cache.DiskLruCache: long size> = $l4_2;
+
+     label09:
+        $l3_3 = Phi($l3 #17, $l3_2 #24, $l3 #27);
+
+        $l4_3 = Phi($l4 #17, $l4_2 #24, $l4 #27);
+
+        $z0_6 = Phi($z0_5 #17, $z0_5 #24, $z0_4 #27);
+
+        $r10_3 = Phi($r10 #17, $r10_2 #24, $r10 #27);
+
+(25)    $i1_6 = $i1_5 + 1;
+
+(26)    goto label08;
+
+     label10:
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache: void deleteIfExists(java.io.File)>($r6_4);
+
+(27)    goto label09;
+
+     label11:
+(28)    $i1_7 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int redundantOpCount>;
+
+(29)    $i1_8 = $i1_7 + 1;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: int redundantOpCount> = $i1_8;
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$702(com.contextlogic.wish.cache.DiskLruCache$Entry,com.contextlogic.wish.cache.DiskLruCache$Editor)>($r3, null);
+
+(30)    $z0_7 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: boolean access$600(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r3);
+
+(31)    $z0_8 = $z0_7 | $z1;
+
+        if $z0_8 == 0 goto label15;
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: boolean access$602(com.contextlogic.wish.cache.DiskLruCache$Entry,boolean)>($r3, 1);
+
+        $r11 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+(32)    $r7_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r7_3.<java.lang.StringBuilder: void <init>()>();
+
+(33)    $r7_4 = virtualinvoke $r7_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("CLEAN ");
+
+(34)    $r8_1 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: java.lang.String access$1200(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r3);
+
+(35)    $r7_5 = virtualinvoke $r7_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_1);
+
+(36)    $r7_6 = virtualinvoke $r7_5.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(32);
+
+(37)    $l4_4 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+(38)    $r7_7 = virtualinvoke $r7_6.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l4_4);
+
+(39)    $r8_2 = virtualinvoke $r3.<com.contextlogic.wish.cache.DiskLruCache$Entry: java.lang.String getLengths()>();
+
+(40)    $r7_8 = virtualinvoke $r7_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_2);
+
+(41)    $r7_9 = virtualinvoke $r7_8.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(10);
+
+(42)    $r8_3 = virtualinvoke $r7_9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r11.<java.io.Writer: void write(java.lang.String)>($r8_3);
+
+(43)    if $z1 == 0 goto label12;
+
+(44)    $l4_5 = $r0.<com.contextlogic.wish.cache.DiskLruCache: long nextSequenceNumber>;
+
+(45)    $l3_4 = 1L + $l4_5;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: long nextSequenceNumber> = $l3_4;
+
+(46)    staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long access$1402(com.contextlogic.wish.cache.DiskLruCache$Entry,long)>($r3, $l4_5);
+
+     label12:
+        $l3_5 = Phi($l3 #43, $l3_4 #46, $l3 #62);
+
+        $r8_4 = Phi($r8_3 #43, $r8_3 #46, $r8_7 #62);
+
+        $r11_1 = Phi($r11 #43, $r11 #46, $r11_2 #62);
+
+        $l4_6 = Phi($l4_4 #43, $l4_5 #46, $l4 #62);
+
+        $r7_10 = Phi($r7_9 #43, $r7_9 #46, $r7_14 #62);
+
+(47)    $l4_7 = $r0.<com.contextlogic.wish.cache.DiskLruCache: long size>;
+
+(48)    $l3_6 = $r0.<com.contextlogic.wish.cache.DiskLruCache: long maxSize>;
+
+        $b0 = $l4_7 cmp $l3_6;
+
+(49)    if $b0 > 0 goto label13;
+
+(50)    $z1_1 = specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: boolean journalRebuildRequired()>();
+
+(51)    if $z1_1 == 0 goto label14;
+
+     label13:
+        $z1_2 = Phi($z1 #49, $z1_1 #51);
+
+(52)    $r12 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.concurrent.ExecutorService executorService>;
+
+        $r13 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.concurrent.Callable cleanupCallable>;
+
+(53)    interfaceinvoke $r12.<java.util.concurrent.ExecutorService: java.util.concurrent.Future submit(java.util.concurrent.Callable)>($r13);
+
+     label14:
+        $z1_3 = Phi($z1_1 #51, $z1_2 #53);
+
+        exitmonitor $r0;
+
+        return;
+
+     label15:
+        $r14 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+(54)    $r8_5 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: java.lang.String access$1200(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r3);
+
+        virtualinvoke $r14.<java.util.LinkedHashMap: java.lang.Object remove(java.lang.Object)>($r8_5);
+
+(55)    $r11_2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+(56)    $r7_11 = new java.lang.StringBuilder;
+
+        specialinvoke $r7_11.<java.lang.StringBuilder: void <init>()>();
+
+(57)    $r7_12 = virtualinvoke $r7_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("REMOVE ");
+
+(58)    $r8_6 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: java.lang.String access$1200(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r3);
+
+(59)    $r7_13 = virtualinvoke $r7_12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_6);
+
+(60)    $r7_14 = virtualinvoke $r7_13.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(10);
+
+(61)    $r8_7 = virtualinvoke $r7_14.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r11_2.<java.io.Writer: void write(java.lang.String)>($r8_7);
+
+     label16:
+(62)    goto label12;
+
+        catch java.lang.Throwable from label01 to label02 with label02;
+        catch java.lang.Throwable from label04 to label14 with label02;
+        catch java.lang.Throwable from label15 to label16 with label02;
+    }
+
+    private static java.lang.Object[] copyOfRange(java.lang.Object[], int, int)
+    {
+        java.lang.Object[] $r0, $r5;
+        int $i0, $i1, $i2, $i1_1, $i2_1, $i2_2;
+        java.lang.IllegalArgumentException $r1;
+        java.lang.ArrayIndexOutOfBoundsException $r2;
+        java.lang.Class $r3, $r3_1;
+        java.lang.Object $r4;
+
+        $r0 := @parameter0: java.lang.Object[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 = lengthof $r0;
+
+        if $i0 <= $i1 goto label1;
+
+        $r1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>()>();
+
+        throw $r1;
+
+     label1:
+        if $i0 < 0 goto label2;
+
+        if $i0 <= $i2 goto label3;
+
+     label2:
+        $r2 = new java.lang.ArrayIndexOutOfBoundsException;
+
+        specialinvoke $r2.<java.lang.ArrayIndexOutOfBoundsException: void <init>()>();
+
+        throw $r2;
+
+     label3:
+        $i1_1 = $i1 - $i0;
+
+        $i2_1 = $i2 - $i0;
+
+        $i2_2 = staticinvoke <java.lang.Math: int min(int,int)>($i1_1, $i2_1);
+
+        $r3 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.Class: java.lang.Class getComponentType()>();
+
+        $r4 = staticinvoke <java.lang.reflect.Array: java.lang.Object newInstance(java.lang.Class,int)>($r3_1, $i1_1);
+
+        $r5 = (java.lang.Object[]) $r4;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r0, $i0, $r5, 0, $i2_2);
+
+        return $r5;
+    }
+
+    private static void deleteContents(java.io.File) throws java.io.IOException
+    {
+        java.lang.IllegalArgumentException $r0;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.io.IOException $r1;
+        java.io.File $r2, $r2_1, $r2_2;
+        java.io.File[] $r3;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        java.lang.String $r5, $r5_1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r2 := @parameter0: java.io.File;
+
+        $r3 = virtualinvoke $r2.<java.io.File: java.io.File[] listFiles()>();
+
+        if $r3 != null goto label1;
+
+        $r0 = new java.lang.IllegalArgumentException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("not a directory: ");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        $r5 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r0.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r5);
+
+        throw $r0;
+
+     label1:
+        $i0 = lengthof $r3;
+
+(0)     $i1 = 0;
+
+     label2:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $r2_1 = Phi($r2 #0, $r2_2 #1);
+
+        $z0 = Phi($z0 #0, $z0_2 #1);
+
+        if $i1_1 >= $i0 goto label5;
+
+        $r2_2 = $r3[$i1_1];
+
+        $z0_1 = virtualinvoke $r2_2.<java.io.File: boolean isDirectory()>();
+
+        if $z0_1 == 0 goto label3;
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache: void deleteContents(java.io.File)>($r2_2);
+
+     label3:
+        $z0_2 = virtualinvoke $r2_2.<java.io.File: boolean delete()>();
+
+        if $z0_2 != 0 goto label4;
+
+        $r1 = new java.io.IOException;
+
+        $r4_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r4_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("failed to delete file: ");
+
+        $r4_5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2_2);
+
+        $r5_1 = virtualinvoke $r4_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.io.IOException: void <init>(java.lang.String)>($r5_1);
+
+        throw $r1;
+
+     label4:
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label2;
+
+     label5:
+        return;
+    }
+
+    private static void deleteIfExists(java.io.File) throws java.io.IOException
+    {
+        java.io.File $r0;
+        java.io.IOException $r1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @parameter0: java.io.File;
+
+        $z0 = virtualinvoke $r0.<java.io.File: boolean exists()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $z0_1 = virtualinvoke $r0.<java.io.File: boolean delete()>();
+
+(1)     if $z0_1 != 0 goto label1;
+
+        $r1 = new java.io.IOException;
+
+        specialinvoke $r1.<java.io.IOException: void <init>()>();
+
+        throw $r1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return;
+    }
+
+    private com.contextlogic.wish.cache.DiskLruCache$Editor edit(java.lang.String, long) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        long $l0, $l2;
+        java.lang.Throwable $r1;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3;
+        com.contextlogic.wish.cache.DiskLruCache$Editor $r3, $r10, $r3_1, $r3_2, $r3_3;
+        java.util.LinkedHashMap $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.lang.Object $r5;
+        com.contextlogic.wish.cache.DiskLruCache$Entry $r6, $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+        byte $b1, $b1_1, $b1_2, $b1_3, $b1_4;
+        java.io.Writer $r8, $r8_1, $r8_2, $r8_3;
+        java.lang.StringBuilder $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $l0 := @parameter1: long;
+
+        $r3 = null;
+
+(0)     entermonitor $r0;
+
+     label01:
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void checkNotClosed()>();
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void validateKey(java.lang.String)>($r2);
+
+        $r4 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        $r5 = virtualinvoke $r4.<java.util.LinkedHashMap: java.lang.Object get(java.lang.Object)>($r2);
+
+        $r6 = (com.contextlogic.wish.cache.DiskLruCache$Entry) $r5;
+
+        $r7 = $r6;
+
+        $b1 = $l0 cmp -1L;
+
+(1)     if $b1 == 0 goto label04;
+
+(2)     if $r6 == null goto label03;
+
+        $l2 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long access$1400(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r6);
+
+     label02:
+        $b1_1 = $l2 cmp $l0;
+
+(3)     if $b1_1 == 0 goto label04;
+
+     label03:
+        $b1_2 = Phi($b1 #2, $b1_1 #3, $b1_3 #16, $b1_3 #18);
+
+        $r7_1 = Phi($r7 #2, $r7 #3, $r7_3 #16, $r7 #18);
+
+        $r2_1 = Phi($r2 #2, $r2 #3, $r2_2 #16, $r2 #18);
+
+        $r4_1 = Phi($r4 #2, $r4 #3, $r4_3 #16, $r4 #18);
+
+        $r3_1 = Phi($r3 #2, $r3 #3, $r3_2 #16, $r3 #18);
+
+        $r9 = Phi($r9 #2, $r9 #3, $r9_4 #16, $r9 #18);
+
+        $r8 = Phi($r8 #2, $r8 #3, $r8_2 #16, $r8 #18);
+
+        exitmonitor $r0;
+
+        return $r3_1;
+
+     label04:
+        $b1_3 = Phi($b1 #1, $b1_1 #3);
+
+(4)     if $r6 != null goto label09;
+
+     label05:
+(5)     $r7_2 = new com.contextlogic.wish.cache.DiskLruCache$Entry;
+
+        specialinvoke $r7_2.<com.contextlogic.wish.cache.DiskLruCache$Entry: void <init>(com.contextlogic.wish.cache.DiskLruCache,java.lang.String,com.contextlogic.wish.cache.DiskLruCache$1)>($r0, $r2, null);
+
+(6)     $r4_2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+(7)     virtualinvoke $r4_2.<java.util.LinkedHashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2, $r7_2);
+
+     label06:
+        $r7_3 = Phi($r7_2 #7, $r7 #17);
+
+        $r4_3 = Phi($r4_2 #7, $r4 #17);
+
+(8)     $r3_2 = new com.contextlogic.wish.cache.DiskLruCache$Editor;
+
+        specialinvoke $r3_2.<com.contextlogic.wish.cache.DiskLruCache$Editor: void <init>(com.contextlogic.wish.cache.DiskLruCache,com.contextlogic.wish.cache.DiskLruCache$Entry,com.contextlogic.wish.cache.DiskLruCache$1)>($r0, $r7_3, null);
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$702(com.contextlogic.wish.cache.DiskLruCache$Entry,com.contextlogic.wish.cache.DiskLruCache$Editor)>($r7_3, $r3_2);
+
+(9)     $r8_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+(10)    $r9_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r9_1.<java.lang.StringBuilder: void <init>()>();
+
+(11)    $r9_2 = virtualinvoke $r9_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("DIRTY ");
+
+(12)    $r9_3 = virtualinvoke $r9_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+(13)    $r9_4 = virtualinvoke $r9_3.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(10);
+
+(14)    $r2_2 = virtualinvoke $r9_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r8_1.<java.io.Writer: void write(java.lang.String)>($r2_2);
+
+(15)    $r8_2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+        virtualinvoke $r8_2.<java.io.Writer: void flush()>();
+
+     label07:
+(16)    goto label03;
+
+     label08:
+        $r1 := @caughtexception;
+
+        $b1_4 = Phi($b1 #0, $b1_3 #4);
+
+        $r7_4 = Phi($r7 #0, $r7_2 #5, $r7_3 #8);
+
+        $r2_3 = Phi($r2 #0, $r2_2 #14);
+
+        $r4_4 = Phi($r4 #0, $r4_2 #6, $r4_3 #8);
+
+        $r3_3 = Phi($r3 #0, $r3_2 #8);
+
+        $r9_5 = Phi($r9 #0, $r9_1 #10, $r9_2 #11, $r9_3 #12, $r9_4 #13);
+
+        $r8_3 = Phi($r8 #0, $r8_1 #9, $r8_2 #15);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+     label09:
+        $r10 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$700(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r6);
+
+     label10:
+(17)    if $r10 == null goto label06;
+
+(18)    goto label03;
+
+        catch java.lang.Throwable from label01 to label02 with label08;
+        catch java.lang.Throwable from label05 to label07 with label08;
+        catch java.lang.Throwable from label09 to label10 with label08;
+    }
+
+    private static java.lang.String inputStreamToString(java.io.InputStream) throws java.io.IOException
+    {
+        java.io.InputStream $r0;
+        java.io.InputStreamReader $r1;
+        java.nio.charset.Charset $r2;
+        java.lang.String $r3;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 = new java.io.InputStreamReader;
+
+        $r2 = <com.contextlogic.wish.cache.DiskLruCache: java.nio.charset.Charset UTF_8>;
+
+        specialinvoke $r1.<java.io.InputStreamReader: void <init>(java.io.InputStream,java.nio.charset.Charset)>($r0, $r2);
+
+        $r3 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache: java.lang.String readFully(java.io.Reader)>($r1);
+
+        return $r3;
+    }
+
+    private boolean journalRebuildRequired()
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        int $i0, $i1, $i0_1, $i0_2;
+        java.util.LinkedHashMap $r1;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $i0 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int redundantOpCount>;
+
+(0)     if $i0 < 2000 goto label1;
+
+        $i0_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int redundantOpCount>;
+
+        $r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        $i1 = virtualinvoke $r1.<java.util.LinkedHashMap: int size()>();
+
+(1)     if $i0_1 < $i1 goto label1;
+
+        return 1;
+
+     label1:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        return 0;
+    }
+
+    public static com.contextlogic.wish.cache.DiskLruCache open(java.io.File, int, int, long) throws java.io.IOException
+    {
+        java.io.File $r0, $r7, $r7_1, $r7_2, $r7_3;
+        int $i0, $i1;
+        long $l2;
+        byte $b3;
+        java.io.BufferedWriter $r1;
+        java.io.FileWriter $r2;
+        java.io.IOException $r3;
+        java.lang.Exception $r4;
+        boolean $z0;
+        java.lang.IllegalArgumentException $r5, $r5_1;
+        com.contextlogic.wish.cache.DiskLruCache $r6, $r6_1;
+
+        $r0 := @parameter0: java.io.File;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $l2 := @parameter3: long;
+
+        $b3 = $l2 cmp 0L;
+
+        if $b3 > 0 goto label01;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("maxSize <= 0");
+
+        throw $r5;
+
+     label01:
+        if $i1 > 0 goto label02;
+
+        $r5_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("valueCount <= 0");
+
+        throw $r5_1;
+
+     label02:
+        $r6 = new com.contextlogic.wish.cache.DiskLruCache;
+
+        specialinvoke $r6.<com.contextlogic.wish.cache.DiskLruCache: void <init>(java.io.File,int,int,long)>($r0, $i0, $i1, $l2);
+
+        $r7 = $r6.<com.contextlogic.wish.cache.DiskLruCache: java.io.File journalFile>;
+
+        $z0 = virtualinvoke $r7.<java.io.File: boolean exists()>();
+
+(0)     if $z0 == 0 goto label09;
+
+     label03:
+        specialinvoke $r6.<com.contextlogic.wish.cache.DiskLruCache: void readJournal()>();
+
+        specialinvoke $r6.<com.contextlogic.wish.cache.DiskLruCache: void processJournal()>();
+
+     label04:
+        $r1 = new java.io.BufferedWriter;
+
+        $r2 = new java.io.FileWriter;
+
+(1)     $r7_1 = $r6.<com.contextlogic.wish.cache.DiskLruCache: java.io.File journalFile>;
+
+     label05:
+        specialinvoke $r2.<java.io.FileWriter: void <init>(java.io.File,boolean)>($r7_1, 1);
+
+        specialinvoke $r1.<java.io.BufferedWriter: void <init>(java.io.Writer)>($r2);
+
+     label06:
+        $r6.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter> = $r1;
+
+        return $r6;
+
+     label07:
+        $r3 := @caughtexception;
+
+        $r7_2 = Phi($r7 #0, $r7_1 #1);
+
+     label08:
+(2)     virtualinvoke $r6.<com.contextlogic.wish.cache.DiskLruCache: void delete()>();
+
+     label09:
+        $r7_3 = Phi($r7 #0, $r7_2 #2, $r7_2 #3);
+
+        virtualinvoke $r0.<java.io.File: boolean mkdirs()>();
+
+        $r6_1 = new com.contextlogic.wish.cache.DiskLruCache;
+
+        specialinvoke $r6_1.<com.contextlogic.wish.cache.DiskLruCache: void <init>(java.io.File,int,int,long)>($r0, $i0, $i1, $l2);
+
+        specialinvoke $r6_1.<com.contextlogic.wish.cache.DiskLruCache: void rebuildJournal()>();
+
+        return $r6_1;
+
+     label10:
+        $r4 := @caughtexception;
+
+(3)     goto label09;
+
+        catch java.io.IOException from label03 to label04 with label07;
+        catch java.io.IOException from label05 to label06 with label07;
+        catch java.lang.Exception from label08 to label09 with label10;
+    }
+
+    private void processJournal() throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.util.LinkedHashMap $r1;
+        long $l0, $l3, $l0_1, $l0_2, $l0_3;
+        java.io.File $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        java.util.Collection $r3;
+        java.util.Iterator $r4;
+        boolean $z0;
+        java.lang.Object $r5;
+        com.contextlogic.wish.cache.DiskLruCache$Entry $r6;
+        com.contextlogic.wish.cache.DiskLruCache$Editor $r7;
+        int $i1, $i2, $i1_1, $i2_1, $i1_2, $i2_2, $i1_3, $i1_4, $i2_3, $i1_5, $i2_4, $i1_6;
+        long[] $r8;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File journalFileTmp>;
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache: void deleteIfExists(java.io.File)>($r2);
+
+        $r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        $r3 = virtualinvoke $r1.<java.util.LinkedHashMap: java.util.Collection values()>();
+
+(0)     $r4 = interfaceinvoke $r3.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label1:
+        $i2 = Phi($i2 #0, $i2_2 #2, $i2_4 #6);
+
+        $i1 = Phi($i1 #0, $i1_2 #2, $i1_5 #6);
+
+        $r2_1 = Phi($r2 #0, $r2_1 #2, $r2_2 #6);
+
+        $l0 = Phi($l0 #0, $l0_1 #2, $l0 #6);
+
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label6;
+
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (com.contextlogic.wish.cache.DiskLruCache$Entry) $r5;
+
+        $r7 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$700(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r6);
+
+        if $r7 != null goto label3;
+
+(1)     $i1_1 = 0;
+
+     label2:
+        $i2_1 = Phi($i2 #1, $i2_2 #3);
+
+        $i1_2 = Phi($i1_1 #1, $i1_3 #3);
+
+        $l0_1 = Phi($l0 #1, $l0_3 #3);
+
+        $i2_2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+(2)     if $i1_2 >= $i2_2 goto label1;
+
+        $l0_2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: long size>;
+
+        $r8 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long[] access$1100(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r6);
+
+        $l3 = $r8[$i1_2];
+
+        $l0_3 = $l0_2 + $l3;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: long size> = $l0_3;
+
+        $i1_3 = $i1_2 + 1;
+
+(3)     goto label2;
+
+     label3:
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$702(com.contextlogic.wish.cache.DiskLruCache$Entry,com.contextlogic.wish.cache.DiskLruCache$Editor)>($r6, null);
+
+(4)     $i1_4 = 0;
+
+     label4:
+        $i2_3 = Phi($i2 #4, $i2_4 #5);
+
+        $i1_5 = Phi($i1_4 #4, $i1_6 #5);
+
+        $r2_2 = Phi($r2_1 #4, $r2_4 #5);
+
+        $i2_4 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+        if $i1_5 >= $i2_4 goto label5;
+
+        $r2_3 = virtualinvoke $r6.<com.contextlogic.wish.cache.DiskLruCache$Entry: java.io.File getCleanFile(int)>($i1_5);
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache: void deleteIfExists(java.io.File)>($r2_3);
+
+        $r2_4 = virtualinvoke $r6.<com.contextlogic.wish.cache.DiskLruCache$Entry: java.io.File getDirtyFile(int)>($i1_5);
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache: void deleteIfExists(java.io.File)>($r2_4);
+
+        $i1_6 = $i1_5 + 1;
+
+(5)     goto label4;
+
+     label5:
+        interfaceinvoke $r4.<java.util.Iterator: void remove()>();
+
+(6)     goto label1;
+
+     label6:
+        return;
+    }
+
+    private static java.lang.String readAsciiLine(java.io.InputStream) throws java.io.IOException
+    {
+        java.io.InputStream $r0;
+        java.lang.StringBuilder $r1;
+        java.io.EOFException $r2;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4;
+        char $c2, $c2_1, $c2_2, $c2_3;
+        java.lang.String $r3;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 = new java.lang.StringBuilder;
+
+(0)     specialinvoke $r1.<java.lang.StringBuilder: void <init>(int)>(80);
+
+     label1:
+        $i0 = Phi($i0 #0, $i0_1 #4);
+
+        $c2 = Phi($c2 #0, $c2_3 #4);
+
+        $i0_1 = virtualinvoke $r0.<java.io.InputStream: int read()>();
+
+        if $i0_1 != -1 goto label2;
+
+        $r2 = new java.io.EOFException;
+
+        specialinvoke $r2.<java.io.EOFException: void <init>()>();
+
+        throw $r2;
+
+     label2:
+        if $i0_1 != 10 goto label4;
+
+        $i1 = virtualinvoke $r1.<java.lang.StringBuilder: int length()>();
+
+(1)     if $i1 <= 0 goto label3;
+
+        $i0_2 = $i1 + -1;
+
+        $c2_1 = virtualinvoke $r1.<java.lang.StringBuilder: char charAt(int)>($i0_2);
+
+(2)     if $c2_1 != 13 goto label3;
+
+        $i0_3 = $i1 + -1;
+
+(3)     virtualinvoke $r1.<java.lang.StringBuilder: void setLength(int)>($i0_3);
+
+     label3:
+        $i0_4 = Phi($i0_1 #1, $i0_2 #2, $i0_3 #3);
+
+        $c2_2 = Phi($c2 #1, $c2_1 #2, $c2_1 #3);
+
+        $r3 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3;
+
+     label4:
+        $c2_3 = (char) $i0_1;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>($c2_3);
+
+(4)     goto label1;
+    }
+
+    private static java.lang.String readFully(java.io.Reader) throws java.io.IOException
+    {
+        java.io.Reader $r0;
+        java.io.StringWriter $r1;
+        char[] $r2;
+        java.lang.Throwable $r3;
+        int $i0;
+        java.lang.String $r4;
+
+        $r0 := @parameter0: java.io.Reader;
+
+     label1:
+        $r1 = new java.io.StringWriter;
+
+        specialinvoke $r1.<java.io.StringWriter: void <init>()>();
+
+        $r2 = newarray (char)[1024];
+
+     label2:
+        $i0 = virtualinvoke $r0.<java.io.Reader: int read(char[])>($r2);
+
+     label3:
+        if $i0 == -1 goto label7;
+
+     label4:
+        virtualinvoke $r1.<java.io.StringWriter: void write(char[],int,int)>($r2, 0, $i0);
+
+     label5:
+        goto label2;
+
+     label6:
+        $r3 := @caughtexception;
+
+        virtualinvoke $r0.<java.io.Reader: void close()>();
+
+        throw $r3;
+
+     label7:
+        $r4 = virtualinvoke $r1.<java.io.StringWriter: java.lang.String toString()>();
+
+     label8:
+        virtualinvoke $r0.<java.io.Reader: void close()>();
+
+        return $r4;
+
+        catch java.lang.Throwable from label1 to label3 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+        catch java.lang.Throwable from label7 to label8 with label6;
+    }
+
+    private void readJournal() throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.io.BufferedInputStream $r1;
+        java.io.FileInputStream $r2;
+        java.io.File $r3;
+        java.io.IOException $r4;
+        java.lang.Throwable $r5;
+        java.io.EOFException $r6;
+        java.lang.String $r7, $r8, $r9, $r10, $r11, $r12, $r12_1, $r12_2, $r9_1, $r9_2, $r7_1, $r7_2, $r7_3, $r9_3, $r12_3, $r7_4, $r9_4, $r12_4, $r7_5;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        java.lang.StringBuilder $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7, $r13_8, $r13_9, $r13_10;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r1 = new java.io.BufferedInputStream;
+
+        $r2 = new java.io.FileInputStream;
+
+        $r3 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File journalFile>;
+
+        specialinvoke $r2.<java.io.FileInputStream: void <init>(java.io.File)>($r3);
+
+(0)     specialinvoke $r1.<java.io.BufferedInputStream: void <init>(java.io.InputStream)>($r2);
+
+     label01:
+        $r7 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache: java.lang.String readAsciiLine(java.io.InputStream)>($r1);
+
+        $r8 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache: java.lang.String readAsciiLine(java.io.InputStream)>($r1);
+
+        $r9 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache: java.lang.String readAsciiLine(java.io.InputStream)>($r1);
+
+        $r10 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache: java.lang.String readAsciiLine(java.io.InputStream)>($r1);
+
+        $r11 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache: java.lang.String readAsciiLine(java.io.InputStream)>($r1);
+
+     label02:
+        $r12 = "libcore.io.WishDiskLruCache";
+
+     label03:
+        $z0 = virtualinvoke $r12.<java.lang.String: boolean equals(java.lang.Object)>($r7);
+
+     label04:
+(1)     if $z0 == 0 goto label13;
+
+(2)     $r12_1 = "1";
+
+     label05:
+(3)     $z0_1 = virtualinvoke $r12_1.<java.lang.String: boolean equals(java.lang.Object)>($r8);
+
+     label06:
+(4)     if $z0_1 == 0 goto label13;
+
+     label07:
+        $i0 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int appVersion>;
+
+(5)     $r12_2 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+(6)     $z0_2 = virtualinvoke $r12_2.<java.lang.String: boolean equals(java.lang.Object)>($r9);
+
+     label08:
+(7)     if $z0_2 == 0 goto label13;
+
+     label09:
+(8)     $i0_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+(9)     $r9_1 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0_1);
+
+(10)    $z0_3 = virtualinvoke $r9_1.<java.lang.String: boolean equals(java.lang.Object)>($r10);
+
+     label10:
+(11)    if $z0_3 == 0 goto label13;
+
+(12)    $r9_2 = "";
+
+     label11:
+(13)    $z0_4 = virtualinvoke $r9_2.<java.lang.String: boolean equals(java.lang.Object)>($r11);
+
+     label12:
+(14)    if $z0_4 != 0 goto label15;
+
+     label13:
+        $r9_3 = Phi($r9 #1, $r9 #4, $r9 #7, $r9_1 #11, $r9_2 #14);
+
+        $r12_3 = Phi($r12 #1, $r12_1 #4, $r12_2 #7, $r12_2 #11, $r12_2 #14);
+
+        $i0_2 = Phi($i0 #1, $i0 #4, $i0 #7, $i0_1 #11, $i0_1 #14);
+
+        $z0_5 = Phi($z0 #1, $z0_1 #4, $z0_2 #7, $z0_3 #11, $z0_4 #14);
+
+(15)    $r4 = new java.io.IOException;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>()>();
+
+(16)    $r13_1 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("unexpected journal header: [");
+
+(17)    $r13_2 = virtualinvoke $r13_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+(18)    $r13_3 = virtualinvoke $r13_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", ");
+
+(19)    $r13_4 = virtualinvoke $r13_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+(20)    $r13_5 = virtualinvoke $r13_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", ");
+
+(21)    $r13_6 = virtualinvoke $r13_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+(22)    $r13_7 = virtualinvoke $r13_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", ");
+
+(23)    $r13_8 = virtualinvoke $r13_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r11);
+
+(24)    $r13_9 = virtualinvoke $r13_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+(25)    $r7_4 = virtualinvoke $r13_9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<java.io.IOException: void <init>(java.lang.String)>($r7_4);
+
+        throw $r4;
+
+     label14:
+        $r5 := @caughtexception;
+
+        $r9_4 = Phi($r9 #0, $r9_1 #9, $r9_2 #12, $r9_3 #15);
+
+        $r12_4 = Phi($r12 #0, $r12_1 #2, $r12_2 #5, $r12_3 #15);
+
+        $i0_3 = Phi($i0 #0, $i0_1 #8, $i0_2 #15);
+
+        $r13_10 = Phi($r13 #0, $r13_1 #16, $r13_2 #17, $r13_3 #18, $r13_4 #19, $r13_5 #20, $r13_6 #21, $r13_7 #22, $r13_8 #23, $r13_9 #24);
+
+        $z0_6 = Phi($z0 #0, $z0_1 #3, $z0_2 #6, $z0_3 #10, $z0_4 #13, $z0_5 #15);
+
+        $r7_5 = Phi($r7 #0, $r7_4 #25, $r7_2 #26);
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache: void closeQuietly(java.io.Closeable)>($r1);
+
+        throw $r5;
+
+     label15:
+        $r7_1 = Phi($r7 #14, $r7_2 #27);
+
+(26)    $r7_2 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache: java.lang.String readAsciiLine(java.io.InputStream)>($r1);
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void readJournalLine(java.lang.String)>($r7_2);
+
+     label16:
+(27)    goto label15;
+
+     label17:
+        $r6 := @caughtexception;
+
+        $r7_3 = Phi($r7 #14, $r7_2 #26);
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache: void closeQuietly(java.io.Closeable)>($r1);
+
+        return;
+
+        catch java.lang.Throwable from label01 to label02 with label14;
+        catch java.lang.Throwable from label03 to label04 with label14;
+        catch java.lang.Throwable from label05 to label06 with label14;
+        catch java.lang.Throwable from label07 to label08 with label14;
+        catch java.lang.Throwable from label09 to label10 with label14;
+        catch java.lang.Throwable from label11 to label12 with label14;
+        catch java.lang.Throwable from label13 to label14 with label14;
+        catch java.io.EOFException from label15 to label16 with label17;
+        catch java.lang.Throwable from label15 to label16 with label14;
+    }
+
+    private void readJournalLine(java.lang.String) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.lang.String $r1, $r4, $r8, $r4_1, $r1_1, $r1_2, $r4_2, $r1_3, $r1_4, $r4_3;
+        java.lang.NumberFormatException $r2;
+        com.contextlogic.wish.cache.DiskLruCache$Editor $r3;
+        java.lang.String[] $r5, $r5_1;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i1_1, $i0_4, $i0_5, $i1_2, $i0_6, $i0_7, $i0_8, $i0_9;
+        java.io.IOException $r6, $r6_1, $r6_2;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.util.LinkedHashMap $r9, $r9_1, $r9_2, $r9_3;
+        java.lang.Object $r10;
+        com.contextlogic.wish.cache.DiskLruCache$Entry $r11, $r12, $r12_1, $r12_2;
+        java.lang.Object[] $r13;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r4 := @parameter0: java.lang.String;
+
+        $r5 = virtualinvoke $r4.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $i0 = lengthof $r5;
+
+        if $i0 >= 2 goto label01;
+
+        $r6 = new java.io.IOException;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("unexpected journal line: ");
+
+        $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4_1 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r6.<java.io.IOException: void <init>(java.lang.String)>($r4_1);
+
+        throw $r6;
+
+     label01:
+        $r8 = $r5[1];
+
+        $r1 = $r5[0];
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("REMOVE");
+
+(0)     if $z0 == 0 goto label02;
+
+        $i0_1 = lengthof $r5;
+
+(1)     if $i0_1 != 2 goto label02;
+
+        $r9 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        virtualinvoke $r9.<java.util.LinkedHashMap: java.lang.Object remove(java.lang.Object)>($r8);
+
+        return;
+
+     label02:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $r9_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        $r10 = virtualinvoke $r9_1.<java.util.LinkedHashMap: java.lang.Object get(java.lang.Object)>($r8);
+
+        $r11 = (com.contextlogic.wish.cache.DiskLruCache$Entry) $r10;
+
+        $r12 = $r11;
+
+(2)     if $r11 != null goto label03;
+
+        $r12_1 = new com.contextlogic.wish.cache.DiskLruCache$Entry;
+
+        specialinvoke $r12_1.<com.contextlogic.wish.cache.DiskLruCache$Entry: void <init>(com.contextlogic.wish.cache.DiskLruCache,java.lang.String,com.contextlogic.wish.cache.DiskLruCache$1)>($r0, $r8, null);
+
+        $r9_2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+(3)     virtualinvoke $r9_2.<java.util.LinkedHashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r8, $r12_1);
+
+     label03:
+        $r9_3 = Phi($r9_1 #2, $r9_2 #3);
+
+        $r12_2 = Phi($r12 #2, $r12_1 #3);
+
+        $r1_1 = $r5[0];
+
+        $z0_1 = virtualinvoke $r1_1.<java.lang.String: boolean equals(java.lang.Object)>("CLEAN");
+
+(4)     if $z0_1 == 0 goto label07;
+
+        $i0_3 = lengthof $r5;
+
+        $i1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+        $i1_1 = $i1 + 3;
+
+(5)     if $i0_3 != $i1_1 goto label07;
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: boolean access$602(com.contextlogic.wish.cache.DiskLruCache$Entry,boolean)>($r12_2, 1);
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$702(com.contextlogic.wish.cache.DiskLruCache$Entry,com.contextlogic.wish.cache.DiskLruCache$Editor)>($r12_2, null);
+
+        $r1_2 = $r5[2];
+
+     label04:
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: void access$800(com.contextlogic.wish.cache.DiskLruCache$Entry,java.lang.String)>($r12_2, $r1_2);
+
+     label05:
+        $i0_4 = lengthof $r5;
+
+        $r13 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache: java.lang.Object[] copyOfRange(java.lang.Object[],int,int)>($r5, 3, $i0_4);
+
+        $r5_1 = (java.lang.String[]) $r13;
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: void access$900(com.contextlogic.wish.cache.DiskLruCache$Entry,java.lang.String[])>($r12_2, $r5_1);
+
+        return;
+
+     label06:
+        $r2 := @caughtexception;
+
+        $r6_1 = new java.io.IOException;
+
+        $r7_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r7_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_4 = virtualinvoke $r7_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("unexpected journal line: ");
+
+        $r7_5 = virtualinvoke $r7_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4_2 = virtualinvoke $r7_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r6_1.<java.io.IOException: void <init>(java.lang.String)>($r4_2);
+
+        throw $r6_1;
+
+     label07:
+        $i0_5 = Phi($i0_2 #4, $i0_3 #5);
+
+        $i1_2 = Phi($i1 #4, $i1_1 #5);
+
+        $r1_3 = $r5[0];
+
+        $z0_2 = virtualinvoke $r1_3.<java.lang.String: boolean equals(java.lang.Object)>("DIRTY");
+
+(6)     if $z0_2 == 0 goto label08;
+
+        $i0_6 = lengthof $r5;
+
+(7)     if $i0_6 != 2 goto label08;
+
+        $r3 = new com.contextlogic.wish.cache.DiskLruCache$Editor;
+
+        specialinvoke $r3.<com.contextlogic.wish.cache.DiskLruCache$Editor: void <init>(com.contextlogic.wish.cache.DiskLruCache,com.contextlogic.wish.cache.DiskLruCache$Entry,com.contextlogic.wish.cache.DiskLruCache$1)>($r0, $r12_2, null);
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$702(com.contextlogic.wish.cache.DiskLruCache$Entry,com.contextlogic.wish.cache.DiskLruCache$Editor)>($r12_2, $r3);
+
+        return;
+
+     label08:
+        $i0_7 = Phi($i0_5 #6, $i0_6 #7);
+
+        $r1_4 = $r5[0];
+
+        $z0_3 = virtualinvoke $r1_4.<java.lang.String: boolean equals(java.lang.Object)>("READ");
+
+(8)     if $z0_3 == 0 goto label09;
+
+        $i0_8 = lengthof $r5;
+
+(9)     if $i0_8 == 2 goto label10;
+
+     label09:
+        $i0_9 = Phi($i0_7 #8, $i0_8 #9);
+
+        $r6_2 = new java.io.IOException;
+
+        $r7_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r7_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_7 = virtualinvoke $r7_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("unexpected journal line: ");
+
+        $r7_8 = virtualinvoke $r7_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4_3 = virtualinvoke $r7_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r6_2.<java.io.IOException: void <init>(java.lang.String)>($r4_3);
+
+        throw $r6_2;
+
+     label10:
+        return;
+
+        catch java.lang.NumberFormatException from label04 to label05 with label06;
+    }
+
+    private void rebuildJournal() throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.util.LinkedHashMap $r1;
+        java.lang.Throwable $r2;
+        java.io.Writer $r3, $r3_1, $r3_2, $r3_3;
+        java.io.BufferedWriter $r4, $r4_1, $r4_2;
+        java.io.FileWriter $r5, $r5_1, $r5_2;
+        java.io.File $r6, $r14, $r6_1, $r6_2, $r6_3;
+        int $i0, $i0_1, $i0_2;
+        java.lang.String $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8;
+        java.util.Collection $r8;
+        java.util.Iterator $r9;
+        boolean $z0;
+        java.lang.Object $r10;
+        com.contextlogic.wish.cache.DiskLruCache$Entry $r11;
+        com.contextlogic.wish.cache.DiskLruCache$Editor $r12;
+        java.lang.StringBuilder $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7, $r13_8, $r13_9, $r13_10, $r13_11, $r13_12;
+        long $l1;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r3 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+(1)     if $r3 == null goto label2;
+
+(2)     $r3_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+(3)     virtualinvoke $r3_1.<java.io.Writer: void close()>();
+
+     label2:
+        $r3_2 = Phi($r3 #1, $r3_1 #3);
+
+(4)     $r4 = new java.io.BufferedWriter;
+
+        $r5 = new java.io.FileWriter;
+
+        $r6 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File journalFileTmp>;
+
+        specialinvoke $r5.<java.io.FileWriter: void <init>(java.io.File)>($r6);
+
+        specialinvoke $r4.<java.io.BufferedWriter: void <init>(java.io.Writer)>($r5);
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>("libcore.io.WishDiskLruCache");
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>("\n");
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>("1");
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>("\n");
+
+        $i0 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int appVersion>;
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>($r7);
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>("\n");
+
+(5)     $i0_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+(6)     $r7_1 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0_1);
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>($r7_1);
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>("\n");
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>("\n");
+
+        $r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        $r8 = virtualinvoke $r1.<java.util.LinkedHashMap: java.util.Collection values()>();
+
+(7)     $r9 = interfaceinvoke $r8.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label3:
+        $r7_2 = Phi($r7_1 #7, $r7_4 #15, $r7_7 #26);
+
+        $r13 = Phi($r13 #7, $r13_4 #15, $r13_11 #26);
+
+(8)     $z0 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label7;
+
+        $r10 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        $r11 = (com.contextlogic.wish.cache.DiskLruCache$Entry) $r10;
+
+        $r12 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$700(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r11);
+
+        if $r12 == null goto label6;
+
+(9)     $r13_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r13_1.<java.lang.StringBuilder: void <init>()>();
+
+(10)    $r13_2 = virtualinvoke $r13_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("DIRTY ");
+
+(11)    $r7_3 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: java.lang.String access$1200(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r11);
+
+(12)    $r13_3 = virtualinvoke $r13_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7_3);
+
+(13)    $r13_4 = virtualinvoke $r13_3.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(10);
+
+(14)    $r7_4 = virtualinvoke $r13_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>($r7_4);
+
+     label4:
+(15)    goto label3;
+
+     label5:
+        $r2 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #4);
+
+        $r6_3 = Phi($r6 #0, $r6_1 #27, $r6_2 #30);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #28);
+
+        $r7_8 = Phi($r7 #0, $r7_1 #6, $r7_2 #8, $r7_3 #11, $r7_4 #14, $r7_5 #18, $r7_6 #22, $r7_7 #25);
+
+        $i0_2 = Phi($i0 #0, $i0_1 #5);
+
+        $r5_2 = Phi($r5 #0, $r5_1 #29);
+
+        $r13_12 = Phi($r13 #0, $r13_1 #9, $r13_2 #10, $r13_3 #12, $r13_4 #13, $r13_5 #16, $r13_6 #17, $r13_7 #19, $r13_8 #20, $r13_9 #21, $r13_10 #23, $r13_11 #24);
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+     label6:
+(16)    $r13_5 = new java.lang.StringBuilder;
+
+        specialinvoke $r13_5.<java.lang.StringBuilder: void <init>()>();
+
+(17)    $r13_6 = virtualinvoke $r13_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("CLEAN ");
+
+(18)    $r7_5 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: java.lang.String access$1200(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r11);
+
+(19)    $r13_7 = virtualinvoke $r13_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7_5);
+
+(20)    $r13_8 = virtualinvoke $r13_7.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(32);
+
+        $l1 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long access$1300(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r11);
+
+(21)    $r13_9 = virtualinvoke $r13_8.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l1);
+
+(22)    $r7_6 = virtualinvoke $r11.<com.contextlogic.wish.cache.DiskLruCache$Entry: java.lang.String getLengths()>();
+
+(23)    $r13_10 = virtualinvoke $r13_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7_6);
+
+(24)    $r13_11 = virtualinvoke $r13_10.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(10);
+
+(25)    $r7_7 = virtualinvoke $r13_11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r4.<java.io.Writer: void write(java.lang.String)>($r7_7);
+
+(26)    goto label3;
+
+     label7:
+        virtualinvoke $r4.<java.io.Writer: void close()>();
+
+(27)    $r6_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File journalFileTmp>;
+
+        $r14 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File journalFile>;
+
+        virtualinvoke $r6_1.<java.io.File: boolean renameTo(java.io.File)>($r14);
+
+(28)    $r4_1 = new java.io.BufferedWriter;
+
+(29)    $r5_1 = new java.io.FileWriter;
+
+(30)    $r6_2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File journalFile>;
+
+        specialinvoke $r5_1.<java.io.FileWriter: void <init>(java.io.File,boolean)>($r6_2, 1);
+
+        specialinvoke $r4_1.<java.io.BufferedWriter: void <init>(java.io.Writer)>($r5_1);
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter> = $r4_1;
+
+     label8:
+        exitmonitor $r0;
+
+        return;
+
+        catch java.lang.Throwable from label1 to label4 with label5;
+        catch java.lang.Throwable from label6 to label8 with label5;
+    }
+
+    private void trimToSize() throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        long $l0, $l1;
+        byte $b2;
+        java.util.LinkedHashMap $r1;
+        java.util.Set $r2;
+        java.util.Iterator $r3;
+        java.lang.Object $r4, $r4_1, $r4_2;
+        java.util.Map$Entry $r5;
+        java.lang.String $r6;
+
+(0)     $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+     label1:
+        $r4 = Phi($r4 #0, $r4_2 #1);
+
+        $l0 = $r0.<com.contextlogic.wish.cache.DiskLruCache: long size>;
+
+        $l1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: long maxSize>;
+
+        $b2 = $l0 cmp $l1;
+
+        if $b2 <= 0 goto label2;
+
+        $r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        $r2 = virtualinvoke $r1.<java.util.LinkedHashMap: java.util.Set entrySet()>();
+
+        $r3 = interfaceinvoke $r2.<java.util.Set: java.util.Iterator iterator()>();
+
+        $r4_1 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.util.Map$Entry) $r4_1;
+
+        $r4_2 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r6 = (java.lang.String) $r4_2;
+
+        virtualinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: boolean remove(java.lang.String)>($r6);
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    private void validateKey(java.lang.String)
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.lang.IllegalArgumentException $r1;
+        java.lang.String $r2, $r2_1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>(" ");
+
+(0)     if $z0 != 0 goto label1;
+
+        $z0_1 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>("\n");
+
+(1)     if $z0_1 != 0 goto label1;
+
+        $z0_2 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>("\r");
+
+(2)     if $z0_2 == 0 goto label2;
+
+     label1:
+        $z0_3 = Phi($z0 #0, $z0_1 #1, $z0_2 #2);
+
+        $r1 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("keys must not contain spaces or newlines: \"");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\"");
+
+        $r2_1 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r2_1);
+
+        throw $r1;
+
+     label2:
+        return;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.util.ArrayList $r1;
+        java.util.LinkedHashMap $r2;
+        java.lang.Throwable $r3;
+        java.io.Writer $r4, $r4_1, $r4_2, $r4_3;
+        java.util.Collection $r5;
+        java.util.Iterator $r6;
+        boolean $z0;
+        java.lang.Object $r7;
+        com.contextlogic.wish.cache.DiskLruCache$Entry $r8;
+        com.contextlogic.wish.cache.DiskLruCache$Editor $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r4 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+     label2:
+(1)     if $r4 != null goto label4;
+
+     label3:
+        $r9 = Phi($r9 #1, $r9_1 #9);
+
+        $r4_1 = Phi($r4 #1, $r4_2 #9);
+
+        exitmonitor $r0;
+
+        return;
+
+     label4:
+        $r1 = new java.util.ArrayList;
+
+        $r2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        $r5 = virtualinvoke $r2.<java.util.LinkedHashMap: java.util.Collection values()>();
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>(java.util.Collection)>($r5);
+
+(2)     $r6 = virtualinvoke $r1.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label5:
+        $r9_1 = Phi($r9 #2, $r9_2 #5, $r9_3 #7);
+
+(3)     $z0 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label8;
+
+        $r7 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r8 = (com.contextlogic.wish.cache.DiskLruCache$Entry) $r7;
+
+(4)     $r9_2 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$700(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r8);
+
+(5)     if $r9_2 == null goto label5;
+
+(6)     $r9_3 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$700(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r8);
+
+        virtualinvoke $r9_3.<com.contextlogic.wish.cache.DiskLruCache$Editor: void abort()>();
+
+     label6:
+(7)     goto label5;
+
+     label7:
+        $r3 := @caughtexception;
+
+        $r9_4 = Phi($r9 #0, $r9_1 #3, $r9_2 #4, $r9_3 #6);
+
+        $r4_3 = Phi($r4 #0, $r4_2 #8);
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+     label8:
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void trimToSize()>();
+
+(8)     $r4_2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+        virtualinvoke $r4_2.<java.io.Writer: void close()>();
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter> = null;
+
+     label9:
+(9)     goto label3;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label4 to label6 with label7;
+        catch java.lang.Throwable from label8 to label9 with label7;
+    }
+
+    public void delete() throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.io.File $r1;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        virtualinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void close()>();
+
+        $r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File directory>;
+
+        staticinvoke <com.contextlogic.wish.cache.DiskLruCache: void deleteContents(java.io.File)>($r1);
+
+        return;
+    }
+
+    public com.contextlogic.wish.cache.DiskLruCache$Editor edit(java.lang.String) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.cache.DiskLruCache$Editor $r2;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: com.contextlogic.wish.cache.DiskLruCache$Editor edit(java.lang.String,long)>($r1, -1L);
+
+        return $r2;
+    }
+
+    public void flush() throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.io.Writer $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        entermonitor $r0;
+
+     label1:
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void checkNotClosed()>();
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void trimToSize()>();
+
+        $r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+        virtualinvoke $r1.<java.io.Writer: void flush()>();
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public com.contextlogic.wish.cache.DiskLruCache$Snapshot get(java.lang.String) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.lang.String $r1, $r13;
+        java.util.LinkedHashMap $r2;
+        java.io.FileInputStream $r3;
+        java.io.FileNotFoundException $r4;
+        java.lang.Throwable $r5;
+        com.contextlogic.wish.cache.DiskLruCache$Snapshot $r6, $r6_1, $r6_2, $r6_3;
+        java.lang.Object $r7;
+        com.contextlogic.wish.cache.DiskLruCache$Entry $r8;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7;
+        java.io.InputStream[] $r9;
+        java.io.File $r10;
+        java.io.Writer $r11;
+        java.lang.StringBuilder $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5;
+        java.util.concurrent.ExecutorService $r14;
+        java.util.concurrent.Callable $r15;
+        long $l2, $l3;
+        long[] $r16;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r6 = null;
+
+(0)     entermonitor $r0;
+
+     label01:
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void checkNotClosed()>();
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void validateKey(java.lang.String)>($r1);
+
+        $r2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        $r7 = virtualinvoke $r2.<java.util.LinkedHashMap: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r8 = (com.contextlogic.wish.cache.DiskLruCache$Entry) $r7;
+
+     label02:
+(1)     if $r8 != null goto label04;
+
+     label03:
+        $r6_1 = Phi($r6 #1, $r6 #3, $r6 #8, $r6_2 #17);
+
+        $r12 = Phi($r12 #1, $r12 #3, $r12 #8, $r12_4 #17);
+
+        $z0 = Phi($z0 #1, $z0_1 #3, $z0_1 #8, $z0_2 #17);
+
+        $i0 = Phi($i0 #1, $i0 #3, $i0_3 #8, $i0_6 #17);
+
+        exitmonitor $r0;
+
+        return $r6_1;
+
+     label04:
+(2)     $z0_1 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: boolean access$600(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r8);
+
+(3)     if $z0_1 == 0 goto label03;
+
+(4)     $i0_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+        $r9 = newarray (java.io.InputStream)[$i0_1];
+
+     label05:
+(5)     $i0_2 = 0;
+
+     label06:
+        $i0_3 = Phi($i0_2 #5, $i0_4 #7);
+
+(6)     $i1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+        if $i0_3 >= $i1 goto label11;
+
+        $r3 = new java.io.FileInputStream;
+
+     label07:
+        $r10 = virtualinvoke $r8.<com.contextlogic.wish.cache.DiskLruCache$Entry: java.io.File getCleanFile(int)>($i0_3);
+
+        specialinvoke $r3.<java.io.FileInputStream: void <init>(java.io.File)>($r10);
+
+     label08:
+        $r9[$i0_3] = $r3;
+
+     label09:
+        $i0_4 = $i0_3 + 1;
+
+(7)     goto label06;
+
+     label10:
+        $r4 := @caughtexception;
+
+(8)     goto label03;
+
+     label11:
+(9)     $i0_5 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int redundantOpCount>;
+
+(10)    $i0_6 = $i0_5 + 1;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: int redundantOpCount> = $i0_6;
+
+        $r11 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+(11)    $r12_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r12_1.<java.lang.StringBuilder: void <init>()>();
+
+(12)    $r12_2 = virtualinvoke $r12_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("READ ");
+
+(13)    $r12_3 = virtualinvoke $r12_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+(14)    $r12_4 = virtualinvoke $r12_3.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(10);
+
+        $r13 = virtualinvoke $r12_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r11.<java.io.Writer: java.io.Writer append(java.lang.CharSequence)>($r13);
+
+(15)    $z0_2 = specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: boolean journalRebuildRequired()>();
+
+        if $z0_2 == 0 goto label12;
+
+        $r14 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.concurrent.ExecutorService executorService>;
+
+        $r15 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.concurrent.Callable cleanupCallable>;
+
+        interfaceinvoke $r14.<java.util.concurrent.ExecutorService: java.util.concurrent.Future submit(java.util.concurrent.Callable)>($r15);
+
+     label12:
+(16)    $r6_2 = new com.contextlogic.wish.cache.DiskLruCache$Snapshot;
+
+        $l2 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long access$1400(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r8);
+
+        $l3 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long access$1300(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r8);
+
+        $r16 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long[] access$1100(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r8);
+
+        specialinvoke $r6_2.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void <init>(com.contextlogic.wish.cache.DiskLruCache,java.lang.String,long,long,long[],java.io.InputStream[],com.contextlogic.wish.cache.DiskLruCache$1)>($r0, $r1, $l2, $l3, $r16, $r9, null);
+
+     label13:
+(17)    goto label03;
+
+     label14:
+        $r5 := @caughtexception;
+
+        $r6_3 = Phi($r6 #0, $r6_2 #16);
+
+        $r12_5 = Phi($r12 #0, $r12_1 #11, $r12_2 #12, $r12_3 #13, $r12_4 #14);
+
+        $z0_3 = Phi($z0 #0, $z0_1 #2, $z0_2 #15);
+
+        $i0_7 = Phi($i0 #0, $i0_1 #4, $i0_2 #5, $i0_4 #7, $i0_3 #6, $i0_5 #9, $i0_6 #10);
+
+        exitmonitor $r0;
+
+        throw $r5;
+
+        catch java.lang.Throwable from label01 to label02 with label14;
+        catch java.lang.Throwable from label04 to label05 with label14;
+        catch java.lang.Throwable from label06 to label07 with label14;
+        catch java.io.FileNotFoundException from label07 to label08 with label10;
+        catch java.lang.Throwable from label07 to label08 with label14;
+        catch java.lang.Throwable from label08 to label09 with label14;
+        catch java.lang.Throwable from label11 to label13 with label14;
+    }
+
+    public java.io.File getDirectory()
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.io.File r1;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.File directory>;
+
+        return r1;
+    }
+
+    public boolean isClosed()
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.io.Writer $r1;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+        if $r1 != null goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public long maxSize()
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        long l0;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        l0 = $r0.<com.contextlogic.wish.cache.DiskLruCache: long maxSize>;
+
+        return l0;
+    }
+
+    public com.contextlogic.wish.cache.DiskLruCache$Snapshot poll(java.lang.String) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.lang.String $r1;
+        java.util.LinkedHashMap $r2;
+        com.contextlogic.wish.cache.DiskLruCache$Snapshot $r3;
+        java.lang.Object $r4;
+        com.contextlogic.wish.cache.DiskLruCache$Entry $r5;
+        boolean $z0;
+        long $l0, $l1;
+        long[] $r6;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void checkNotClosed()>();
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void validateKey(java.lang.String)>($r1);
+
+        $r2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        $r4 = virtualinvoke $r2.<java.util.LinkedHashMap: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r5 = (com.contextlogic.wish.cache.DiskLruCache$Entry) $r4;
+
+        if $r5 != null goto label1;
+
+        return null;
+
+     label1:
+        $z0 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: boolean access$600(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r5);
+
+        if $z0 == 0 goto label2;
+
+        $r3 = new com.contextlogic.wish.cache.DiskLruCache$Snapshot;
+
+        $l0 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long access$1400(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r5);
+
+        $l1 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long access$1300(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r5);
+
+        $r6 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long[] access$1100(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r5);
+
+        specialinvoke $r3.<com.contextlogic.wish.cache.DiskLruCache$Snapshot: void <init>(com.contextlogic.wish.cache.DiskLruCache,java.lang.String,long,long,long[],java.io.InputStream[],com.contextlogic.wish.cache.DiskLruCache$1)>($r0, $r1, $l0, $l1, $r6, null, null);
+
+        return $r3;
+
+     label2:
+        return null;
+    }
+
+    public boolean remove(java.lang.String) throws java.io.IOException
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        int $i0, $i1, $i1_1, $i0_1, $i1_2, $i0_2, $i0_3, $i0_4, $i1_3, $i0_5, $i1_4;
+        java.io.IOException $r1;
+        java.lang.Throwable $r2;
+        java.lang.String $r3, $r12, $r3_1, $r3_2;
+        java.util.LinkedHashMap $r4, $r4_1, $r4_2, $r4_3;
+        java.lang.Object $r5;
+        com.contextlogic.wish.cache.DiskLruCache$Entry $r6;
+        com.contextlogic.wish.cache.DiskLruCache$Editor $r7;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        java.io.File $r8;
+        java.lang.StringBuilder $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8;
+        long $l2, $l3, $l2_1, $l2_2, $l2_3, $l2_4;
+        long[] $r10, $r10_1, $r10_2, $r10_3, $r10_4;
+        java.io.Writer $r11;
+        java.util.concurrent.ExecutorService $r13;
+        java.util.concurrent.Callable $r14;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        $r3 := @parameter0: java.lang.String;
+
+(0)     entermonitor $r0;
+
+     label01:
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void checkNotClosed()>();
+
+        specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: void validateKey(java.lang.String)>($r3);
+
+        $r4 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        $r5 = virtualinvoke $r4.<java.util.LinkedHashMap: java.lang.Object get(java.lang.Object)>($r3);
+
+        $r6 = (com.contextlogic.wish.cache.DiskLruCache$Entry) $r5;
+
+        if $r6 == null goto label03;
+
+        $r7 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: com.contextlogic.wish.cache.DiskLruCache$Editor access$700(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r6);
+
+     label02:
+        if $r7 == null goto label05;
+
+     label03:
+(1)     $z0_4 = 0;
+
+     label04:
+        $i0_4 = Phi($i0 #1, $i0_3 #22);
+
+        $l2_3 = Phi($l2 #1, $l2 #22);
+
+        $r4_2 = Phi($r4 #1, $r4_1 #22);
+
+        $z0_5 = Phi($z0_4 #1, $z0_3 #22);
+
+        $r9_7 = Phi($r9 #1, $r9_6 #22);
+
+        $i1_3 = Phi($i1 #1, $i1_1 #22);
+
+        $r10_3 = Phi($r10 #1, $r10 #22);
+
+        exitmonitor $r0;
+
+        return $z0_5;
+
+     label05:
+(2)     $i1 = 0;
+
+     label06:
+        $i0 = Phi($i0 #2, $i0_1 #13);
+
+        $l2 = Phi($l2 #2, $l2_2 #13);
+
+        $z0 = Phi($z0 #2, $z0_1 #13);
+
+        $i1_1 = Phi($i1 #2, $i1_2 #13);
+
+        $r10 = Phi($r10 #2, $r10_2 #13);
+
+(3)     $i0_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int valueCount>;
+
+        if $i1_1 >= $i0_1 goto label09;
+
+        $r8 = virtualinvoke $r6.<com.contextlogic.wish.cache.DiskLruCache$Entry: java.io.File getCleanFile(int)>($i1_1);
+
+(4)     $z0_1 = virtualinvoke $r8.<java.io.File: boolean delete()>();
+
+        if $z0_1 != 0 goto label08;
+
+        $r1 = new java.io.IOException;
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>()>();
+
+(5)     $r9_1 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("failed to delete ");
+
+(6)     $r9_2 = virtualinvoke $r9_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8);
+
+(7)     $r3_1 = virtualinvoke $r9_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.io.IOException: void <init>(java.lang.String)>($r3_1);
+
+        throw $r1;
+
+     label07:
+        $r2 := @caughtexception;
+
+        $i0_5 = Phi($i0 #0, $i0_1 #3, $i0_2 #14, $i0_3 #15);
+
+        $l2_4 = Phi($l2 #0, $l2_1 #8, $l2_2 #10);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #20);
+
+        $z0_6 = Phi($z0 #0, $z0_1 #4, $z0_2 #21);
+
+        $r9_8 = Phi($r9 #0, $r9_1 #5, $r9_2 #6, $r9_3 #16, $r9_4 #17, $r9_5 #18, $r9_6 #19);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #7);
+
+        $i1_4 = Phi($i1 #0, $i1_1 #3, $i1_2 #12);
+
+        $r10_4 = Phi($r10 #0, $r10_1 #9, $r10_2 #11);
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+     label08:
+(8)     $l2_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: long size>;
+
+(9)     $r10_1 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long[] access$1100(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r6);
+
+        $l3 = $r10_1[$i1_1];
+
+(10)    $l2_2 = $l2_1 - $l3;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: long size> = $l2_2;
+
+(11)    $r10_2 = staticinvoke <com.contextlogic.wish.cache.DiskLruCache$Entry: long[] access$1100(com.contextlogic.wish.cache.DiskLruCache$Entry)>($r6);
+
+        $r10_2[$i1_1] = 0L;
+
+(12)    $i1_2 = $i1_1 + 1;
+
+(13)    goto label06;
+
+     label09:
+(14)    $i0_2 = $r0.<com.contextlogic.wish.cache.DiskLruCache: int redundantOpCount>;
+
+(15)    $i0_3 = $i0_2 + 1;
+
+        $r0.<com.contextlogic.wish.cache.DiskLruCache: int redundantOpCount> = $i0_3;
+
+        $r11 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.io.Writer journalWriter>;
+
+(16)    $r9_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r9_3.<java.lang.StringBuilder: void <init>()>();
+
+(17)    $r9_4 = virtualinvoke $r9_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("REMOVE ");
+
+(18)    $r9_5 = virtualinvoke $r9_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+(19)    $r9_6 = virtualinvoke $r9_5.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(10);
+
+        $r12 = virtualinvoke $r9_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r11.<java.io.Writer: java.io.Writer append(java.lang.CharSequence)>($r12);
+
+(20)    $r4_1 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.LinkedHashMap lruEntries>;
+
+        virtualinvoke $r4_1.<java.util.LinkedHashMap: java.lang.Object remove(java.lang.Object)>($r3);
+
+(21)    $z0_2 = specialinvoke $r0.<com.contextlogic.wish.cache.DiskLruCache: boolean journalRebuildRequired()>();
+
+        if $z0_2 == 0 goto label10;
+
+        $r13 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.concurrent.ExecutorService executorService>;
+
+        $r14 = $r0.<com.contextlogic.wish.cache.DiskLruCache: java.util.concurrent.Callable cleanupCallable>;
+
+        interfaceinvoke $r13.<java.util.concurrent.ExecutorService: java.util.concurrent.Future submit(java.util.concurrent.Callable)>($r14);
+
+     label10:
+        $z0_3 = 1;
+
+(22)    goto label04;
+
+        catch java.lang.Throwable from label01 to label02 with label07;
+        catch java.lang.Throwable from label06 to label07 with label07;
+        catch java.lang.Throwable from label08 to label10 with label07;
+    }
+
+    public long size()
+    {
+        com.contextlogic.wish.cache.DiskLruCache $r0;
+        java.lang.Throwable $r1;
+        long l0;
+
+        $r0 := @this: com.contextlogic.wish.cache.DiskLruCache;
+
+        entermonitor $r0;
+
+     label1:
+        l0 = $r0.<com.contextlogic.wish.cache.DiskLruCache: long size>;
+
+     label2:
+        exitmonitor $r0;
+
+        return l0;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+}

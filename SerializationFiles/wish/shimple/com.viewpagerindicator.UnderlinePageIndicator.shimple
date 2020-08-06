@@ -1,0 +1,1127 @@
+public class com.viewpagerindicator.UnderlinePageIndicator extends android.view.View implements com.viewpagerindicator.PageIndicator
+{
+    private static final int FADE_FRAME_MS;
+    private static final int INVALID_POINTER;
+    private int mActivePointerId;
+    private int mCurrentPage;
+    private int mFadeBy;
+    private int mFadeDelay;
+    private int mFadeLength;
+    private final java.lang.Runnable mFadeRunnable;
+    private boolean mFades;
+    private boolean mIsDragging;
+    private float mLastMotionX;
+    private android.support.v4.view.ViewPager$OnPageChangeListener mListener;
+    private final android.graphics.Paint mPaint;
+    private float mPositionOffset;
+    private int mScrollState;
+    private int mTouchSlop;
+    private android.support.v4.view.ViewPager mViewPager;
+
+    public void <init>(android.content.Context)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        int $i0;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 = <com.viewpagerindicator.R$attr: int vpiUnderlinePageIndicatorStyle>;
+
+        specialinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        android.graphics.Paint $r3;
+        com.viewpagerindicator.UnderlinePageIndicator$1 $r4;
+        int[] $r5;
+        int $i0, $i1, $i2, $i3, $i1_1, $i1_2, $i2_1, $i3_1, $i0_1, $i0_2, $i0_3, $i0_4;
+        boolean $z0, $z0_1, $z0_2;
+        android.content.res.Resources $r6;
+        android.content.res.TypedArray $r7;
+        android.graphics.drawable.Drawable $r8;
+        android.view.ViewConfiguration $r9;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<android.view.View: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        $r3 = new android.graphics.Paint;
+
+        specialinvoke $r3.<android.graphics.Paint: void <init>(int)>(1);
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.graphics.Paint mPaint> = $r3;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: float mLastMotionX> = -1.0F;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mActivePointerId> = -1;
+
+        $r4 = new com.viewpagerindicator.UnderlinePageIndicator$1;
+
+        specialinvoke $r4.<com.viewpagerindicator.UnderlinePageIndicator$1: void <init>(com.viewpagerindicator.UnderlinePageIndicator)>($r0);
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: java.lang.Runnable mFadeRunnable> = $r4;
+
+        $z0 = virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean isInEditMode()>();
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r6 = virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.content.res.Resources getResources()>();
+
+        $i1 = <com.viewpagerindicator.R$bool: int default_underline_indicator_fades>;
+
+        $z0_1 = virtualinvoke $r6.<android.content.res.Resources: boolean getBoolean(int)>($i1);
+
+        $i1_1 = <com.viewpagerindicator.R$integer: int default_underline_indicator_fade_delay>;
+
+        $i1_2 = virtualinvoke $r6.<android.content.res.Resources: int getInteger(int)>($i1_1);
+
+        $i2 = <com.viewpagerindicator.R$integer: int default_underline_indicator_fade_length>;
+
+        $i2_1 = virtualinvoke $r6.<android.content.res.Resources: int getInteger(int)>($i2);
+
+        $i3 = <com.viewpagerindicator.R$color: int default_underline_indicator_selected_color>;
+
+        $i3_1 = virtualinvoke $r6.<android.content.res.Resources: int getColor(int)>($i3);
+
+        $r5 = <com.viewpagerindicator.R$styleable: int[] UnderlinePageIndicator>;
+
+        $r7 = virtualinvoke $r1.<android.content.Context: android.content.res.TypedArray obtainStyledAttributes(android.util.AttributeSet,int[],int,int)>($r2, $r5, $i0, 0);
+
+        $z0_2 = virtualinvoke $r7.<android.content.res.TypedArray: boolean getBoolean(int,boolean)>(2, $z0_1);
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void setFades(boolean)>($z0_2);
+
+        $i0_1 = virtualinvoke $r7.<android.content.res.TypedArray: int getColor(int,int)>(1, $i3_1);
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void setSelectedColor(int)>($i0_1);
+
+        $i0_2 = virtualinvoke $r7.<android.content.res.TypedArray: int getInteger(int,int)>(3, $i1_2);
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void setFadeDelay(int)>($i0_2);
+
+        $i0_3 = virtualinvoke $r7.<android.content.res.TypedArray: int getInteger(int,int)>(4, $i2_1);
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void setFadeLength(int)>($i0_3);
+
+        $r8 = virtualinvoke $r7.<android.content.res.TypedArray: android.graphics.drawable.Drawable getDrawable(int)>(0);
+
+        if $r8 == null goto label2;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void setBackgroundDrawable(android.graphics.drawable.Drawable)>($r8);
+
+     label2:
+        virtualinvoke $r7.<android.content.res.TypedArray: void recycle()>();
+
+        $r9 = staticinvoke <android.view.ViewConfiguration: android.view.ViewConfiguration get(android.content.Context)>($r1);
+
+        $i0_4 = staticinvoke <android.support.v4.view.ViewConfigurationCompat: int getScaledPagingTouchSlop(android.view.ViewConfiguration)>($r9);
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mTouchSlop> = $i0_4;
+
+        return;
+    }
+
+    static boolean access$000(com.viewpagerindicator.UnderlinePageIndicator)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.viewpagerindicator.UnderlinePageIndicator;
+
+        z0 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean mFades>;
+
+        return z0;
+    }
+
+    static android.graphics.Paint access$100(com.viewpagerindicator.UnderlinePageIndicator)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        android.graphics.Paint r1;
+
+        $r0 := @parameter0: com.viewpagerindicator.UnderlinePageIndicator;
+
+        r1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.graphics.Paint mPaint>;
+
+        return r1;
+    }
+
+    static int access$200(com.viewpagerindicator.UnderlinePageIndicator)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int i0;
+
+        $r0 := @parameter0: com.viewpagerindicator.UnderlinePageIndicator;
+
+        i0 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mFadeBy>;
+
+        return i0;
+    }
+
+    static java.lang.Runnable access$300(com.viewpagerindicator.UnderlinePageIndicator)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        java.lang.Runnable r1;
+
+        $r0 := @parameter0: com.viewpagerindicator.UnderlinePageIndicator;
+
+        r1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: java.lang.Runnable mFadeRunnable>;
+
+        return r1;
+    }
+
+    public int getFadeDelay()
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int i0;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        i0 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mFadeDelay>;
+
+        return i0;
+    }
+
+    public int getFadeLength()
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int i0;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        i0 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mFadeLength>;
+
+        return i0;
+    }
+
+    public boolean getFades()
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        boolean z0;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        z0 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean mFades>;
+
+        return z0;
+    }
+
+    public int getSelectedColor()
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        android.graphics.Paint $r1;
+        int $i0;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.graphics.Paint mPaint>;
+
+        $i0 = virtualinvoke $r1.<android.graphics.Paint: int getColor()>();
+
+        return $i0;
+    }
+
+    public void notifyDataSetChanged()
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    protected void onDraw(android.graphics.Canvas)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        android.graphics.Canvas $r1;
+        android.support.v4.view.ViewPager $r2, $r2_1;
+        android.support.v4.view.PagerAdapter $r3;
+        int $i0, $i1, $i2, $i3, $i0_1, $i1_1, $i2_1, $i2_2, $i0_2, $i0_3, $i0_4, $i1_2, $i0_5, $i0_6, $i1_3, $i2_3;
+        float $f0, $f1, $f2, $f3, $f1_1, $f0_1, $f1_2, $f2_1, $f2_2, $f1_3, $f0_2, $f2_3, $f3_1, $f3_2, $f0_3, $f2_4, $f1_4;
+        android.graphics.Paint $r4;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        specialinvoke $r0.<android.view.View: void onDraw(android.graphics.Canvas)>($r1);
+
+        $r2 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        if $r2 != null goto label1;
+
+        return;
+
+     label1:
+        $r2_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $r3 = virtualinvoke $r2_1.<android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()>();
+
+        $i0 = virtualinvoke $r3.<android.support.v4.view.PagerAdapter: int getCount()>();
+
+(0)     if $i0 == 0 goto label3;
+
+        $i1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage>;
+
+        if $i1 < $i0 goto label2;
+
+        $i0_1 = $i0 + -1;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void setCurrentItem(int)>($i0_1);
+
+        return;
+
+     label2:
+        $i1_1 = virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: int getPaddingLeft()>();
+
+        $i2 = virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: int getWidth()>();
+
+        $i2_1 = $i2 - $i1_1;
+
+        $i3 = virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: int getPaddingRight()>();
+
+        $i2_2 = $i2_1 - $i3;
+
+        $f0 = (float) $i2_2;
+
+        $f1 = (float) $i0;
+
+        $f1_1 = 1.0F * $f1;
+
+        $f0_1 = $f0 / $f1_1;
+
+        $f1_2 = (float) $i1_1;
+
+        $i0_2 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage>;
+
+        $f2 = (float) $i0_2;
+
+        $f3 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: float mPositionOffset>;
+
+        $f2_1 = $f2 + $f3;
+
+        $f2_2 = $f2_1 * $f0_1;
+
+        $f1_3 = $f1_2 + $f2_2;
+
+        $f0_2 = $f1_3 + $f0_1;
+
+        $i0_3 = virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: int getPaddingTop()>();
+
+        $f2_3 = (float) $i0_3;
+
+        $i0_4 = virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: int getHeight()>();
+
+        $i1_2 = virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: int getPaddingBottom()>();
+
+        $i0_5 = $i0_4 - $i1_2;
+
+        $f3_1 = (float) $i0_5;
+
+        $r4 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.graphics.Paint mPaint>;
+
+(1)     virtualinvoke $r1.<android.graphics.Canvas: void drawRect(float,float,float,float,android.graphics.Paint)>($f1_3, $f2_3, $f0_2, $f3_1, $r4);
+
+     label3:
+        $i0_6 = Phi($i0 #0, $i0_5 #1);
+
+        $f3_2 = Phi($f3 #0, $f3_1 #1);
+
+        $f0_3 = Phi($f0 #0, $f0_2 #1);
+
+        $i1_3 = Phi($i1 #0, $i1_2 #1);
+
+        $f2_4 = Phi($f2 #0, $f2_3 #1);
+
+        $i2_3 = Phi($i2 #0, $i2_2 #1);
+
+        $f1_4 = Phi($f1 #0, $f1_3 #1);
+
+        return;
+    }
+
+    public void onPageScrollStateChanged(int)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int $i0;
+        android.support.v4.view.ViewPager$OnPageChangeListener $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mScrollState> = $i0;
+
+        $r1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+(1)     interfaceinvoke $r1_1.<android.support.v4.view.ViewPager$OnPageChangeListener: void onPageScrollStateChanged(int)>($i0);
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void onPageScrolled(int, float, int)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int $i0, $i1, $i3, $i3_1, $i3_2;
+        float $f0;
+        boolean $z0;
+        android.graphics.Paint $r1;
+        long $l2;
+        java.lang.Runnable $r2, $r2_1, $r2_2;
+        android.support.v4.view.ViewPager$OnPageChangeListener $r3, $r3_1;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $f0 := @parameter1: float;
+
+        $i1 := @parameter2: int;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage> = $i0;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: float mPositionOffset> = $f0;
+
+        $z0 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean mFades>;
+
+(0)     if $z0 == 0 goto label1;
+
+        if $i1 <= 0 goto label2;
+
+        $r2 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: java.lang.Runnable mFadeRunnable>;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean removeCallbacks(java.lang.Runnable)>($r2);
+
+        $r1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.graphics.Paint mPaint>;
+
+(1)     virtualinvoke $r1.<android.graphics.Paint: void setAlpha(int)>(255);
+
+     label1:
+        $i3_2 = Phi($i3 #0, $i3 #1, $i3 #2, $i3_1 #3);
+
+        $r2_2 = Phi($r2 #0, $r2 #1, $r2 #2, $r2_1 #3);
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void invalidate()>();
+
+        $r3 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+        if $r3 == null goto label3;
+
+        $r3_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+        interfaceinvoke $r3_1.<android.support.v4.view.ViewPager$OnPageChangeListener: void onPageScrolled(int,float,int)>($i0, $f0, $i1);
+
+        return;
+
+     label2:
+        $i3 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mScrollState>;
+
+(2)     if $i3 == 1 goto label1;
+
+        $r2_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: java.lang.Runnable mFadeRunnable>;
+
+        $i3_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mFadeDelay>;
+
+        $l2 = (long) $i3_1;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean postDelayed(java.lang.Runnable,long)>($r2_1, $l2);
+
+(3)     goto label1;
+
+     label3:
+        return;
+    }
+
+    public void onPageSelected(int)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int $i0, $i1;
+        java.lang.Runnable $r1;
+        android.support.v4.view.ViewPager$OnPageChangeListener $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $i1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mScrollState>;
+
+        if $i1 != 0 goto label1;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage> = $i0;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: float mPositionOffset> = 0.0F;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void invalidate()>();
+
+        $r1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: java.lang.Runnable mFadeRunnable>;
+
+        interfaceinvoke $r1.<java.lang.Runnable: void run()>();
+
+     label1:
+        $r2 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+(0)     if $r2 == null goto label2;
+
+        $r2_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+(1)     interfaceinvoke $r2_1.<android.support.v4.view.ViewPager$OnPageChangeListener: void onPageSelected(int)>($i0);
+
+     label2:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    public void onRestoreInstanceState(android.os.Parcelable)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int $i0;
+        android.os.Parcelable $r1, $r1_1;
+        com.viewpagerindicator.UnderlinePageIndicator$SavedState $r2;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r1 := @parameter0: android.os.Parcelable;
+
+        $r2 = (com.viewpagerindicator.UnderlinePageIndicator$SavedState) $r1;
+
+        $r1_1 = virtualinvoke $r2.<com.viewpagerindicator.UnderlinePageIndicator$SavedState: android.os.Parcelable getSuperState()>();
+
+        specialinvoke $r0.<android.view.View: void onRestoreInstanceState(android.os.Parcelable)>($r1_1);
+
+        $i0 = $r2.<com.viewpagerindicator.UnderlinePageIndicator$SavedState: int currentPage>;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage> = $i0;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void requestLayout()>();
+
+        return;
+    }
+
+    public android.os.Parcelable onSaveInstanceState()
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        com.viewpagerindicator.UnderlinePageIndicator$SavedState $r1;
+        int $i0;
+        android.os.Parcelable $r2;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r2 = specialinvoke $r0.<android.view.View: android.os.Parcelable onSaveInstanceState()>();
+
+        $r1 = new com.viewpagerindicator.UnderlinePageIndicator$SavedState;
+
+        specialinvoke $r1.<com.viewpagerindicator.UnderlinePageIndicator$SavedState: void <init>(android.os.Parcelable)>($r2);
+
+        $i0 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage>;
+
+        $r1.<com.viewpagerindicator.UnderlinePageIndicator$SavedState: int currentPage> = $i0;
+
+        return $r1;
+    }
+
+    public boolean onTouchEvent(android.view.MotionEvent)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        android.view.MotionEvent $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8;
+        android.support.v4.view.ViewPager $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6, $r2_7, $r2_8, $r2_9, $r2_10, $r2_11, $r2_12, $r2_13, $r2_14, $r2_15;
+        android.support.v4.view.PagerAdapter $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        int $i0, $i2, $i3, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7, $i0_8, $i2_1, $i3_1, $i3_2, $i0_9, $i0_10, $i0_11, $i3_3, $i2_2, $i0_12, $i0_13, $i0_14, $i3_4, $i2_3, $i0_15, $i0_16, $i0_17, $i2_4, $i3_5, $i0_18, $i0_19, $i0_20, $i0_21, $i0_22;
+        float $f0, $f1, $f2, $f3, $f0_1, $f0_2, $f1_1, $f1_2, $f2_1, $f3_1, $f2_2, $f3_2, $f0_3, $f0_4, $f1_3, $f1_4, $f2_3, $f3_3, $f2_4, $f3_4, $f2_5, $f0_5, $f0_6, $f1_5, $f2_6, $f3_5, $f0_7, $f0_8;
+        byte $b1, $b1_1, $b1_2, $b1_3, $b1_4, $b1_5, $b1_6, $b1_7, $b1_8, $b1_9, $b1_10;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $z0 = specialinvoke $r0.<android.view.View: boolean onTouchEvent(android.view.MotionEvent)>($r1);
+
+        if $z0 == 0 goto label01;
+
+        return 1;
+
+     label01:
+        $r2 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+(0)     if $r2 == null goto label02;
+
+        $r2_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $r3 = virtualinvoke $r2_1.<android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()>();
+
+        $i0 = virtualinvoke $r3.<android.support.v4.view.PagerAdapter: int getCount()>();
+
+(1)     if $i0 != 0 goto label03;
+
+     label02:
+        $r3_4 = Phi($r3 #0, $r3 #1);
+
+        $i0_22 = Phi($i0 #0, $i0 #1);
+
+        $r2_15 = Phi($r2 #0, $r2_1 #1);
+
+        return 0;
+
+     label03:
+        $i0_1 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+        $i0_2 = $i0_1 & 255;
+
+(2)     lookupswitch($i0_2)
+        {
+            case 0: goto label06;
+            case 1: goto label10;
+            case 2: goto label07;
+            case 3: goto label10;
+            case 4: goto label05;
+            case 5: goto label15;
+            case 6: goto label16;
+            default: goto label04;
+        };
+
+     label04:
+(3)     goto label05;
+
+     label05:
+        $z0_1 = Phi($z0 #2, $z0 #3, $z0 #4, $z0_3 #8, $z0_5 #10, $z0_6 #11, $z0_8 #21, $z0_8 #22, $z0 #23, $z0 #27);
+
+        $f0 = Phi($f0 #2, $f0 #3, $f0_1 #4, $f0_2 #8, $f0_2 #10, $f0_2 #11, $f0_6 #21, $f0_6 #22, $f0_7 #23, $f0_8 #27);
+
+        $i3 = Phi($i3 #2, $i3 #3, $i3 #4, $i3 #8, $i3 #10, $i3 #11, $i3_4 #21, $i3_4 #22, $i3 #23, $i3_5 #27);
+
+        $b1 = Phi($b1 #2, $b1 #3, $b1 #4, $b1_2 #8, $b1_2 #10, $b1_2 #11, $b1_6 #21, $b1_6 #22, $b1 #23, $b1_10 #27);
+
+        $f1 = Phi($f1 #2, $f1 #3, $f1 #4, $f1_2 #8, $f1_2 #10, $f1_2 #11, $f1_5 #21, $f1_5 #22, $f1 #23, $f1 #27);
+
+        $r3_1 = Phi($r3 #2, $r3 #3, $r3 #4, $r3 #8, $r3 #10, $r3 #11, $r3_3 #21, $r3_3 #22, $r3 #23, $r3 #27);
+
+        $f2 = Phi($f2 #2, $f2 #3, $f2 #4, $f2_2 #8, $f2_2 #10, $f2_2 #11, $f2_6 #21, $f2_6 #22, $f2 #23, $f2 #27);
+
+        $i0_3 = Phi($i0_2 #2, $i0_2 #3, $i0_4 #4, $i0_8 #8, $i0_8 #10, $i0_8 #11, $i0_2 #21, $i0_2 #22, $i0_16 #23, $i0_21 #27);
+
+        $f3 = Phi($f3 #2, $f3 #3, $f3 #4, $f3_2 #8, $f3_2 #10, $f3_2 #11, $f3_5 #21, $f3_5 #22, $f3 #23, $f3 #27);
+
+        $i2 = Phi($i2 #2, $i2 #3, $i2 #4, $i2 #8, $i2 #10, $i2 #11, $i2_3 #21, $i2_3 #22, $i2 #23, $i2_4 #27);
+
+        $r2_2 = Phi($r2_1 #2, $r2_1 #3, $r2_1 #4, $r2_1 #8, $r2_4 #10, $r2_6 #11, $r2_13 #21, $r2_14 #22, $r2_1 #23, $r2_1 #27);
+
+        return 1;
+
+     label06:
+        $i0_4 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, 0);
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mActivePointerId> = $i0_4;
+
+        $f0_1 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: float mLastMotionX> = $f0_1;
+
+(4)     goto label05;
+
+     label07:
+        $i0_5 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mActivePointerId>;
+
+        $i0_6 = staticinvoke <android.support.v4.view.MotionEventCompat: int findPointerIndex(android.view.MotionEvent,int)>($r1, $i0_5);
+
+        $f0_2 = staticinvoke <android.support.v4.view.MotionEventCompat: float getX(android.view.MotionEvent,int)>($r1, $i0_6);
+
+        $f1_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: float mLastMotionX>;
+
+        $f1_2 = $f0_2 - $f1_1;
+
+        $z0_2 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean mIsDragging>;
+
+(5)     if $z0_2 != 0 goto label08;
+
+        $f2_1 = staticinvoke <java.lang.Math: float abs(float)>($f1_2);
+
+        $i0_7 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mTouchSlop>;
+
+        $f3_1 = (float) $i0_7;
+
+        $b1_1 = $f2_1 cmpl $f3_1;
+
+(6)     if $b1_1 <= 0 goto label08;
+
+(7)     $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean mIsDragging> = 1;
+
+     label08:
+        $b1_2 = Phi($b1 #5, $b1_1 #6, $b1_1 #7);
+
+        $f2_2 = Phi($f2 #5, $f2_1 #6, $f2_1 #7);
+
+        $i0_8 = Phi($i0_6 #5, $i0_7 #6, $i0_7 #7);
+
+        $f3_2 = Phi($f3 #5, $f3_1 #6, $f3_1 #7);
+
+        $z0_3 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean mIsDragging>;
+
+(8)     if $z0_3 == 0 goto label05;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: float mLastMotionX> = $f0_2;
+
+        $r2_3 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $z0_4 = virtualinvoke $r2_3.<android.support.v4.view.ViewPager: boolean isFakeDragging()>();
+
+(9)     if $z0_4 != 0 goto label09;
+
+        $r2_4 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $z0_5 = virtualinvoke $r2_4.<android.support.v4.view.ViewPager: boolean beginFakeDrag()>();
+
+(10)    if $z0_5 == 0 goto label05;
+
+     label09:
+        $z0_6 = Phi($z0_4 #9, $z0_5 #10);
+
+        $r2_5 = Phi($r2_3 #9, $r2_4 #10);
+
+        $r2_6 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        virtualinvoke $r2_6.<android.support.v4.view.ViewPager: void fakeDragBy(float)>($f1_2);
+
+(11)    goto label05;
+
+     label10:
+        $z0_7 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean mIsDragging>;
+
+(12)    if $z0_7 != 0 goto label14;
+
+        $r2_7 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $r3_2 = virtualinvoke $r2_7.<android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()>();
+
+        $i2_1 = virtualinvoke $r3_2.<android.support.v4.view.PagerAdapter: int getCount()>();
+
+        $i3_1 = virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: int getWidth()>();
+
+        $f0_3 = (float) $i3_1;
+
+        $f0_4 = $f0_3 / 2.0F;
+
+        $f1_3 = (float) $i3_1;
+
+        $f1_4 = $f1_3 / 6.0F;
+
+        $i3_2 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage>;
+
+(13)    if $i3_2 <= 0 goto label12;
+
+        $f2_3 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f3_3 = $f0_4 - $f1_4;
+
+        $b1_3 = $f2_3 cmpg $f3_3;
+
+(14)    if $b1_3 >= 0 goto label12;
+
+(15)    if $i0_2 == 3 goto label11;
+
+        $r2_8 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $i0_9 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage>;
+
+        $i0_10 = $i0_9 + -1;
+
+(16)    virtualinvoke $r2_8.<android.support.v4.view.ViewPager: void setCurrentItem(int)>($i0_10);
+
+     label11:
+        $i0_11 = Phi($i0_2 #15, $i0_10 #16);
+
+        $r2_9 = Phi($r2_7 #15, $r2_8 #16);
+
+        return 1;
+
+     label12:
+        $b1_4 = Phi($b1 #13, $b1_3 #14);
+
+        $f2_4 = Phi($f2 #13, $f2_3 #14);
+
+        $f3_4 = Phi($f3 #13, $f3_3 #14);
+
+        $i3_3 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage>;
+
+        $i2_2 = $i2_1 + -1;
+
+(17)    if $i3_3 >= $i2_2 goto label14;
+
+        $f2_5 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f0_5 = $f0_4 + $f1_4;
+
+        $b1_5 = $f2_5 cmpl $f0_5;
+
+(18)    if $b1_5 <= 0 goto label14;
+
+(19)    if $i0_2 == 3 goto label13;
+
+        $r2_10 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $i0_12 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage>;
+
+        $i0_13 = $i0_12 + 1;
+
+(20)    virtualinvoke $r2_10.<android.support.v4.view.ViewPager: void setCurrentItem(int)>($i0_13);
+
+     label13:
+        $i0_14 = Phi($i0_2 #19, $i0_13 #20);
+
+        $r2_11 = Phi($r2_7 #19, $r2_10 #20);
+
+        return 1;
+
+     label14:
+        $f0_6 = Phi($f0 #12, $f0_4 #17, $f0_5 #18);
+
+        $i3_4 = Phi($i3 #12, $i3_3 #17, $i3_3 #18);
+
+        $b1_6 = Phi($b1 #12, $b1_4 #17, $b1_5 #18);
+
+        $f1_5 = Phi($f1 #12, $f1_4 #17, $f1_4 #18);
+
+        $r3_3 = Phi($r3 #12, $r3_2 #17, $r3_2 #18);
+
+        $f2_6 = Phi($f2 #12, $f2_4 #17, $f2_5 #18);
+
+        $f3_5 = Phi($f3 #12, $f3_4 #17, $f3_4 #18);
+
+        $i2_3 = Phi($i2 #12, $i2_2 #17, $i2_2 #18);
+
+        $r2_12 = Phi($r2_1 #12, $r2_7 #17, $r2_7 #18);
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean mIsDragging> = 0;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mActivePointerId> = -1;
+
+        $r2_13 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $z0_8 = virtualinvoke $r2_13.<android.support.v4.view.ViewPager: boolean isFakeDragging()>();
+
+(21)    if $z0_8 == 0 goto label05;
+
+        $r2_14 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        virtualinvoke $r2_14.<android.support.v4.view.ViewPager: void endFakeDrag()>();
+
+(22)    goto label05;
+
+     label15:
+        $i0_15 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionIndex(android.view.MotionEvent)>($r1);
+
+        $f0_7 = staticinvoke <android.support.v4.view.MotionEventCompat: float getX(android.view.MotionEvent,int)>($r1, $i0_15);
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: float mLastMotionX> = $f0_7;
+
+        $i0_16 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $i0_15);
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mActivePointerId> = $i0_16;
+
+(23)    goto label05;
+
+     label16:
+        $i0_17 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionIndex(android.view.MotionEvent)>($r1);
+
+        $i2_4 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $i0_17);
+
+        $i3_5 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mActivePointerId>;
+
+(24)    if $i2_4 != $i3_5 goto label18;
+
+        if $i0_17 != 0 goto label19;
+
+(25)    $b1_7 = 1;
+
+     label17:
+        $b1_8 = Phi($b1_7 #25, $b1_9 #28);
+
+        $i0_18 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $b1_8);
+
+(26)    $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mActivePointerId> = $i0_18;
+
+     label18:
+        $b1_10 = Phi($b1 #24, $b1_8 #26);
+
+        $i0_19 = Phi($i0_17 #24, $i0_18 #26);
+
+        $i0_20 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mActivePointerId>;
+
+        $i0_21 = staticinvoke <android.support.v4.view.MotionEventCompat: int findPointerIndex(android.view.MotionEvent,int)>($r1, $i0_20);
+
+        $f0_8 = staticinvoke <android.support.v4.view.MotionEventCompat: float getX(android.view.MotionEvent,int)>($r1, $i0_21);
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: float mLastMotionX> = $f0_8;
+
+(27)    goto label05;
+
+     label19:
+        $b1_9 = 0;
+
+(28)    goto label17;
+    }
+
+    public void setCurrentItem(int)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int $i0;
+        java.lang.IllegalStateException $r1;
+        android.support.v4.view.ViewPager $r2, $r2_1;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r2 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        if $r2 != null goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("ViewPager has not been bound.");
+
+        throw $r1;
+
+     label1:
+        $r2_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        virtualinvoke $r2_1.<android.support.v4.view.ViewPager: void setCurrentItem(int)>($i0);
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mCurrentPage> = $i0;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setFadeDelay(int)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int $i0;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mFadeDelay> = $i0;
+
+        return;
+    }
+
+    public void setFadeLength(int)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int $i0, $i0_1, $i0_2, $i0_3;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mFadeLength> = $i0;
+
+        $i0_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mFadeLength>;
+
+        $i0_2 = $i0_1 / 30;
+
+        $i0_3 = 255 / $i0_2;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: int mFadeBy> = $i0_3;
+
+        return;
+    }
+
+    public void setFades(boolean)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        boolean $z0, $z1;
+        android.graphics.Paint $r1;
+        java.lang.Runnable $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean mFades>;
+
+(0)     if $z0 == $z1 goto label2;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean mFades> = $z0;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: java.lang.Runnable mFadeRunnable>;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean post(java.lang.Runnable)>($r2);
+
+        return;
+
+     label1:
+        $r2_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: java.lang.Runnable mFadeRunnable>;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean removeCallbacks(java.lang.Runnable)>($r2_1);
+
+        $r1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.graphics.Paint mPaint>;
+
+        virtualinvoke $r1.<android.graphics.Paint: void setAlpha(int)>(255);
+
+(1)     virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void invalidate()>();
+
+     label2:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    public void setOnPageChangeListener(android.support.v4.view.ViewPager$OnPageChangeListener)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        android.support.v4.view.ViewPager$OnPageChangeListener $r1;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r1 := @parameter0: android.support.v4.view.ViewPager$OnPageChangeListener;
+
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener> = $r1;
+
+        return;
+    }
+
+    public void setSelectedColor(int)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        int $i0;
+        android.graphics.Paint $r1;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.graphics.Paint mPaint>;
+
+        virtualinvoke $r1.<android.graphics.Paint: void setColor(int)>($i0);
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setViewPager(android.support.v4.view.ViewPager)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        java.lang.IllegalStateException $r1;
+        com.viewpagerindicator.UnderlinePageIndicator$2 $r2;
+        android.support.v4.view.PagerAdapter $r3;
+        android.support.v4.view.ViewPager $r4, $r5, $r5_1, $r5_2, $r5_3, $r4_1;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r4 := @parameter0: android.support.v4.view.ViewPager;
+
+        $r5 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        if $r5 != $r4 goto label1;
+
+        return;
+
+     label1:
+        $r5_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+(0)     if $r5_1 == null goto label2;
+
+        $r5_2 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+(1)     virtualinvoke $r5_2.<android.support.v4.view.ViewPager: void setOnPageChangeListener(android.support.v4.view.ViewPager$OnPageChangeListener)>(null);
+
+     label2:
+        $r5_3 = Phi($r5_1 #0, $r5_2 #1);
+
+        $r3 = virtualinvoke $r4.<android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()>();
+
+        if $r3 != null goto label3;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("ViewPager does not have adapter instance.");
+
+        throw $r1;
+
+     label3:
+        $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager> = $r4;
+
+        $r4_1 = $r0.<com.viewpagerindicator.UnderlinePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        virtualinvoke $r4_1.<android.support.v4.view.ViewPager: void setOnPageChangeListener(android.support.v4.view.ViewPager$OnPageChangeListener)>($r0);
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void invalidate()>();
+
+        $r2 = new com.viewpagerindicator.UnderlinePageIndicator$2;
+
+        specialinvoke $r2.<com.viewpagerindicator.UnderlinePageIndicator$2: void <init>(com.viewpagerindicator.UnderlinePageIndicator)>($r0);
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: boolean post(java.lang.Runnable)>($r2);
+
+        return;
+    }
+
+    public void setViewPager(android.support.v4.view.ViewPager, int)
+    {
+        com.viewpagerindicator.UnderlinePageIndicator $r0;
+        android.support.v4.view.ViewPager $r1;
+        int $i0;
+
+        $r0 := @this: com.viewpagerindicator.UnderlinePageIndicator;
+
+        $r1 := @parameter0: android.support.v4.view.ViewPager;
+
+        $i0 := @parameter1: int;
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void setViewPager(android.support.v4.view.ViewPager)>($r1);
+
+        virtualinvoke $r0.<com.viewpagerindicator.UnderlinePageIndicator: void setCurrentItem(int)>($i0);
+
+        return;
+    }
+}

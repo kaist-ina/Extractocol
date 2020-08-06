@@ -1,0 +1,795 @@
+public class ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager extends java.lang.Object implements ch.boye.httpclientandroidlib.conn.ClientConnectionManager
+{
+    protected final ch.boye.httpclientandroidlib.conn.ClientConnectionOperator connOperator;
+    protected final ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean connPerRoute;
+    protected final ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool connectionPool;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+    protected final ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool;
+    protected final ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry schemeRegistry;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 = staticinvoke <ch.boye.httpclientandroidlib.impl.conn.SchemeRegistryFactory: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry createDefault()>();
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)>($r1);
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+        java.util.concurrent.TimeUnit $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
+
+        $r2 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit MILLISECONDS>;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry,long,java.util.concurrent.TimeUnit)>($r1, -1L, $r2);
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry, long, java.util.concurrent.TimeUnit)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+        long $l0;
+        java.util.concurrent.TimeUnit $r2;
+        ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
+
+        $l0 := @parameter1: long;
+
+        $r2 := @parameter2: java.util.concurrent.TimeUnit;
+
+        $r3 = new ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean: void <init>()>();
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry,long,java.util.concurrent.TimeUnit,ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean)>($r1, $l0, $r2, $r3);
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry, long, java.util.concurrent.TimeUnit, ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+        long $l0;
+        java.util.concurrent.TimeUnit $r2;
+        ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean $r3;
+        java.lang.IllegalArgumentException $r4;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r5;
+        java.lang.Class $r6;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionOperator $r7;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r8, $r8_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
+
+        $l0 := @parameter1: long;
+
+        $r2 := @parameter2: java.util.concurrent.TimeUnit;
+
+        $r3 := @parameter3: ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Scheme registry may not be null");
+
+        throw $r4;
+
+     label1:
+        $r5 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r6 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r6);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r5;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry schemeRegistry> = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean connPerRoute> = $r3;
+
+        $r7 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator createConnectionOperator(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator connOperator> = $r7;
+
+        $r8 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute createConnectionPool(long,java.util.concurrent.TimeUnit)>($l0, $r2);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool> = $r8;
+
+        $r8_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool connectionPool> = $r8_1;
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.params.HttpParams, ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r1;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r2;
+        java.lang.IllegalArgumentException $r3;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r4;
+        ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean $r5;
+        java.lang.Class $r6;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionOperator $r7;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool $r8;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r9, $r9_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r2 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Scheme registry may not be null");
+
+        throw $r3;
+
+     label1:
+        $r4 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r6 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r6);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r4;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry schemeRegistry> = $r2;
+
+        $r5 = new ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean;
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean connPerRoute> = $r5;
+
+        $r7 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator createConnectionOperator(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)>($r2);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator connOperator> = $r7;
+
+        $r8 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool createConnectionPool(ch.boye.httpclientandroidlib.params.HttpParams)>($r1);
+
+        $r9 = (ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute) $r8;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool> = $r9;
+
+        $r9_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool connectionPool> = $r9_1;
+
+        return;
+    }
+
+    public void closeExpiredConnections()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r1;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Closing expired connections");
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: void closeExpiredConnections()>();
+
+        return;
+    }
+
+    public void closeIdleConnections(long, java.util.concurrent.TimeUnit)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        long $l0;
+        java.util.concurrent.TimeUnit $r1;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3, $r3_1, $r3_2;
+        boolean $z0;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        java.lang.String $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.util.concurrent.TimeUnit;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Closing connections idle longer than ");
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r5 = virtualinvoke $r4_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     virtualinvoke $r3_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r5);
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $r4_5 = Phi($r4 #0, $r4_4 #1);
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: void closeIdleConnections(long,java.util.concurrent.TimeUnit)>($l0, $r1);
+
+        return;
+    }
+
+    protected ch.boye.httpclientandroidlib.conn.ClientConnectionOperator createConnectionOperator(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry $r1;
+        ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnectionOperator $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry;
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnectionOperator;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.DefaultClientConnectionOperator: void <init>(ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry)>($r1);
+
+        return $r2;
+    }
+
+    protected ch.boye.httpclientandroidlib.impl.conn.tsccm.AbstractConnPool createConnectionPool(ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r1;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r2;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionOperator $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator connOperator>;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: void <init>(ch.boye.httpclientandroidlib.conn.ClientConnectionOperator,ch.boye.httpclientandroidlib.params.HttpParams)>($r3, $r1);
+
+        return $r2;
+    }
+
+    protected ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute createConnectionPool(long, java.util.concurrent.TimeUnit)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        long $l0;
+        java.util.concurrent.TimeUnit $r1;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r2;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionOperator $r3;
+        ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.util.concurrent.TimeUnit;
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.ClientConnectionOperator connOperator>;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean connPerRoute>;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: void <init>(ch.boye.httpclientandroidlib.conn.ClientConnectionOperator,ch.boye.httpclientandroidlib.conn.params.ConnPerRoute,int,long,java.util.concurrent.TimeUnit)>($r3, $r4, 20, $l0, $r1);
+
+        return $r2;
+    }
+
+    protected void finalize() throws java.lang.Throwable
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        java.lang.Throwable $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+     label1:
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: void shutdown()>();
+
+     label2:
+        specialinvoke $r0.<java.lang.Object: void finalize()>();
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        specialinvoke $r0.<java.lang.Object: void finalize()>();
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public int getConnectionsInPool()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        $i0 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: int getConnectionsInPool()>();
+
+        return $i0;
+    }
+
+    public int getConnectionsInPool(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r2;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        $i0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: int getConnectionsInPool(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r1);
+
+        return $i0;
+    }
+
+    public int getDefaultMaxPerRoute()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean connPerRoute>;
+
+        $i0 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean: int getDefaultMaxPerRoute()>();
+
+        return $i0;
+    }
+
+    public int getMaxForRoute(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean $r2;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean connPerRoute>;
+
+        $i0 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean: int getMaxForRoute(ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r1);
+
+        return $i0;
+    }
+
+    public int getMaxTotal()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r1;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        $i0 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: int getMaxTotalConnections()>();
+
+        return $i0;
+    }
+
+    public ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry getSchemeRegistry()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.scheme.SchemeRegistry schemeRegistry>;
+
+        return r1;
+    }
+
+    public void releaseConnection(ch.boye.httpclientandroidlib.conn.ManagedClientConnection, long, java.util.concurrent.TimeUnit)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.ManagedClientConnection $r1;
+        long $l0;
+        java.util.concurrent.TimeUnit $r2;
+        java.lang.Throwable $r3, $r5;
+        java.io.IOException $r4;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z1_1, $z0_6, $z0_7, $z0_8, $z1_2, $z0_9, $z0_10, $z1_3, $z0_11, $z1_4;
+        java.lang.IllegalArgumentException $r6, $r6_1;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter $r7;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r8, $r8_1, $r8_2;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r9;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry $r10;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8, $r11_9, $r11_10, $r11_11, $r11_12, $r11_13, $r11_14, $r11_15, $r11_16, $r11_17;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r12, $r12_1, $r12_2, $r12_3, $r12_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.ManagedClientConnection;
+
+        $l0 := @parameter1: long;
+
+        $r2 := @parameter2: java.util.concurrent.TimeUnit;
+
+        $z0 = $r1 instanceof ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter;
+
+        if $z0 != 0 goto label01;
+
+        $r6 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Connection class mismatch, connection not obtained from this manager.");
+
+        throw $r6;
+
+     label01:
+        $r7 = (ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter) $r1;
+
+        $r8 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        if $r8 == null goto label02;
+
+        $r9 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: ch.boye.httpclientandroidlib.conn.ClientConnectionManager getManager()>();
+
+        if $r9 == $r0 goto label02;
+
+        $r6_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Connection not obtained from this manager.");
+
+        throw $r6_1;
+
+     label02:
+(0)     entermonitor $r7;
+
+     label03:
+(1)     $r8_1 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        $r10 = (ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry) $r8_1;
+
+(2)     if $r10 != null goto label05;
+
+        exitmonitor $r7;
+
+     label04:
+        return;
+
+     label05:
+(3)     $z0_1 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: boolean isOpen()>();
+
+     label06:
+(4)     if $z0_1 == 0 goto label10;
+
+     label07:
+(5)     $z0_2 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: boolean isMarkedReusable()>();
+
+     label08:
+(6)     if $z0_2 != 0 goto label10;
+
+     label09:
+(7)     virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: void shutdown()>();
+
+     label10:
+        $z0_3 = Phi($z0_1 #4, $z0_2 #6, $z0_2 #7);
+
+(8)     $z0_4 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: boolean isMarkedReusable()>();
+
+        $r11 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z1 = virtualinvoke $r11.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(9)     if $z1 == 0 goto label11;
+
+        if $z0_4 == 0 goto label16;
+
+(10)    $r11_1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(11)    virtualinvoke $r11_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Released connection is reusable.");
+
+     label11:
+        $r11_3 = Phi($r11 #9, $r11_1 #11, $r11_2 #17);
+
+(12)    virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: void detach()>();
+
+        $r12 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+(13)    virtualinvoke $r12.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: void freeEntry(ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry,boolean,long,java.util.concurrent.TimeUnit)>($r10, $z0_4, $l0, $r2);
+
+     label12:
+        $z0_5 = Phi($z0_4 #13, $z0_8 #32);
+
+        $r11_4 = Phi($r11_3 #13, $r11_11 #32);
+
+        $r12_1 = Phi($r12 #13, $r12_2 #32);
+
+        $z1_1 = Phi($z1 #13, $z1_2 #32);
+
+(14)    exitmonitor $r7;
+
+     label13:
+        return;
+
+     label14:
+        $r3 := @caughtexception;
+
+        $z0_11 = Phi($z0 #0, $z0_4 #8, $z0_5 #14, $z0_11 #15, $z0_8 #24, $z0_9 #36, $z0_10 #37, $z0_1 #3, $z0_2 #5, $z0_6 #18, $z0_7 #20);
+
+        $r11_17 = Phi($r11 #0, $r11_1 #10, $r11_3 #12, $r11_4 #14, $r11_17 #15, $r11_2 #16, $r11_7 #24, $r11_8 #25, $r11_9 #28, $r11_11 #30, $r11_10 #33, $r11_12 #35, $r11_13 #38, $r11_14 #41, $r11_16 #43, $r11_15 #45, $r11_5 #19, $r11_6 #22);
+
+        $r12_4 = Phi($r12 #0, $r12_1 #14, $r12_4 #15, $r12_2 #31, $r12_3 #44);
+
+        $r8_2 = Phi($r8 #0, $r8_1 #1, $r8_2 #15);
+
+(15)    $z1_4 = Phi($z1 #0, $z1_1 #14, $z1_4 #15, $z1_2 #26, $z1_3 #39);
+
+        exitmonitor $r7;
+
+     label15:
+        throw $r3;
+
+     label16:
+(16)    $r11_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r11_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Released connection is not reusable.");
+
+     label17:
+(17)    goto label11;
+
+     label18:
+        $r4 := @caughtexception;
+
+(18)    $z0_6 = Phi($z0 #2, $z0_1 #3, $z0_2 #5);
+
+     label19:
+(19)    $r11_5 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(20)    $z0_7 = virtualinvoke $r11_5.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(21)    if $z0_7 == 0 goto label20;
+
+(22)    $r11_6 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(23)    virtualinvoke $r11_6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object,java.lang.Throwable)>("Exception shutting down released connection.", $r4);
+
+     label20:
+        $r11_7 = Phi($r11_5 #21, $r11_6 #23);
+
+(24)    $z0_8 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: boolean isMarkedReusable()>();
+
+(25)    $r11_8 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(26)    $z1_2 = virtualinvoke $r11_8.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(27)    if $z1_2 == 0 goto label21;
+
+        if $z0_8 == 0 goto label22;
+
+(28)    $r11_9 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(29)    virtualinvoke $r11_9.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Released connection is reusable.");
+
+     label21:
+        $r11_11 = Phi($r11_8 #27, $r11_9 #29, $r11_10 #34);
+
+(30)    virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: void detach()>();
+
+(31)    $r12_2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        virtualinvoke $r12_2.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: void freeEntry(ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry,boolean,long,java.util.concurrent.TimeUnit)>($r10, $z0_8, $l0, $r2);
+
+(32)    goto label12;
+
+     label22:
+(33)    $r11_10 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r11_10.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Released connection is not reusable.");
+
+(34)    goto label21;
+
+     label23:
+(35)    $r5 := @caughtexception;
+
+        $z0_9 = Phi($z0 #2, $z0_1 #3, $z0_2 #5, $z0_6 #18, $z0_7 #20);
+
+(36)    $r11_12 = Phi($r11 #2, $r11_5 #19, $r11_6 #22);
+
+(37)    $z0_10 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: boolean isMarkedReusable()>();
+
+(38)    $r11_13 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(39)    $z1_3 = virtualinvoke $r11_13.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(40)    if $z1_3 == 0 goto label24;
+
+        if $z0_10 == 0 goto label25;
+
+(41)    $r11_14 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+(42)    virtualinvoke $r11_14.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Released connection is reusable.");
+
+     label24:
+        $r11_16 = Phi($r11_13 #40, $r11_14 #42, $r11_15 #46);
+
+(43)    virtualinvoke $r7.<ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPooledConnAdapter: void detach()>();
+
+(44)    $r12_3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        virtualinvoke $r12_3.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: void freeEntry(ch.boye.httpclientandroidlib.impl.conn.tsccm.BasicPoolEntry,boolean,long,java.util.concurrent.TimeUnit)>($r10, $z0_10, $l0, $r2);
+
+        throw $r5;
+
+     label25:
+(45)    $r11_15 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r11_15.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Released connection is not reusable.");
+
+     label26:
+(46)    goto label24;
+
+        catch java.lang.Throwable from label03 to label04 with label14;
+        catch java.io.IOException from label05 to label06 with label18;
+        catch java.lang.Throwable from label05 to label06 with label23;
+        catch java.lang.Throwable from label06 to label07 with label23;
+        catch java.io.IOException from label07 to label08 with label18;
+        catch java.lang.Throwable from label07 to label08 with label23;
+        catch java.io.IOException from label09 to label10 with label18;
+        catch java.lang.Throwable from label09 to label10 with label23;
+        catch java.lang.Throwable from label10 to label13 with label14;
+        catch java.lang.Throwable from label14 to label15 with label14;
+        catch java.lang.Throwable from label16 to label17 with label14;
+        catch java.lang.Throwable from label19 to label20 with label23;
+        catch java.lang.Throwable from label20 to label26 with label14;
+    }
+
+    public ch.boye.httpclientandroidlib.conn.ClientConnectionRequest requestConnection(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        java.lang.Object $r2;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r3;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager$1 $r4;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.PoolEntryRequest $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        $r5 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: ch.boye.httpclientandroidlib.impl.conn.tsccm.PoolEntryRequest requestPoolEntry(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,java.lang.Object)>($r1, $r2);
+
+        $r4 = new ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager$1;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager$1: void <init>(ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager,ch.boye.httpclientandroidlib.impl.conn.tsccm.PoolEntryRequest,ch.boye.httpclientandroidlib.conn.routing.HttpRoute)>($r0, $r5, $r1);
+
+        return $r4;
+    }
+
+    public void setDefaultMaxPerRoute(int)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        int $i0;
+        ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean connPerRoute>;
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean: void setDefaultMaxPerRoute(int)>($i0);
+
+        return;
+    }
+
+    public void setMaxForRoute(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, int)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        int $i0;
+        ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $i0 := @parameter1: int;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean connPerRoute>;
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.conn.params.ConnPerRouteBean: void setMaxForRoute(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,int)>($r1, $i0);
+
+        return;
+    }
+
+    public void setMaxTotal(int)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        int $i0;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: void setMaxTotalConnections(int)>($i0);
+
+        return;
+    }
+
+    public void shutdown()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager $r0;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r1;
+        ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Shutting down");
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager: ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute pool>;
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.tsccm.ConnPoolByRoute: void shutdown()>();
+
+        return;
+    }
+}

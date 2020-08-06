@@ -1,0 +1,2177 @@
+public class com.contextlogic.wish.googleplus.GooglePlusManager extends java.lang.Object
+{
+    private static final java.lang.String EMAIL_SCOPE;
+    private static final int REQUEST_CODE_CHANGE_MASKED_WALLET_INTENT;
+    private static final int REQUEST_CODE_FULL_WALLET_INTENT;
+    private static final int REQUEST_CODE_MASKED_WALLET_INTENT;
+    private static final int REQUEST_CODE_PREAUTHORIZATION_CHECK_INTENT;
+    private static final int REQUEST_CODE_RESOLVE_ERR;
+    private static final int REQUEST_CODE_SHARE_INTENT;
+    private static com.contextlogic.wish.googleplus.GooglePlusManager _instance;
+    private com.braintreepayments.api.Braintree braintree;
+    private com.braintreepayments.api.Braintree$ErrorListener braintreeErrorListener;
+    private com.braintreepayments.api.Braintree$PaymentMethodNonceListener braintreePaymentMethodNonceListener;
+    private com.google.android.gms.common.ConnectionResult cachedResult;
+    private java.util.HashMap changeWalletIntentListeners;
+    private com.google.android.gms.common.api.GoogleApiClient client;
+    private com.google.android.gms.common.api.GoogleApiClient connectingWalletClient;
+    private java.util.HashMap fullWalletIntentListeners;
+    private com.contextlogic.wish.api.service.GetBraintreeClientTokenService getBraintreeClientTokenService;
+    private com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback loginCallback;
+    private java.util.HashMap maskedWalletIntentListeners;
+    private java.util.Random random;
+    private java.util.HashMap shareIntentListeners;
+    private com.contextlogic.wish.googleplus.GooglePlusManager$SignInConnectionListener signInConnectionListener;
+    private com.google.android.gms.common.api.GoogleApiClient walletClient;
+    private com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback walletClientCallback;
+    private com.contextlogic.wish.googleplus.GooglePlusManager$WalletConnectionListener walletConnectionListener;
+    private java.util.HashMap walletPreauthorizationIntentListeners;
+
+    static void <clinit>()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+
+        $r0 = new com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        specialinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void <init>()>();
+
+        <com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager _instance> = $r0;
+
+        return;
+    }
+
+    private void <init>()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.contextlogic.wish.googleplus.GooglePlusManager$WalletConnectionListener $r1;
+        com.contextlogic.wish.googleplus.GooglePlusManager$SignInConnectionListener $r2;
+        java.util.Random $r3;
+        com.contextlogic.wish.api.service.GetBraintreeClientTokenService $r4;
+        java.util.HashMap $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new com.contextlogic.wish.googleplus.GooglePlusManager$WalletConnectionListener;
+
+        specialinvoke $r1.<com.contextlogic.wish.googleplus.GooglePlusManager$WalletConnectionListener: void <init>(com.contextlogic.wish.googleplus.GooglePlusManager,com.contextlogic.wish.googleplus.GooglePlusManager$1)>($r0, null);
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$WalletConnectionListener walletConnectionListener> = $r1;
+
+        $r2 = new com.contextlogic.wish.googleplus.GooglePlusManager$SignInConnectionListener;
+
+        specialinvoke $r2.<com.contextlogic.wish.googleplus.GooglePlusManager$SignInConnectionListener: void <init>(com.contextlogic.wish.googleplus.GooglePlusManager,com.contextlogic.wish.googleplus.GooglePlusManager$1)>($r0, null);
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$SignInConnectionListener signInConnectionListener> = $r2;
+
+        virtualinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void resetPlusClient()>();
+
+        $r3 = new java.util.Random;
+
+        specialinvoke $r3.<java.util.Random: void <init>()>();
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random> = $r3;
+
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap shareIntentListeners> = $r5;
+
+        $r5_1 = new java.util.HashMap;
+
+        specialinvoke $r5_1.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap maskedWalletIntentListeners> = $r5_1;
+
+        $r5_2 = new java.util.HashMap;
+
+        specialinvoke $r5_2.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap fullWalletIntentListeners> = $r5_2;
+
+        $r5_3 = new java.util.HashMap;
+
+        specialinvoke $r5_3.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap changeWalletIntentListeners> = $r5_3;
+
+        $r5_4 = new java.util.HashMap;
+
+        specialinvoke $r5_4.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap walletPreauthorizationIntentListeners> = $r5_4;
+
+        $r4 = new com.contextlogic.wish.api.service.GetBraintreeClientTokenService;
+
+        specialinvoke $r4.<com.contextlogic.wish.api.service.GetBraintreeClientTokenService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.api.service.GetBraintreeClientTokenService getBraintreeClientTokenService> = $r4;
+
+        return;
+    }
+
+    static void access$1000(com.contextlogic.wish.googleplus.GooglePlusManager)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        specialinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void safeConnect()>();
+
+        return;
+    }
+
+    static com.braintreepayments.api.Braintree$PaymentMethodNonceListener access$200(com.contextlogic.wish.googleplus.GooglePlusManager)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.braintreepayments.api.Braintree$PaymentMethodNonceListener r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$PaymentMethodNonceListener braintreePaymentMethodNonceListener>;
+
+        return r1;
+    }
+
+    static com.braintreepayments.api.Braintree$PaymentMethodNonceListener access$202(com.contextlogic.wish.googleplus.GooglePlusManager, com.braintreepayments.api.Braintree$PaymentMethodNonceListener)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.braintreepayments.api.Braintree$PaymentMethodNonceListener $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter1: com.braintreepayments.api.Braintree$PaymentMethodNonceListener;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$PaymentMethodNonceListener braintreePaymentMethodNonceListener> = $r1;
+
+        return $r1;
+    }
+
+    static com.braintreepayments.api.Braintree access$300(com.contextlogic.wish.googleplus.GooglePlusManager)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.braintreepayments.api.Braintree r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree>;
+
+        return r1;
+    }
+
+    static com.braintreepayments.api.Braintree access$302(com.contextlogic.wish.googleplus.GooglePlusManager, com.braintreepayments.api.Braintree)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.braintreepayments.api.Braintree $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter1: com.braintreepayments.api.Braintree;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree> = $r1;
+
+        return $r1;
+    }
+
+    static com.braintreepayments.api.Braintree$ErrorListener access$400(com.contextlogic.wish.googleplus.GooglePlusManager)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.braintreepayments.api.Braintree$ErrorListener r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$ErrorListener braintreeErrorListener>;
+
+        return r1;
+    }
+
+    static com.braintreepayments.api.Braintree$ErrorListener access$402(com.contextlogic.wish.googleplus.GooglePlusManager, com.braintreepayments.api.Braintree$ErrorListener)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.braintreepayments.api.Braintree$ErrorListener $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter1: com.braintreepayments.api.Braintree$ErrorListener;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$ErrorListener braintreeErrorListener> = $r1;
+
+        return $r1;
+    }
+
+    static com.google.android.gms.common.api.GoogleApiClient access$500(com.contextlogic.wish.googleplus.GooglePlusManager)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient walletClient>;
+
+        return r1;
+    }
+
+    static com.google.android.gms.common.api.GoogleApiClient access$502(com.contextlogic.wish.googleplus.GooglePlusManager, com.google.android.gms.common.api.GoogleApiClient)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter1: com.google.android.gms.common.api.GoogleApiClient;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient walletClient> = $r1;
+
+        return $r1;
+    }
+
+    static com.google.android.gms.common.api.GoogleApiClient access$600(com.contextlogic.wish.googleplus.GooglePlusManager)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient connectingWalletClient>;
+
+        return r1;
+    }
+
+    static com.google.android.gms.common.api.GoogleApiClient access$602(com.contextlogic.wish.googleplus.GooglePlusManager, com.google.android.gms.common.api.GoogleApiClient)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter1: com.google.android.gms.common.api.GoogleApiClient;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient connectingWalletClient> = $r1;
+
+        return $r1;
+    }
+
+    static com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback access$700(com.contextlogic.wish.googleplus.GooglePlusManager)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback walletClientCallback>;
+
+        return r1;
+    }
+
+    static com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback access$800(com.contextlogic.wish.googleplus.GooglePlusManager)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback loginCallback>;
+
+        return r1;
+    }
+
+    static com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback access$802(com.contextlogic.wish.googleplus.GooglePlusManager, com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter1: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback loginCallback> = $r1;
+
+        return $r1;
+    }
+
+    static com.google.android.gms.common.ConnectionResult access$902(com.contextlogic.wish.googleplus.GooglePlusManager, com.google.android.gms.common.ConnectionResult)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.ConnectionResult $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter1: com.google.android.gms.common.ConnectionResult;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.ConnectionResult cachedResult> = $r1;
+
+        return $r1;
+    }
+
+    public static com.google.android.gms.wallet.FullWalletRequest createFullWalletRequest(com.contextlogic.wish.ui.fragment.cartmodal.CartManager, com.google.android.gms.wallet.MaskedWallet)
+    {
+        com.contextlogic.wish.ui.fragment.cartmodal.CartManager $r0;
+        com.google.android.gms.wallet.MaskedWallet $r1;
+        com.google.android.gms.wallet.FullWalletRequest$Builder $r2, $r2_1, $r2_2;
+        com.google.android.gms.wallet.Cart $r3;
+        java.lang.String $r4;
+        com.google.android.gms.wallet.FullWalletRequest $r5;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.cartmodal.CartManager;
+
+        $r1 := @parameter1: com.google.android.gms.wallet.MaskedWallet;
+
+        $r2 = staticinvoke <com.google.android.gms.wallet.FullWalletRequest: com.google.android.gms.wallet.FullWalletRequest$Builder newBuilder()>();
+
+        $r3 = staticinvoke <com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.wallet.Cart createGoogleWalletCart(com.contextlogic.wish.ui.fragment.cartmodal.CartManager)>($r0);
+
+        $r2_1 = virtualinvoke $r2.<com.google.android.gms.wallet.FullWalletRequest$Builder: com.google.android.gms.wallet.FullWalletRequest$Builder setCart(com.google.android.gms.wallet.Cart)>($r3);
+
+        $r4 = virtualinvoke $r1.<com.google.android.gms.wallet.MaskedWallet: java.lang.String getGoogleTransactionId()>();
+
+        $r2_2 = virtualinvoke $r2_1.<com.google.android.gms.wallet.FullWalletRequest$Builder: com.google.android.gms.wallet.FullWalletRequest$Builder setGoogleTransactionId(java.lang.String)>($r4);
+
+        $r5 = virtualinvoke $r2_2.<com.google.android.gms.wallet.FullWalletRequest$Builder: com.google.android.gms.wallet.FullWalletRequest build()>();
+
+        return $r5;
+    }
+
+    public static com.google.android.gms.wallet.Cart createGoogleWalletCart(com.contextlogic.wish.ui.fragment.cartmodal.CartManager)
+    {
+        com.contextlogic.wish.ui.fragment.cartmodal.CartManager $r0;
+        com.google.android.gms.wallet.Cart$Builder $r1;
+        boolean $z0;
+        java.util.Locale $r2, $r2_1, $r2_2;
+        java.lang.Object[] $r3, $r3_1, $r3_2;
+        com.contextlogic.wish.api.data.WishCart $r4, $r4_1, $r4_2, $r4_3;
+        com.contextlogic.wish.api.data.WishLocalizedCurrencyValue $r5, $r5_1, $r5_2, $r5_3;
+        double $d0, $d0_1, $d0_2;
+        java.lang.Double $r6, $r6_1, $r6_2;
+        java.lang.String $r7, $r7_1, $r7_2, $r7_3;
+        com.google.android.gms.wallet.Cart $r8;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.cartmodal.CartManager;
+
+        $r1 = staticinvoke <com.google.android.gms.wallet.Cart: com.google.android.gms.wallet.Cart$Builder newBuilder()>();
+
+        $z0 = staticinvoke <com.contextlogic.wish.ui.fragment.cartmodal.CartExperimentManager: boolean mustUseUsd(com.contextlogic.wish.ui.fragment.cartmodal.CartManager)>($r0);
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r1.<com.google.android.gms.wallet.Cart$Builder: com.google.android.gms.wallet.Cart$Builder setCurrencyCode(java.lang.String)>("USD");
+
+        $r2 = <java.util.Locale: java.util.Locale US>;
+
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r4 = interfaceinvoke $r0.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+        $r5 = virtualinvoke $r4.<com.contextlogic.wish.api.data.WishCart: com.contextlogic.wish.api.data.WishLocalizedCurrencyValue getTotal()>();
+
+        $d0 = virtualinvoke $r5.<com.contextlogic.wish.api.data.WishLocalizedCurrencyValue: double getUsdValue()>();
+
+        $r6 = staticinvoke <java.lang.Double: java.lang.Double valueOf(double)>($d0);
+
+        $r3[0] = $r6;
+
+        $r7 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r2, "%.2f", $r3);
+
+(0)     virtualinvoke $r1.<com.google.android.gms.wallet.Cart$Builder: com.google.android.gms.wallet.Cart$Builder setTotalPrice(java.lang.String)>($r7);
+
+     label1:
+        $r4_1 = Phi($r4 #0, $r4_3 #1);
+
+        $d0_1 = Phi($d0 #0, $d0_2 #1);
+
+        $r5_1 = Phi($r5 #0, $r5_3 #1);
+
+        $r6_1 = Phi($r6 #0, $r6_2 #1);
+
+        $r3_1 = Phi($r3 #0, $r3_2 #1);
+
+        $r2_1 = Phi($r2 #0, $r2_2 #1);
+
+        $r7_1 = Phi($r7 #0, $r7_3 #1);
+
+        $r8 = virtualinvoke $r1.<com.google.android.gms.wallet.Cart$Builder: com.google.android.gms.wallet.Cart build()>();
+
+        return $r8;
+
+     label2:
+        $r4_2 = interfaceinvoke $r0.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+        $r5_2 = virtualinvoke $r4_2.<com.contextlogic.wish.api.data.WishCart: com.contextlogic.wish.api.data.WishLocalizedCurrencyValue getTotal()>();
+
+        $r7_2 = virtualinvoke $r5_2.<com.contextlogic.wish.api.data.WishLocalizedCurrencyValue: java.lang.String getLocalizedCurrencyCode()>();
+
+        virtualinvoke $r1.<com.google.android.gms.wallet.Cart$Builder: com.google.android.gms.wallet.Cart$Builder setCurrencyCode(java.lang.String)>($r7_2);
+
+        $r2_2 = <java.util.Locale: java.util.Locale US>;
+
+        $r3_2 = newarray (java.lang.Object)[1];
+
+        $r4_3 = interfaceinvoke $r0.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+        $r5_3 = virtualinvoke $r4_3.<com.contextlogic.wish.api.data.WishCart: com.contextlogic.wish.api.data.WishLocalizedCurrencyValue getTotal()>();
+
+        $d0_2 = virtualinvoke $r5_3.<com.contextlogic.wish.api.data.WishLocalizedCurrencyValue: double getValue()>();
+
+        $r6_2 = staticinvoke <java.lang.Double: java.lang.Double valueOf(double)>($d0_2);
+
+        $r3_2[0] = $r6_2;
+
+        $r7_3 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r2_2, "%.2f", $r3_2);
+
+        virtualinvoke $r1.<com.google.android.gms.wallet.Cart$Builder: com.google.android.gms.wallet.Cart$Builder setTotalPrice(java.lang.String)>($r7_3);
+
+(1)     goto label1;
+    }
+
+    public static com.google.android.gms.wallet.MaskedWalletRequest createMaskedWalletRequest(com.contextlogic.wish.ui.fragment.cartmodal.CartManager)
+    {
+        com.contextlogic.wish.ui.fragment.cartmodal.CartManager $r0;
+        com.google.android.gms.wallet.MaskedWalletRequest$Builder $r1, $r1_1, $r1_2, $r1_3, $r1_4;
+        com.google.android.gms.wallet.Cart $r2;
+        com.contextlogic.wish.WishApplication $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        boolean $z0;
+        java.util.Locale $r5, $r5_1, $r5_2;
+        java.lang.Object[] $r6, $r6_1, $r6_2;
+        com.contextlogic.wish.api.data.WishCart $r7, $r7_1, $r7_2, $r7_3;
+        com.contextlogic.wish.api.data.WishLocalizedCurrencyValue $r8, $r8_1, $r8_2, $r8_3;
+        double $d0, $d0_1, $d0_2;
+        java.lang.Double $r9, $r9_1, $r9_2;
+        com.contextlogic.wish.googleplus.GooglePlusManager $r10;
+        com.google.android.gms.wallet.MaskedWalletRequest $r11;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.cartmodal.CartManager;
+
+        $r1 = staticinvoke <com.google.android.gms.wallet.MaskedWalletRequest: com.google.android.gms.wallet.MaskedWalletRequest$Builder newBuilder()>();
+
+        $r1_1 = virtualinvoke $r1.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest$Builder setPhoneNumberRequired(boolean)>(1);
+
+        $r1_2 = virtualinvoke $r1_1.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest$Builder setShippingAddressRequired(boolean)>(1);
+
+        $r2 = staticinvoke <com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.wallet.Cart createGoogleWalletCart(com.contextlogic.wish.ui.fragment.cartmodal.CartManager)>($r0);
+
+        $r1_3 = virtualinvoke $r1_2.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest$Builder setCart(com.google.android.gms.wallet.Cart)>($r2);
+
+        $r3 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r4 = virtualinvoke $r3.<com.contextlogic.wish.WishApplication: java.lang.String getAppName()>();
+
+        $r1_4 = virtualinvoke $r1_3.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest$Builder setMerchantName(java.lang.String)>($r4);
+
+        $z0 = staticinvoke <com.contextlogic.wish.ui.fragment.cartmodal.CartExperimentManager: boolean mustUseUsd(com.contextlogic.wish.ui.fragment.cartmodal.CartManager)>($r0);
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r1_4.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest$Builder setCurrencyCode(java.lang.String)>("USD");
+
+        $r5 = <java.util.Locale: java.util.Locale US>;
+
+        $r6 = newarray (java.lang.Object)[1];
+
+        $r7 = interfaceinvoke $r0.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+        $r8 = virtualinvoke $r7.<com.contextlogic.wish.api.data.WishCart: com.contextlogic.wish.api.data.WishLocalizedCurrencyValue getTotal()>();
+
+        $d0 = virtualinvoke $r8.<com.contextlogic.wish.api.data.WishLocalizedCurrencyValue: double getUsdValue()>();
+
+        $r9 = staticinvoke <java.lang.Double: java.lang.Double valueOf(double)>($d0);
+
+        $r6[0] = $r9;
+
+        $r4_1 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r5, "%.2f", $r6);
+
+(0)     virtualinvoke $r1_4.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest$Builder setEstimatedTotalPrice(java.lang.String)>($r4_1);
+
+     label1:
+        $r8_1 = Phi($r8 #0, $r8_3 #1);
+
+        $r9_1 = Phi($r9 #0, $r9_2 #1);
+
+        $r4_2 = Phi($r4_1 #0, $r4_4 #1);
+
+        $d0_1 = Phi($d0 #0, $d0_2 #1);
+
+        $r7_1 = Phi($r7 #0, $r7_3 #1);
+
+        $r6_1 = Phi($r6 #0, $r6_2 #1);
+
+        $r5_1 = Phi($r5 #0, $r5_2 #1);
+
+        $r10 = staticinvoke <com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager getInstance()>();
+
+        virtualinvoke $r10.<com.contextlogic.wish.googleplus.GooglePlusManager: void prepareMaskedWalletRequest(com.contextlogic.wish.ui.fragment.cartmodal.CartManager,com.google.android.gms.wallet.MaskedWalletRequest$Builder)>($r0, $r1_4);
+
+        $r11 = virtualinvoke $r1_4.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest build()>();
+
+        return $r11;
+
+     label2:
+        $r7_2 = interfaceinvoke $r0.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+        $r8_2 = virtualinvoke $r7_2.<com.contextlogic.wish.api.data.WishCart: com.contextlogic.wish.api.data.WishLocalizedCurrencyValue getTotal()>();
+
+        $r4_3 = virtualinvoke $r8_2.<com.contextlogic.wish.api.data.WishLocalizedCurrencyValue: java.lang.String getLocalizedCurrencyCode()>();
+
+        virtualinvoke $r1_4.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest$Builder setCurrencyCode(java.lang.String)>($r4_3);
+
+        $r5_2 = <java.util.Locale: java.util.Locale US>;
+
+        $r6_2 = newarray (java.lang.Object)[1];
+
+        $r7_3 = interfaceinvoke $r0.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+        $r8_3 = virtualinvoke $r7_3.<com.contextlogic.wish.api.data.WishCart: com.contextlogic.wish.api.data.WishLocalizedCurrencyValue getTotal()>();
+
+        $d0_2 = virtualinvoke $r8_3.<com.contextlogic.wish.api.data.WishLocalizedCurrencyValue: double getValue()>();
+
+        $r9_2 = staticinvoke <java.lang.Double: java.lang.Double valueOf(double)>($d0_2);
+
+        $r6_2[0] = $r9_2;
+
+        $r4_4 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r5_2, "%.2f", $r6_2);
+
+        virtualinvoke $r1_4.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest$Builder setEstimatedTotalPrice(java.lang.String)>($r4_4);
+
+(1)     goto label1;
+    }
+
+    public static java.lang.String getGoogleWalletErrorMessage(int, java.lang.String)
+    {
+        int $i0;
+        java.lang.String $r0, $r0_1, $r0_2, $r0_3, $r0_4, $r0_5;
+        com.contextlogic.wish.WishApplication $r1, $r1_1, $r1_2, $r1_3, $r1_4;
+
+        $i0 := @parameter0: int;
+
+        $r0 := @parameter1: java.lang.String;
+
+        if $i0 == 409 goto label1;
+
+        if $i0 != 411 goto label2;
+
+     label1:
+        $r1_4 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r0_5 = virtualinvoke $r1_4.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100226);
+
+        return $r0_5;
+
+     label2:
+        if $i0 == 405 goto label3;
+
+        if $i0 == 402 goto label3;
+
+        if $i0 == 412 goto label3;
+
+        if $i0 == 1 goto label3;
+
+        if $i0 == 2 goto label3;
+
+        if $i0 == 3 goto label3;
+
+        if $i0 == 9 goto label3;
+
+        if $i0 == 16 goto label3;
+
+        if $i0 == 11 goto label3;
+
+        if $i0 != 5 goto label4;
+
+     label3:
+        $r1_3 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r0_4 = virtualinvoke $r1_3.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100230);
+
+        return $r0_4;
+
+     label4:
+        if $i0 != 406 goto label5;
+
+        $r1 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r0_1 = virtualinvoke $r1.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100229);
+
+        return $r0_1;
+
+     label5:
+(0)     if $r0 != null goto label6;
+
+        $r1_1 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+(1)     $r0_2 = virtualinvoke $r1_1.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100228);
+
+     label6:
+        $r0_3 = Phi($r0 #0, $r0_2 #1);
+
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return $r0_3;
+    }
+
+    public static com.contextlogic.wish.googleplus.GooglePlusManager getInstance()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager r0;
+
+        r0 = <com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager _instance>;
+
+        return r0;
+    }
+
+    public static boolean isGooglePlayServicesAllowed()
+    {
+        com.contextlogic.wish.WishApplication $r0;
+        boolean $z0;
+
+        $r0 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $z0 = virtualinvoke $r0.<com.contextlogic.wish.WishApplication: boolean isAmazonBuild()>();
+
+        if $z0 == 0 goto label1;
+
+        return 0;
+
+     label1:
+        return 1;
+    }
+
+    private void loadWalletClient(android.app.Activity)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        android.app.Activity $r1;
+        com.google.android.gms.common.api.Api $r2;
+        com.contextlogic.wish.user.UserStatusManager $r3;
+        boolean $z0;
+        byte $b0, $b0_1, $b0_2;
+        com.google.android.gms.common.api.GoogleApiClient$Builder $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        com.contextlogic.wish.googleplus.GooglePlusManager$WalletConnectionListener $r5, $r5_1;
+        java.lang.String $r6;
+        com.google.android.gms.wallet.Wallet$WalletOptions$Builder $r7, $r7_1, $r7_2;
+        com.google.android.gms.wallet.Wallet$WalletOptions $r8;
+        com.google.android.gms.common.api.GoogleApiClient $r9, $r9_1;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r3 = staticinvoke <com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager getInstance()>();
+
+        $z0 = virtualinvoke $r3.<com.contextlogic.wish.user.UserStatusManager: boolean getUsePaymentTestMode()>();
+
+        if $z0 == 0 goto label2;
+
+(0)     $b0 = 0;
+
+     label1:
+        $b0_1 = Phi($b0 #0, $b0_2 #1);
+
+        $r4 = new com.google.android.gms.common.api.GoogleApiClient$Builder;
+
+        specialinvoke $r4.<com.google.android.gms.common.api.GoogleApiClient$Builder: void <init>(android.content.Context)>($r1);
+
+        $r5 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$WalletConnectionListener walletConnectionListener>;
+
+        $r4_1 = virtualinvoke $r4.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient$Builder addConnectionCallbacks(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)>($r5);
+
+        $r5_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$WalletConnectionListener walletConnectionListener>;
+
+        $r4_2 = virtualinvoke $r4_1.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient$Builder addOnConnectionFailedListener(com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener)>($r5_1);
+
+        $r6 = virtualinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.lang.String getAccountName()>();
+
+        $r4_3 = virtualinvoke $r4_2.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient$Builder setAccountName(java.lang.String)>($r6);
+
+        $r2 = <com.google.android.gms.wallet.Wallet: com.google.android.gms.common.api.Api API>;
+
+        $r7 = new com.google.android.gms.wallet.Wallet$WalletOptions$Builder;
+
+        specialinvoke $r7.<com.google.android.gms.wallet.Wallet$WalletOptions$Builder: void <init>()>();
+
+        $r7_1 = virtualinvoke $r7.<com.google.android.gms.wallet.Wallet$WalletOptions$Builder: com.google.android.gms.wallet.Wallet$WalletOptions$Builder setEnvironment(int)>($b0_1);
+
+        $r7_2 = virtualinvoke $r7_1.<com.google.android.gms.wallet.Wallet$WalletOptions$Builder: com.google.android.gms.wallet.Wallet$WalletOptions$Builder setTheme(int)>(1);
+
+        $r8 = virtualinvoke $r7_2.<com.google.android.gms.wallet.Wallet$WalletOptions$Builder: com.google.android.gms.wallet.Wallet$WalletOptions build()>();
+
+        $r4_4 = virtualinvoke $r4_3.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient$Builder addApi(com.google.android.gms.common.api.Api,com.google.android.gms.common.api.Api$ApiOptions$HasOptions)>($r2, $r8);
+
+        $r9 = virtualinvoke $r4_4.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient build()>();
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient connectingWalletClient> = $r9;
+
+        $r9_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient connectingWalletClient>;
+
+        virtualinvoke $r9_1.<com.google.android.gms.common.api.GoogleApiClient: void connect()>();
+
+        return;
+
+     label2:
+        $b0_2 = 1;
+
+(1)     goto label1;
+    }
+
+    public static java.lang.String resizeProfileImageUrl(java.lang.String, int)
+    {
+        int $i0, $i1;
+        java.lang.String $r0, $r0_1, $r0_2, $r0_3;
+        java.lang.StringBuilder $r1, $r1_1, $r1_2, $r1_3;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $i0 := @parameter1: int;
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $i1 = virtualinvoke $r0.<java.lang.String: int indexOf(int)>(63);
+
+(0)     if $i1 == -1 goto label2;
+
+(1)     $r0_1 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int,int)>(0, $i1);
+
+     label2:
+        $r0_2 = Phi($r0 #0, $r0_1 #1);
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1_1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0_2);
+
+        $r1_2 = virtualinvoke $r1_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("?sz=");
+
+        $r1_3 = virtualinvoke $r1_2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r0_3 = virtualinvoke $r1_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r0_3;
+    }
+
+    private void safeConnect()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        $z0 = virtualinvoke $r1.<com.google.android.gms.common.api.GoogleApiClient: boolean isConnected()>();
+
+(0)     if $z0 != 0 goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        $z0_1 = virtualinvoke $r1_1.<com.google.android.gms.common.api.GoogleApiClient: boolean isConnecting()>();
+
+(1)     if $z0_1 == 0 goto label2;
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r1_3 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+(2)     virtualinvoke $r1_3.<com.google.android.gms.common.api.GoogleApiClient: void disconnect()>();
+
+     label2:
+        $r1_4 = Phi($r1_1 #1, $r1_3 #2);
+
+        $z0_3 = Phi($z0_1 #1, $z0_2 #2);
+
+        $r1_5 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        virtualinvoke $r1_5.<com.google.android.gms.common.api.GoogleApiClient: void connect()>();
+
+        return;
+    }
+
+    public void changeMaskedWallet(com.google.android.gms.common.api.GoogleApiClient, com.google.android.gms.wallet.MaskedWallet, com.contextlogic.wish.googleplus.GooglePlusManager$ChangeMaskedWalletIntentCallback)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient $r1;
+        com.google.android.gms.wallet.MaskedWallet $r2;
+        com.contextlogic.wish.googleplus.GooglePlusManager$ChangeMaskedWalletIntentCallback $r3;
+        int $i0, $i1, $i1_1, $i0_1, $i1_2, $i0_2;
+        com.google.android.gms.wallet.Payments $r4;
+        java.util.Random $r5, $r5_1, $r5_2;
+        java.util.HashMap $r6, $r6_1, $r6_2;
+        java.lang.Integer $r7, $r7_1, $r7_2;
+        boolean $z0;
+        java.lang.String $r8, $r9;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter0: com.google.android.gms.common.api.GoogleApiClient;
+
+        $r2 := @parameter1: com.google.android.gms.wallet.MaskedWallet;
+
+        $r3 := @parameter2: com.contextlogic.wish.googleplus.GooglePlusManager$ChangeMaskedWalletIntentCallback;
+
+        $r5 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random>;
+
+(0)     $i1 = virtualinvoke $r5.<java.util.Random: int nextInt(int)>(1000);
+
+     label1:
+        $i0 = Phi($i0 #0, $i0_1 #1);
+
+        $r7 = Phi($r7 #0, $r7_1 #1);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $r6 = Phi($r6 #0, $r6_1 #1);
+
+        $r5_1 = Phi($r5 #0, $r5_2 #1);
+
+        $r6_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap changeWalletIntentListeners>;
+
+        $i0_1 = $i1_1 + 2000;
+
+        $r7_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_1);
+
+        $z0 = virtualinvoke $r6_1.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r7_1);
+
+        if $z0 == 0 goto label2;
+
+        $r5_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random>;
+
+        $i1_2 = virtualinvoke $r5_2.<java.util.Random: int nextInt(int)>(1000);
+
+(1)     goto label1;
+
+     label2:
+        $i0_2 = $i1_1 + 2000;
+
+        $r6_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap changeWalletIntentListeners>;
+
+        $r7_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_2);
+
+        virtualinvoke $r6_2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r7_2, $r3);
+
+        $r4 = <com.google.android.gms.wallet.Wallet: com.google.android.gms.wallet.Payments Payments>;
+
+        $r8 = virtualinvoke $r2.<com.google.android.gms.wallet.MaskedWallet: java.lang.String getGoogleTransactionId()>();
+
+        $r9 = virtualinvoke $r2.<com.google.android.gms.wallet.MaskedWallet: java.lang.String getMerchantTransactionId()>();
+
+        interfaceinvoke $r4.<com.google.android.gms.wallet.Payments: void changeMaskedWallet(com.google.android.gms.common.api.GoogleApiClient,java.lang.String,java.lang.String,int)>($r1, $r8, $r9, $i0_2);
+
+        return;
+    }
+
+    public void checkWalletPreauthorization(com.google.android.gms.common.api.GoogleApiClient, com.contextlogic.wish.googleplus.GooglePlusManager$WalletPreauthorizationIntentCallback)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient $r1;
+        com.contextlogic.wish.googleplus.GooglePlusManager$WalletPreauthorizationIntentCallback $r2;
+        int $i0, $i1, $i1_1, $i0_1, $i1_2, $i0_2;
+        com.google.android.gms.wallet.Payments $r3;
+        java.util.Random $r4, $r4_1, $r4_2;
+        java.util.HashMap $r5, $r5_1, $r5_2;
+        java.lang.Integer $r6, $r6_1, $r6_2;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter0: com.google.android.gms.common.api.GoogleApiClient;
+
+        $r2 := @parameter1: com.contextlogic.wish.googleplus.GooglePlusManager$WalletPreauthorizationIntentCallback;
+
+        $r4 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random>;
+
+(0)     $i1 = virtualinvoke $r4.<java.util.Random: int nextInt(int)>(1000);
+
+     label1:
+        $r4_1 = Phi($r4 #0, $r4_2 #1);
+
+        $i0 = Phi($i0 #0, $i0_1 #1);
+
+        $r5 = Phi($r5 #0, $r5_1 #1);
+
+        $r6 = Phi($r6 #0, $r6_1 #1);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $r5_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap walletPreauthorizationIntentListeners>;
+
+        $i0_1 = $i1_1 + 8000;
+
+        $r6_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_1);
+
+        $z0 = virtualinvoke $r5_1.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r6_1);
+
+        if $z0 == 0 goto label2;
+
+        $r4_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random>;
+
+        $i1_2 = virtualinvoke $r4_2.<java.util.Random: int nextInt(int)>(1000);
+
+(1)     goto label1;
+
+     label2:
+        $i0_2 = $i1_1 + 8000;
+
+        $r5_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap walletPreauthorizationIntentListeners>;
+
+        $r6_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_2);
+
+        virtualinvoke $r5_2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r6_2, $r2);
+
+        $r3 = <com.google.android.gms.wallet.Wallet: com.google.android.gms.wallet.Payments Payments>;
+
+        interfaceinvoke $r3.<com.google.android.gms.wallet.Payments: void checkForPreAuthorization(com.google.android.gms.common.api.GoogleApiClient,int)>($r1, $i0_2);
+
+        return;
+    }
+
+    public void clearWalletClientCallback()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback walletClientCallback> = null;
+
+        return;
+    }
+
+    public java.lang.String getAccountName()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.plus.Account $r1;
+        com.google.android.gms.common.api.GoogleApiClient $r2;
+        boolean $z0;
+        java.lang.String $r3;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $z0 = virtualinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: boolean isLoggedIn()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = <com.google.android.gms.plus.Plus: com.google.android.gms.plus.Account AccountApi>;
+
+        $r2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        $r3 = interfaceinvoke $r1.<com.google.android.gms.plus.Account: java.lang.String getAccountName(com.google.android.gms.common.api.GoogleApiClient)>($r2);
+
+        return $r3;
+
+     label1:
+        return null;
+    }
+
+    public com.google.android.gms.plus.model.people.Person getLoggedInUser()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.plus.People $r1;
+        com.google.android.gms.common.api.GoogleApiClient $r2;
+        boolean $z0;
+        com.google.android.gms.plus.model.people.Person $r3;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $z0 = virtualinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: boolean isLoggedIn()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = <com.google.android.gms.plus.Plus: com.google.android.gms.plus.People PeopleApi>;
+
+        $r2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        $r3 = interfaceinvoke $r1.<com.google.android.gms.plus.People: com.google.android.gms.plus.model.people.Person getCurrentPerson(com.google.android.gms.common.api.GoogleApiClient)>($r2);
+
+        return $r3;
+
+     label1:
+        return null;
+    }
+
+    public com.google.android.gms.common.api.GoogleApiClient getPlusClient()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient r1;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        return r1;
+    }
+
+    public java.lang.String getScopeString()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        return "oauth2:https://www.googleapis.com/auth/plus.login email";
+    }
+
+    public void getWalletClient(com.contextlogic.wish.ui.fragment.cartmodal.CartManager, android.app.Activity, com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.contextlogic.wish.ui.fragment.cartmodal.CartManager $r1;
+        android.app.Activity $r2;
+        com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback $r3;
+        com.contextlogic.wish.api.data.WishCart$PaymentProcessor $r4, $r10;
+        com.braintreepayments.api.Braintree $r5;
+        com.contextlogic.wish.api.service.GetBraintreeClientTokenService $r6;
+        com.contextlogic.wish.googleplus.GooglePlusManager$3 $r7;
+        com.contextlogic.wish.googleplus.GooglePlusManager$4 $r8;
+        com.contextlogic.wish.api.data.WishCart $r9, $r9_1, $r9_2;
+        com.google.android.gms.common.api.GoogleApiClient $r11, $r11_1, $r11_2, $r11_3;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.fragment.cartmodal.CartManager;
+
+        $r2 := @parameter1: android.app.Activity;
+
+        $r3 := @parameter2: com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback;
+
+(0)     if $r1 == null goto label1;
+
+        $r9 = interfaceinvoke $r1.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+(1)     if $r9 == null goto label1;
+
+        $r9_1 = interfaceinvoke $r1.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+        $r10 = virtualinvoke $r9_1.<com.contextlogic.wish.api.data.WishCart: com.contextlogic.wish.api.data.WishCart$PaymentProcessor getPaymentProcessor()>();
+
+        $r4 = <com.contextlogic.wish.api.data.WishCart$PaymentProcessor: com.contextlogic.wish.api.data.WishCart$PaymentProcessor Braintree>;
+
+(2)     if $r10 != $r4 goto label1;
+
+        $r5 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree>;
+
+(3)     if $r5 != null goto label1;
+
+        $r6 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.api.service.GetBraintreeClientTokenService getBraintreeClientTokenService>;
+
+        $r7 = new com.contextlogic.wish.googleplus.GooglePlusManager$3;
+
+        specialinvoke $r7.<com.contextlogic.wish.googleplus.GooglePlusManager$3: void <init>(com.contextlogic.wish.googleplus.GooglePlusManager,android.app.Activity,com.contextlogic.wish.ui.fragment.cartmodal.CartManager,com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback)>($r0, $r2, $r1, $r3);
+
+        $r8 = new com.contextlogic.wish.googleplus.GooglePlusManager$4;
+
+        specialinvoke $r8.<com.contextlogic.wish.googleplus.GooglePlusManager$4: void <init>(com.contextlogic.wish.googleplus.GooglePlusManager,com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback)>($r0, $r3);
+
+        virtualinvoke $r6.<com.contextlogic.wish.api.service.GetBraintreeClientTokenService: void requestService(com.contextlogic.wish.api.service.GetBraintreeClientTokenService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($r7, $r8);
+
+        return;
+
+     label1:
+        $r9_2 = Phi($r9 #0, $r9 #1, $r9_1 #2, $r9_1 #3);
+
+        $r11 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient walletClient>;
+
+        if $r11 == null goto label2;
+
+(4)     if $r3 == null goto label3;
+
+        $r11_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient walletClient>;
+
+        interfaceinvoke $r3.<com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback: void onWalletClientLoaded(com.google.android.gms.common.api.GoogleApiClient)>($r11_1);
+
+        return;
+
+     label2:
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$WalletClientCallback walletClientCallback> = $r3;
+
+        $r11_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient connectingWalletClient>;
+
+(5)     if $r11_2 != null goto label3;
+
+(6)     specialinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void loadWalletClient(android.app.Activity)>($r2);
+
+     label3:
+        $r11_3 = Phi($r11 #4, $r11_2 #5, $r11_2 #6);
+
+        return;
+    }
+
+    public boolean isLoggedIn()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        boolean $z0;
+        com.google.android.gms.common.api.GoogleApiClient $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        $z0 = virtualinvoke $r1_1.<com.google.android.gms.common.api.GoogleApiClient: boolean isConnected()>();
+
+(1)     if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return 0;
+    }
+
+    public void loadFullWallet(com.google.android.gms.common.api.GoogleApiClient, com.google.android.gms.wallet.FullWalletRequest, com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback) throws android.content.IntentSender$SendIntentException
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient $r1;
+        com.google.android.gms.wallet.FullWalletRequest $r2;
+        com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback $r3;
+        int $i0, $i1, $i1_1, $i0_1, $i1_2, $i0_2;
+        com.google.android.gms.wallet.Payments $r4;
+        java.util.Random $r5, $r5_1, $r5_2;
+        java.util.HashMap $r6, $r6_1, $r6_2;
+        java.lang.Integer $r7, $r7_1, $r7_2;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter0: com.google.android.gms.common.api.GoogleApiClient;
+
+        $r2 := @parameter1: com.google.android.gms.wallet.FullWalletRequest;
+
+        $r3 := @parameter2: com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback;
+
+        $r5 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random>;
+
+(0)     $i1 = virtualinvoke $r5.<java.util.Random: int nextInt(int)>(1000);
+
+     label1:
+        $i0 = Phi($i0 #0, $i0_1 #1);
+
+        $r5_1 = Phi($r5 #0, $r5_2 #1);
+
+        $r6 = Phi($r6 #0, $r6_1 #1);
+
+        $r7 = Phi($r7 #0, $r7_1 #1);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $r6_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap fullWalletIntentListeners>;
+
+        $i0_1 = $i1_1 + 5000;
+
+        $r7_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_1);
+
+        $z0 = virtualinvoke $r6_1.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r7_1);
+
+        if $z0 == 0 goto label2;
+
+        $r5_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random>;
+
+        $i1_2 = virtualinvoke $r5_2.<java.util.Random: int nextInt(int)>(1000);
+
+(1)     goto label1;
+
+     label2:
+        $i0_2 = $i1_1 + 5000;
+
+        $r6_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap fullWalletIntentListeners>;
+
+        $r7_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_2);
+
+        virtualinvoke $r6_2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r7_2, $r3);
+
+        $r4 = <com.google.android.gms.wallet.Wallet: com.google.android.gms.wallet.Payments Payments>;
+
+        interfaceinvoke $r4.<com.google.android.gms.wallet.Payments: void loadFullWallet(com.google.android.gms.common.api.GoogleApiClient,com.google.android.gms.wallet.FullWalletRequest,int)>($r1, $r2, $i0_2);
+
+        return;
+    }
+
+    public void loadMaskedWallet(com.google.android.gms.common.api.GoogleApiClient, com.google.android.gms.wallet.MaskedWalletRequest, com.contextlogic.wish.googleplus.GooglePlusManager$MaskedWalletIntentCallback)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient $r1;
+        com.google.android.gms.wallet.MaskedWalletRequest $r2;
+        com.contextlogic.wish.googleplus.GooglePlusManager$MaskedWalletIntentCallback $r3;
+        int $i0, $i1, $i1_1, $i0_1, $i1_2, $i0_2;
+        com.google.android.gms.wallet.Payments $r4;
+        java.util.Random $r5, $r5_1, $r5_2;
+        java.util.HashMap $r6, $r6_1, $r6_2;
+        java.lang.Integer $r7, $r7_1, $r7_2;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter0: com.google.android.gms.common.api.GoogleApiClient;
+
+        $r2 := @parameter1: com.google.android.gms.wallet.MaskedWalletRequest;
+
+        $r3 := @parameter2: com.contextlogic.wish.googleplus.GooglePlusManager$MaskedWalletIntentCallback;
+
+        $r5 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random>;
+
+(0)     $i1 = virtualinvoke $r5.<java.util.Random: int nextInt(int)>(1000);
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $r6 = Phi($r6 #0, $r6_1 #1);
+
+        $r7 = Phi($r7 #0, $r7_1 #1);
+
+        $i0 = Phi($i0 #0, $i0_1 #1);
+
+        $r5_1 = Phi($r5 #0, $r5_2 #1);
+
+        $r6_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap maskedWalletIntentListeners>;
+
+        $i0_1 = $i1_1 + 6000;
+
+        $r7_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_1);
+
+        $z0 = virtualinvoke $r6_1.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r7_1);
+
+        if $z0 == 0 goto label2;
+
+        $r5_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random>;
+
+        $i1_2 = virtualinvoke $r5_2.<java.util.Random: int nextInt(int)>(1000);
+
+(1)     goto label1;
+
+     label2:
+        $i0_2 = $i1_1 + 6000;
+
+        $r6_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap maskedWalletIntentListeners>;
+
+        $r7_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_2);
+
+        virtualinvoke $r6_2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r7_2, $r3);
+
+        $r4 = <com.google.android.gms.wallet.Wallet: com.google.android.gms.wallet.Payments Payments>;
+
+        interfaceinvoke $r4.<com.google.android.gms.wallet.Payments: void loadMaskedWallet(com.google.android.gms.common.api.GoogleApiClient,com.google.android.gms.wallet.MaskedWalletRequest,int)>($r1, $r2, $i0_2);
+
+        return;
+    }
+
+    public void logout()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.plus.Account $r1;
+        boolean $z0;
+        com.google.android.gms.common.api.GoogleApiClient $r2, $r2_1, $r2_2, $r2_3;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        $z0 = virtualinvoke $r2.<com.google.android.gms.common.api.GoogleApiClient: boolean isConnected()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $r1 = <com.google.android.gms.plus.Plus: com.google.android.gms.plus.Account AccountApi>;
+
+        $r2_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        interfaceinvoke $r1.<com.google.android.gms.plus.Account: void clearDefaultAccount(com.google.android.gms.common.api.GoogleApiClient)>($r2_1);
+
+        $r2_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+(1)     virtualinvoke $r2_2.<com.google.android.gms.common.api.GoogleApiClient: void disconnect()>();
+
+     label1:
+        $r2_3 = Phi($r2 #0, $r2_2 #1);
+
+        virtualinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void resetWalletClient()>();
+
+        return;
+    }
+
+    public void onActivityResult(android.app.Activity, int, int, android.content.Intent)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        android.app.Activity $r1;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3, $i1_4, $i1_5, $i1_6, $i1_7, $i1_8;
+        android.content.Intent $r2;
+        com.contextlogic.wish.api.data.WishCart$PaymentProcessor $r3, $r23;
+        com.contextlogic.wish.googleplus.GooglePlusManager$1 $r4;
+        com.contextlogic.wish.googleplus.GooglePlusManager$2 $r5;
+        org.json.JSONObject $r6;
+        java.lang.Throwable $r7;
+        com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback $r8, $r8_1, $r8_2;
+        java.util.HashMap $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r9_11, $r9_12, $r9_13, $r9_14, $r9_15;
+        java.lang.Integer $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8, $r10_9, $r10_10, $r10_11, $r10_12, $r10_13, $r10_14, $r10_15;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+        java.lang.Object $r11, $r11_1, $r11_2, $r11_3, $r11_4;
+        com.contextlogic.wish.googleplus.GooglePlusManager$ShareIntentCallback $r12;
+        java.lang.String $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7;
+        com.contextlogic.wish.googleplus.GooglePlusManager$WalletPreauthorizationIntentCallback $r14;
+        com.contextlogic.wish.googleplus.GooglePlusManager$MaskedWalletIntentCallback $r15;
+        android.os.Parcelable $r16, $r16_1, $r16_2, $r16_3, $r16_4, $r16_5;
+        com.google.android.gms.wallet.MaskedWallet $r17, $r17_1, $r17_2, $r17_3;
+        com.contextlogic.wish.googleplus.GooglePlusManager$ChangeMaskedWalletIntentCallback $r18;
+        com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback $r19;
+        com.google.android.gms.wallet.FullWallet $r20;
+        com.contextlogic.wish.ui.fragment.cartmodal.CartManager $r21, $r21_1, $r21_2, $r21_3;
+        com.contextlogic.wish.api.data.WishCart $r22, $r22_1, $r22_2, $r22_3;
+        com.braintreepayments.api.Braintree $r24, $r24_1, $r24_2, $r24_3, $r24_4, $r24_5, $r24_6, $r24_7, $r24_8, $r24_9;
+        com.braintreepayments.api.Braintree$PaymentMethodNonceListener $r25, $r25_1, $r25_2, $r25_3, $r25_4;
+        com.braintreepayments.api.Braintree$ErrorListener $r26, $r26_1, $r26_2, $r26_3, $r26_4;
+        com.google.android.gms.wallet.PaymentMethodToken $r27, $r27_1, $r27_2, $r27_3, $r27_4, $r27_5;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 := @parameter3: android.content.Intent;
+
+        if $i0 != 9314 goto label01;
+
+        if $i1 != -1 goto label01;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.ConnectionResult cachedResult> = null;
+
+        specialinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void safeConnect()>();
+
+        return;
+
+     label01:
+        if $i0 != 9314 goto label02;
+
+        if $i1 != 0 goto label02;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.ConnectionResult cachedResult> = null;
+
+        $r8 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback loginCallback>;
+
+(0)     if $r8 == null goto label31;
+
+        $r8_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback loginCallback>;
+
+        interfaceinvoke $r8_1.<com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback: void onFailure()>();
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback loginCallback> = null;
+
+        return;
+
+     label02:
+        $r9 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap shareIntentListeners>;
+
+        $r10 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $z0 = virtualinvoke $r9.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r10);
+
+        if $z0 == 0 goto label05;
+
+        $r9_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap shareIntentListeners>;
+
+        $r10_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r11 = virtualinvoke $r9_1.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r10_1);
+
+        $r12 = (com.contextlogic.wish.googleplus.GooglePlusManager$ShareIntentCallback) $r11;
+
+(1)     if $r12 == null goto label03;
+
+        if $i1 != -1 goto label04;
+
+        $r13 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+(2)     interfaceinvoke $r12.<com.contextlogic.wish.googleplus.GooglePlusManager$ShareIntentCallback: void onShareSuccess(java.lang.String)>($r13);
+
+     label03:
+        $r13_1 = Phi($r13 #1, $r13 #2, $r13 #3);
+
+        $r9_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap shareIntentListeners>;
+
+        $r10_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r9_2.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>($r10_2);
+
+        return;
+
+     label04:
+        interfaceinvoke $r12.<com.contextlogic.wish.googleplus.GooglePlusManager$ShareIntentCallback: void onShareFailure()>();
+
+(3)     goto label03;
+
+     label05:
+        $r9_3 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap walletPreauthorizationIntentListeners>;
+
+        $r10_3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $z0_1 = virtualinvoke $r9_3.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r10_3);
+
+        if $z0_1 == 0 goto label09;
+
+        $r9_4 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap walletPreauthorizationIntentListeners>;
+
+        $r10_4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r11_1 = virtualinvoke $r9_4.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r10_4);
+
+        $r14 = (com.contextlogic.wish.googleplus.GooglePlusManager$WalletPreauthorizationIntentCallback) $r11_1;
+
+(4)     if $r14 == null goto label06;
+
+        if $i1 != -1 goto label07;
+
+        $z0_2 = virtualinvoke $r2.<android.content.Intent: boolean getBooleanExtra(java.lang.String,boolean)>("com.google.android.gm.wallet.EXTRA_IS_USER_PREAUTHORIZED", 0);
+
+(5)     interfaceinvoke $r14.<com.contextlogic.wish.googleplus.GooglePlusManager$WalletPreauthorizationIntentCallback: void onWalletPreauthorizationResult(boolean)>($z0_2);
+
+     label06:
+        $z0_3 = Phi($z0_1 #4, $z0_2 #5, $z0_1 #6, $z0_1 #7);
+
+        $i1_2 = Phi($i1 #4, $i1 #5, $i1 #6, $i1_1 #7);
+
+        $r9_5 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap walletPreauthorizationIntentListeners>;
+
+        $r10_5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r9_5.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>($r10_5);
+
+        return;
+
+     label07:
+        if $i1 != 0 goto label08;
+
+        interfaceinvoke $r14.<com.contextlogic.wish.googleplus.GooglePlusManager$WalletPreauthorizationIntentCallback: void onWalletPreauthorizationCancelled()>();
+
+(6)     goto label06;
+
+     label08:
+        $i1_1 = virtualinvoke $r2.<android.content.Intent: int getIntExtra(java.lang.String,int)>("com.google.android.gms.wallet.EXTRA_ERROR_CODE", 413);
+
+        interfaceinvoke $r14.<com.contextlogic.wish.googleplus.GooglePlusManager$WalletPreauthorizationIntentCallback: void onWalletPreauthorizationError(int)>($i1_1);
+
+(7)     goto label06;
+
+     label09:
+        $r9_6 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap maskedWalletIntentListeners>;
+
+        $r10_6 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $z0_4 = virtualinvoke $r9_6.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r10_6);
+
+        if $z0_4 == 0 goto label14;
+
+        $r9_7 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap maskedWalletIntentListeners>;
+
+        $r10_7 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r11_2 = virtualinvoke $r9_7.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r10_7);
+
+        $r15 = (com.contextlogic.wish.googleplus.GooglePlusManager$MaskedWalletIntentCallback) $r11_2;
+
+(8)     if $r15 == null goto label10;
+
+        if $i1 != -1 goto label12;
+
+        $r16 = virtualinvoke $r2.<android.content.Intent: android.os.Parcelable getParcelableExtra(java.lang.String)>("com.google.android.gms.wallet.EXTRA_MASKED_WALLET");
+
+        $r17 = (com.google.android.gms.wallet.MaskedWallet) $r16;
+
+        if $r17 == null goto label11;
+
+(9)     interfaceinvoke $r15.<com.contextlogic.wish.googleplus.GooglePlusManager$MaskedWalletIntentCallback: void onMaskedWalletSuccess(com.google.android.gms.wallet.MaskedWallet)>($r17);
+
+     label10:
+        $r17_1 = Phi($r17 #8, $r17 #9, $r17 #10, $r17 #11, $r17 #12);
+
+        $i1_4 = Phi($i1 #8, $i1 #9, $i1 #10, $i1 #11, $i1_3 #12);
+
+        $r16_1 = Phi($r16 #8, $r16 #9, $r16 #10, $r16 #11, $r16 #12);
+
+        $r9_8 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap maskedWalletIntentListeners>;
+
+        $r10_8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r9_8.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>($r10_8);
+
+        return;
+
+     label11:
+        interfaceinvoke $r15.<com.contextlogic.wish.googleplus.GooglePlusManager$MaskedWalletIntentCallback: void onMaskedWalletError(int)>(413);
+
+(10)    goto label10;
+
+     label12:
+        if $i1 != 0 goto label13;
+
+        interfaceinvoke $r15.<com.contextlogic.wish.googleplus.GooglePlusManager$MaskedWalletIntentCallback: void onMaskedWalletCancelled()>();
+
+(11)    goto label10;
+
+     label13:
+        $i1_3 = virtualinvoke $r2.<android.content.Intent: int getIntExtra(java.lang.String,int)>("com.google.android.gms.wallet.EXTRA_ERROR_CODE", 413);
+
+        interfaceinvoke $r15.<com.contextlogic.wish.googleplus.GooglePlusManager$MaskedWalletIntentCallback: void onMaskedWalletError(int)>($i1_3);
+
+(12)    goto label10;
+
+     label14:
+        $r9_9 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap changeWalletIntentListeners>;
+
+        $r10_9 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $z0_5 = virtualinvoke $r9_9.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r10_9);
+
+        if $z0_5 == 0 goto label19;
+
+        $r9_10 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap changeWalletIntentListeners>;
+
+        $r10_10 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r11_3 = virtualinvoke $r9_10.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r10_10);
+
+        $r18 = (com.contextlogic.wish.googleplus.GooglePlusManager$ChangeMaskedWalletIntentCallback) $r11_3;
+
+(13)    if $r18 == null goto label15;
+
+        if $i1 != -1 goto label17;
+
+        $r16_2 = virtualinvoke $r2.<android.content.Intent: android.os.Parcelable getParcelableExtra(java.lang.String)>("com.google.android.gms.wallet.EXTRA_MASKED_WALLET");
+
+        $r17_2 = (com.google.android.gms.wallet.MaskedWallet) $r16_2;
+
+        if $r17_2 == null goto label16;
+
+(14)    interfaceinvoke $r18.<com.contextlogic.wish.googleplus.GooglePlusManager$ChangeMaskedWalletIntentCallback: void onMaskedWalletChangeSuccess(com.google.android.gms.wallet.MaskedWallet)>($r17_2);
+
+     label15:
+        $r17_3 = Phi($r17 #13, $r17_2 #14, $r17_2 #15, $r17 #16, $r17 #17);
+
+        $i1_6 = Phi($i1 #13, $i1 #14, $i1 #15, $i1 #16, $i1_5 #17);
+
+        $r16_3 = Phi($r16 #13, $r16_2 #14, $r16_2 #15, $r16 #16, $r16 #17);
+
+        $r9_11 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap changeWalletIntentListeners>;
+
+        $r10_11 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r9_11.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>($r10_11);
+
+        return;
+
+     label16:
+        interfaceinvoke $r18.<com.contextlogic.wish.googleplus.GooglePlusManager$ChangeMaskedWalletIntentCallback: void onMaskedWalletChangeError(int)>(413);
+
+(15)    goto label15;
+
+     label17:
+        if $i1 != 0 goto label18;
+
+        interfaceinvoke $r18.<com.contextlogic.wish.googleplus.GooglePlusManager$ChangeMaskedWalletIntentCallback: void onMaskedWalletChangeCancelled()>();
+
+(16)    goto label15;
+
+     label18:
+        $i1_5 = virtualinvoke $r2.<android.content.Intent: int getIntExtra(java.lang.String,int)>("com.google.android.gms.wallet.EXTRA_ERROR_CODE", 413);
+
+        interfaceinvoke $r18.<com.contextlogic.wish.googleplus.GooglePlusManager$ChangeMaskedWalletIntentCallback: void onMaskedWalletChangeError(int)>($i1_5);
+
+(17)    goto label15;
+
+     label19:
+        $r9_12 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap fullWalletIntentListeners>;
+
+        $r10_12 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $z0_6 = virtualinvoke $r9_12.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r10_12);
+
+(18)    if $z0_6 == 0 goto label31;
+
+        $r9_13 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap fullWalletIntentListeners>;
+
+        $r10_13 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r11_4 = virtualinvoke $r9_13.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r10_13);
+
+        $r19 = (com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback) $r11_4;
+
+(19)    if $r19 == null goto label22;
+
+        if $i1 != -1 goto label29;
+
+        $r16_4 = virtualinvoke $r2.<android.content.Intent: android.os.Parcelable getParcelableExtra(java.lang.String)>("com.google.android.gms.wallet.EXTRA_FULL_WALLET");
+
+        $r20 = (com.google.android.gms.wallet.FullWallet) $r16_4;
+
+        if $r20 == null goto label28;
+
+        $r21 = interfaceinvoke $r19.<com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback: com.contextlogic.wish.ui.fragment.cartmodal.CartManager getCartManager()>();
+
+        $r22 = interfaceinvoke $r21.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+(20)    if $r22 == null goto label23;
+
+        $r21_1 = interfaceinvoke $r19.<com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback: com.contextlogic.wish.ui.fragment.cartmodal.CartManager getCartManager()>();
+
+        $r22_1 = interfaceinvoke $r21_1.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+        $r23 = virtualinvoke $r22_1.<com.contextlogic.wish.api.data.WishCart: com.contextlogic.wish.api.data.WishCart$PaymentProcessor getPaymentProcessor()>();
+
+        $r3 = <com.contextlogic.wish.api.data.WishCart$PaymentProcessor: com.contextlogic.wish.api.data.WishCart$PaymentProcessor Braintree>;
+
+(21)    if $r23 != $r3 goto label23;
+
+        $r24 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree>;
+
+(22)    if $r24 == null goto label23;
+
+        $r25 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$PaymentMethodNonceListener braintreePaymentMethodNonceListener>;
+
+(23)    if $r25 == null goto label20;
+
+        $r24_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree>;
+
+        $r25_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$PaymentMethodNonceListener braintreePaymentMethodNonceListener>;
+
+(24)    virtualinvoke $r24_1.<com.braintreepayments.api.Braintree: void removeListener(com.braintreepayments.api.Braintree$Listener)>($r25_1);
+
+     label20:
+        $r25_2 = Phi($r25 #23, $r25_1 #24);
+
+        $r24_2 = Phi($r24 #23, $r24_1 #24);
+
+        $r4 = new com.contextlogic.wish.googleplus.GooglePlusManager$1;
+
+        specialinvoke $r4.<com.contextlogic.wish.googleplus.GooglePlusManager$1: void <init>(com.contextlogic.wish.googleplus.GooglePlusManager,com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback,com.google.android.gms.wallet.FullWallet)>($r0, $r19, $r20);
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$PaymentMethodNonceListener braintreePaymentMethodNonceListener> = $r4;
+
+        $r24_3 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree>;
+
+        $r25_3 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$PaymentMethodNonceListener braintreePaymentMethodNonceListener>;
+
+        virtualinvoke $r24_3.<com.braintreepayments.api.Braintree: void addListener(com.braintreepayments.api.Braintree$Listener)>($r25_3);
+
+        $r26 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$ErrorListener braintreeErrorListener>;
+
+(25)    if $r26 == null goto label21;
+
+        $r24_4 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree>;
+
+        $r26_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$ErrorListener braintreeErrorListener>;
+
+(26)    virtualinvoke $r24_4.<com.braintreepayments.api.Braintree: void removeListener(com.braintreepayments.api.Braintree$Listener)>($r26_1);
+
+     label21:
+        $r26_2 = Phi($r26 #25, $r26_1 #26);
+
+        $r24_5 = Phi($r24_3 #25, $r24_4 #26);
+
+        $r5 = new com.contextlogic.wish.googleplus.GooglePlusManager$2;
+
+        specialinvoke $r5.<com.contextlogic.wish.googleplus.GooglePlusManager$2: void <init>(com.contextlogic.wish.googleplus.GooglePlusManager,com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback)>($r0, $r19);
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$ErrorListener braintreeErrorListener> = $r5;
+
+        $r24_6 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree>;
+
+        $r26_3 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree$ErrorListener braintreeErrorListener>;
+
+        virtualinvoke $r24_6.<com.braintreepayments.api.Braintree: void addListener(com.braintreepayments.api.Braintree$Listener)>($r26_3);
+
+        $r24_7 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree>;
+
+(27)    virtualinvoke $r24_7.<com.braintreepayments.api.Braintree: void getNonceFromAndroidPayFullWalletResponse(int,android.content.Intent)>($i1, $r2);
+
+     label22:
+        $r26_4 = Phi($r26 #19, $r26_3 #27, $r26 #33, $r26 #34, $r26 #35, $r26 #36, $r26 #37, $r26 #38);
+
+        $i1_8 = Phi($i1 #19, $i1 #27, $i1 #33, $i1 #34, $i1 #35, $i1 #36, $i1 #37, $i1_7 #38);
+
+        $r16_5 = Phi($r16 #19, $r16_4 #27, $r16_4 #33, $r16_4 #34, $r16_4 #35, $r16_4 #36, $r16 #37, $r16 #38);
+
+        $r25_4 = Phi($r25 #19, $r25_3 #27, $r25 #33, $r25 #34, $r25 #35, $r25 #36, $r25 #37, $r25 #38);
+
+        $r27_5 = Phi($r27 #19, $r27 #27, $r27_2 #33, $r27_3 #34, $r27_4 #35, $r27 #36, $r27 #37, $r27 #38);
+
+        $r21_3 = Phi($r21 #19, $r21_1 #27, $r21_2 #33, $r21_2 #34, $r21_2 #35, $r21 #36, $r21 #37, $r21 #38);
+
+        $r13_7 = Phi($r13 #19, $r13 #27, $r13_4 #33, $r13_5 #34, $r13_6 #35, $r13 #36, $r13 #37, $r13 #38);
+
+        $r22_3 = Phi($r22 #19, $r22_1 #27, $r22_2 #33, $r22_2 #34, $r22_2 #35, $r22 #36, $r22 #37, $r22 #38);
+
+        $r24_9 = Phi($r24 #19, $r24_7 #27, $r24_8 #33, $r24_8 #34, $r24_8 #35, $r24 #36, $r24 #37, $r24 #38);
+
+        $r9_14 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap fullWalletIntentListeners>;
+
+        $r10_14 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r9_14.<java.util.HashMap: java.lang.Object remove(java.lang.Object)>($r10_14);
+
+        return;
+
+     label23:
+        $r21_2 = Phi($r21 #20, $r21_1 #21, $r21_1 #22);
+
+        $r22_2 = Phi($r22 #20, $r22_1 #21, $r22_1 #22);
+
+        $r24_8 = Phi($r24 #20, $r24 #21, $r24 #22);
+
+        $r27 = virtualinvoke $r20.<com.google.android.gms.wallet.FullWallet: com.google.android.gms.wallet.PaymentMethodToken getPaymentMethodToken()>();
+
+(28)    if $r27 == null goto label27;
+
+        $r27_1 = virtualinvoke $r20.<com.google.android.gms.wallet.FullWallet: com.google.android.gms.wallet.PaymentMethodToken getPaymentMethodToken()>();
+
+        $r13_2 = virtualinvoke $r27_1.<com.google.android.gms.wallet.PaymentMethodToken: java.lang.String getToken()>();
+
+(29)    if $r13_2 == null goto label27;
+
+     label24:
+        $r6 = new org.json.JSONObject;
+
+(30)    $r27_2 = virtualinvoke $r20.<com.google.android.gms.wallet.FullWallet: com.google.android.gms.wallet.PaymentMethodToken getPaymentMethodToken()>();
+
+(31)    $r13_3 = virtualinvoke $r27_2.<com.google.android.gms.wallet.PaymentMethodToken: java.lang.String getToken()>();
+
+        specialinvoke $r6.<org.json.JSONObject: void <init>(java.lang.String)>($r13_3);
+
+(32)    $r13_4 = virtualinvoke $r6.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("id");
+
+        interfaceinvoke $r19.<com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback: void onFullWalletSuccess(com.google.android.gms.wallet.FullWallet,java.lang.String,java.lang.String)>($r20, $r13_4, null);
+
+     label25:
+(33)    goto label22;
+
+     label26:
+        $r7 := @caughtexception;
+
+        $r27_3 = Phi($r27_1 #29, $r27_2 #30);
+
+        $r13_5 = Phi($r13_2 #29, $r13_3 #31, $r13_4 #32);
+
+        interfaceinvoke $r19.<com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback: void onFullWalletError(int)>(413);
+
+(34)    goto label22;
+
+     label27:
+        $r27_4 = Phi($r27 #28, $r27_1 #29);
+
+        $r13_6 = Phi($r13 #28, $r13_2 #29);
+
+        interfaceinvoke $r19.<com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback: void onFullWalletError(int)>(413);
+
+(35)    goto label22;
+
+     label28:
+        interfaceinvoke $r19.<com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback: void onFullWalletError(int)>(413);
+
+(36)    goto label22;
+
+     label29:
+        if $i1 != 0 goto label30;
+
+        interfaceinvoke $r19.<com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback: void onFullWalletCancelled()>();
+
+(37)    goto label22;
+
+     label30:
+        $i1_7 = virtualinvoke $r2.<android.content.Intent: int getIntExtra(java.lang.String,int)>("com.google.android.gms.wallet.EXTRA_ERROR_CODE", 413);
+
+        interfaceinvoke $r19.<com.contextlogic.wish.googleplus.GooglePlusManager$FullWalletIntentCallback: void onFullWalletError(int)>($i1_7);
+
+(38)    goto label22;
+
+     label31:
+        $r10_15 = Phi($r10 #0, $r10_12 #18);
+
+        $r8_2 = Phi($r8 #0, $r8 #18);
+
+        $z0_7 = Phi($z0 #0, $z0_6 #18);
+
+        $r9_15 = Phi($r9 #0, $r9_12 #18);
+
+        return;
+
+        catch java.lang.Throwable from label24 to label25 with label26;
+    }
+
+    public void preConnect()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient $r1, $r1_1, $r1_2;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        $z0 = virtualinvoke $r1.<com.google.android.gms.common.api.GoogleApiClient: boolean isConnected()>();
+
+(0)     if $z0 != 0 goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        $z0_1 = virtualinvoke $r1_1.<com.google.android.gms.common.api.GoogleApiClient: boolean isConnecting()>();
+
+(1)     if $z0_1 != 0 goto label1;
+
+(2)     specialinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void safeConnect()>();
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2);
+
+        $r1_2 = Phi($r1 #0, $r1_1 #1, $r1_1 #2);
+
+        return;
+    }
+
+    public void prepareMaskedWalletRequest(com.contextlogic.wish.ui.fragment.cartmodal.CartManager, com.google.android.gms.wallet.MaskedWalletRequest$Builder)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.contextlogic.wish.ui.fragment.cartmodal.CartManager $r1;
+        com.google.android.gms.wallet.MaskedWalletRequest$Builder $r2;
+        com.contextlogic.wish.api.data.WishCart$PaymentProcessor $r3, $r5;
+        com.contextlogic.wish.api.data.WishCart $r4, $r4_1, $r4_2;
+        com.braintreepayments.api.Braintree $r6, $r6_1, $r6_2;
+        com.google.android.gms.wallet.PaymentMethodTokenizationParameters $r7, $r7_1;
+        com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        com.contextlogic.wish.user.UserStatusManager $r9;
+        java.lang.String $r10;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.fragment.cartmodal.CartManager;
+
+        $r2 := @parameter1: com.google.android.gms.wallet.MaskedWalletRequest$Builder;
+
+        $r4 = interfaceinvoke $r1.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+(0)     if $r4 == null goto label1;
+
+        $r4_1 = interfaceinvoke $r1.<com.contextlogic.wish.ui.fragment.cartmodal.CartManager: com.contextlogic.wish.api.data.WishCart getCart()>();
+
+        $r5 = virtualinvoke $r4_1.<com.contextlogic.wish.api.data.WishCart: com.contextlogic.wish.api.data.WishCart$PaymentProcessor getPaymentProcessor()>();
+
+        $r3 = <com.contextlogic.wish.api.data.WishCart$PaymentProcessor: com.contextlogic.wish.api.data.WishCart$PaymentProcessor Braintree>;
+
+(1)     if $r5 != $r3 goto label1;
+
+        $r6 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree>;
+
+(2)     if $r6 == null goto label1;
+
+        $r6_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree>;
+
+        $r7 = virtualinvoke $r6_1.<com.braintreepayments.api.Braintree: com.google.android.gms.wallet.PaymentMethodTokenizationParameters getAndroidPayTokenizationParameters()>();
+
+        virtualinvoke $r2.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest$Builder setPaymentMethodTokenizationParameters(com.google.android.gms.wallet.PaymentMethodTokenizationParameters)>($r7);
+
+        return;
+
+     label1:
+        $r6_2 = Phi($r6 #0, $r6 #1, $r6 #2);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1, $r4_1 #2);
+
+        $r8 = staticinvoke <com.google.android.gms.wallet.PaymentMethodTokenizationParameters: com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder newBuilder()>();
+
+        $r8_1 = virtualinvoke $r8.<com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder: com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder setPaymentMethodTokenizationType(int)>(1);
+
+        $r8_2 = virtualinvoke $r8_1.<com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder: com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder addParameter(java.lang.String,java.lang.String)>("gateway", "stripe");
+
+        $r9 = staticinvoke <com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager getInstance()>();
+
+        $r10 = virtualinvoke $r9.<com.contextlogic.wish.user.UserStatusManager: java.lang.String getStripeKey()>();
+
+        $r8_3 = virtualinvoke $r8_2.<com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder: com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder addParameter(java.lang.String,java.lang.String)>("stripe:publishableKey", $r10);
+
+        $r8_4 = virtualinvoke $r8_3.<com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder: com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder addParameter(java.lang.String,java.lang.String)>("stripe:version", "1.1.15");
+
+        $r7_1 = virtualinvoke $r8_4.<com.google.android.gms.wallet.PaymentMethodTokenizationParameters$Builder: com.google.android.gms.wallet.PaymentMethodTokenizationParameters build()>();
+
+        virtualinvoke $r2.<com.google.android.gms.wallet.MaskedWalletRequest$Builder: com.google.android.gms.wallet.MaskedWalletRequest$Builder setPaymentMethodTokenizationParameters(com.google.android.gms.wallet.PaymentMethodTokenizationParameters)>($r7_1);
+
+        return;
+    }
+
+    public void resetBraintree()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.braintreepayments.api.Braintree braintree> = null;
+
+        return;
+    }
+
+    public void resetPlusClient()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.Api $r1;
+        com.google.android.gms.plus.Plus$PlusOptions$Builder $r2;
+        com.google.android.gms.common.api.GoogleApiClient$Builder $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        com.contextlogic.wish.WishApplication $r4;
+        com.contextlogic.wish.googleplus.GooglePlusManager$SignInConnectionListener $r5, $r5_1;
+        com.google.android.gms.plus.Plus$PlusOptions $r6;
+        com.google.android.gms.common.api.Scope $r7, $r7_1;
+        com.google.android.gms.common.api.GoogleApiClient $r8;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r3 = new com.google.android.gms.common.api.GoogleApiClient$Builder;
+
+        $r4 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        specialinvoke $r3.<com.google.android.gms.common.api.GoogleApiClient$Builder: void <init>(android.content.Context)>($r4);
+
+        $r5 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$SignInConnectionListener signInConnectionListener>;
+
+        $r3_1 = virtualinvoke $r3.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient$Builder addConnectionCallbacks(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)>($r5);
+
+        $r5_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$SignInConnectionListener signInConnectionListener>;
+
+        $r3_2 = virtualinvoke $r3_1.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient$Builder addOnConnectionFailedListener(com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener)>($r5_1);
+
+        $r1 = <com.google.android.gms.plus.Plus: com.google.android.gms.common.api.Api API>;
+
+        $r2 = new com.google.android.gms.plus.Plus$PlusOptions$Builder;
+
+        specialinvoke $r2.<com.google.android.gms.plus.Plus$PlusOptions$Builder: void <init>()>();
+
+        $r6 = virtualinvoke $r2.<com.google.android.gms.plus.Plus$PlusOptions$Builder: com.google.android.gms.plus.Plus$PlusOptions build()>();
+
+        $r3_3 = virtualinvoke $r3_2.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient$Builder addApi(com.google.android.gms.common.api.Api,com.google.android.gms.common.api.Api$ApiOptions$HasOptions)>($r1, $r6);
+
+        $r7 = <com.google.android.gms.plus.Plus: com.google.android.gms.common.api.Scope SCOPE_PLUS_LOGIN>;
+
+        $r3_4 = virtualinvoke $r3_3.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient$Builder addScope(com.google.android.gms.common.api.Scope)>($r7);
+
+        $r7_1 = new com.google.android.gms.common.api.Scope;
+
+        specialinvoke $r7_1.<com.google.android.gms.common.api.Scope: void <init>(java.lang.String)>("email");
+
+        $r3_5 = virtualinvoke $r3_4.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient$Builder addScope(com.google.android.gms.common.api.Scope)>($r7_1);
+
+        $r8 = virtualinvoke $r3_5.<com.google.android.gms.common.api.GoogleApiClient$Builder: com.google.android.gms.common.api.GoogleApiClient build()>();
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client> = $r8;
+
+        return;
+    }
+
+    public void resetWalletClient()
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        java.lang.Throwable $r1, $r2;
+        com.google.android.gms.common.api.GoogleApiClient $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        virtualinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void resetBraintree()>();
+
+        virtualinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void clearWalletClientCallback()>();
+
+        $r3 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient connectingWalletClient>;
+
+(0)     if $r3 == null goto label2;
+
+     label1:
+(1)     $r3_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient connectingWalletClient>;
+
+(2)     virtualinvoke $r3_1.<com.google.android.gms.common.api.GoogleApiClient: void disconnect()>();
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #2, $r3_7 #7);
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient connectingWalletClient> = null;
+
+        $r3_3 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient walletClient>;
+
+(3)     if $r3_3 == null goto label4;
+
+     label3:
+(4)     $r3_4 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient walletClient>;
+
+(5)     virtualinvoke $r3_4.<com.google.android.gms.common.api.GoogleApiClient: void disconnect()>();
+
+     label4:
+        $r3_5 = Phi($r3_3 #3, $r3_4 #5, $r3_6 #6);
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient walletClient> = null;
+
+        return;
+
+     label5:
+        $r1 := @caughtexception;
+
+        $r3_6 = Phi($r3_3 #3, $r3_4 #4);
+
+(6)     goto label4;
+
+     label6:
+        $r2 := @caughtexception;
+
+        $r3_7 = Phi($r3 #0, $r3_1 #1);
+
+(7)     goto label2;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label3 to label4 with label5;
+    }
+
+    public void startLogin(android.app.Activity, com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        com.google.android.gms.common.api.GoogleApiClient $r1;
+        android.content.IntentSender$SendIntentException $r2;
+        android.app.Activity $r3, $r3_1, $r3_2;
+        com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        boolean $z0, $z0_1, $z0_2;
+        com.google.android.gms.common.ConnectionResult $r5, $r5_1, $r5_2;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r3 := @parameter0: android.app.Activity;
+
+        $r4 := @parameter1: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback loginCallback> = $r4;
+
+        $z0 = virtualinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: boolean isLoggedIn()>();
+
+        if $z0 == 0 goto label1;
+
+        $r4_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback loginCallback>;
+
+(0)     if $r4_1 == null goto label6;
+
+        $r4_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback loginCallback>;
+
+        interfaceinvoke $r4_2.<com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback: void onSuccess()>();
+
+        return;
+
+     label1:
+        $r1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.api.GoogleApiClient client>;
+
+        $z0_1 = virtualinvoke $r1.<com.google.android.gms.common.api.GoogleApiClient: boolean isConnecting()>();
+
+(1)     if $z0_1 != 0 goto label6;
+
+        $r4_3 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback loginCallback>;
+
+        $r3_1 = interfaceinvoke $r4_3.<com.contextlogic.wish.googleplus.GooglePlusManager$LoginCallback: android.app.Activity getActivityForErrorResolution()>();
+
+        $r5 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.ConnectionResult cachedResult>;
+
+        if $r5 == null goto label5;
+
+        if $r3_1 == null goto label5;
+
+        $r5_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.ConnectionResult cachedResult>;
+
+     label2:
+        virtualinvoke $r5_1.<com.google.android.gms.common.ConnectionResult: void startResolutionForResult(android.app.Activity,int)>($r3_1, 9314);
+
+     label3:
+        return;
+
+     label4:
+        $r2 := @caughtexception;
+
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.ConnectionResult cachedResult> = null;
+
+        specialinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void safeConnect()>();
+
+        return;
+
+     label5:
+        $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: com.google.android.gms.common.ConnectionResult cachedResult> = null;
+
+(2)     specialinvoke $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: void safeConnect()>();
+
+     label6:
+        $r5_2 = Phi($r5 #0, $r5 #1, $r5 #2);
+
+        $r4_4 = Phi($r4_1 #0, $r4 #1, $r4_3 #2);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2);
+
+        $r3_2 = Phi($r3 #0, $r3 #1, $r3_1 #2);
+
+        return;
+
+        catch android.content.IntentSender$SendIntentException from label2 to label3 with label4;
+    }
+
+    public void startShareIntent(android.app.Activity, android.content.Intent, com.contextlogic.wish.googleplus.GooglePlusManager$ShareIntentCallback)
+    {
+        com.contextlogic.wish.googleplus.GooglePlusManager $r0;
+        android.app.Activity $r1;
+        android.content.Intent $r2;
+        com.contextlogic.wish.googleplus.GooglePlusManager$ShareIntentCallback $r3;
+        int $i0, $i1, $i1_1, $i0_1, $i1_2, $i0_2;
+        java.util.Random $r4, $r4_1, $r4_2;
+        java.util.HashMap $r5, $r5_1, $r5_2;
+        java.lang.Integer $r6, $r6_1, $r6_2;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.googleplus.GooglePlusManager;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.content.Intent;
+
+        $r3 := @parameter2: com.contextlogic.wish.googleplus.GooglePlusManager$ShareIntentCallback;
+
+        $r4 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random>;
+
+(0)     $i1 = virtualinvoke $r4.<java.util.Random: int nextInt(int)>(1000);
+
+     label1:
+        $i0 = Phi($i0 #0, $i0_1 #1);
+
+        $r4_1 = Phi($r4 #0, $r4_2 #1);
+
+        $r5 = Phi($r5 #0, $r5_1 #1);
+
+        $r6 = Phi($r6 #0, $r6_1 #1);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $r5_1 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap shareIntentListeners>;
+
+        $i0_1 = $i1_1 + 7000;
+
+        $r6_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_1);
+
+        $z0 = virtualinvoke $r5_1.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r6_1);
+
+        if $z0 == 0 goto label2;
+
+        $r4_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.Random random>;
+
+        $i1_2 = virtualinvoke $r4_2.<java.util.Random: int nextInt(int)>(1000);
+
+(1)     goto label1;
+
+     label2:
+        $i0_2 = $i1_1 + 7000;
+
+        $r5_2 = $r0.<com.contextlogic.wish.googleplus.GooglePlusManager: java.util.HashMap shareIntentListeners>;
+
+        $r6_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_2);
+
+        virtualinvoke $r5_2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r6_2, $r3);
+
+        virtualinvoke $r1.<android.app.Activity: void startActivityForResult(android.content.Intent,int)>($r2, $i0_2);
+
+        return;
+    }
+}

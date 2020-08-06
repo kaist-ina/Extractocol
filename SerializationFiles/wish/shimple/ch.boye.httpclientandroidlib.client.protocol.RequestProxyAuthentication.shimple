@@ -1,0 +1,134 @@
+public class ch.boye.httpclientandroidlib.client.protocol.RequestProxyAuthentication extends ch.boye.httpclientandroidlib.client.protocol.RequestAuthenticationBase
+{
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.client.protocol.RequestProxyAuthentication $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.protocol.RequestProxyAuthentication;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.client.protocol.RequestAuthenticationBase: void <init>()>();
+
+        return;
+    }
+
+    public void process(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.client.protocol.RequestProxyAuthentication $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        java.lang.IllegalArgumentException $r3, $r3_1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.Object $r4, $r4_1, $r4_2;
+        ch.boye.httpclientandroidlib.conn.HttpRoutedConnection $r5;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r7;
+        ch.boye.httpclientandroidlib.auth.AuthState $r8;
+        java.lang.StringBuilder $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+        ch.boye.httpclientandroidlib.auth.AuthProtocolState $r10;
+        java.lang.String $r11;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.protocol.RequestProxyAuthentication;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request may not be null");
+
+        throw $r3;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r3_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP context may not be null");
+
+        throw $r3_1;
+
+     label2:
+        $z0 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: boolean containsHeader(java.lang.String)>("Proxy-Authorization");
+
+        if $z0 == 0 goto label3;
+
+        return;
+
+     label3:
+        $r4 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: java.lang.Object getAttribute(java.lang.String)>("http.connection");
+
+        $r5 = (ch.boye.httpclientandroidlib.conn.HttpRoutedConnection) $r4;
+
+        if $r5 != null goto label4;
+
+        $r6 = $r0.<ch.boye.httpclientandroidlib.client.protocol.RequestAuthenticationBase: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r6.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("HTTP connection not set in the context");
+
+        return;
+
+     label4:
+        $r7 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.conn.HttpRoutedConnection: ch.boye.httpclientandroidlib.conn.routing.HttpRoute getRoute()>();
+
+        $z0_1 = virtualinvoke $r7.<ch.boye.httpclientandroidlib.conn.routing.HttpRoute: boolean isTunnelled()>();
+
+(0)     if $z0_1 != 0 goto label7;
+
+        $r4_1 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpContext: java.lang.Object getAttribute(java.lang.String)>("http.auth.proxy-scope");
+
+        $r8 = (ch.boye.httpclientandroidlib.auth.AuthState) $r4_1;
+
+        if $r8 != null goto label5;
+
+        $r6_1 = $r0.<ch.boye.httpclientandroidlib.client.protocol.RequestAuthenticationBase: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r6_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Proxy auth state not set in the context");
+
+        return;
+
+     label5:
+        $r6_2 = $r0.<ch.boye.httpclientandroidlib.client.protocol.RequestAuthenticationBase: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $z0_2 = virtualinvoke $r6_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: boolean isDebugEnabled()>();
+
+(1)     if $z0_2 == 0 goto label6;
+
+        $r6_3 = $r0.<ch.boye.httpclientandroidlib.client.protocol.RequestAuthenticationBase: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>()>();
+
+        $r9_1 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Proxy auth state: ");
+
+        $r10 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.auth.AuthState: ch.boye.httpclientandroidlib.auth.AuthProtocolState getState()>();
+
+        $r9_2 = virtualinvoke $r9_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r10);
+
+        $r11 = virtualinvoke $r9_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(2)     virtualinvoke $r6_3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r11);
+
+     label6:
+        $r6_4 = Phi($r6_2 #1, $r6_3 #2);
+
+        $r9_3 = Phi($r9 #1, $r9_2 #2);
+
+(3)     virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.protocol.RequestProxyAuthentication: void process(ch.boye.httpclientandroidlib.auth.AuthState,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r8, $r1, $r2);
+
+     label7:
+        $r6_5 = Phi($r6 #0, $r6_4 #3);
+
+        $r9_4 = Phi($r9 #0, $r9_3 #3);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #3);
+
+        $z0_3 = Phi($z0_1 #0, $z0_2 #3);
+
+        return;
+    }
+}

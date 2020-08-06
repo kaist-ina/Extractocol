@@ -1,0 +1,543 @@
+public class ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static final void closeConnection(ch.boye.httpclientandroidlib.HttpClientConnection)
+    {
+        ch.boye.httpclientandroidlib.HttpClientConnection $r0;
+        java.io.IOException $r1;
+
+        $r0 := @parameter0: ch.boye.httpclientandroidlib.HttpClientConnection;
+
+     label1:
+        interfaceinvoke $r0.<ch.boye.httpclientandroidlib.HttpClientConnection: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    protected boolean canResponseHaveBody(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.HttpResponse $r2;
+        java.lang.String $r3, $r5;
+        ch.boye.httpclientandroidlib.RequestLine $r4;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.StatusLine $r6;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r3 = "HEAD";
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r5 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getMethod()>();
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r5);
+
+        if $z0 == 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r6 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+        if $i0 < 200 goto label2;
+
+        if $i0 == 204 goto label2;
+
+        if $i0 == 304 goto label2;
+
+        if $i0 == 205 goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    protected ch.boye.httpclientandroidlib.HttpResponse doReceiveResponse(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.HttpClientConnection, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.HttpClientConnection $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        java.lang.IllegalArgumentException $r4, $r4_1, $r4_2;
+        ch.boye.httpclientandroidlib.HttpResponse $r5, $r6, $r5_1, $r5_2;
+        int $i0, $i0_1, $i0_2;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.StatusLine $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpClientConnection;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request may not be null");
+
+        throw $r4;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r4_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP connection may not be null");
+
+        throw $r4_1;
+
+     label2:
+        if $r3 != null goto label3;
+
+        $r4_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP context may not be null");
+
+        throw $r4_2;
+
+     label3:
+        $r5 = null;
+
+(0)     $i0 = 0;
+
+     label4:
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        $r5_1 = Phi($r5 #0, $r5_2 #1);
+
+        if $r5_1 == null goto label5;
+
+        if $i0_1 >= 200 goto label7;
+
+     label5:
+        $r6 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpClientConnection: ch.boye.httpclientandroidlib.HttpResponse receiveResponseHeader()>();
+
+        $r5_2 = $r6;
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: boolean canResponseHaveBody(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.HttpResponse)>($r1, $r6);
+
+        if $z0 == 0 goto label6;
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpClientConnection: void receiveResponseEntity(ch.boye.httpclientandroidlib.HttpResponse)>($r6);
+
+     label6:
+        $r7 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i0_2 = interfaceinvoke $r7.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+(1)     goto label4;
+
+     label7:
+        return $r5_1;
+    }
+
+    protected ch.boye.httpclientandroidlib.HttpResponse doSendRequest(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.HttpClientConnection, ch.boye.httpclientandroidlib.protocol.HttpContext) throws java.io.IOException, ch.boye.httpclientandroidlib.HttpException
+    {
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.HttpClientConnection $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        ch.boye.httpclientandroidlib.HttpVersion $r4;
+        ch.boye.httpclientandroidlib.ProtocolException $r5;
+        java.lang.IllegalArgumentException $r6, $r6_1, $r6_2;
+        ch.boye.httpclientandroidlib.HttpResponse $r7, $r13, $r7_1, $r7_2, $r7_3, $r7_4;
+        java.lang.Boolean $r8, $r8_1;
+        boolean $z0, $z1, $z0_1, $z1_1, $z1_2, $z1_3, $z0_2, $z1_4, $z0_3, $z1_5, $z0_4;
+        ch.boye.httpclientandroidlib.RequestLine $r9;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r10;
+        ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest $r11, $r11_1, $r11_2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r12;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        ch.boye.httpclientandroidlib.StatusLine $r14, $r14_1, $r14_2, $r14_3;
+        java.lang.StringBuilder $r15, $r15_1, $r15_2;
+        java.lang.String $r16;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpClientConnection;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label1;
+
+        $r6 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request may not be null");
+
+        throw $r6;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r6_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP connection may not be null");
+
+        throw $r6_1;
+
+     label2:
+        if $r3 != null goto label3;
+
+        $r6_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP context may not be null");
+
+        throw $r6_2;
+
+     label3:
+        $r7 = null;
+
+        interfaceinvoke $r3.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.connection", $r2);
+
+        $r8 = <java.lang.Boolean: java.lang.Boolean FALSE>;
+
+        interfaceinvoke $r3.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.request_sent", $r8);
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpClientConnection: void sendRequestHeader(ch.boye.httpclientandroidlib.HttpRequest)>($r1);
+
+        $z0 = $r1 instanceof ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest;
+
+(0)     if $z0 == 0 goto label7;
+
+        $z0_1 = 1;
+
+        $r9 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r10 = interfaceinvoke $r9.<ch.boye.httpclientandroidlib.RequestLine: ch.boye.httpclientandroidlib.ProtocolVersion getProtocolVersion()>();
+
+        $r11 = (ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest) $r1;
+
+        $z1 = interfaceinvoke $r11.<ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest: boolean expectContinue()>();
+
+(1)     if $z1 == 0 goto label6;
+
+        $r4 = <ch.boye.httpclientandroidlib.HttpVersion: ch.boye.httpclientandroidlib.HttpVersion HTTP_1_0>;
+
+        $z1_1 = virtualinvoke $r10.<ch.boye.httpclientandroidlib.ProtocolVersion: boolean lessEquals(ch.boye.httpclientandroidlib.ProtocolVersion)>($r4);
+
+(2)     if $z1_1 != 0 goto label6;
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpClientConnection: void flush()>();
+
+        $r12 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        $i0 = interfaceinvoke $r12.<ch.boye.httpclientandroidlib.params.HttpParams: int getIntParameter(java.lang.String,int)>("http.protocol.wait-for-continue", 2000);
+
+        $z1_2 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpClientConnection: boolean isResponseAvailable(int)>($i0);
+
+(3)     if $z1_2 == 0 goto label6;
+
+        $r13 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpClientConnection: ch.boye.httpclientandroidlib.HttpResponse receiveResponseHeader()>();
+
+        $r7_1 = $r13;
+
+        $z1_3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: boolean canResponseHaveBody(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.HttpResponse)>($r1, $r13);
+
+        if $z1_3 == 0 goto label4;
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpClientConnection: void receiveResponseEntity(ch.boye.httpclientandroidlib.HttpResponse)>($r13);
+
+     label4:
+        $r14 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i0_1 = interfaceinvoke $r14.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+        if $i0_1 >= 200 goto label8;
+
+        if $i0_1 == 100 goto label5;
+
+        $r5 = new ch.boye.httpclientandroidlib.ProtocolException;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r15_1 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unexpected response: ");
+
+        $r14_1 = interfaceinvoke $r13.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $r15_2 = virtualinvoke $r15_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r14_1);
+
+        $r16 = virtualinvoke $r15_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.ProtocolException: void <init>(java.lang.String)>($r16);
+
+        throw $r5;
+
+     label5:
+(4)     $r7_2 = null;
+
+     label6:
+        $z1_4 = Phi($z1 #1, $z1_1 #2, $z1_2 #3, $z1_3 #4, $z1_3 #7);
+
+        $i0_2 = Phi($i0 #1, $i0 #2, $i0 #3, $i0_1 #4, $i0_1 #7);
+
+        $r7_3 = Phi($r7 #1, $r7 #2, $r7 #3, $r7_2 #4, $r7_1 #7);
+
+        $z0_3 = Phi($z0_1 #1, $z0_1 #2, $z0_1 #3, $z0_1 #4, $z0_2 #7);
+
+        $r14_2 = Phi($r14 #1, $r14 #2, $r14 #3, $r14 #4, $r14 #7);
+
+(5)     if $z0_3 == 0 goto label7;
+
+        $r11_1 = (ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest) $r1;
+
+(6)     interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpClientConnection: void sendRequestEntity(ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest)>($r11_1);
+
+     label7:
+        $z1_5 = Phi($z1 #0, $z1_4 #5, $z1_4 #6);
+
+        $i0_3 = Phi($i0 #0, $i0_2 #5, $i0_2 #6);
+
+        $r7_4 = Phi($r7 #0, $r7_3 #5, $r7_3 #6);
+
+        $z0_4 = Phi($z0 #0, $z0_3 #5, $z0_3 #6);
+
+        $r14_3 = Phi($r14 #0, $r14_2 #5, $r14_2 #6);
+
+        $r11_2 = Phi($r11 #0, $r11 #5, $r11_1 #6);
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpClientConnection: void flush()>();
+
+        $r8_1 = <java.lang.Boolean: java.lang.Boolean TRUE>;
+
+        interfaceinvoke $r3.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.request_sent", $r8_1);
+
+        return $r7_4;
+
+     label8:
+        $z0_2 = 0;
+
+(7)     goto label6;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.HttpClientConnection, ch.boye.httpclientandroidlib.protocol.HttpContext) throws java.io.IOException, ch.boye.httpclientandroidlib.HttpException
+    {
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.HttpClientConnection $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        java.io.IOException $r4;
+        ch.boye.httpclientandroidlib.HttpException $r5;
+        java.lang.RuntimeException $r6;
+        java.lang.IllegalArgumentException $r7, $r7_1, $r7_2;
+        ch.boye.httpclientandroidlib.HttpResponse $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpClientConnection;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label01;
+
+        $r7 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r7.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request may not be null");
+
+        throw $r7;
+
+     label01:
+        if $r2 != null goto label02;
+
+        $r7_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r7_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Client connection may not be null");
+
+        throw $r7_1;
+
+     label02:
+(0)     if $r3 != null goto label03;
+
+        $r7_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r7_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP context may not be null");
+
+        throw $r7_2;
+
+     label03:
+        $r8 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: ch.boye.httpclientandroidlib.HttpResponse doSendRequest(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.HttpClientConnection,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2, $r3);
+
+     label04:
+        if $r8 != null goto label10;
+
+     label05:
+(1)     $r8_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: ch.boye.httpclientandroidlib.HttpResponse doReceiveResponse(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.HttpClientConnection,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2, $r3);
+
+     label06:
+        return $r8_1;
+
+     label07:
+        $r4 := @caughtexception;
+
+        $r8_2 = Phi($r8 #0, $r8_1 #1);
+
+        staticinvoke <ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: void closeConnection(ch.boye.httpclientandroidlib.HttpClientConnection)>($r2);
+
+        throw $r4;
+
+     label08:
+        $r5 := @caughtexception;
+
+        $r8_3 = Phi($r8 #0, $r8_1 #1);
+
+        staticinvoke <ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: void closeConnection(ch.boye.httpclientandroidlib.HttpClientConnection)>($r2);
+
+        throw $r5;
+
+     label09:
+        $r6 := @caughtexception;
+
+        $r8_4 = Phi($r8 #0, $r8_1 #1);
+
+        staticinvoke <ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor: void closeConnection(ch.boye.httpclientandroidlib.HttpClientConnection)>($r2);
+
+        throw $r6;
+
+     label10:
+        return $r8;
+
+        catch java.io.IOException from label03 to label04 with label07;
+        catch ch.boye.httpclientandroidlib.HttpException from label03 to label04 with label08;
+        catch java.lang.RuntimeException from label03 to label04 with label09;
+        catch java.io.IOException from label05 to label06 with label07;
+        catch ch.boye.httpclientandroidlib.HttpException from label05 to label06 with label08;
+        catch java.lang.RuntimeException from label05 to label06 with label09;
+    }
+
+    public void postProcess(ch.boye.httpclientandroidlib.HttpResponse, ch.boye.httpclientandroidlib.protocol.HttpProcessor, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        java.lang.IllegalArgumentException $r4, $r4_1, $r4_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpProcessor;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP response may not be null");
+
+        throw $r4;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r4_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP processor may not be null");
+
+        throw $r4_1;
+
+     label2:
+        if $r3 != null goto label3;
+
+        $r4_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP context may not be null");
+
+        throw $r4_2;
+
+     label3:
+        interfaceinvoke $r3.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.response", $r1);
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpProcessor: void process(ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r3);
+
+        return;
+    }
+
+    public void preProcess(ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.protocol.HttpProcessor, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpProcessor $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        java.lang.IllegalArgumentException $r4, $r4_1, $r4_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.protocol.HttpRequestExecutor;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpProcessor;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request may not be null");
+
+        throw $r4;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r4_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP processor may not be null");
+
+        throw $r4_1;
+
+     label2:
+        if $r3 != null goto label3;
+
+        $r4_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP context may not be null");
+
+        throw $r4_2;
+
+     label3:
+        interfaceinvoke $r3.<ch.boye.httpclientandroidlib.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.request", $r1);
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.protocol.HttpProcessor: void process(ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r3);
+
+        return;
+    }
+}

@@ -1,0 +1,2188 @@
+public class de.greenrobot.event.EventBus extends java.lang.Object
+{
+    public static java.lang.String TAG;
+    private static volatile de.greenrobot.event.EventBus defaultInstance;
+    private static final java.util.Map eventTypesCache;
+    static java.util.concurrent.ExecutorService executorService;
+    private final de.greenrobot.event.AsyncPoster asyncPoster;
+    private final de.greenrobot.event.BackgroundPoster backgroundPoster;
+    private final java.lang.ThreadLocal currentPostingThreadState;
+    private java.lang.String defaultMethodName;
+    private boolean logSubscriberExceptions;
+    private final de.greenrobot.event.HandlerPoster mainThreadPoster;
+    private final java.util.Map stickyEvents;
+    private boolean subscribed;
+    private final de.greenrobot.event.SubscriberMethodFinder subscriberMethodFinder;
+    private final java.util.Map subscriptionsByEventType;
+    private final java.util.Map typesBySubscriber;
+
+    static void <clinit>()
+    {
+        java.util.HashMap $r0;
+        java.util.concurrent.ExecutorService $r1;
+
+        $r1 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.ExecutorService newCachedThreadPool()>();
+
+        <de.greenrobot.event.EventBus: java.util.concurrent.ExecutorService executorService> = $r1;
+
+        <de.greenrobot.event.EventBus: java.lang.String TAG> = "Event";
+
+        $r0 = new java.util.HashMap;
+
+        specialinvoke $r0.<java.util.HashMap: void <init>()>();
+
+        <de.greenrobot.event.EventBus: java.util.Map eventTypesCache> = $r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        de.greenrobot.event.EventBus $r0;
+        de.greenrobot.event.EventBus$1 $r1;
+        java.util.concurrent.ConcurrentHashMap $r2;
+        de.greenrobot.event.HandlerPoster $r3;
+        de.greenrobot.event.BackgroundPoster $r4;
+        de.greenrobot.event.AsyncPoster $r5;
+        de.greenrobot.event.SubscriberMethodFinder $r6;
+        android.os.Looper $r7;
+        java.util.HashMap $r8, $r8_1;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new de.greenrobot.event.EventBus$1;
+
+        specialinvoke $r1.<de.greenrobot.event.EventBus$1: void <init>(de.greenrobot.event.EventBus)>($r0);
+
+        $r0.<de.greenrobot.event.EventBus: java.lang.ThreadLocal currentPostingThreadState> = $r1;
+
+        $r0.<de.greenrobot.event.EventBus: java.lang.String defaultMethodName> = "onEvent";
+
+        $r8 = new java.util.HashMap;
+
+        specialinvoke $r8.<java.util.HashMap: void <init>()>();
+
+        $r0.<de.greenrobot.event.EventBus: java.util.Map subscriptionsByEventType> = $r8;
+
+        $r8_1 = new java.util.HashMap;
+
+        specialinvoke $r8_1.<java.util.HashMap: void <init>()>();
+
+        $r0.<de.greenrobot.event.EventBus: java.util.Map typesBySubscriber> = $r8_1;
+
+        $r2 = new java.util.concurrent.ConcurrentHashMap;
+
+        specialinvoke $r2.<java.util.concurrent.ConcurrentHashMap: void <init>()>();
+
+        $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents> = $r2;
+
+        $r3 = new de.greenrobot.event.HandlerPoster;
+
+        $r7 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r3.<de.greenrobot.event.HandlerPoster: void <init>(de.greenrobot.event.EventBus,android.os.Looper,int)>($r0, $r7, 10);
+
+        $r0.<de.greenrobot.event.EventBus: de.greenrobot.event.HandlerPoster mainThreadPoster> = $r3;
+
+        $r4 = new de.greenrobot.event.BackgroundPoster;
+
+        specialinvoke $r4.<de.greenrobot.event.BackgroundPoster: void <init>(de.greenrobot.event.EventBus)>($r0);
+
+        $r0.<de.greenrobot.event.EventBus: de.greenrobot.event.BackgroundPoster backgroundPoster> = $r4;
+
+        $r5 = new de.greenrobot.event.AsyncPoster;
+
+        specialinvoke $r5.<de.greenrobot.event.AsyncPoster: void <init>(de.greenrobot.event.EventBus)>($r0);
+
+        $r0.<de.greenrobot.event.EventBus: de.greenrobot.event.AsyncPoster asyncPoster> = $r5;
+
+        $r6 = new de.greenrobot.event.SubscriberMethodFinder;
+
+        specialinvoke $r6.<de.greenrobot.event.SubscriberMethodFinder: void <init>()>();
+
+        $r0.<de.greenrobot.event.EventBus: de.greenrobot.event.SubscriberMethodFinder subscriberMethodFinder> = $r6;
+
+        $r0.<de.greenrobot.event.EventBus: boolean logSubscriberExceptions> = 1;
+
+        return;
+    }
+
+    static void addInterfaces(java.util.List, java.lang.Class[])
+    {
+        java.util.List $r0;
+        java.lang.Class[] $r1, $r3;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.lang.Class $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: java.util.List;
+
+        $r1 := @parameter1: java.lang.Class[];
+
+        $i0 = lengthof $r1;
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        if $i1_1 >= $i0 goto label3;
+
+        $r2 = $r1[$i1_1];
+
+        $z0 = interfaceinvoke $r0.<java.util.List: boolean contains(java.lang.Object)>($r2);
+
+        if $z0 != 0 goto label2;
+
+        interfaceinvoke $r0.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+        $r3 = virtualinvoke $r2.<java.lang.Class: java.lang.Class[] getInterfaces()>();
+
+        staticinvoke <de.greenrobot.event.EventBus: void addInterfaces(java.util.List,java.lang.Class[])>($r0, $r3);
+
+     label2:
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label3:
+        return;
+    }
+
+    public static void clearCaches()
+    {
+        java.util.Map $r0;
+
+        staticinvoke <de.greenrobot.event.SubscriberMethodFinder: void clearCaches()>();
+
+        $r0 = <de.greenrobot.event.EventBus: java.util.Map eventTypesCache>;
+
+        interfaceinvoke $r0.<java.util.Map: void clear()>();
+
+        return;
+    }
+
+    public static void clearSkipMethodNameVerifications()
+    {
+        staticinvoke <de.greenrobot.event.SubscriberMethodFinder: void clearSkipMethodVerifications()>();
+
+        return;
+    }
+
+    private java.util.List findEventTypes(java.lang.Class)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Class $r1, $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+        java.util.Map $r2, $r5, $r5_1, $r5_2, $r5_3;
+        java.util.ArrayList $r3;
+        java.lang.Throwable $r4;
+        java.lang.Object $r6;
+        java.util.List $r7, $r8, $r8_1, $r8_2, $r8_3;
+        java.lang.Class[] $r10;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $r2 = <de.greenrobot.event.EventBus: java.util.Map eventTypesCache>;
+
+(0)     entermonitor $r2;
+
+     label1:
+        $r5 = <de.greenrobot.event.EventBus: java.util.Map eventTypesCache>;
+
+        $r6 = interfaceinvoke $r5.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r7 = (java.util.List) $r6;
+
+        $r8 = $r7;
+
+(1)     if $r7 != null goto label4;
+
+        $r3 = new java.util.ArrayList;
+
+(2)     $r8_1 = $r3;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+(3)     $r9 = $r1;
+
+     label2:
+        $r9_1 = Phi($r9 #3, $r9_2 #6);
+
+(4)     if $r9_1 == null goto label3;
+
+        interfaceinvoke $r3.<java.util.List: boolean add(java.lang.Object)>($r9_1);
+
+        $r10 = virtualinvoke $r9_1.<java.lang.Class: java.lang.Class[] getInterfaces()>();
+
+        staticinvoke <de.greenrobot.event.EventBus: void addInterfaces(java.util.List,java.lang.Class[])>($r3, $r10);
+
+(5)     $r9_2 = virtualinvoke $r9_1.<java.lang.Class: java.lang.Class getSuperclass()>();
+
+(6)     goto label2;
+
+     label3:
+(7)     $r5_1 = <de.greenrobot.event.EventBus: java.util.Map eventTypesCache>;
+
+(8)     interfaceinvoke $r5_1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r3);
+
+     label4:
+        $r8_2 = Phi($r8 #1, $r8_1 #8);
+
+        $r5_2 = Phi($r5 #1, $r5_1 #8);
+
+        $r9_3 = Phi($r9 #1, $r9_1 #8);
+
+(9)     exitmonitor $r2;
+
+     label5:
+        return $r8_2;
+
+     label6:
+        $r4 := @caughtexception;
+
+        $r8_3 = Phi($r8 #0, $r8_1 #2, $r8_2 #9, $r8_3 #10);
+
+        $r5_3 = Phi($r5 #0, $r5_1 #7, $r5_2 #9, $r5_3 #10);
+
+(10)    $r9_4 = Phi($r9 #0, $r9_1 #4, $r9_2 #5, $r9_3 #9, $r9_4 #10);
+
+        exitmonitor $r2;
+
+     label7:
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label5 with label6;
+        catch java.lang.Throwable from label6 to label7 with label6;
+    }
+
+    public static de.greenrobot.event.EventBus getDefault()
+    {
+        java.lang.Throwable $r0;
+        de.greenrobot.event.EventBus $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5, $r1_6;
+
+        $r1 = <de.greenrobot.event.EventBus: de.greenrobot.event.EventBus defaultInstance>;
+
+(0)     if $r1 != null goto label5;
+
+(1)     entermonitor class "de/greenrobot/event/EventBus";
+
+     label1:
+(2)     $r1_1 = <de.greenrobot.event.EventBus: de.greenrobot.event.EventBus defaultInstance>;
+
+     label2:
+(3)     if $r1_1 != null goto label4;
+
+     label3:
+(4)     $r1_2 = new de.greenrobot.event.EventBus;
+
+        specialinvoke $r1_2.<de.greenrobot.event.EventBus: void <init>()>();
+
+(5)     <de.greenrobot.event.EventBus: de.greenrobot.event.EventBus defaultInstance> = $r1_2;
+
+     label4:
+        $r1_3 = Phi($r1_1 #3, $r1_2 #5);
+
+(6)     exitmonitor class "de/greenrobot/event/EventBus";
+
+     label5:
+        $r1_5 = Phi($r1 #0, $r1_3 #6);
+
+        $r1_6 = <de.greenrobot.event.EventBus: de.greenrobot.event.EventBus defaultInstance>;
+
+        return $r1_6;
+
+     label6:
+        $r0 := @caughtexception;
+
+(7)     $r1_4 = Phi($r1 #1, $r1_1 #2, $r1_2 #4, $r1_3 #6, $r1_4 #7);
+
+     label7:
+        exitmonitor class "de/greenrobot/event/EventBus";
+
+     label8:
+        throw $r0;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label3 to label5 with label6;
+        catch java.lang.Throwable from label7 to label8 with label6;
+    }
+
+    private void postSingleEvent(java.lang.Object, de.greenrobot.event.EventBus$PostingThreadState) throws java.lang.Error
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1, $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7;
+        de.greenrobot.event.EventBus$PostingThreadState $r2;
+        java.util.Map $r3;
+        java.lang.Throwable $r4, $r5;
+        java.lang.String $r6, $r16;
+        de.greenrobot.event.NoSubscriberEvent $r7;
+        java.lang.Class $r8, $r11;
+        java.util.List $r9;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.util.concurrent.CopyOnWriteArrayList $r12;
+        java.util.Iterator $r13;
+        de.greenrobot.event.Subscription $r14;
+        java.lang.StringBuilder $r15, $r15_1, $r15_2, $r15_3;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: de.greenrobot.event.EventBus$PostingThreadState;
+
+        $r8 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r9 = specialinvoke $r0.<de.greenrobot.event.EventBus: java.util.List findEventTypes(java.lang.Class)>($r8);
+
+        $z0 = 0;
+
+        $i0 = interfaceinvoke $r9.<java.util.List: int size()>();
+
+(0)     $i1 = 0;
+
+     label01:
+        $z0_1 = Phi($z0 #0, $z0_9 #12);
+
+        $r10 = Phi($r10 #0, $r10_6 #12);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #12);
+
+        if $i1_1 >= $i0 goto label13;
+
+        $r10_1 = interfaceinvoke $r9.<java.util.List: java.lang.Object get(int)>($i1_1);
+
+        $r11 = (java.lang.Class) $r10_1;
+
+(1)     entermonitor $r0;
+
+     label02:
+        $r3 = $r0.<de.greenrobot.event.EventBus: java.util.Map subscriptionsByEventType>;
+
+(2)     $r10_2 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r11);
+
+        $r12 = (java.util.concurrent.CopyOnWriteArrayList) $r10_2;
+
+        exitmonitor $r0;
+
+     label03:
+(3)     if $r12 == null goto label08;
+
+        $z1 = virtualinvoke $r12.<java.util.concurrent.CopyOnWriteArrayList: boolean isEmpty()>();
+
+(4)     if $z1 != 0 goto label08;
+
+(5)     $r13 = virtualinvoke $r12.<java.util.concurrent.CopyOnWriteArrayList: java.util.Iterator iterator()>();
+
+     label04:
+        $z0_2 = Phi($z0_1 #5, $z0_5 #10);
+
+        $r10_3 = Phi($r10_2 #5, $r10_4 #10);
+
+        $z0_3 = interfaceinvoke $r13.<java.util.Iterator: boolean hasNext()>();
+
+(6)     if $z0_3 == 0 goto label07;
+
+        $r10_4 = interfaceinvoke $r13.<java.util.Iterator: java.lang.Object next()>();
+
+        $r14 = (de.greenrobot.event.Subscription) $r10_4;
+
+        $r2.<de.greenrobot.event.EventBus$PostingThreadState: java.lang.Object event> = $r1;
+
+(7)     $r2.<de.greenrobot.event.EventBus$PostingThreadState: de.greenrobot.event.Subscription subscription> = $r14;
+
+     label05:
+(8)     $z0_4 = $r2.<de.greenrobot.event.EventBus$PostingThreadState: boolean isMainThread>;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void postToSubscription(de.greenrobot.event.Subscription,java.lang.Object,boolean)>($r14, $r1, $z0_4);
+
+(9)     $z0_5 = $r2.<de.greenrobot.event.EventBus$PostingThreadState: boolean canceled>;
+
+     label06:
+        $r2.<de.greenrobot.event.EventBus$PostingThreadState: java.lang.Object event> = null;
+
+        $r2.<de.greenrobot.event.EventBus$PostingThreadState: de.greenrobot.event.Subscription subscription> = null;
+
+        $r2.<de.greenrobot.event.EventBus$PostingThreadState: boolean canceled> = 0;
+
+(10)    if $z0_5 == 0 goto label04;
+
+     label07:
+        $z0_7 = Phi($z0_3 #6, $z0_5 #10);
+
+        $r10_5 = Phi($r10_3 #6, $r10_4 #10);
+
+(11)    $z0_8 = 1;
+
+     label08:
+        $z0_9 = Phi($z0_1 #3, $z0_1 #4, $z0_8 #11);
+
+        $r10_6 = Phi($r10_2 #3, $r10_2 #4, $r10_5 #11);
+
+        $i1_2 = $i1_1 + 1;
+
+(12)    goto label01;
+
+     label09:
+        $r4 := @caughtexception;
+
+(13)    $r10_7 = Phi($r10_1 #1, $r10_2 #2, $r10_7 #13);
+
+     label10:
+        exitmonitor $r0;
+
+     label11:
+        throw $r4;
+
+     label12:
+        $r5 := @caughtexception;
+
+        $z0_6 = Phi($z0_3 #7, $z0_4 #8, $z0_5 #9);
+
+        $r2.<de.greenrobot.event.EventBus$PostingThreadState: java.lang.Object event> = null;
+
+        $r2.<de.greenrobot.event.EventBus$PostingThreadState: de.greenrobot.event.Subscription subscription> = null;
+
+        $r2.<de.greenrobot.event.EventBus$PostingThreadState: boolean canceled> = 0;
+
+        throw $r5;
+
+     label13:
+(14)    if $z0_1 != 0 goto label14;
+
+        $r6 = <de.greenrobot.event.EventBus: java.lang.String TAG>;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r15_1 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("No subscribers registered for event ");
+
+        $r15_2 = virtualinvoke $r15_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8);
+
+        $r16 = virtualinvoke $r15_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r6, $r16);
+
+(15)    if $r8 == class "de/greenrobot/event/NoSubscriberEvent" goto label14;
+
+(16)    if $r8 == class "de/greenrobot/event/SubscriberExceptionEvent" goto label14;
+
+        $r7 = new de.greenrobot.event.NoSubscriberEvent;
+
+        specialinvoke $r7.<de.greenrobot.event.NoSubscriberEvent: void <init>(de.greenrobot.event.EventBus,java.lang.Object)>($r0, $r1);
+
+(17)    virtualinvoke $r0.<de.greenrobot.event.EventBus: void post(java.lang.Object)>($r7);
+
+     label14:
+        $r15_3 = Phi($r15 #14, $r15_2 #15, $r15_2 #16, $r15_2 #17);
+
+        return;
+
+        catch java.lang.Throwable from label02 to label03 with label09;
+        catch java.lang.Throwable from label05 to label06 with label12;
+        catch java.lang.Throwable from label10 to label11 with label09;
+    }
+
+    private void postToSubscription(de.greenrobot.event.Subscription, java.lang.Object, boolean)
+    {
+        de.greenrobot.event.EventBus $r0;
+        de.greenrobot.event.Subscription $r1;
+        java.lang.Object $r2;
+        boolean $z0;
+        int[] $r3;
+        java.lang.IllegalStateException $r4;
+        de.greenrobot.event.HandlerPoster $r5;
+        de.greenrobot.event.BackgroundPoster $r6;
+        de.greenrobot.event.AsyncPoster $r7;
+        de.greenrobot.event.SubscriberMethod $r8, $r8_1;
+        de.greenrobot.event.ThreadMode $r9, $r9_1;
+        int $i0, $i0_1;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2;
+        java.lang.String $r11;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: de.greenrobot.event.Subscription;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $z0 := @parameter2: boolean;
+
+        $r3 = <de.greenrobot.event.EventBus$2: int[] $SwitchMap$de$greenrobot$event$ThreadMode>;
+
+        $r8 = $r1.<de.greenrobot.event.Subscription: de.greenrobot.event.SubscriberMethod subscriberMethod>;
+
+        $r9 = $r8.<de.greenrobot.event.SubscriberMethod: de.greenrobot.event.ThreadMode threadMode>;
+
+        $i0 = virtualinvoke $r9.<de.greenrobot.event.ThreadMode: int ordinal()>();
+
+        $i0_1 = $r3[$i0];
+
+        lookupswitch($i0_1)
+        {
+            case 1: goto label3;
+            case 2: goto label4;
+            case 3: goto label6;
+            case 4: goto label8;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        $r4 = new java.lang.IllegalStateException;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unknown thread mode: ");
+
+        $r8_1 = $r1.<de.greenrobot.event.Subscription: de.greenrobot.event.SubscriberMethod subscriberMethod>;
+
+        $r9_1 = $r8_1.<de.greenrobot.event.SubscriberMethod: de.greenrobot.event.ThreadMode threadMode>;
+
+        $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r9_1);
+
+        $r11 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r11);
+
+        throw $r4;
+
+     label3:
+        virtualinvoke $r0.<de.greenrobot.event.EventBus: void invokeSubscriber(de.greenrobot.event.Subscription,java.lang.Object)>($r1, $r2);
+
+        return;
+
+     label4:
+        if $z0 == 0 goto label5;
+
+        virtualinvoke $r0.<de.greenrobot.event.EventBus: void invokeSubscriber(de.greenrobot.event.Subscription,java.lang.Object)>($r1, $r2);
+
+        return;
+
+     label5:
+        $r5 = $r0.<de.greenrobot.event.EventBus: de.greenrobot.event.HandlerPoster mainThreadPoster>;
+
+        virtualinvoke $r5.<de.greenrobot.event.HandlerPoster: void enqueue(de.greenrobot.event.Subscription,java.lang.Object)>($r1, $r2);
+
+        return;
+
+     label6:
+        if $z0 == 0 goto label7;
+
+        $r6 = $r0.<de.greenrobot.event.EventBus: de.greenrobot.event.BackgroundPoster backgroundPoster>;
+
+        virtualinvoke $r6.<de.greenrobot.event.BackgroundPoster: void enqueue(de.greenrobot.event.Subscription,java.lang.Object)>($r1, $r2);
+
+        return;
+
+     label7:
+        virtualinvoke $r0.<de.greenrobot.event.EventBus: void invokeSubscriber(de.greenrobot.event.Subscription,java.lang.Object)>($r1, $r2);
+
+        return;
+
+     label8:
+        $r7 = $r0.<de.greenrobot.event.EventBus: de.greenrobot.event.AsyncPoster asyncPoster>;
+
+        virtualinvoke $r7.<de.greenrobot.event.AsyncPoster: void enqueue(de.greenrobot.event.Subscription,java.lang.Object)>($r1, $r2);
+
+        return;
+    }
+
+    private void register(java.lang.Object, java.lang.String, boolean, int)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1, $r8;
+        java.lang.String $r2;
+        boolean $z0, $z1;
+        int $i0;
+        de.greenrobot.event.SubscriberMethodFinder $r3;
+        java.lang.Throwable $r4;
+        java.lang.Class $r5;
+        java.util.List $r6;
+        java.util.Iterator $r7;
+        de.greenrobot.event.SubscriberMethod $r9;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $z0 := @parameter2: boolean;
+
+        $i0 := @parameter3: int;
+
+        entermonitor $r0;
+
+     label1:
+        $r3 = $r0.<de.greenrobot.event.EventBus: de.greenrobot.event.SubscriberMethodFinder subscriberMethodFinder>;
+
+        $r5 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r6 = virtualinvoke $r3.<de.greenrobot.event.SubscriberMethodFinder: java.util.List findSubscriberMethods(java.lang.Class,java.lang.String)>($r5, $r2);
+
+        $r7 = interfaceinvoke $r6.<java.util.List: java.util.Iterator iterator()>();
+
+     label2:
+        $z1 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label5;
+
+        $r8 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r9 = (de.greenrobot.event.SubscriberMethod) $r8;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void subscribe(java.lang.Object,de.greenrobot.event.SubscriberMethod,boolean,int)>($r1, $r9, $z0, $i0);
+
+     label3:
+        goto label2;
+
+     label4:
+        $r4 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r4;
+
+     label5:
+        exitmonitor $r0;
+
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    private transient void register(java.lang.Object, java.lang.String, boolean, java.lang.Class, java.lang.Class[])
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1, $r10;
+        java.lang.String $r2;
+        boolean $z0, $z1;
+        java.lang.Class $r3, $r7, $r12, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        java.lang.Class[] $r4;
+        de.greenrobot.event.SubscriberMethodFinder $r5;
+        java.lang.Throwable $r6;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3, $i1_4;
+        java.util.List $r8;
+        java.util.Iterator $r9;
+        de.greenrobot.event.SubscriberMethod $r11;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $z0 := @parameter2: boolean;
+
+        $r3 := @parameter3: java.lang.Class;
+
+        $r4 := @parameter4: java.lang.Class[];
+
+(0)     entermonitor $r0;
+
+     label01:
+        $r7 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r5 = $r0.<de.greenrobot.event.EventBus: de.greenrobot.event.SubscriberMethodFinder subscriberMethodFinder>;
+
+        $r8 = virtualinvoke $r5.<de.greenrobot.event.SubscriberMethodFinder: java.util.List findSubscriberMethods(java.lang.Class,java.lang.String)>($r7, $r2);
+
+(1)     $r9 = interfaceinvoke $r8.<java.util.List: java.util.Iterator iterator()>();
+
+     label02:
+        $r7_1 = Phi($r7 #1, $r7_2 #4, $r7_2 #5, $r7_3 #7, $r7_4 #9);
+
+        $i1 = Phi($i1 #1, $i1 #4, $i1 #5, $i1_2 #7, $i1_2 #9);
+
+(2)     $z1 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label10;
+
+        $r10 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        $r11 = (de.greenrobot.event.SubscriberMethod) $r10;
+
+(3)     $r7_2 = $r11.<de.greenrobot.event.SubscriberMethod: java.lang.Class eventType>;
+
+        if $r3 != $r7_2 goto label05;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void subscribe(java.lang.Object,de.greenrobot.event.SubscriberMethod,boolean,int)>($r1, $r11, $z0, 0);
+
+     label03:
+(4)     goto label02;
+
+     label04:
+        $r6 := @caughtexception;
+
+        $r7_5 = Phi($r7 #0, $r7_3 #7, $r7_1 #2, $r7_2 #3, $r7_4 #8);
+
+        $i1_4 = Phi($i1 #0, $i1_2 #7, $i1_1 #6, $i1_3 #10);
+
+        exitmonitor $r0;
+
+        throw $r6;
+
+     label05:
+(5)     if $r4 == null goto label02;
+
+     label06:
+        $i0 = lengthof $r4;
+
+(6)     $i1_1 = 0;
+
+     label07:
+        $r7_3 = Phi($r7_2 #6, $r7_4 #10);
+
+        $i1_2 = Phi($i1_1 #6, $i1_3 #10);
+
+(7)     if $i1_2 >= $i0 goto label02;
+
+        $r12 = $r4[$i1_2];
+
+(8)     $r7_4 = $r11.<de.greenrobot.event.SubscriberMethod: java.lang.Class eventType>;
+
+        if $r12 != $r7_4 goto label09;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void subscribe(java.lang.Object,de.greenrobot.event.SubscriberMethod,boolean,int)>($r1, $r11, $z0, 0);
+
+     label08:
+(9)     goto label02;
+
+     label09:
+        $i1_3 = $i1_2 + 1;
+
+(10)    goto label07;
+
+     label10:
+        exitmonitor $r0;
+
+        return;
+
+        catch java.lang.Throwable from label01 to label03 with label04;
+        catch java.lang.Throwable from label06 to label08 with label04;
+    }
+
+    public static void skipMethodVerificationFor(java.lang.Class)
+    {
+        java.lang.Class $r0;
+
+        $r0 := @parameter0: java.lang.Class;
+
+        staticinvoke <de.greenrobot.event.SubscriberMethodFinder: void skipMethodVerificationFor(java.lang.Class)>($r0);
+
+        return;
+    }
+
+    private void subscribe(java.lang.Object, de.greenrobot.event.SubscriberMethod, boolean, int)
+    {
+        de.greenrobot.event.EventBus $r0;
+        de.greenrobot.event.SubscriberMethod $r1;
+        java.lang.Class $r2, $r20;
+        java.util.concurrent.CopyOnWriteArrayList $r3, $r11, $r3_1, $r11_1, $r3_2, $r11_2;
+        int $i0, $i1, $i2, $i3, $i3_1, $i0_1, $i0_2, $i3_2, $i0_3, $i0_4;
+        java.util.ArrayList $r4;
+        de.greenrobot.event.EventBusException $r5;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        java.lang.Throwable $r7;
+        java.lang.Object $r8, $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r8_1, $r8_2, $r8_3, $r10_7, $r10_8;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z1_1, $z1_2, $z1_3;
+        java.util.Map $r9, $r16, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7;
+        de.greenrobot.event.Subscription $r12, $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6;
+        java.util.List $r14, $r15, $r15_1, $r15_2;
+        android.os.Looper $r17, $r18;
+        java.util.Iterator $r19;
+        java.lang.String $r21;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r8 := @parameter0: java.lang.Object;
+
+        $r1 := @parameter1: de.greenrobot.event.SubscriberMethod;
+
+        $z0 := @parameter2: boolean;
+
+        $i0 := @parameter3: int;
+
+        $r0.<de.greenrobot.event.EventBus: boolean subscribed> = 1;
+
+        $r2 = $r1.<de.greenrobot.event.SubscriberMethod: java.lang.Class eventType>;
+
+        $r9 = $r0.<de.greenrobot.event.EventBus: java.util.Map subscriptionsByEventType>;
+
+        $r10 = interfaceinvoke $r9.<java.util.Map: java.lang.Object get(java.lang.Object)>($r2);
+
+        $r3 = (java.util.concurrent.CopyOnWriteArrayList) $r10;
+
+        $r11 = $r3;
+
+        $r12 = new de.greenrobot.event.Subscription;
+
+        specialinvoke $r12.<de.greenrobot.event.Subscription: void <init>(java.lang.Object,de.greenrobot.event.SubscriberMethod,int)>($r8, $r1, $i0);
+
+        if $r3 != null goto label09;
+
+        $r3_1 = new java.util.concurrent.CopyOnWriteArrayList;
+
+        $r11_1 = $r3_1;
+
+        specialinvoke $r3_1.<java.util.concurrent.CopyOnWriteArrayList: void <init>()>();
+
+        $r9_1 = $r0.<de.greenrobot.event.EventBus: java.util.Map subscriptionsByEventType>;
+
+(0)     interfaceinvoke $r9_1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2, $r3_1);
+
+     label01:
+        $z1 = Phi($z1 #0, $z1_2 #14);
+
+        $r3_2 = Phi($r3_1 #0, $r3 #14);
+
+        $r10_1 = Phi($r10 #0, $r10_7 #14);
+
+        $r9_2 = Phi($r9_1 #0, $r9 #14);
+
+        $r13 = Phi($r13 #0, $r13_5 #14);
+
+        $r11_2 = Phi($r11_1 #0, $r11 #14);
+
+        $i2 = virtualinvoke $r11_2.<java.util.concurrent.CopyOnWriteArrayList: int size()>();
+
+(1)     $i3 = 0;
+
+     label02:
+        $i3_1 = Phi($i3 #1, $i3_2 #16);
+
+        $i0_1 = Phi($i0 #1, $i0_2 #16);
+
+        $r10_2 = Phi($r10_1 #1, $r10_3 #16);
+
+        $r13_1 = Phi($r13 #1, $r13_2 #16);
+
+(2)     if $i3_1 > $i2 goto label04;
+
+(3)     if $i3_1 == $i2 goto label03;
+
+        $i0_2 = $r12.<de.greenrobot.event.Subscription: int priority>;
+
+        $r10_3 = virtualinvoke $r11_2.<java.util.concurrent.CopyOnWriteArrayList: java.lang.Object get(int)>($i3_1);
+
+        $r13_2 = (de.greenrobot.event.Subscription) $r10_3;
+
+        $i1 = $r13_2.<de.greenrobot.event.Subscription: int priority>;
+
+(4)     if $i0_2 <= $i1 goto label11;
+
+     label03:
+        $i0_3 = Phi($i0_1 #3, $i0_2 #4);
+
+        $r10_4 = Phi($r10_2 #3, $r10_3 #4);
+
+        $r13_3 = Phi($r13_1 #3, $r13_2 #4);
+
+(5)     virtualinvoke $r11_2.<java.util.concurrent.CopyOnWriteArrayList: void add(int,java.lang.Object)>($i3_1, $r12);
+
+     label04:
+        $i0_4 = Phi($i0_1 #2, $i0_3 #5);
+
+        $r10_5 = Phi($r10_2 #2, $r10_4 #5);
+
+        $r13_4 = Phi($r13_1 #2, $r13_3 #5);
+
+        $r9_3 = $r0.<de.greenrobot.event.EventBus: java.util.Map typesBySubscriber>;
+
+        $r10_6 = interfaceinvoke $r9_3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r8);
+
+        $r14 = (java.util.List) $r10_6;
+
+        $r15 = $r14;
+
+(6)     if $r14 != null goto label05;
+
+        $r4 = new java.util.ArrayList;
+
+        $r15_1 = $r4;
+
+        specialinvoke $r4.<java.util.ArrayList: void <init>()>();
+
+        $r9_4 = $r0.<de.greenrobot.event.EventBus: java.util.Map typesBySubscriber>;
+
+(7)     interfaceinvoke $r9_4.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r8, $r4);
+
+     label05:
+        $r15_2 = Phi($r15 #6, $r15_1 #7);
+
+        $r9_5 = Phi($r9_3 #6, $r9_4 #7);
+
+        interfaceinvoke $r15_2.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+(8)     if $z0 == 0 goto label16;
+
+        $r9_6 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+(9)     entermonitor $r9_6;
+
+     label06:
+        $r16 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+(10)    $r8_1 = interfaceinvoke $r16.<java.util.Map: java.lang.Object get(java.lang.Object)>($r2);
+
+        exitmonitor $r9_6;
+
+     label07:
+(11)    if $r8_1 == null goto label16;
+
+        $r17 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        $r18 = staticinvoke <android.os.Looper: android.os.Looper myLooper()>();
+
+        if $r17 != $r18 goto label15;
+
+(12)    $z0_1 = 1;
+
+     label08:
+        $z0_2 = Phi($z0_1 #12, $z0_3 #18);
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void postToSubscription(de.greenrobot.event.Subscription,java.lang.Object,boolean)>($r12, $r8_1, $z0_2);
+
+        return;
+
+     label09:
+(13)    $r19 = virtualinvoke $r3.<java.util.concurrent.CopyOnWriteArrayList: java.util.Iterator iterator()>();
+
+     label10:
+        $z1_1 = Phi($z1 #13, $z1_3 #15);
+
+        $r10_7 = Phi($r10 #13, $r10_8 #15);
+
+        $r13_5 = Phi($r13 #13, $r13_6 #15);
+
+        $z1_2 = interfaceinvoke $r19.<java.util.Iterator: boolean hasNext()>();
+
+(14)    if $z1_2 == 0 goto label01;
+
+        $r10_8 = interfaceinvoke $r19.<java.util.Iterator: java.lang.Object next()>();
+
+        $r13_6 = (de.greenrobot.event.Subscription) $r10_8;
+
+        $z1_3 = virtualinvoke $r13_6.<de.greenrobot.event.Subscription: boolean equals(java.lang.Object)>($r12);
+
+(15)    if $z1_3 == 0 goto label10;
+
+        $r5 = new de.greenrobot.event.EventBusException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Subscriber ");
+
+        $r20 = virtualinvoke $r8.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r20);
+
+        $r6_3 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" already registered to event ");
+
+        $r6_4 = virtualinvoke $r6_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        $r21 = virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r5.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>($r21);
+
+        throw $r5;
+
+     label11:
+        $i3_2 = $i3_1 + 1;
+
+(16)    goto label02;
+
+     label12:
+        $r7 := @caughtexception;
+
+(17)    $r8_2 = Phi($r8 #9, $r8_1 #10, $r8_2 #17);
+
+     label13:
+        exitmonitor $r9_6;
+
+     label14:
+        throw $r7;
+
+     label15:
+        $z0_3 = 0;
+
+(18)    goto label08;
+
+     label16:
+        $r8_3 = Phi($r8 #8, $r8_1 #11);
+
+        $r9_7 = Phi($r9_5 #8, $r9_6 #11);
+
+        return;
+
+        catch java.lang.Throwable from label06 to label07 with label12;
+        catch java.lang.Throwable from label13 to label14 with label12;
+    }
+
+    private void unubscribeByEventType(java.lang.Object, java.lang.Class)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1, $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.lang.Class $r2;
+        java.util.Map $r3;
+        java.util.List $r5;
+        int $i0, $i1, $i0_1, $i1_1, $i1_2, $i0_2, $i0_3, $i1_3, $i1_4, $i0_4, $i1_5;
+        de.greenrobot.event.Subscription $r6;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.Class;
+
+        $r3 = $r0.<de.greenrobot.event.EventBus: java.util.Map subscriptionsByEventType>;
+
+        $r4 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r2);
+
+        $r5 = (java.util.List) $r4;
+
+(0)     if $r5 == null goto label3;
+
+        $i0 = interfaceinvoke $r5.<java.util.List: int size()>();
+
+(1)     $i1 = 0;
+
+     label1:
+        $r4_1 = Phi($r4 #1, $r4_3 #5);
+
+        $i0_1 = Phi($i0 #1, $i0_3 #5);
+
+        $i1_1 = Phi($i1 #1, $i1_4 #5);
+
+(2)     if $i1_1 >= $i0_1 goto label3;
+
+        $r4_2 = interfaceinvoke $r5.<java.util.List: java.lang.Object get(int)>($i1_1);
+
+        $r6 = (de.greenrobot.event.Subscription) $r4_2;
+
+        $r4_3 = $r6.<de.greenrobot.event.Subscription: java.lang.Object subscriber>;
+
+(3)     if $r4_3 != $r1 goto label2;
+
+        $r6.<de.greenrobot.event.Subscription: boolean active> = 0;
+
+        interfaceinvoke $r5.<java.util.List: java.lang.Object remove(int)>($i1_1);
+
+        $i1_2 = $i1_1 + -1;
+
+(4)     $i0_2 = $i0_1 + -1;
+
+     label2:
+        $i0_3 = Phi($i0_1 #3, $i0_2 #4);
+
+        $i1_3 = Phi($i1_1 #3, $i1_2 #4);
+
+        $i1_4 = $i1_3 + 1;
+
+(5)     goto label1;
+
+     label3:
+        $r4_4 = Phi($r4 #0, $r4_1 #2);
+
+        $i0_4 = Phi($i0 #0, $i0_1 #2);
+
+        $i1_5 = Phi($i1 #0, $i1_1 #2);
+
+        return;
+    }
+
+    public void cancelEventDelivery(java.lang.Object)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1, $r7, $r7_1;
+        java.lang.ThreadLocal $r2;
+        boolean $z0;
+        de.greenrobot.event.Subscription $r3;
+        de.greenrobot.event.SubscriberMethod $r4;
+        de.greenrobot.event.ThreadMode $r5, $r6;
+        de.greenrobot.event.EventBus$PostingThreadState $r8;
+        de.greenrobot.event.EventBusException $r9, $r9_1, $r9_2, $r9_3;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.lang.ThreadLocal currentPostingThreadState>;
+
+        $r7 = virtualinvoke $r2.<java.lang.ThreadLocal: java.lang.Object get()>();
+
+        $r8 = (de.greenrobot.event.EventBus$PostingThreadState) $r7;
+
+        $z0 = $r8.<de.greenrobot.event.EventBus$PostingThreadState: boolean isPosting>;
+
+        if $z0 != 0 goto label1;
+
+        $r9 = new de.greenrobot.event.EventBusException;
+
+        specialinvoke $r9.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>("This method may only be called from inside event handling methods on the posting thread");
+
+        throw $r9;
+
+     label1:
+        if $r1 != null goto label2;
+
+        $r9_1 = new de.greenrobot.event.EventBusException;
+
+        specialinvoke $r9_1.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>("Event may not be null");
+
+        throw $r9_1;
+
+     label2:
+        $r7_1 = $r8.<de.greenrobot.event.EventBus$PostingThreadState: java.lang.Object event>;
+
+        if $r7_1 == $r1 goto label3;
+
+        $r9_2 = new de.greenrobot.event.EventBusException;
+
+        specialinvoke $r9_2.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>("Only the currently handled event may be aborted");
+
+        throw $r9_2;
+
+     label3:
+        $r3 = $r8.<de.greenrobot.event.EventBus$PostingThreadState: de.greenrobot.event.Subscription subscription>;
+
+        $r4 = $r3.<de.greenrobot.event.Subscription: de.greenrobot.event.SubscriberMethod subscriberMethod>;
+
+        $r5 = $r4.<de.greenrobot.event.SubscriberMethod: de.greenrobot.event.ThreadMode threadMode>;
+
+        $r6 = <de.greenrobot.event.ThreadMode: de.greenrobot.event.ThreadMode PostThread>;
+
+        if $r5 == $r6 goto label4;
+
+        $r9_3 = new de.greenrobot.event.EventBusException;
+
+        specialinvoke $r9_3.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>(" event handlers may only abort the incoming event");
+
+        throw $r9_3;
+
+     label4:
+        $r8.<de.greenrobot.event.EventBus$PostingThreadState: boolean canceled> = 1;
+
+        return;
+    }
+
+    public void configureLogSubscriberExceptions(boolean)
+    {
+        de.greenrobot.event.EventBus $r0;
+        boolean $z0, $z1;
+        de.greenrobot.event.EventBusException $r1;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = $r0.<de.greenrobot.event.EventBus: boolean subscribed>;
+
+        if $z1 == 0 goto label1;
+
+        $r1 = new de.greenrobot.event.EventBusException;
+
+        specialinvoke $r1.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>("This method must be called before any registration");
+
+        throw $r1;
+
+     label1:
+        $r0.<de.greenrobot.event.EventBus: boolean logSubscriberExceptions> = $z0;
+
+        return;
+    }
+
+    public java.lang.Object getStickyEvent(java.lang.Class)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Class $r1;
+        java.util.Map $r2, $r3;
+        java.lang.Throwable $r4;
+        java.lang.Object $r5, $r5_1, $r5_2;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+(0)     entermonitor $r2;
+
+     label1:
+        $r3 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+        $r5 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+(1)     $r5_1 = virtualinvoke $r1.<java.lang.Class: java.lang.Object cast(java.lang.Object)>($r5);
+
+        exitmonitor $r2;
+
+     label2:
+        return $r5_1;
+
+     label3:
+        $r4 := @caughtexception;
+
+(2)     $r5_2 = Phi($r5 #0, $r5_1 #1, $r5_2 #2);
+
+        exitmonitor $r2;
+
+     label4:
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    void invokeSubscriber(de.greenrobot.event.PendingPost)
+    {
+        de.greenrobot.event.EventBus $r0;
+        de.greenrobot.event.PendingPost $r1;
+        java.lang.Object $r2;
+        de.greenrobot.event.Subscription $r3;
+        boolean $z0;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: de.greenrobot.event.PendingPost;
+
+        $r2 = $r1.<de.greenrobot.event.PendingPost: java.lang.Object event>;
+
+        $r3 = $r1.<de.greenrobot.event.PendingPost: de.greenrobot.event.Subscription subscription>;
+
+        staticinvoke <de.greenrobot.event.PendingPost: void releasePendingPost(de.greenrobot.event.PendingPost)>($r1);
+
+        $z0 = $r3.<de.greenrobot.event.Subscription: boolean active>;
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r0.<de.greenrobot.event.EventBus: void invokeSubscriber(de.greenrobot.event.Subscription,java.lang.Object)>($r3, $r2);
+
+     label1:
+        return;
+    }
+
+    void invokeSubscriber(de.greenrobot.event.Subscription, java.lang.Object) throws java.lang.Error
+    {
+        de.greenrobot.event.EventBus $r0;
+        de.greenrobot.event.Subscription $r1;
+        de.greenrobot.event.SubscriberMethod $r2;
+        java.lang.reflect.Method $r3;
+        java.lang.Object[] $r4;
+        java.lang.reflect.InvocationTargetException $r5;
+        java.lang.IllegalAccessException $r6;
+        java.lang.IllegalStateException $r7;
+        java.lang.Object $r8, $r9, $r9_1, $r8_1, $r8_2, $r9_2, $r9_3, $r9_4;
+        java.lang.Throwable $r10, $r10_1;
+        boolean $z0, $z0_1;
+        java.lang.String $r11, $r14, $r11_1, $r14_1, $r11_2, $r14_2, $r14_3, $r11_3;
+        java.lang.StringBuilder $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8, $r12_9, $r12_10, $r12_11, $r12_12, $r12_13, $r12_14;
+        java.lang.Class $r13, $r13_1, $r13_2, $r13_3;
+        de.greenrobot.event.SubscriberExceptionEvent $r15, $r15_1;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: de.greenrobot.event.Subscription;
+
+        $r8 := @parameter1: java.lang.Object;
+
+        $r2 = $r1.<de.greenrobot.event.Subscription: de.greenrobot.event.SubscriberMethod subscriberMethod>;
+
+        $r3 = $r2.<de.greenrobot.event.SubscriberMethod: java.lang.reflect.Method method>;
+
+        $r9 = $r1.<de.greenrobot.event.Subscription: java.lang.Object subscriber>;
+
+        $r4 = newarray (java.lang.Object)[1];
+
+        $r4[0] = $r8;
+
+     label1:
+        virtualinvoke $r3.<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>($r9, $r4);
+
+     label2:
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        $r10 = virtualinvoke $r5.<java.lang.reflect.InvocationTargetException: java.lang.Throwable getCause()>();
+
+        $z0 = $r8 instanceof de.greenrobot.event.SubscriberExceptionEvent;
+
+        if $z0 == 0 goto label4;
+
+        $r11 = <de.greenrobot.event.EventBus: java.lang.String TAG>;
+
+        $r12 = new java.lang.StringBuilder;
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>()>();
+
+        $r12_1 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SubscriberExceptionEvent subscriber ");
+
+        $r9_1 = $r1.<de.greenrobot.event.Subscription: java.lang.Object subscriber>;
+
+        $r13 = virtualinvoke $r9_1.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r12_2 = virtualinvoke $r12_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r13);
+
+        $r12_3 = virtualinvoke $r12_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" threw an exception");
+
+        $r14 = virtualinvoke $r12_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>($r11, $r14, $r10);
+
+        $r15 = (de.greenrobot.event.SubscriberExceptionEvent) $r8;
+
+        $r11_1 = <de.greenrobot.event.EventBus: java.lang.String TAG>;
+
+        $r12_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r12_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r12_5 = virtualinvoke $r12_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Initial event ");
+
+        $r8_1 = $r15.<de.greenrobot.event.SubscriberExceptionEvent: java.lang.Object causingEvent>;
+
+        $r12_6 = virtualinvoke $r12_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8_1);
+
+        $r12_7 = virtualinvoke $r12_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" caused exception in ");
+
+        $r8_2 = $r15.<de.greenrobot.event.SubscriberExceptionEvent: java.lang.Object causingSubscriber>;
+
+        $r12_8 = virtualinvoke $r12_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8_2);
+
+        $r14_1 = virtualinvoke $r12_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r10_1 = $r15.<de.greenrobot.event.SubscriberExceptionEvent: java.lang.Throwable throwable>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>($r11_1, $r14_1, $r10_1);
+
+        return;
+
+     label4:
+        $z0_1 = $r0.<de.greenrobot.event.EventBus: boolean logSubscriberExceptions>;
+
+(0)     if $z0_1 == 0 goto label5;
+
+        $r11_2 = <de.greenrobot.event.EventBus: java.lang.String TAG>;
+
+        $r12_9 = new java.lang.StringBuilder;
+
+        specialinvoke $r12_9.<java.lang.StringBuilder: void <init>()>();
+
+        $r12_10 = virtualinvoke $r12_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Could not dispatch event: ");
+
+        $r13_1 = virtualinvoke $r8.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r12_11 = virtualinvoke $r12_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r13_1);
+
+        $r12_12 = virtualinvoke $r12_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" to subscribing class ");
+
+        $r9_2 = $r1.<de.greenrobot.event.Subscription: java.lang.Object subscriber>;
+
+        $r13_2 = virtualinvoke $r9_2.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r12_13 = virtualinvoke $r12_12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r13_2);
+
+        $r14_2 = virtualinvoke $r12_13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>($r11_2, $r14_2, $r10);
+
+     label5:
+        $r9_3 = Phi($r9 #0, $r9_2 #1);
+
+        $r13_3 = Phi($r13 #0, $r13_2 #1);
+
+        $r12_14 = Phi($r12 #0, $r12_13 #1);
+
+        $r14_3 = Phi($r14 #0, $r14_2 #1);
+
+        $r11_3 = Phi($r11 #0, $r11_2 #1);
+
+        $r15_1 = new de.greenrobot.event.SubscriberExceptionEvent;
+
+        $r9_4 = $r1.<de.greenrobot.event.Subscription: java.lang.Object subscriber>;
+
+        specialinvoke $r15_1.<de.greenrobot.event.SubscriberExceptionEvent: void <init>(de.greenrobot.event.EventBus,java.lang.Throwable,java.lang.Object,java.lang.Object)>($r0, $r10, $r8, $r9_4);
+
+        virtualinvoke $r0.<de.greenrobot.event.EventBus: void post(java.lang.Object)>($r15_1);
+
+        return;
+
+     label6:
+        $r6 := @caughtexception;
+
+        $r7 = new java.lang.IllegalStateException;
+
+        specialinvoke $r7.<java.lang.IllegalStateException: void <init>(java.lang.String,java.lang.Throwable)>("Unexpected exception", $r6);
+
+        throw $r7;
+
+        catch java.lang.reflect.InvocationTargetException from label1 to label2 with label3;
+        catch java.lang.IllegalAccessException from label1 to label2 with label6;
+    }
+
+    public boolean isRegistered(java.lang.Object)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        java.util.Map $r2;
+        java.lang.Throwable $r3;
+        boolean $z0;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.util.Map typesBySubscriber>;
+
+        $z0 = interfaceinvoke $r2.<java.util.Map: boolean containsKey(java.lang.Object)>($r1);
+
+     label2:
+        exitmonitor $r0;
+
+        return $z0;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void post(java.lang.Object)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.ThreadLocal $r1;
+        java.util.List $r2;
+        de.greenrobot.event.EventBusException $r3;
+        java.lang.Throwable $r4;
+        java.lang.Object $r5, $r6, $r5_1, $r5_2, $r5_3;
+        de.greenrobot.event.EventBus$PostingThreadState $r7;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+        android.os.Looper $r8, $r9;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r5 := @parameter0: java.lang.Object;
+
+        $r1 = $r0.<de.greenrobot.event.EventBus: java.lang.ThreadLocal currentPostingThreadState>;
+
+        $r6 = virtualinvoke $r1.<java.lang.ThreadLocal: java.lang.Object get()>();
+
+        $r7 = (de.greenrobot.event.EventBus$PostingThreadState) $r6;
+
+        $r2 = $r7.<de.greenrobot.event.EventBus$PostingThreadState: java.util.List eventQueue>;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r5);
+
+        $z0 = $r7.<de.greenrobot.event.EventBus$PostingThreadState: boolean isPosting>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r8 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        $r9 = staticinvoke <android.os.Looper: android.os.Looper myLooper()>();
+
+        if $r8 != $r9 goto label3;
+
+(0)     $z0_1 = 1;
+
+     label2:
+        $z0_2 = Phi($z0_1 #0, $z0_7 #2);
+
+        $r7.<de.greenrobot.event.EventBus$PostingThreadState: boolean isMainThread> = $z0_2;
+
+        $r7.<de.greenrobot.event.EventBus$PostingThreadState: boolean isPosting> = 1;
+
+        $z0_3 = $r7.<de.greenrobot.event.EventBus$PostingThreadState: boolean canceled>;
+
+(1)     if $z0_3 == 0 goto label4;
+
+        $r3 = new de.greenrobot.event.EventBusException;
+
+        specialinvoke $r3.<de.greenrobot.event.EventBusException: void <init>(java.lang.String)>("Internal error. Abort state was not reset");
+
+        throw $r3;
+
+     label3:
+        $z0_7 = 0;
+
+(2)     goto label2;
+
+     label4:
+        $r5_1 = Phi($r5 #1, $r5_2 #5);
+
+        $z0_4 = Phi($z0_3 #1, $z0_5 #5);
+
+(3)     $z0_5 = interfaceinvoke $r2.<java.util.List: boolean isEmpty()>();
+
+     label5:
+        if $z0_5 != 0 goto label9;
+
+     label6:
+(4)     $r5_2 = interfaceinvoke $r2.<java.util.List: java.lang.Object remove(int)>(0);
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void postSingleEvent(java.lang.Object,de.greenrobot.event.EventBus$PostingThreadState)>($r5_2, $r7);
+
+     label7:
+(5)     goto label4;
+
+     label8:
+        $r4 := @caughtexception;
+
+        $r5_3 = Phi($r5 #1, $r5_1 #3, $r5_2 #4);
+
+        $z0_6 = Phi($z0_3 #1, $z0_5 #3);
+
+        $r7.<de.greenrobot.event.EventBus$PostingThreadState: boolean isPosting> = 0;
+
+        $r7.<de.greenrobot.event.EventBus$PostingThreadState: boolean isMainThread> = 0;
+
+        throw $r4;
+
+     label9:
+        $r7.<de.greenrobot.event.EventBus$PostingThreadState: boolean isPosting> = 0;
+
+        $r7.<de.greenrobot.event.EventBus$PostingThreadState: boolean isMainThread> = 0;
+
+        return;
+
+        catch java.lang.Throwable from label4 to label5 with label8;
+        catch java.lang.Throwable from label6 to label7 with label8;
+    }
+
+    public void postSticky(java.lang.Object)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        java.util.Map $r2, $r3;
+        java.lang.Throwable $r4;
+        java.lang.Class $r5;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+        entermonitor $r2;
+
+     label1:
+        $r3 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+        $r5 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r5, $r1);
+
+        exitmonitor $r2;
+
+     label2:
+        virtualinvoke $r0.<de.greenrobot.event.EventBus: void post(java.lang.Object)>($r1);
+
+        return;
+
+     label3:
+        $r4 := @caughtexception;
+
+     label4:
+        exitmonitor $r2;
+
+     label5:
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label4 to label5 with label3;
+    }
+
+    public void register(java.lang.Object)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.lang.String defaultMethodName>;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void register(java.lang.Object,java.lang.String,boolean,int)>($r1, $r2, 0, 0);
+
+        return;
+    }
+
+    public void register(java.lang.Object, int)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        int $i0;
+        java.lang.String $r2;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $i0 := @parameter1: int;
+
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.lang.String defaultMethodName>;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void register(java.lang.Object,java.lang.String,boolean,int)>($r1, $r2, 0, $i0);
+
+        return;
+    }
+
+    public transient void register(java.lang.Object, java.lang.Class, java.lang.Class[])
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        java.lang.Class $r2;
+        java.lang.Class[] $r3;
+        java.lang.String $r4;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.Class;
+
+        $r3 := @parameter2: java.lang.Class[];
+
+        $r4 = $r0.<de.greenrobot.event.EventBus: java.lang.String defaultMethodName>;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void register(java.lang.Object,java.lang.String,boolean,java.lang.Class,java.lang.Class[])>($r1, $r4, 0, $r2, $r3);
+
+        return;
+    }
+
+    public void register(java.lang.Object, java.lang.String)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void register(java.lang.Object,java.lang.String,boolean,int)>($r1, $r2, 0, 0);
+
+        return;
+    }
+
+    public transient void register(java.lang.Object, java.lang.String, java.lang.Class, java.lang.Class[])
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        java.lang.String $r2;
+        java.lang.Class $r3;
+        java.lang.Class[] $r4;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.Class;
+
+        $r4 := @parameter3: java.lang.Class[];
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void register(java.lang.Object,java.lang.String,boolean,java.lang.Class,java.lang.Class[])>($r1, $r2, 0, $r3, $r4);
+
+        return;
+    }
+
+    public void registerSticky(java.lang.Object)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.lang.String defaultMethodName>;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void register(java.lang.Object,java.lang.String,boolean,int)>($r1, $r2, 1, 0);
+
+        return;
+    }
+
+    public void registerSticky(java.lang.Object, int)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        int $i0;
+        java.lang.String $r2;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $i0 := @parameter1: int;
+
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.lang.String defaultMethodName>;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void register(java.lang.Object,java.lang.String,boolean,int)>($r1, $r2, 1, $i0);
+
+        return;
+    }
+
+    public transient void registerSticky(java.lang.Object, java.lang.Class, java.lang.Class[])
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        java.lang.Class $r2;
+        java.lang.Class[] $r3;
+        java.lang.String $r4;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.Class;
+
+        $r3 := @parameter2: java.lang.Class[];
+
+        $r4 = $r0.<de.greenrobot.event.EventBus: java.lang.String defaultMethodName>;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void register(java.lang.Object,java.lang.String,boolean,java.lang.Class,java.lang.Class[])>($r1, $r4, 1, $r2, $r3);
+
+        return;
+    }
+
+    public void registerSticky(java.lang.Object, java.lang.String)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void register(java.lang.Object,java.lang.String,boolean,int)>($r1, $r2, 1, 0);
+
+        return;
+    }
+
+    public transient void registerSticky(java.lang.Object, java.lang.String, java.lang.Class, java.lang.Class[])
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1;
+        java.lang.String $r2;
+        java.lang.Class $r3;
+        java.lang.Class[] $r4;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.Class;
+
+        $r4 := @parameter3: java.lang.Class[];
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void register(java.lang.Object,java.lang.String,boolean,java.lang.Class,java.lang.Class[])>($r1, $r2, 1, $r3, $r4);
+
+        return;
+    }
+
+    public void removeAllStickyEvents()
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.util.Map $r1, $r2;
+        java.lang.Throwable $r3;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+        entermonitor $r1;
+
+     label1:
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+        interfaceinvoke $r2.<java.util.Map: void clear()>();
+
+        exitmonitor $r1;
+
+     label2:
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r1;
+
+     label4:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public java.lang.Object removeStickyEvent(java.lang.Class)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Class $r1;
+        java.util.Map $r2, $r3;
+        java.lang.Throwable $r4;
+        java.lang.Object $r5, $r5_1, $r5_2;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+(0)     entermonitor $r2;
+
+     label1:
+        $r3 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+        $r5 = interfaceinvoke $r3.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r1);
+
+(1)     $r5_1 = virtualinvoke $r1.<java.lang.Class: java.lang.Object cast(java.lang.Object)>($r5);
+
+        exitmonitor $r2;
+
+     label2:
+        return $r5_1;
+
+     label3:
+        $r4 := @caughtexception;
+
+(2)     $r5_2 = Phi($r5 #0, $r5_1 #1, $r5_2 #2);
+
+        exitmonitor $r2;
+
+     label4:
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public boolean removeStickyEvent(java.lang.Object)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1, $r6;
+        java.util.Map $r2, $r5, $r5_1, $r5_2;
+        java.lang.Throwable $r3;
+        java.lang.Class $r4;
+        boolean $z0;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+(0)     entermonitor $r2;
+
+     label1:
+        $r4 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r5 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+        $r6 = interfaceinvoke $r5.<java.util.Map: java.lang.Object get(java.lang.Object)>($r4);
+
+        $z0 = virtualinvoke $r1.<java.lang.Object: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 == 0 goto label3;
+
+(1)     $r5_1 = $r0.<de.greenrobot.event.EventBus: java.util.Map stickyEvents>;
+
+        interfaceinvoke $r5_1.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r4);
+
+        exitmonitor $r2;
+
+     label2:
+        return 1;
+
+     label3:
+        exitmonitor $r2;
+
+     label4:
+        return 0;
+
+     label5:
+        $r3 := @caughtexception;
+
+(2)     $r5_2 = Phi($r5 #0, $r5_1 #1, $r5_2 #2);
+
+        exitmonitor $r2;
+
+     label6:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.lang.Throwable from label3 to label4 with label5;
+        catch java.lang.Throwable from label5 to label6 with label5;
+    }
+
+    public void unregister(java.lang.Object)
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1, $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        java.lang.Throwable $r2;
+        java.lang.String $r3, $r10;
+        java.util.Map $r4, $r4_1, $r4_2, $r4_3;
+        java.util.List $r6;
+        java.util.Iterator $r7;
+        boolean $z0;
+        java.lang.Class $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        java.lang.StringBuilder $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r4 = $r0.<de.greenrobot.event.EventBus: java.util.Map typesBySubscriber>;
+
+        $r5 = interfaceinvoke $r4.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r6 = (java.util.List) $r5;
+
+        if $r6 == null goto label7;
+
+(1)     $r7 = interfaceinvoke $r6.<java.util.List: java.util.Iterator iterator()>();
+
+     label2:
+        $r5_1 = Phi($r5 #1, $r5_2 #5);
+
+        $r8 = Phi($r8 #1, $r8_1 #5);
+
+(2)     $z0 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label5;
+
+(3)     $r5_2 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+(4)     $r8_1 = (java.lang.Class) $r5_2;
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void unubscribeByEventType(java.lang.Object,java.lang.Class)>($r1, $r8_1);
+
+     label3:
+(5)     goto label2;
+
+     label4:
+        $r2 := @caughtexception;
+
+        $r5_4 = Phi($r5 #0, $r5_1 #2, $r5_2 #3);
+
+        $r9_4 = Phi($r9 #0, $r9_1 #8, $r9_2 #9, $r9_3 #11);
+
+        $r8_4 = Phi($r8 #0, $r8_1 #4, $r8_3 #10);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #6);
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+     label5:
+(6)     $r4_1 = $r0.<de.greenrobot.event.EventBus: java.util.Map typesBySubscriber>;
+
+(7)     interfaceinvoke $r4_1.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r1);
+
+     label6:
+        $r5_3 = Phi($r5_1 #7, $r5 #12);
+
+        $r9 = Phi($r9 #7, $r9_3 #12);
+
+        $r8_2 = Phi($r8 #7, $r8_3 #12);
+
+        $r4_2 = Phi($r4_1 #7, $r4 #12);
+
+        exitmonitor $r0;
+
+        return;
+
+     label7:
+        $r3 = <de.greenrobot.event.EventBus: java.lang.String TAG>;
+
+(8)     $r9_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r9_1.<java.lang.StringBuilder: void <init>()>();
+
+(9)     $r9_2 = virtualinvoke $r9_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Subscriber to unregister was not registered before: ");
+
+(10)    $r8_3 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+(11)    $r9_3 = virtualinvoke $r9_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8_3);
+
+        $r10 = virtualinvoke $r9_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>($r3, $r10);
+
+     label8:
+(12)    goto label6;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label5 to label6 with label4;
+        catch java.lang.Throwable from label7 to label8 with label4;
+    }
+
+    public transient void unregister(java.lang.Object, java.lang.Class[])
+    {
+        de.greenrobot.event.EventBus $r0;
+        java.lang.Object $r1, $r7;
+        java.lang.IllegalArgumentException $r2;
+        java.lang.Throwable $r3;
+        java.lang.String $r4, $r11;
+        java.lang.Class[] $r5;
+        int $i0, $i1, $i0_1, $i1_1, $i1_2, $i1_3, $i0_2, $i1_4, $i0_3;
+        java.util.Map $r6, $r6_1, $r6_2, $r6_3;
+        java.util.List $r8;
+        java.lang.Class $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+        boolean $z0;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2, $r10_3, $r10_4;
+
+        $r0 := @this: de.greenrobot.event.EventBus;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r5 := @parameter1: java.lang.Class[];
+
+(0)     entermonitor $r0;
+
+     label1:
+        $i0 = lengthof $r5;
+
+        if $i0 != 0 goto label3;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Provide at least one event class");
+
+        throw $r2;
+
+     label2:
+        $r3 := @caughtexception;
+
+        $r6_3 = Phi($r6 #0, $r6_1 #8);
+
+        $r9_4 = Phi($r9 #0, $r9_1 #4, $r9_3 #12);
+
+        $r10_4 = Phi($r10 #0, $r10_1 #10, $r10_2 #11, $r10_3 #13);
+
+        $i1_4 = Phi($i1 #0, $i1_1 #3, $i1_2 #5);
+
+        $i0_3 = Phi($i0 #0, $i0_1 #1);
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+     label3:
+        $r6 = $r0.<de.greenrobot.event.EventBus: java.util.Map typesBySubscriber>;
+
+        $r7 = interfaceinvoke $r6.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r8 = (java.util.List) $r7;
+
+        if $r8 == null goto label7;
+
+(1)     $i0_1 = lengthof $r5;
+
+(2)     $i1 = 0;
+
+     label4:
+        $r9 = Phi($r9 #2, $r9_1 #6);
+
+        $i1_1 = Phi($i1 #2, $i1_2 #6);
+
+(3)     if $i1_1 >= $i0_1 goto label5;
+
+(4)     $r9_1 = $r5[$i1_1];
+
+        specialinvoke $r0.<de.greenrobot.event.EventBus: void unubscribeByEventType(java.lang.Object,java.lang.Class)>($r1, $r9_1);
+
+        interfaceinvoke $r8.<java.util.List: boolean remove(java.lang.Object)>($r9_1);
+
+(5)     $i1_2 = $i1_1 + 1;
+
+(6)     goto label4;
+
+     label5:
+        $z0 = interfaceinvoke $r8.<java.util.List: boolean isEmpty()>();
+
+(7)     if $z0 == 0 goto label6;
+
+(8)     $r6_1 = $r0.<de.greenrobot.event.EventBus: java.util.Map typesBySubscriber>;
+
+(9)     interfaceinvoke $r6_1.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r1);
+
+     label6:
+        $r6_2 = Phi($r6 #7, $r6_1 #9, $r6 #14);
+
+        $r9_2 = Phi($r9 #7, $r9 #9, $r9_3 #14);
+
+        $r10 = Phi($r10 #7, $r10 #9, $r10_3 #14);
+
+        $i1_3 = Phi($i1_1 #7, $i1_1 #9, $i1 #14);
+
+        $i0_2 = Phi($i0_1 #7, $i0_1 #9, $i0 #14);
+
+        exitmonitor $r0;
+
+        return;
+
+     label7:
+        $r4 = <de.greenrobot.event.EventBus: java.lang.String TAG>;
+
+(10)    $r10_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_1.<java.lang.StringBuilder: void <init>()>();
+
+(11)    $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Subscriber to unregister was not registered before: ");
+
+(12)    $r9_3 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+(13)    $r10_3 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r9_3);
+
+        $r11 = virtualinvoke $r10_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>($r4, $r11);
+
+     label8:
+(14)    goto label6;
+
+        catch java.lang.Throwable from label1 to label2 with label2;
+        catch java.lang.Throwable from label3 to label6 with label2;
+        catch java.lang.Throwable from label7 to label8 with label2;
+    }
+}

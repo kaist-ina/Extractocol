@@ -1,0 +1,1208 @@
+public class com.google.gson.stream.JsonWriter extends java.lang.Object implements java.io.Closeable, java.io.Flushable
+{
+    private static final java.lang.String[] HTML_SAFE_REPLACEMENT_CHARS;
+    private static final java.lang.String[] REPLACEMENT_CHARS;
+    private java.lang.String deferredName;
+    private boolean htmlSafe;
+    private java.lang.String indent;
+    private boolean lenient;
+    private final java.io.Writer out;
+    private java.lang.String separator;
+    private boolean serializeNulls;
+    private int[] stack;
+    private int stackSize;
+
+    static void <clinit>()
+    {
+        java.lang.Object[] $r0;
+        java.lang.String[] $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5, $r1_6, $r1_7, $r1_8, $r1_9, $r1_10, $r1_11, $r1_12, $r1_13, $r1_14, $r1_15, $r1_16;
+        int $i0, $i0_1, $i0_2;
+        java.lang.Integer $r2;
+        java.lang.String $r3;
+        java.lang.Object $r4;
+
+        $r1 = newarray (java.lang.String)[128];
+
+        <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS> = $r1;
+
+(0)     $i0 = 0;
+
+     label1:
+        $r1_1 = Phi($r1 #0, $r1_2 #1);
+
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        if $i0_1 > 31 goto label2;
+
+        $r1_2 = <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS>;
+
+        $r0 = newarray (java.lang.Object)[1];
+
+        $r2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_1);
+
+        $r0[0] = $r2;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("\\u%04x", $r0);
+
+        $r1_2[$i0_1] = $r3;
+
+        $i0_2 = $i0_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        $r1_3 = <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS>;
+
+        $r1_3[34] = "\\\"";
+
+        $r1_4 = <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS>;
+
+        $r1_4[92] = "\\\\";
+
+        $r1_5 = <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS>;
+
+        $r1_5[9] = "\\t";
+
+        $r1_6 = <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS>;
+
+        $r1_6[8] = "\\b";
+
+        $r1_7 = <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS>;
+
+        $r1_7[10] = "\\n";
+
+        $r1_8 = <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS>;
+
+        $r1_8[13] = "\\r";
+
+        $r1_9 = <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS>;
+
+        $r1_9[12] = "\\f";
+
+        $r1_10 = <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS>;
+
+        $r4 = virtualinvoke $r1_10.<java.lang.Object: java.lang.Object clone()>();
+
+        $r1_11 = (java.lang.String[]) $r4;
+
+        <com.google.gson.stream.JsonWriter: java.lang.String[] HTML_SAFE_REPLACEMENT_CHARS> = $r1_11;
+
+        $r1_12 = <com.google.gson.stream.JsonWriter: java.lang.String[] HTML_SAFE_REPLACEMENT_CHARS>;
+
+        $r1_12[60] = "\\u003c";
+
+        $r1_13 = <com.google.gson.stream.JsonWriter: java.lang.String[] HTML_SAFE_REPLACEMENT_CHARS>;
+
+        $r1_13[62] = "\\u003e";
+
+        $r1_14 = <com.google.gson.stream.JsonWriter: java.lang.String[] HTML_SAFE_REPLACEMENT_CHARS>;
+
+        $r1_14[38] = "\\u0026";
+
+        $r1_15 = <com.google.gson.stream.JsonWriter: java.lang.String[] HTML_SAFE_REPLACEMENT_CHARS>;
+
+        $r1_15[61] = "\\u003d";
+
+        $r1_16 = <com.google.gson.stream.JsonWriter: java.lang.String[] HTML_SAFE_REPLACEMENT_CHARS>;
+
+        $r1_16[39] = "\\u0027";
+
+        return;
+    }
+
+    public void <init>(java.io.Writer)
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        java.io.Writer $r1;
+        int[] $r2;
+        java.lang.NullPointerException $r3;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $r1 := @parameter0: java.io.Writer;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r2 = newarray (int)[32];
+
+        $r0.<com.google.gson.stream.JsonWriter: int[] stack> = $r2;
+
+        $r0.<com.google.gson.stream.JsonWriter: int stackSize> = 0;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void push(int)>(6);
+
+        $r0.<com.google.gson.stream.JsonWriter: java.lang.String separator> = ":";
+
+        $r0.<com.google.gson.stream.JsonWriter: boolean serializeNulls> = 1;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.NullPointerException;
+
+        specialinvoke $r3.<java.lang.NullPointerException: void <init>(java.lang.String)>("out == null");
+
+        throw $r3;
+
+     label1:
+        $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out> = $r1;
+
+        return;
+    }
+
+    private void beforeName() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        java.io.Writer $r1;
+        java.lang.IllegalStateException $r2;
+        int $i0;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $i0 = specialinvoke $r0.<com.google.gson.stream.JsonWriter: int peek()>();
+
+        if $i0 != 5 goto label2;
+
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r1.<java.io.Writer: void write(int)>(44);
+
+     label1:
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void newline()>();
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void replaceTop(int)>(4);
+
+        return;
+
+     label2:
+        if $i0 == 3 goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Nesting problem.");
+
+        throw $r2;
+    }
+
+    private void beforeValue() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        boolean $z0;
+        java.lang.String $r1;
+        int $i0;
+        java.lang.IllegalStateException $r2, $r2_1;
+        java.io.Writer $r3, $r3_1;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $i0 = specialinvoke $r0.<com.google.gson.stream.JsonWriter: int peek()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label5;
+            case 2: goto label6;
+            case 3: goto label2;
+            case 4: goto label7;
+            case 5: goto label2;
+            case 6: goto label4;
+            case 7: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Nesting problem.");
+
+        throw $r2;
+
+     label3:
+        $z0 = $r0.<com.google.gson.stream.JsonWriter: boolean lenient>;
+
+        if $z0 != 0 goto label4;
+
+        $r2_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("JSON must have only one top-level value.");
+
+        throw $r2_1;
+
+     label4:
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void replaceTop(int)>(7);
+
+        return;
+
+     label5:
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void replaceTop(int)>(2);
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void newline()>();
+
+        return;
+
+     label6:
+        $r3 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r3.<java.io.Writer: java.io.Writer append(char)>(44);
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void newline()>();
+
+        return;
+
+     label7:
+        $r3_1 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: java.lang.String separator>;
+
+        virtualinvoke $r3_1.<java.io.Writer: java.io.Writer append(java.lang.CharSequence)>($r1);
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void replaceTop(int)>(5);
+
+        return;
+    }
+
+    private com.google.gson.stream.JsonWriter close(int, int, java.lang.String) throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        int $i0, $i1, $i2, $i1_1, $i1_2;
+        java.lang.String $r1, $r3, $r3_1, $r3_2;
+        java.io.Writer $r2;
+        java.lang.IllegalStateException $r4, $r4_1;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $i1 := @parameter0: int;
+
+        $i0 := @parameter1: int;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $i2 = specialinvoke $r0.<com.google.gson.stream.JsonWriter: int peek()>();
+
+        if $i2 == $i0 goto label1;
+
+        if $i2 == $i1 goto label1;
+
+        $r4 = new java.lang.IllegalStateException;
+
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Nesting problem.");
+
+        throw $r4;
+
+     label1:
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: java.lang.String deferredName>;
+
+        if $r1 == null goto label2;
+
+        $r4_1 = new java.lang.IllegalStateException;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Dangling name: ");
+
+        $r3_1 = $r0.<com.google.gson.stream.JsonWriter: java.lang.String deferredName>;
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3_1);
+
+        $r3_2 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r3_2);
+
+        throw $r4_1;
+
+     label2:
+        $i1_1 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+        $i1_2 = $i1_1 + -1;
+
+        $r0.<com.google.gson.stream.JsonWriter: int stackSize> = $i1_2;
+
+        if $i2 != $i0 goto label3;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void newline()>();
+
+     label3:
+        $r2 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r2.<java.io.Writer: void write(java.lang.String)>($r3);
+
+        return $r0;
+    }
+
+    private void newline() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.lang.String $r1, $r1_1, $r1_2;
+        java.io.Writer $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: java.lang.String indent>;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $r2 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r2.<java.io.Writer: void write(java.lang.String)>("\n");
+
+        $i1 = 1;
+
+(0)     $i0 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+     label2:
+        $r2_1 = Phi($r2 #0, $r2_2 #1);
+
+        $r1_1 = Phi($r1 #0, $r1_2 #1);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        if $i1_1 >= $i0 goto label3;
+
+        $r2_2 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        $r1_2 = $r0.<com.google.gson.stream.JsonWriter: java.lang.String indent>;
+
+        virtualinvoke $r2_2.<java.io.Writer: void write(java.lang.String)>($r1_2);
+
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label2;
+
+     label3:
+        return;
+    }
+
+    private com.google.gson.stream.JsonWriter open(int, java.lang.String) throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        int $i0;
+        java.lang.String $r1;
+        java.io.Writer $r2;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void beforeValue()>();
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void push(int)>($i0);
+
+        $r2 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r2.<java.io.Writer: void write(java.lang.String)>($r1);
+
+        return $r0;
+    }
+
+    private int peek()
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        java.lang.IllegalStateException $r1;
+        int[] $r2;
+        int $i0, $i0_1, $i0_2, $i0_3;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $i0 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+        if $i0 != 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("JsonWriter is closed.");
+
+        throw $r1;
+
+     label1:
+        $r2 = $r0.<com.google.gson.stream.JsonWriter: int[] stack>;
+
+        $i0_1 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+        $i0_2 = $i0_1 + -1;
+
+        $i0_3 = $r2[$i0_2];
+
+        return $i0_3;
+    }
+
+    private void push(int)
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        int $i0, $i1, $i2, $i1_1, $i1_2, $i1_3, $i1_4, $i1_5, $i2_1;
+        int[] $r1, $r2, $r1_1, $r1_2, $r1_3;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $i0 := @parameter0: int;
+
+        $i1 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: int[] stack>;
+
+        $i2 = lengthof $r1;
+
+(0)     if $i1 != $i2 goto label1;
+
+        $i1_1 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+        $i1_2 = $i1_1 * 2;
+
+        $r2 = newarray (int)[$i1_2];
+
+        $r1_1 = $r0.<com.google.gson.stream.JsonWriter: int[] stack>;
+
+        $i1_3 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r1_1, 0, $r2, 0, $i1_3);
+
+(1)     $r0.<com.google.gson.stream.JsonWriter: int[] stack> = $r2;
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $i1_4 = Phi($i1 #0, $i1_3 #1);
+
+        $r1_3 = $r0.<com.google.gson.stream.JsonWriter: int[] stack>;
+
+        $i1_5 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+        $i2_1 = $i1_5 + 1;
+
+        $r0.<com.google.gson.stream.JsonWriter: int stackSize> = $i2_1;
+
+        $r1_3[$i1_5] = $i0;
+
+        return;
+    }
+
+    private void replaceTop(int)
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        int $i0, $i1, $i1_1;
+        int[] $r1;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: int[] stack>;
+
+        $i1 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+        $i1_1 = $i1 + -1;
+
+        $r1[$i1_1] = $i0;
+
+        return;
+    }
+
+    private void string(java.lang.String) throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        java.lang.String $r1, $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        boolean $z0;
+        int $i0, $i1, $i2, $i3, $i1_1, $i3_1, $i0_1, $i1_2, $i3_2, $i0_2, $i0_3, $i1_3, $i0_4, $i0_5;
+        java.lang.String[] $r2, $r2_1, $r2_2;
+        java.io.Writer $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8;
+        char $c4;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = $r0.<com.google.gson.stream.JsonWriter: boolean htmlSafe>;
+
+        if $z0 == 0 goto label04;
+
+(0)     $r2 = <com.google.gson.stream.JsonWriter: java.lang.String[] HTML_SAFE_REPLACEMENT_CHARS>;
+
+     label01:
+        $r2_1 = Phi($r2 #0, $r2_2 #4);
+
+        $r3 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r3.<java.io.Writer: void write(java.lang.String)>("\"");
+
+        $i1 = 0;
+
+        $i2 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+(1)     $i3 = 0;
+
+     label02:
+        $i0 = Phi($i0 #1, $i0_1 #3);
+
+        $i1_1 = Phi($i1 #1, $i1_2 #3);
+
+        $r3_1 = Phi($r3 #1, $r3_2 #3);
+
+        $i3_1 = Phi($i3 #1, $i3_2 #3);
+
+        $r4 = Phi($r4 #1, $r4_2 #3);
+
+        if $i3_1 >= $i2 goto label09;
+
+        $c4 = virtualinvoke $r1.<java.lang.String: char charAt(int)>($i3_1);
+
+        if $c4 >= 128 goto label05;
+
+        $r4_1 = $r2_1[$c4];
+
+(2)     if $r4_1 != null goto label06;
+
+     label03:
+        $i0_1 = Phi($i0 #2, $i0_3 #8, $i0 #9);
+
+        $i1_2 = Phi($i1_1 #2, $i1_3 #8, $i1_1 #9);
+
+        $r3_2 = Phi($r3_1 #2, $r3_5 #8, $r3_1 #9);
+
+        $r4_2 = Phi($r4_1 #2, $r4_5 #8, $r4 #9);
+
+        $i3_2 = $i3_1 + 1;
+
+(3)     goto label02;
+
+     label04:
+        $r2_2 = <com.google.gson.stream.JsonWriter: java.lang.String[] REPLACEMENT_CHARS>;
+
+(4)     goto label01;
+
+     label05:
+        if $c4 != 8232 goto label08;
+
+(5)     $r4_3 = "\\u2028";
+
+     label06:
+        $r4_5 = Phi($r4_1 #2, $r4_3 #5, $r4_4 #10);
+
+(6)     if $i1_1 >= $i3_1 goto label07;
+
+        $r3_3 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        $i0_2 = $i3_1 - $i1_1;
+
+(7)     virtualinvoke $r3_3.<java.io.Writer: void write(java.lang.String,int,int)>($r1, $i1_1, $i0_2);
+
+     label07:
+        $i0_3 = Phi($i0 #6, $i0_2 #7);
+
+        $r3_4 = Phi($r3_1 #6, $r3_3 #7);
+
+        $r3_5 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r3_5.<java.io.Writer: void write(java.lang.String)>($r4_5);
+
+        $i1_3 = $i3_1 + 1;
+
+(8)     goto label03;
+
+     label08:
+(9)     if $c4 != 8233 goto label03;
+
+        $r4_4 = "\\u2029";
+
+(10)    goto label06;
+
+     label09:
+(11)    if $i1_1 >= $i2 goto label10;
+
+        $r3_6 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        $i0_4 = $i2 - $i1_1;
+
+(12)    virtualinvoke $r3_6.<java.io.Writer: void write(java.lang.String,int,int)>($r1, $i1_1, $i0_4);
+
+     label10:
+        $i0_5 = Phi($i0 #11, $i0_4 #12);
+
+        $r3_7 = Phi($r3_1 #11, $r3_6 #12);
+
+        $r3_8 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r3_8.<java.io.Writer: void write(java.lang.String)>("\"");
+
+        return;
+    }
+
+    private void writeDeferredName() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        java.lang.String $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: java.lang.String deferredName>;
+
+(0)     if $r1 == null goto label1;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void beforeName()>();
+
+        $r1_1 = $r0.<com.google.gson.stream.JsonWriter: java.lang.String deferredName>;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void string(java.lang.String)>($r1_1);
+
+(1)     $r0.<com.google.gson.stream.JsonWriter: java.lang.String deferredName> = null;
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public com.google.gson.stream.JsonWriter beginArray() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0, $r0_1;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void writeDeferredName()>();
+
+        $r0_1 = specialinvoke $r0.<com.google.gson.stream.JsonWriter: com.google.gson.stream.JsonWriter open(int,java.lang.String)>(1, "[");
+
+        return $r0_1;
+    }
+
+    public com.google.gson.stream.JsonWriter beginObject() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0, $r0_1;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void writeDeferredName()>();
+
+        $r0_1 = specialinvoke $r0.<com.google.gson.stream.JsonWriter: com.google.gson.stream.JsonWriter open(int,java.lang.String)>(3, "{");
+
+        return $r0_1;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        java.io.Writer $r1;
+        int[] $r2;
+        java.io.IOException $r3;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r1.<java.io.Writer: void close()>();
+
+        $i0 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+(0)     if $i0 > 1 goto label1;
+
+(1)     if $i0 != 1 goto label2;
+
+        $r2 = $r0.<com.google.gson.stream.JsonWriter: int[] stack>;
+
+        $i0_1 = $i0 + -1;
+
+        $i0_2 = $r2[$i0_1];
+
+(2)     if $i0_2 == 7 goto label2;
+
+     label1:
+        $i0_4 = Phi($i0 #0, $i0_2 #2);
+
+        $r3 = new java.io.IOException;
+
+        specialinvoke $r3.<java.io.IOException: void <init>(java.lang.String)>("Incomplete document");
+
+        throw $r3;
+
+     label2:
+        $i0_3 = Phi($i0 #1, $i0_2 #2);
+
+        $r0.<com.google.gson.stream.JsonWriter: int stackSize> = 0;
+
+        return;
+    }
+
+    public com.google.gson.stream.JsonWriter endArray() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0, $r0_1;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $r0_1 = specialinvoke $r0.<com.google.gson.stream.JsonWriter: com.google.gson.stream.JsonWriter close(int,int,java.lang.String)>(1, 2, "]");
+
+        return $r0_1;
+    }
+
+    public com.google.gson.stream.JsonWriter endObject() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0, $r0_1;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $r0_1 = specialinvoke $r0.<com.google.gson.stream.JsonWriter: com.google.gson.stream.JsonWriter close(int,int,java.lang.String)>(3, 5, "}");
+
+        return $r0_1;
+    }
+
+    public void flush() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        int $i0;
+        java.lang.IllegalStateException $r1;
+        java.io.Writer $r2;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $i0 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+        if $i0 != 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("JsonWriter is closed.");
+
+        throw $r1;
+
+     label1:
+        $r2 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r2.<java.io.Writer: void flush()>();
+
+        return;
+    }
+
+    public final boolean getSerializeNulls()
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        boolean z0;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        z0 = $r0.<com.google.gson.stream.JsonWriter: boolean serializeNulls>;
+
+        return z0;
+    }
+
+    public final boolean isHtmlSafe()
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        boolean z0;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        z0 = $r0.<com.google.gson.stream.JsonWriter: boolean htmlSafe>;
+
+        return z0;
+    }
+
+    public boolean isLenient()
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        boolean z0;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        z0 = $r0.<com.google.gson.stream.JsonWriter: boolean lenient>;
+
+        return z0;
+    }
+
+    public com.google.gson.stream.JsonWriter jsonValue(java.lang.String) throws java.io.IOException
+    {
+        java.lang.String $r0;
+        java.io.Writer $r1;
+        com.google.gson.stream.JsonWriter $r2, $r2_1;
+
+        $r2 := @this: com.google.gson.stream.JsonWriter;
+
+        $r0 := @parameter0: java.lang.String;
+
+        if $r0 != null goto label1;
+
+        $r2_1 = virtualinvoke $r2.<com.google.gson.stream.JsonWriter: com.google.gson.stream.JsonWriter nullValue()>();
+
+        return $r2_1;
+
+     label1:
+        specialinvoke $r2.<com.google.gson.stream.JsonWriter: void writeDeferredName()>();
+
+        specialinvoke $r2.<com.google.gson.stream.JsonWriter: void beforeValue()>();
+
+        $r1 = $r2.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r1.<java.io.Writer: java.io.Writer append(java.lang.CharSequence)>($r0);
+
+        return $r2;
+    }
+
+    public com.google.gson.stream.JsonWriter name(java.lang.String) throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        java.lang.String $r1, $r3;
+        java.lang.NullPointerException $r2;
+        int $i0;
+        java.lang.IllegalStateException $r4, $r4_1;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("name == null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.google.gson.stream.JsonWriter: java.lang.String deferredName>;
+
+        if $r3 == null goto label2;
+
+        $r4 = new java.lang.IllegalStateException;
+
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>()>();
+
+        throw $r4;
+
+     label2:
+        $i0 = $r0.<com.google.gson.stream.JsonWriter: int stackSize>;
+
+        if $i0 != 0 goto label3;
+
+        $r4_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r4_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("JsonWriter is closed.");
+
+        throw $r4_1;
+
+     label3:
+        $r0.<com.google.gson.stream.JsonWriter: java.lang.String deferredName> = $r1;
+
+        return $r0;
+    }
+
+    public com.google.gson.stream.JsonWriter nullValue() throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        java.lang.String $r1;
+        boolean $z0;
+        java.io.Writer $r2;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: java.lang.String deferredName>;
+
+        if $r1 == null goto label1;
+
+        $z0 = $r0.<com.google.gson.stream.JsonWriter: boolean serializeNulls>;
+
+        if $z0 == 0 goto label2;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void writeDeferredName()>();
+
+     label1:
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void beforeValue()>();
+
+        $r2 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r2.<java.io.Writer: void write(java.lang.String)>("null");
+
+        return $r0;
+
+     label2:
+        $r0.<com.google.gson.stream.JsonWriter: java.lang.String deferredName> = null;
+
+        return $r0;
+    }
+
+    public final void setHtmlSafe(boolean)
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        boolean $z0;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.google.gson.stream.JsonWriter: boolean htmlSafe> = $z0;
+
+        return;
+    }
+
+    public final void setIndent(java.lang.String)
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        java.lang.String $r1;
+        int $i0;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 != 0 goto label1;
+
+        $r0.<com.google.gson.stream.JsonWriter: java.lang.String indent> = null;
+
+        $r0.<com.google.gson.stream.JsonWriter: java.lang.String separator> = ":";
+
+        return;
+
+     label1:
+        $r0.<com.google.gson.stream.JsonWriter: java.lang.String indent> = $r1;
+
+        $r0.<com.google.gson.stream.JsonWriter: java.lang.String separator> = ": ";
+
+        return;
+    }
+
+    public final void setLenient(boolean)
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        boolean $z0;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.google.gson.stream.JsonWriter: boolean lenient> = $z0;
+
+        return;
+    }
+
+    public final void setSerializeNulls(boolean)
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        boolean $z0;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.google.gson.stream.JsonWriter: boolean serializeNulls> = $z0;
+
+        return;
+    }
+
+    public com.google.gson.stream.JsonWriter value(double) throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        double $d0;
+        java.lang.IllegalArgumentException $r1;
+        java.io.Writer $r2;
+        boolean $z0, $z0_1, $z0_2;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2;
+        java.lang.String $r4, $r4_1;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $d0 := @parameter0: double;
+
+        $z0 = staticinvoke <java.lang.Double: boolean isNaN(double)>($d0);
+
+(0)     if $z0 != 0 goto label1;
+
+        $z0_1 = staticinvoke <java.lang.Double: boolean isInfinite(double)>($d0);
+
+(1)     if $z0_1 == 0 goto label2;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r1 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Numeric values must be finite, but was ");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r4_1 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4_1);
+
+        throw $r1;
+
+     label2:
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void writeDeferredName()>();
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void beforeValue()>();
+
+        $r2 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        $r4 = staticinvoke <java.lang.Double: java.lang.String toString(double)>($d0);
+
+        virtualinvoke $r2.<java.io.Writer: java.io.Writer append(java.lang.CharSequence)>($r4);
+
+        return $r0;
+    }
+
+    public com.google.gson.stream.JsonWriter value(long) throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        long $l0;
+        java.io.Writer $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $l0 := @parameter0: long;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void writeDeferredName()>();
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void beforeValue()>();
+
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        $r2 = staticinvoke <java.lang.Long: java.lang.String toString(long)>($l0);
+
+        virtualinvoke $r1.<java.io.Writer: void write(java.lang.String)>($r2);
+
+        return $r0;
+    }
+
+    public com.google.gson.stream.JsonWriter value(java.lang.Number) throws java.io.IOException
+    {
+        java.lang.Number $r0;
+        java.lang.IllegalArgumentException $r1;
+        java.io.Writer $r2;
+        com.google.gson.stream.JsonWriter $r3, $r3_1;
+        java.lang.String $r4, $r4_1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2;
+
+        $r3 := @this: com.google.gson.stream.JsonWriter;
+
+        $r0 := @parameter0: java.lang.Number;
+
+        if $r0 != null goto label1;
+
+        $r3_1 = virtualinvoke $r3.<com.google.gson.stream.JsonWriter: com.google.gson.stream.JsonWriter nullValue()>();
+
+        return $r3_1;
+
+     label1:
+        specialinvoke $r3.<com.google.gson.stream.JsonWriter: void writeDeferredName()>();
+
+        $r4 = virtualinvoke $r0.<java.lang.Object: java.lang.String toString()>();
+
+        $z0 = $r3.<com.google.gson.stream.JsonWriter: boolean lenient>;
+
+(0)     if $z0 != 0 goto label3;
+
+        $z0_1 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>("-Infinity");
+
+(1)     if $z0_1 != 0 goto label2;
+
+        $z0_2 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>("Infinity");
+
+(2)     if $z0_2 != 0 goto label2;
+
+        $z0_3 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>("NaN");
+
+(3)     if $z0_3 == 0 goto label3;
+
+     label2:
+        $z0_4 = Phi($z0_1 #1, $z0_2 #2, $z0_3 #3);
+
+        $r1 = new java.lang.IllegalArgumentException;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Numeric values must be finite, but was ");
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r4_1 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4_1);
+
+        throw $r1;
+
+     label3:
+        $z0_5 = Phi($z0 #0, $z0_3 #3);
+
+        specialinvoke $r3.<com.google.gson.stream.JsonWriter: void beforeValue()>();
+
+        $r2 = $r3.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        virtualinvoke $r2.<java.io.Writer: java.io.Writer append(java.lang.CharSequence)>($r4);
+
+        return $r3;
+    }
+
+    public com.google.gson.stream.JsonWriter value(java.lang.String) throws java.io.IOException
+    {
+        java.lang.String $r0;
+        com.google.gson.stream.JsonWriter $r1, $r1_1;
+
+        $r1 := @this: com.google.gson.stream.JsonWriter;
+
+        $r0 := @parameter0: java.lang.String;
+
+        if $r0 != null goto label1;
+
+        $r1_1 = virtualinvoke $r1.<com.google.gson.stream.JsonWriter: com.google.gson.stream.JsonWriter nullValue()>();
+
+        return $r1_1;
+
+     label1:
+        specialinvoke $r1.<com.google.gson.stream.JsonWriter: void writeDeferredName()>();
+
+        specialinvoke $r1.<com.google.gson.stream.JsonWriter: void beforeValue()>();
+
+        specialinvoke $r1.<com.google.gson.stream.JsonWriter: void string(java.lang.String)>($r0);
+
+        return $r1;
+    }
+
+    public com.google.gson.stream.JsonWriter value(boolean) throws java.io.IOException
+    {
+        com.google.gson.stream.JsonWriter $r0;
+        boolean $z0;
+        java.io.Writer $r1;
+        java.lang.String $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.google.gson.stream.JsonWriter;
+
+        $z0 := @parameter0: boolean;
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void writeDeferredName()>();
+
+        specialinvoke $r0.<com.google.gson.stream.JsonWriter: void beforeValue()>();
+
+        $r1 = $r0.<com.google.gson.stream.JsonWriter: java.io.Writer out>;
+
+        if $z0 == 0 goto label2;
+
+(0)     $r2 = "true";
+
+     label1:
+        $r2_1 = Phi($r2 #0, $r2_2 #1);
+
+        virtualinvoke $r1.<java.io.Writer: void write(java.lang.String)>($r2_1);
+
+        return $r0;
+
+     label2:
+        $r2_2 = "false";
+
+(1)     goto label1;
+    }
+}

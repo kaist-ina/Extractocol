@@ -1,0 +1,624 @@
+public class android.support.v4.app.TaskStackBuilder extends java.lang.Object implements java.lang.Iterable
+{
+    private static final android.support.v4.app.TaskStackBuilder$TaskStackBuilderImpl IMPL;
+    private static final java.lang.String TAG;
+    private final java.util.ArrayList mIntents;
+    private final android.content.Context mSourceContext;
+
+    static void <clinit>()
+    {
+        int $i0;
+        android.support.v4.app.TaskStackBuilder$TaskStackBuilderImplHoneycomb $r0;
+        android.support.v4.app.TaskStackBuilder$TaskStackBuilderImplBase $r1;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0 < 11 goto label1;
+
+        $r0 = new android.support.v4.app.TaskStackBuilder$TaskStackBuilderImplHoneycomb;
+
+        specialinvoke $r0.<android.support.v4.app.TaskStackBuilder$TaskStackBuilderImplHoneycomb: void <init>()>();
+
+        <android.support.v4.app.TaskStackBuilder: android.support.v4.app.TaskStackBuilder$TaskStackBuilderImpl IMPL> = $r0;
+
+        return;
+
+     label1:
+        $r1 = new android.support.v4.app.TaskStackBuilder$TaskStackBuilderImplBase;
+
+        specialinvoke $r1.<android.support.v4.app.TaskStackBuilder$TaskStackBuilderImplBase: void <init>()>();
+
+        <android.support.v4.app.TaskStackBuilder: android.support.v4.app.TaskStackBuilder$TaskStackBuilderImpl IMPL> = $r1;
+
+        return;
+    }
+
+    private void <init>(android.content.Context)
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        android.content.Context $r1;
+        java.util.ArrayList $r2;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents> = $r2;
+
+        $r0.<android.support.v4.app.TaskStackBuilder: android.content.Context mSourceContext> = $r1;
+
+        return;
+    }
+
+    public static android.support.v4.app.TaskStackBuilder create(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.support.v4.app.TaskStackBuilder $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = new android.support.v4.app.TaskStackBuilder;
+
+        specialinvoke $r1.<android.support.v4.app.TaskStackBuilder: void <init>(android.content.Context)>($r0);
+
+        return $r1;
+    }
+
+    public static android.support.v4.app.TaskStackBuilder 'from'(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.support.v4.app.TaskStackBuilder $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <android.support.v4.app.TaskStackBuilder: android.support.v4.app.TaskStackBuilder create(android.content.Context)>($r0);
+
+        return $r1;
+    }
+
+    public android.support.v4.app.TaskStackBuilder addNextIntent(android.content.Intent)
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        android.content.Intent $r1;
+        java.util.ArrayList $r2;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $r2 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        return $r0;
+    }
+
+    public android.support.v4.app.TaskStackBuilder addNextIntentWithParentStack(android.content.Intent)
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        android.content.Intent $r1;
+        android.content.Context $r2;
+        android.content.ComponentName $r3, $r4, $r4_1, $r4_2;
+        android.content.pm.PackageManager $r5;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $r3 = virtualinvoke $r1.<android.content.Intent: android.content.ComponentName getComponent()>();
+
+        $r4 = $r3;
+
+(0)     if $r3 != null goto label1;
+
+        $r2 = $r0.<android.support.v4.app.TaskStackBuilder: android.content.Context mSourceContext>;
+
+        $r5 = virtualinvoke $r2.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+(1)     $r4_1 = virtualinvoke $r1.<android.content.Intent: android.content.ComponentName resolveActivity(android.content.pm.PackageManager)>($r5);
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        if $r4_2 == null goto label2;
+
+        virtualinvoke $r0.<android.support.v4.app.TaskStackBuilder: android.support.v4.app.TaskStackBuilder addParentStack(android.content.ComponentName)>($r4_2);
+
+     label2:
+        virtualinvoke $r0.<android.support.v4.app.TaskStackBuilder: android.support.v4.app.TaskStackBuilder addNextIntent(android.content.Intent)>($r1);
+
+        return $r0;
+    }
+
+    public android.support.v4.app.TaskStackBuilder addParentStack(android.app.Activity)
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        android.app.Activity $r1;
+        boolean $z0;
+        android.content.Context $r2;
+        android.content.Intent $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        android.support.v4.app.TaskStackBuilder$SupportParentable $r4;
+        android.content.ComponentName $r5, $r6, $r6_1, $r6_2, $r6_3;
+        android.content.pm.PackageManager $r7;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r3 = null;
+
+        $z0 = $r1 instanceof android.support.v4.app.TaskStackBuilder$SupportParentable;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r4 = (android.support.v4.app.TaskStackBuilder$SupportParentable) $r1;
+
+(1)     $r3_1 = interfaceinvoke $r4.<android.support.v4.app.TaskStackBuilder$SupportParentable: android.content.Intent getSupportParentActivityIntent()>();
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+(2)     if $r3_2 != null goto label2;
+
+(3)     $r3_3 = staticinvoke <android.support.v4.app.NavUtils: android.content.Intent getParentActivityIntent(android.app.Activity)>($r1);
+
+     label2:
+        $r3_4 = Phi($r3_2 #2, $r3_3 #3);
+
+(4)     if $r3_4 == null goto label4;
+
+        $r5 = virtualinvoke $r3_4.<android.content.Intent: android.content.ComponentName getComponent()>();
+
+        $r6 = $r5;
+
+(5)     if $r5 != null goto label3;
+
+        $r2 = $r0.<android.support.v4.app.TaskStackBuilder: android.content.Context mSourceContext>;
+
+        $r7 = virtualinvoke $r2.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+(6)     $r6_1 = virtualinvoke $r3_4.<android.content.Intent: android.content.ComponentName resolveActivity(android.content.pm.PackageManager)>($r7);
+
+     label3:
+        $r6_2 = Phi($r6 #5, $r6_1 #6);
+
+        virtualinvoke $r0.<android.support.v4.app.TaskStackBuilder: android.support.v4.app.TaskStackBuilder addParentStack(android.content.ComponentName)>($r6_2);
+
+(7)     virtualinvoke $r0.<android.support.v4.app.TaskStackBuilder: android.support.v4.app.TaskStackBuilder addNextIntent(android.content.Intent)>($r3_4);
+
+     label4:
+        $r6_3 = Phi($r6 #4, $r6_2 #7);
+
+        return $r0;
+    }
+
+    public android.support.v4.app.TaskStackBuilder addParentStack(android.content.ComponentName)
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        android.content.pm.PackageManager$NameNotFoundException $r1;
+        java.lang.IllegalArgumentException $r2;
+        android.content.ComponentName $r3, $r3_1, $r3_2, $r3_3;
+        java.util.ArrayList $r4, $r4_1, $r4_2, $r4_3;
+        int $i0;
+        android.content.Context $r5, $r5_1, $r5_2, $r5_3;
+        android.content.Intent $r6, $r6_1, $r6_2, $r6_3;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $r3 := @parameter0: android.content.ComponentName;
+
+        $r4 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $i0 = virtualinvoke $r4.<java.util.ArrayList: int size()>();
+
+(0)     $r5 = $r0.<android.support.v4.app.TaskStackBuilder: android.content.Context mSourceContext>;
+
+     label1:
+(1)     $r6 = staticinvoke <android.support.v4.app.NavUtils: android.content.Intent getParentActivityIntent(android.content.Context,android.content.ComponentName)>($r5, $r3);
+
+     label2:
+        $r5_1 = Phi($r5 #1, $r5_2 #6);
+
+        $r4_1 = Phi($r4 #1, $r4_2 #6);
+
+        $r3_1 = Phi($r3 #1, $r3_2 #6);
+
+        $r6_1 = Phi($r6 #1, $r6_2 #6);
+
+        if $r6_1 == null goto label8;
+
+(2)     $r4_2 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+     label3:
+        virtualinvoke $r4_2.<java.util.ArrayList: void add(int,java.lang.Object)>($i0, $r6_1);
+
+     label4:
+(3)     $r5_2 = $r0.<android.support.v4.app.TaskStackBuilder: android.content.Context mSourceContext>;
+
+     label5:
+(4)     $r3_2 = virtualinvoke $r6_1.<android.content.Intent: android.content.ComponentName getComponent()>();
+
+(5)     $r6_2 = staticinvoke <android.support.v4.app.NavUtils: android.content.Intent getParentActivityIntent(android.content.Context,android.content.ComponentName)>($r5_2, $r3_2);
+
+     label6:
+(6)     goto label2;
+
+     label7:
+        $r1 := @caughtexception;
+
+        $r5_3 = Phi($r5 #0, $r5_1 #2, $r5_2 #3);
+
+        $r4_3 = Phi($r4 #0, $r4_2 #2);
+
+        $r3_3 = Phi($r3 #0, $r3_1 #2, $r3_2 #4);
+
+        $r6_3 = Phi($r6 #0, $r6_1 #2, $r6_2 #5);
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("TaskStackBuilder", "Bad ComponentName while traversing activity parent metadata");
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.Throwable)>($r1);
+
+        throw $r2;
+
+     label8:
+        return $r0;
+
+        catch android.content.pm.PackageManager$NameNotFoundException from label1 to label2 with label7;
+        catch android.content.pm.PackageManager$NameNotFoundException from label3 to label4 with label7;
+        catch android.content.pm.PackageManager$NameNotFoundException from label5 to label6 with label7;
+    }
+
+    public android.support.v4.app.TaskStackBuilder addParentStack(java.lang.Class)
+    {
+        java.lang.Class $r0;
+        android.content.ComponentName $r1;
+        android.content.Context $r2;
+        android.support.v4.app.TaskStackBuilder $r3, $r3_1;
+
+        $r3 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $r0 := @parameter0: java.lang.Class;
+
+        $r1 = new android.content.ComponentName;
+
+        $r2 = $r3.<android.support.v4.app.TaskStackBuilder: android.content.Context mSourceContext>;
+
+        specialinvoke $r1.<android.content.ComponentName: void <init>(android.content.Context,java.lang.Class)>($r2, $r0);
+
+        $r3_1 = virtualinvoke $r3.<android.support.v4.app.TaskStackBuilder: android.support.v4.app.TaskStackBuilder addParentStack(android.content.ComponentName)>($r1);
+
+        return $r3_1;
+    }
+
+    public android.content.Intent editIntentAt(int)
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        int $i0;
+        java.util.ArrayList $r1;
+        java.lang.Object $r2;
+        android.content.Intent $r3;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r3 = (android.content.Intent) $r2;
+
+        return $r3;
+    }
+
+    public android.content.Intent getIntent(int)
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        int $i0;
+        android.content.Intent $r1;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.app.TaskStackBuilder: android.content.Intent editIntentAt(int)>($i0);
+
+        return $r1;
+    }
+
+    public int getIntentCount()
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        java.util.ArrayList $r1;
+        int $i0;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $r1 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $i0 = virtualinvoke $r1.<java.util.ArrayList: int size()>();
+
+        return $i0;
+    }
+
+    public android.content.Intent[] getIntents()
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        android.content.Intent[] $r1;
+        int $i0, $i1, $i0_1, $i0_2, $i1_1, $i0_3, $i1_2;
+        java.util.ArrayList $r2, $r2_1, $r2_2, $r2_3;
+        android.content.Intent $r3, $r5, $r3_1, $r3_2, $r5_1, $r3_3, $r5_2;
+        java.lang.Object $r4, $r4_1, $r4_2;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $r2 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $i0 = virtualinvoke $r2.<java.util.ArrayList: int size()>();
+
+        $r1 = newarray (android.content.Intent)[$i0];
+
+        $i0_1 = lengthof $r1;
+
+        if $i0_1 != 0 goto label1;
+
+        return $r1;
+
+     label1:
+        $r3 = new android.content.Intent;
+
+        $r2_1 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $r4 = virtualinvoke $r2_1.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        $r5 = (android.content.Intent) $r4;
+
+        specialinvoke $r3.<android.content.Intent: void <init>(android.content.Intent)>($r5);
+
+        $r3_1 = virtualinvoke $r3.<android.content.Intent: android.content.Intent addFlags(int)>(268484608);
+
+        $r1[0] = $r3_1;
+
+(0)     $i1 = 1;
+
+     label2:
+        $i0_2 = Phi($i0_1 #0, $i0_3 #1);
+
+        $r4_1 = Phi($r4 #0, $r4_2 #1);
+
+        $r2_2 = Phi($r2_1 #0, $r2_3 #1);
+
+        $r3_2 = Phi($r3_1 #0, $r3_3 #1);
+
+        $r5_1 = Phi($r5 #0, $r5_2 #1);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $i0_3 = lengthof $r1;
+
+        if $i1_1 >= $i0_3 goto label3;
+
+        $r3_3 = new android.content.Intent;
+
+        $r2_3 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $r4_2 = virtualinvoke $r2_3.<java.util.ArrayList: java.lang.Object get(int)>($i1_1);
+
+        $r5_2 = (android.content.Intent) $r4_2;
+
+        specialinvoke $r3_3.<android.content.Intent: void <init>(android.content.Intent)>($r5_2);
+
+        $r1[$i1_1] = $r3_3;
+
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label2;
+
+     label3:
+        return $r1;
+    }
+
+    public android.app.PendingIntent getPendingIntent(int, int)
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        int $i0, $i1;
+        android.app.PendingIntent $r1;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.app.TaskStackBuilder: android.app.PendingIntent getPendingIntent(int,int,android.os.Bundle)>($i0, $i1, null);
+
+        return $r1;
+    }
+
+    public android.app.PendingIntent getPendingIntent(int, int, android.os.Bundle)
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        int $i0, $i1, $i2;
+        android.os.Bundle $r1;
+        java.lang.IllegalStateException $r2;
+        java.util.ArrayList $r3, $r6, $r3_1;
+        android.content.Intent $r4, $r9, $r4_1;
+        android.support.v4.app.TaskStackBuilder$TaskStackBuilderImpl $r5;
+        boolean $z0;
+        android.content.Intent[] $r7, $r7_1;
+        java.lang.Object[] $r8;
+        android.content.Context $r10;
+        android.app.PendingIntent $r11;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: android.os.Bundle;
+
+        $r3 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $z0 = virtualinvoke $r3.<java.util.ArrayList: boolean isEmpty()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("No intents added to TaskStackBuilder; cannot getPendingIntent");
+
+        throw $r2;
+
+     label1:
+        $r6 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $r3_1 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $i2 = virtualinvoke $r3_1.<java.util.ArrayList: int size()>();
+
+        $r7 = newarray (android.content.Intent)[$i2];
+
+        $r8 = virtualinvoke $r6.<java.util.ArrayList: java.lang.Object[] toArray(java.lang.Object[])>($r7);
+
+        $r7_1 = (android.content.Intent[]) $r8;
+
+        $r9 = new android.content.Intent;
+
+        $r4 = $r7_1[0];
+
+        specialinvoke $r9.<android.content.Intent: void <init>(android.content.Intent)>($r4);
+
+        $r4_1 = virtualinvoke $r9.<android.content.Intent: android.content.Intent addFlags(int)>(268484608);
+
+        $r7_1[0] = $r4_1;
+
+        $r5 = <android.support.v4.app.TaskStackBuilder: android.support.v4.app.TaskStackBuilder$TaskStackBuilderImpl IMPL>;
+
+        $r10 = $r0.<android.support.v4.app.TaskStackBuilder: android.content.Context mSourceContext>;
+
+        $r11 = interfaceinvoke $r5.<android.support.v4.app.TaskStackBuilder$TaskStackBuilderImpl: android.app.PendingIntent getPendingIntent(android.content.Context,android.content.Intent[],int,int,android.os.Bundle)>($r10, $r7_1, $i0, $i1, $r1);
+
+        return $r11;
+    }
+
+    public java.util.Iterator iterator()
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        java.util.ArrayList $r1;
+        java.util.Iterator $r2;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $r1 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+        return $r2;
+    }
+
+    public void startActivities()
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        virtualinvoke $r0.<android.support.v4.app.TaskStackBuilder: void startActivities(android.os.Bundle)>(null);
+
+        return;
+    }
+
+    public void startActivities(android.os.Bundle)
+    {
+        android.support.v4.app.TaskStackBuilder $r0;
+        android.os.Bundle $r1;
+        java.lang.IllegalStateException $r2;
+        java.util.ArrayList $r3, $r4, $r3_1;
+        boolean $z0, $z0_1;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        android.content.Intent[] $r5, $r5_1;
+        java.lang.Object[] $r6;
+        android.content.Intent $r7, $r8, $r7_1, $r7_2, $r8_1, $r8_2, $r7_3;
+        android.content.Context $r9, $r9_1, $r9_2;
+
+        $r0 := @this: android.support.v4.app.TaskStackBuilder;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $r3 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $z0 = virtualinvoke $r3.<java.util.ArrayList: boolean isEmpty()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("No intents added to TaskStackBuilder; cannot startActivities");
+
+        throw $r2;
+
+     label1:
+        $r4 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $r3_1 = $r0.<android.support.v4.app.TaskStackBuilder: java.util.ArrayList mIntents>;
+
+        $i0 = virtualinvoke $r3_1.<java.util.ArrayList: int size()>();
+
+        $r5 = newarray (android.content.Intent)[$i0];
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object[] toArray(java.lang.Object[])>($r5);
+
+        $r5_1 = (android.content.Intent[]) $r6;
+
+        $r7 = new android.content.Intent;
+
+        $r8 = $r5_1[0];
+
+        specialinvoke $r7.<android.content.Intent: void <init>(android.content.Intent)>($r8);
+
+        $r7_1 = virtualinvoke $r7.<android.content.Intent: android.content.Intent addFlags(int)>(268484608);
+
+        $r5_1[0] = $r7_1;
+
+        $r9 = $r0.<android.support.v4.app.TaskStackBuilder: android.content.Context mSourceContext>;
+
+        $z0_1 = staticinvoke <android.support.v4.content.ContextCompat: boolean startActivities(android.content.Context,android.content.Intent[],android.os.Bundle)>($r9, $r5_1, $r1);
+
+(0)     if $z0_1 != 0 goto label2;
+
+        $r7_2 = new android.content.Intent;
+
+        $i0_1 = lengthof $r5_1;
+
+        $i0_2 = $i0_1 + -1;
+
+        $r8_1 = $r5_1[$i0_2];
+
+        specialinvoke $r7_2.<android.content.Intent: void <init>(android.content.Intent)>($r8_1);
+
+        virtualinvoke $r7_2.<android.content.Intent: android.content.Intent addFlags(int)>(268435456);
+
+        $r9_1 = $r0.<android.support.v4.app.TaskStackBuilder: android.content.Context mSourceContext>;
+
+(1)     virtualinvoke $r9_1.<android.content.Context: void startActivity(android.content.Intent)>($r7_2);
+
+     label2:
+        $r8_2 = Phi($r8 #0, $r8_1 #1);
+
+        $i0_3 = Phi($i0 #0, $i0_2 #1);
+
+        $r7_3 = Phi($r7_1 #0, $r7_2 #1);
+
+        $r9_2 = Phi($r9 #0, $r9_1 #1);
+
+        return;
+    }
+}

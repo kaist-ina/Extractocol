@@ -1,0 +1,704 @@
+public final class com.google.gson.internal.Excluder extends java.lang.Object implements com.google.gson.TypeAdapterFactory, java.lang.Cloneable
+{
+    public static final com.google.gson.internal.Excluder DEFAULT;
+    private static final double IGNORE_VERSIONS;
+    private java.util.List deserializationStrategies;
+    private int modifiers;
+    private boolean requireExpose;
+    private java.util.List serializationStrategies;
+    private boolean serializeInnerClasses;
+    private double version;
+
+    static void <clinit>()
+    {
+        com.google.gson.internal.Excluder $r0;
+
+        $r0 = new com.google.gson.internal.Excluder;
+
+        specialinvoke $r0.<com.google.gson.internal.Excluder: void <init>()>();
+
+        <com.google.gson.internal.Excluder: com.google.gson.internal.Excluder DEFAULT> = $r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.google.gson.internal.Excluder $r0;
+        java.util.List $r1, $r1_1;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.google.gson.internal.Excluder: double version> = -1.0;
+
+        $r0.<com.google.gson.internal.Excluder: int modifiers> = 136;
+
+        $r0.<com.google.gson.internal.Excluder: boolean serializeInnerClasses> = 1;
+
+        $r1 = staticinvoke <java.util.Collections: java.util.List emptyList()>();
+
+        $r0.<com.google.gson.internal.Excluder: java.util.List serializationStrategies> = $r1;
+
+        $r1_1 = staticinvoke <java.util.Collections: java.util.List emptyList()>();
+
+        $r0.<com.google.gson.internal.Excluder: java.util.List deserializationStrategies> = $r1_1;
+
+        return;
+    }
+
+    private boolean isAnonymousOrLocal(java.lang.Class)
+    {
+        com.google.gson.internal.Excluder $r0;
+        java.lang.Class $r1, $r2;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $r2 = class "java/lang/Enum";
+
+        $z0 = virtualinvoke $r2.<java.lang.Class: boolean isAssignableFrom(java.lang.Class)>($r1);
+
+(0)     if $z0 != 0 goto label2;
+
+        $z0_1 = virtualinvoke $r1.<java.lang.Class: boolean isAnonymousClass()>();
+
+(1)     if $z0_1 != 0 goto label1;
+
+        $z0_2 = virtualinvoke $r1.<java.lang.Class: boolean isLocalClass()>();
+
+(2)     if $z0_2 == 0 goto label2;
+
+     label1:
+        $z0_3 = Phi($z0_1 #1, $z0_2 #2);
+
+        return 1;
+
+     label2:
+        $z0_4 = Phi($z0 #0, $z0_2 #2);
+
+        return 0;
+    }
+
+    private boolean isInnerClass(java.lang.Class)
+    {
+        com.google.gson.internal.Excluder $r0;
+        java.lang.Class $r1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $z0 = virtualinvoke $r1.<java.lang.Class: boolean isMemberClass()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $z0_1 = specialinvoke $r0.<com.google.gson.internal.Excluder: boolean isStatic(java.lang.Class)>($r1);
+
+(1)     if $z0_1 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 0;
+    }
+
+    private boolean isStatic(java.lang.Class)
+    {
+        com.google.gson.internal.Excluder $r0;
+        java.lang.Class $r1;
+        int $i0, $i0_1;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $i0 = virtualinvoke $r1.<java.lang.Class: int getModifiers()>();
+
+        $i0_1 = $i0 & 8;
+
+        if $i0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private boolean isValidSince(com.google.gson.annotations.Since)
+    {
+        com.google.gson.internal.Excluder $r0;
+        com.google.gson.annotations.Since $r1;
+        double $d0, $d1;
+        byte $b0;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r1 := @parameter0: com.google.gson.annotations.Since;
+
+        if $r1 == null goto label1;
+
+        $d1 = interfaceinvoke $r1.<com.google.gson.annotations.Since: double value()>();
+
+        $d0 = $r0.<com.google.gson.internal.Excluder: double version>;
+
+        $b0 = $d1 cmpl $d0;
+
+        if $b0 <= 0 goto label1;
+
+        return 0;
+
+     label1:
+        return 1;
+    }
+
+    private boolean isValidUntil(com.google.gson.annotations.Until)
+    {
+        com.google.gson.internal.Excluder $r0;
+        com.google.gson.annotations.Until $r1;
+        double $d0, $d1;
+        byte $b0;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r1 := @parameter0: com.google.gson.annotations.Until;
+
+        if $r1 == null goto label1;
+
+        $d1 = interfaceinvoke $r1.<com.google.gson.annotations.Until: double value()>();
+
+        $d0 = $r0.<com.google.gson.internal.Excluder: double version>;
+
+        $b0 = $d1 cmpg $d0;
+
+        if $b0 > 0 goto label1;
+
+        return 0;
+
+     label1:
+        return 1;
+    }
+
+    private boolean isValidVersion(com.google.gson.annotations.Since, com.google.gson.annotations.Until)
+    {
+        com.google.gson.internal.Excluder $r0;
+        com.google.gson.annotations.Since $r1;
+        com.google.gson.annotations.Until $r2;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r1 := @parameter0: com.google.gson.annotations.Since;
+
+        $r2 := @parameter1: com.google.gson.annotations.Until;
+
+        $z0 = specialinvoke $r0.<com.google.gson.internal.Excluder: boolean isValidSince(com.google.gson.annotations.Since)>($r1);
+
+(0)     if $z0 == 0 goto label1;
+
+        $z0_1 = specialinvoke $r0.<com.google.gson.internal.Excluder: boolean isValidUntil(com.google.gson.annotations.Until)>($r2);
+
+(1)     if $z0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 0;
+    }
+
+    protected com.google.gson.internal.Excluder clone()
+    {
+        java.lang.CloneNotSupportedException $r0;
+        java.lang.AssertionError $r1;
+        java.lang.Object $r2;
+        com.google.gson.internal.Excluder $r3, $r3_1;
+
+        $r3 := @this: com.google.gson.internal.Excluder;
+
+     label1:
+        $r2 = specialinvoke $r3.<java.lang.Object: java.lang.Object clone()>();
+
+     label2:
+        $r3_1 = (com.google.gson.internal.Excluder) $r2;
+
+        return $r3_1;
+
+     label3:
+        $r0 := @caughtexception;
+
+        $r1 = new java.lang.AssertionError;
+
+        specialinvoke $r1.<java.lang.AssertionError: void <init>(java.lang.Object)>($r0);
+
+        throw $r1;
+
+        catch java.lang.CloneNotSupportedException from label1 to label2 with label3;
+    }
+
+    protected volatile java.lang.Object clone() throws java.lang.CloneNotSupportedException
+    {
+        com.google.gson.internal.Excluder $r0, $r0_1;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r0_1 = virtualinvoke $r0.<com.google.gson.internal.Excluder: com.google.gson.internal.Excluder clone()>();
+
+        return $r0_1;
+    }
+
+    public com.google.gson.TypeAdapter create(com.google.gson.Gson, com.google.gson.reflect.TypeToken)
+    {
+        com.google.gson.internal.Excluder $r0;
+        com.google.gson.Gson $r1;
+        com.google.gson.reflect.TypeToken $r2;
+        com.google.gson.internal.Excluder$1 $r3;
+        java.lang.Class $r4;
+        boolean $z0, $z1;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r1 := @parameter0: com.google.gson.Gson;
+
+        $r2 := @parameter1: com.google.gson.reflect.TypeToken;
+
+        $r4 = virtualinvoke $r2.<com.google.gson.reflect.TypeToken: java.lang.Class getRawType()>();
+
+        $z0 = virtualinvoke $r0.<com.google.gson.internal.Excluder: boolean excludeClass(java.lang.Class,boolean)>($r4, 1);
+
+        $z1 = virtualinvoke $r0.<com.google.gson.internal.Excluder: boolean excludeClass(java.lang.Class,boolean)>($r4, 0);
+
+        if $z0 != 0 goto label1;
+
+        if $z1 != 0 goto label1;
+
+        return null;
+
+     label1:
+        $r3 = new com.google.gson.internal.Excluder$1;
+
+        specialinvoke $r3.<com.google.gson.internal.Excluder$1: void <init>(com.google.gson.internal.Excluder,boolean,boolean,com.google.gson.Gson,com.google.gson.reflect.TypeToken)>($r0, $z1, $z0, $r1, $r2);
+
+        return $r3;
+    }
+
+    public com.google.gson.internal.Excluder disableInnerClassSerialization()
+    {
+        com.google.gson.internal.Excluder $r0, $r0_1;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r0_1 = virtualinvoke $r0.<com.google.gson.internal.Excluder: com.google.gson.internal.Excluder clone()>();
+
+        $r0_1.<com.google.gson.internal.Excluder: boolean serializeInnerClasses> = 0;
+
+        return $r0_1;
+    }
+
+    public boolean excludeClass(java.lang.Class, boolean)
+    {
+        com.google.gson.internal.Excluder $r0;
+        java.lang.Class $r1;
+        double $d0;
+        byte $b0;
+        boolean $z0, $z1, $z1_1, $z1_2, $z1_3, $z1_4, $z1_5, $z0_1, $z0_2, $z0_3;
+        java.lang.'annotation'.Annotation $r2, $r2_1, $r2_2;
+        com.google.gson.annotations.Since $r3;
+        com.google.gson.annotations.Until $r4;
+        java.util.List $r5, $r5_1, $r5_2;
+        java.util.Iterator $r6;
+        java.lang.Object $r7;
+        com.google.gson.ExclusionStrategy $r8;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $z0 := @parameter1: boolean;
+
+        $d0 = $r0.<com.google.gson.internal.Excluder: double version>;
+
+        $b0 = $d0 cmpl -1.0;
+
+(0)     if $b0 == 0 goto label1;
+
+        $r2 = virtualinvoke $r1.<java.lang.Class: java.lang.'annotation'.Annotation getAnnotation(java.lang.Class)>(class "com/google/gson/annotations/Since");
+
+        $r3 = (com.google.gson.annotations.Since) $r2;
+
+        $r2_1 = virtualinvoke $r1.<java.lang.Class: java.lang.'annotation'.Annotation getAnnotation(java.lang.Class)>(class "com/google/gson/annotations/Until");
+
+        $r4 = (com.google.gson.annotations.Until) $r2_1;
+
+        $z1 = specialinvoke $r0.<com.google.gson.internal.Excluder: boolean isValidVersion(com.google.gson.annotations.Since,com.google.gson.annotations.Until)>($r3, $r4);
+
+(1)     if $z1 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z1_1 = Phi($z1 #0, $z1 #1);
+
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        $z1_2 = $r0.<com.google.gson.internal.Excluder: boolean serializeInnerClasses>;
+
+(2)     if $z1_2 != 0 goto label2;
+
+        $z1_3 = specialinvoke $r0.<com.google.gson.internal.Excluder: boolean isInnerClass(java.lang.Class)>($r1);
+
+(3)     if $z1_3 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        $z1_4 = Phi($z1_2 #2, $z1_3 #3);
+
+        $z1_5 = specialinvoke $r0.<com.google.gson.internal.Excluder: boolean isAnonymousOrLocal(java.lang.Class)>($r1);
+
+        if $z1_5 == 0 goto label3;
+
+        return 1;
+
+     label3:
+        if $z0 == 0 goto label6;
+
+(4)     $r5 = $r0.<com.google.gson.internal.Excluder: java.util.List serializationStrategies>;
+
+     label4:
+        $r5_1 = Phi($r5 #4, $r5_2 #7);
+
+(5)     $r6 = interfaceinvoke $r5_1.<java.util.List: java.util.Iterator iterator()>();
+
+     label5:
+        $z0_1 = Phi($z0 #5, $z0_3 #6);
+
+        $z0_2 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_2 == 0 goto label7;
+
+        $r7 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r8 = (com.google.gson.ExclusionStrategy) $r7;
+
+        $z0_3 = interfaceinvoke $r8.<com.google.gson.ExclusionStrategy: boolean shouldSkipClass(java.lang.Class)>($r1);
+
+(6)     if $z0_3 == 0 goto label5;
+
+        return 1;
+
+     label6:
+        $r5_2 = $r0.<com.google.gson.internal.Excluder: java.util.List deserializationStrategies>;
+
+(7)     goto label4;
+
+     label7:
+        return 0;
+    }
+
+    public boolean excludeField(java.lang.reflect.Field, boolean)
+    {
+        com.google.gson.internal.Excluder $r0;
+        java.lang.reflect.Field $r1;
+        double $d0;
+        byte $b0;
+        com.google.gson.FieldAttributes $r2;
+        boolean $z0, $z1, $z1_1, $z1_2, $z1_3, $z1_4, $z1_5, $z1_6, $z1_7, $z1_8, $z1_9, $z1_10, $z1_11, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        int $i1, $i2, $i1_1;
+        java.lang.'annotation'.Annotation $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        com.google.gson.annotations.Since $r4;
+        com.google.gson.annotations.Until $r5;
+        com.google.gson.annotations.Expose $r6;
+        java.lang.Class $r7, $r7_1, $r7_2;
+        java.util.List $r8, $r8_1, $r8_2;
+        java.util.Iterator $r9;
+        java.lang.Object $r10;
+        com.google.gson.ExclusionStrategy $r11;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r1 := @parameter0: java.lang.reflect.Field;
+
+        $z0 := @parameter1: boolean;
+
+        $i1 = $r0.<com.google.gson.internal.Excluder: int modifiers>;
+
+        $i2 = virtualinvoke $r1.<java.lang.reflect.Field: int getModifiers()>();
+
+        $i1_1 = $i1 & $i2;
+
+        if $i1_1 == 0 goto label01;
+
+        return 1;
+
+     label01:
+        $d0 = $r0.<com.google.gson.internal.Excluder: double version>;
+
+        $b0 = $d0 cmpl -1.0;
+
+(0)     if $b0 == 0 goto label02;
+
+        $r3 = virtualinvoke $r1.<java.lang.reflect.Field: java.lang.'annotation'.Annotation getAnnotation(java.lang.Class)>(class "com/google/gson/annotations/Since");
+
+        $r4 = (com.google.gson.annotations.Since) $r3;
+
+        $r3_1 = virtualinvoke $r1.<java.lang.reflect.Field: java.lang.'annotation'.Annotation getAnnotation(java.lang.Class)>(class "com/google/gson/annotations/Until");
+
+        $r5 = (com.google.gson.annotations.Until) $r3_1;
+
+        $z1 = specialinvoke $r0.<com.google.gson.internal.Excluder: boolean isValidVersion(com.google.gson.annotations.Since,com.google.gson.annotations.Until)>($r4, $r5);
+
+(1)     if $z1 != 0 goto label02;
+
+        return 1;
+
+     label02:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $z1_1 = Phi($z1 #0, $z1 #1);
+
+        $z1_2 = virtualinvoke $r1.<java.lang.reflect.Field: boolean isSynthetic()>();
+
+        if $z1_2 == 0 goto label03;
+
+        return 1;
+
+     label03:
+        $z1_3 = $r0.<com.google.gson.internal.Excluder: boolean requireExpose>;
+
+(2)     if $z1_3 == 0 goto label06;
+
+        $r3_3 = virtualinvoke $r1.<java.lang.reflect.Field: java.lang.'annotation'.Annotation getAnnotation(java.lang.Class)>(class "com/google/gson/annotations/Expose");
+
+        $r6 = (com.google.gson.annotations.Expose) $r3_3;
+
+(3)     if $r6 == null goto label04;
+
+        if $z0 == 0 goto label05;
+
+        $z1_4 = interfaceinvoke $r6.<com.google.gson.annotations.Expose: boolean serialize()>();
+
+(4)     if $z1_4 != 0 goto label06;
+
+     label04:
+        $z1_6 = Phi($z1_3 #3, $z1_4 #4, $z1_5 #5);
+
+        return 1;
+
+     label05:
+        $z1_5 = interfaceinvoke $r6.<com.google.gson.annotations.Expose: boolean deserialize()>();
+
+(5)     if $z1_5 == 0 goto label04;
+
+     label06:
+        $r3_4 = Phi($r3_2 #2, $r3_3 #4, $r3_3 #5);
+
+        $z1_7 = Phi($z1_3 #2, $z1_4 #4, $z1_5 #5);
+
+        $z1_8 = $r0.<com.google.gson.internal.Excluder: boolean serializeInnerClasses>;
+
+(6)     if $z1_8 != 0 goto label07;
+
+        $r7 = virtualinvoke $r1.<java.lang.reflect.Field: java.lang.Class getType()>();
+
+        $z1_9 = specialinvoke $r0.<com.google.gson.internal.Excluder: boolean isInnerClass(java.lang.Class)>($r7);
+
+(7)     if $z1_9 == 0 goto label07;
+
+        return 1;
+
+     label07:
+        $r7_1 = Phi($r7 #6, $r7 #7);
+
+        $z1_10 = Phi($z1_8 #6, $z1_9 #7);
+
+        $r7_2 = virtualinvoke $r1.<java.lang.reflect.Field: java.lang.Class getType()>();
+
+        $z1_11 = specialinvoke $r0.<com.google.gson.internal.Excluder: boolean isAnonymousOrLocal(java.lang.Class)>($r7_2);
+
+        if $z1_11 == 0 goto label08;
+
+        return 1;
+
+     label08:
+        if $z0 == 0 goto label11;
+
+(8)     $r8 = $r0.<com.google.gson.internal.Excluder: java.util.List serializationStrategies>;
+
+     label09:
+        $r8_1 = Phi($r8 #8, $r8_2 #13);
+
+        $z0_1 = interfaceinvoke $r8_1.<java.util.List: boolean isEmpty()>();
+
+(9)     if $z0_1 != 0 goto label12;
+
+        $r2 = new com.google.gson.FieldAttributes;
+
+        specialinvoke $r2.<com.google.gson.FieldAttributes: void <init>(java.lang.reflect.Field)>($r1);
+
+(10)    $r9 = interfaceinvoke $r8_1.<java.util.List: java.util.Iterator iterator()>();
+
+     label10:
+        $z0_2 = Phi($z0_1 #10, $z0_4 #12);
+
+        $z0_3 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+(11)    if $z0_3 == 0 goto label12;
+
+        $r10 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        $r11 = (com.google.gson.ExclusionStrategy) $r10;
+
+        $z0_4 = interfaceinvoke $r11.<com.google.gson.ExclusionStrategy: boolean shouldSkipField(com.google.gson.FieldAttributes)>($r2);
+
+(12)    if $z0_4 == 0 goto label10;
+
+        return 1;
+
+     label11:
+        $r8_2 = $r0.<com.google.gson.internal.Excluder: java.util.List deserializationStrategies>;
+
+(13)    goto label09;
+
+     label12:
+        $z0_5 = Phi($z0_1 #9, $z0_3 #11);
+
+        return 0;
+    }
+
+    public com.google.gson.internal.Excluder excludeFieldsWithoutExposeAnnotation()
+    {
+        com.google.gson.internal.Excluder $r0, $r0_1;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r0_1 = virtualinvoke $r0.<com.google.gson.internal.Excluder: com.google.gson.internal.Excluder clone()>();
+
+        $r0_1.<com.google.gson.internal.Excluder: boolean requireExpose> = 1;
+
+        return $r0_1;
+    }
+
+    public com.google.gson.internal.Excluder withExclusionStrategy(com.google.gson.ExclusionStrategy, boolean, boolean)
+    {
+        com.google.gson.internal.Excluder $r0, $r2;
+        com.google.gson.ExclusionStrategy $r1;
+        boolean $z0, $z1;
+        java.util.ArrayList $r3, $r3_1, $r3_2, $r3_3;
+        java.util.List $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $r1 := @parameter0: com.google.gson.ExclusionStrategy;
+
+        $z0 := @parameter1: boolean;
+
+        $z1 := @parameter2: boolean;
+
+        $r2 = virtualinvoke $r0.<com.google.gson.internal.Excluder: com.google.gson.internal.Excluder clone()>();
+
+(0)     if $z0 == 0 goto label1;
+
+        $r3 = new java.util.ArrayList;
+
+        $r4 = $r0.<com.google.gson.internal.Excluder: java.util.List serializationStrategies>;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>(java.util.Collection)>($r4);
+
+        $r2.<com.google.gson.internal.Excluder: java.util.List serializationStrategies> = $r3;
+
+        $r4_1 = $r2.<com.google.gson.internal.Excluder: java.util.List serializationStrategies>;
+
+(1)     interfaceinvoke $r4_1.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r3_1 = Phi($r3 #0, $r3 #1);
+
+(2)     if $z1 == 0 goto label2;
+
+        $r3_2 = new java.util.ArrayList;
+
+        $r4_3 = $r0.<com.google.gson.internal.Excluder: java.util.List deserializationStrategies>;
+
+        specialinvoke $r3_2.<java.util.ArrayList: void <init>(java.util.Collection)>($r4_3);
+
+        $r2.<com.google.gson.internal.Excluder: java.util.List deserializationStrategies> = $r3_2;
+
+        $r4_4 = $r2.<com.google.gson.internal.Excluder: java.util.List deserializationStrategies>;
+
+(3)     interfaceinvoke $r4_4.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+     label2:
+        $r4_5 = Phi($r4_2 #2, $r4_4 #3);
+
+        $r3_3 = Phi($r3_1 #2, $r3_2 #3);
+
+        return $r2;
+    }
+
+    public transient com.google.gson.internal.Excluder withModifiers(int[])
+    {
+        int[] $r0;
+        int $i0, $i1, $i2, $i3, $i2_1, $i1_1, $i1_2, $i2_2;
+        com.google.gson.internal.Excluder $r1, $r1_1;
+
+        $r1 := @this: com.google.gson.internal.Excluder;
+
+        $r0 := @parameter0: int[];
+
+        $i2 = 0;
+
+        $r1_1 = virtualinvoke $r1.<com.google.gson.internal.Excluder: com.google.gson.internal.Excluder clone()>();
+
+        $r1_1.<com.google.gson.internal.Excluder: int modifiers> = 0;
+
+(0)     $i0 = lengthof $r0;
+
+     label1:
+        $i2_1 = Phi($i2 #0, $i2_2 #1);
+
+        $i1 = Phi($i1 #0, $i1_2 #1);
+
+        if $i2_1 >= $i0 goto label2;
+
+        $i3 = $r0[$i2_1];
+
+        $i1_1 = $r1_1.<com.google.gson.internal.Excluder: int modifiers>;
+
+        $i1_2 = $i1_1 | $i3;
+
+        $r1_1.<com.google.gson.internal.Excluder: int modifiers> = $i1_2;
+
+        $i2_2 = $i2_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        return $r1_1;
+    }
+
+    public com.google.gson.internal.Excluder withVersion(double)
+    {
+        double $d0;
+        com.google.gson.internal.Excluder $r0, $r0_1;
+
+        $r0 := @this: com.google.gson.internal.Excluder;
+
+        $d0 := @parameter0: double;
+
+        $r0_1 = virtualinvoke $r0.<com.google.gson.internal.Excluder: com.google.gson.internal.Excluder clone()>();
+
+        $r0_1.<com.google.gson.internal.Excluder: double version> = $d0;
+
+        return $r0_1;
+    }
+}

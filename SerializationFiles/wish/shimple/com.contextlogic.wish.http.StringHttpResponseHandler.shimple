@@ -1,0 +1,424 @@
+public class com.contextlogic.wish.http.StringHttpResponseHandler extends com.contextlogic.wish.http.HttpResponseHandler
+{
+    private long cacheExpiry;
+    private boolean canUseCachedResponse;
+    private boolean shouldCacheResponse;
+
+    public void <init>()
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        specialinvoke $r0.<com.contextlogic.wish.http.HttpResponseHandler: void <init>()>();
+
+        $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: boolean canUseCachedResponse> = 0;
+
+        $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: boolean shouldCacheResponse> = 0;
+
+        $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: long cacheExpiry> = -1L;
+
+        return;
+    }
+
+    public void handleCachedResponse(java.lang.Object)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        java.lang.Object $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = (java.lang.String) $r1;
+
+        virtualinvoke $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: void onSuccess(java.lang.String)>($r2);
+
+        return;
+    }
+
+    public void handleFailure(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest, java.lang.Throwable, java.lang.Object)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        ch.boye.httpclientandroidlib.client.methods.HttpUriRequest $r1;
+        java.lang.Throwable $r2;
+        java.lang.Object $r3;
+        java.lang.String $r4;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+
+        $r2 := @parameter1: java.lang.Throwable;
+
+        $r3 := @parameter2: java.lang.Object;
+
+        $r4 = (java.lang.String) $r3;
+
+        virtualinvoke $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: void onFailure(java.lang.Throwable,java.lang.String)>($r2, $r4);
+
+        return;
+    }
+
+    public void handleStart(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        ch.boye.httpclientandroidlib.client.methods.HttpUriRequest $r1;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+
+        virtualinvoke $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: void onStart()>();
+
+        return;
+    }
+
+    public void handleSuccess(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest, java.lang.Object)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        ch.boye.httpclientandroidlib.client.methods.HttpUriRequest $r1;
+        java.lang.Object $r2;
+        boolean $z0;
+        java.lang.String $r3, $r6;
+        com.contextlogic.wish.cache.PersistedCache $r4;
+        java.net.URI $r5;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 = (java.lang.String) $r2;
+
+        $z0 = $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: boolean shouldCacheResponse>;
+
+        if $z0 == 0 goto label1;
+
+        $r4 = staticinvoke <com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.PersistedCache getInstance()>();
+
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.client.methods.HttpUriRequest: java.net.URI getURI()>();
+
+        $r6 = virtualinvoke $r5.<java.net.URI: java.lang.String toString()>();
+
+        virtualinvoke $r4.<com.contextlogic.wish.cache.PersistedCache: void cacheString(java.lang.String,java.lang.String,boolean)>($r6, $r3, 0);
+
+     label1:
+        virtualinvoke $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: void onSuccess(java.lang.String)>($r3);
+
+        return;
+    }
+
+    public boolean loadResponseFromCache(java.lang.String)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        boolean $z0;
+        byte $b0;
+        java.lang.String $r1, $r1_1, $r1_2, $r1_3, $r1_4;
+        long $l1, $l1_1, $l1_2, $l1_3;
+        com.contextlogic.wish.cache.PersistedCache $r2, $r2_1, $r2_2, $r2_3;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: boolean canUseCachedResponse>;
+
+(0)     if $z0 == 0 goto label3;
+
+        $l1 = $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: long cacheExpiry>;
+
+        $b0 = $l1 cmp -1L;
+
+        if $b0 != 0 goto label2;
+
+        $r2 = staticinvoke <com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.PersistedCache getInstance()>();
+
+(1)     $r1_1 = virtualinvoke $r2.<com.contextlogic.wish.cache.PersistedCache: java.lang.String getCachedString(java.lang.String,boolean)>($r1, 0);
+
+     label1:
+        $r2_1 = Phi($r2 #1, $r2_2 #3);
+
+        $r1_2 = Phi($r1_1 #1, $r1_3 #3);
+
+        $l1_1 = Phi($l1 #1, $l1_2 #3);
+
+(2)     if $r1_2 == null goto label3;
+
+        virtualinvoke $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: void responseLoadedFromCache(java.lang.Object)>($r1_2);
+
+        return 1;
+
+     label2:
+        $r2_2 = staticinvoke <com.contextlogic.wish.cache.PersistedCache: com.contextlogic.wish.cache.PersistedCache getInstance()>();
+
+        $l1_2 = $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: long cacheExpiry>;
+
+        $r1_3 = virtualinvoke $r2_2.<com.contextlogic.wish.cache.PersistedCache: java.lang.String getCachedString(java.lang.String,long,boolean)>($r1, $l1_2, 0);
+
+(3)     goto label1;
+
+     label3:
+        $r2_3 = Phi($r2 #0, $r2_1 #2);
+
+        $r1_4 = Phi($r1 #0, $r1_2 #2);
+
+        $l1_3 = Phi($l1 #0, $l1_1 #2);
+
+        return 0;
+    }
+
+    public void onFailure(java.lang.Throwable, java.lang.String)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        java.lang.Throwable $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $r1 := @parameter0: java.lang.Throwable;
+
+        $r2 := @parameter1: java.lang.String;
+
+        return;
+    }
+
+    public void onStart()
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        return;
+    }
+
+    public void onSuccess(java.lang.String)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $r1 := @parameter0: java.lang.String;
+
+        return;
+    }
+
+    public java.lang.Object preprocessFailure(java.lang.Throwable, java.lang.Object)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        java.lang.Throwable $r1;
+        java.lang.Object $r2;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $r1 := @parameter0: java.lang.Throwable;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        return $r2;
+    }
+
+    public java.lang.Object preprocessSuccess(java.lang.Object)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        java.lang.Object $r1;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        return $r1;
+    }
+
+    public void receiveResponse(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest, ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        ch.boye.httpclientandroidlib.client.methods.HttpUriRequest $r1;
+        ch.boye.httpclientandroidlib.HttpResponse $r2;
+        java.util.zip.GZIPInputStream $r3;
+        ch.boye.httpclientandroidlib.client.HttpResponseException $r4;
+        java.lang.Throwable $r5;
+        ch.boye.httpclientandroidlib.StatusLine $r6;
+        java.lang.String $r7, $r12, $r12_1, $r7_1, $r12_2, $r7_2, $r12_3, $r12_4, $r7_3;
+        ch.boye.httpclientandroidlib.HttpEntity $r8;
+        java.io.InputStream $r9, $r10, $r10_1, $r10_2, $r10_3, $r10_4;
+        ch.boye.httpclientandroidlib.Header $r11;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.util.Scanner $r13, $r13_1, $r13_2, $r13_3;
+        int $i0, $i0_1;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r6 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+(0)     $r7 = null;
+
+     label01:
+        $r8 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+     label02:
+(1)     if $r8 == null goto label14;
+
+     label03:
+        $r9 = interfaceinvoke $r8.<ch.boye.httpclientandroidlib.HttpEntity: java.io.InputStream getContent()>();
+
+     label04:
+        $r10 = $r9;
+
+     label05:
+        $r11 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Content-Encoding");
+
+     label06:
+(2)     if $r11 == null goto label11;
+
+     label07:
+        $r12 = interfaceinvoke $r11.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $z0 = virtualinvoke $r12.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("gzip");
+
+     label08:
+(3)     if $z0 == 0 goto label11;
+
+     label09:
+        $r3 = new java.util.zip.GZIPInputStream;
+
+        specialinvoke $r3.<java.util.zip.GZIPInputStream: void <init>(java.io.InputStream)>($r9);
+
+     label10:
+(4)     $r10_1 = $r3;
+
+     label11:
+        $r10_2 = Phi($r10 #2, $r10 #3, $r10_1 #4);
+
+        $r12_1 = Phi($r12 #2, $r12 #3, $r12 #4);
+
+        $z0_1 = Phi($z0 #2, $z0 #3, $z0 #4);
+
+(5)     $r13 = new java.util.Scanner;
+
+        specialinvoke $r13.<java.util.Scanner: void <init>(java.io.InputStream,java.lang.String)>($r10_2, "UTF-8");
+
+(6)     $r13_1 = virtualinvoke $r13.<java.util.Scanner: java.util.Scanner useDelimiter(java.lang.String)>("\\A");
+
+(7)     $z0_2 = virtualinvoke $r13_1.<java.util.Scanner: boolean hasNext()>();
+
+     label12:
+        if $z0_2 == 0 goto label15;
+
+     label13:
+(8)     $r7_1 = virtualinvoke $r13_1.<java.util.Scanner: java.lang.String next()>();
+
+     label14:
+        $r13_2 = Phi($r13 #1, $r13_1 #8, $r13_1 #9);
+
+        $r10_3 = Phi($r10 #1, $r10_2 #8, $r10_2 #9);
+
+        $r12_2 = Phi($r12 #1, $r12_1 #8, $r12_1 #9);
+
+        $z0_3 = Phi($z0 #1, $z0_2 #8, $z0_2 #9);
+
+        $r7_2 = Phi($r7 #1, $r7_1 #8, $r7 #9);
+
+        $i0 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+        if $i0 == 200 goto label18;
+
+        $r4 = new ch.boye.httpclientandroidlib.client.HttpResponseException;
+
+        $i0_1 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+        $r12_3 = interfaceinvoke $r6.<ch.boye.httpclientandroidlib.StatusLine: java.lang.String getReasonPhrase()>();
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.client.HttpResponseException: void <init>(int,java.lang.String)>($i0_1, $r12_3);
+
+        virtualinvoke $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: void requestFailed(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest,java.lang.Throwable,java.lang.Object)>($r1, $r4, $r7_2);
+
+        return;
+
+     label15:
+        virtualinvoke $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: void requestFailed(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest,java.lang.Throwable,java.lang.Object)>($r1, null, null);
+
+     label16:
+(9)     goto label14;
+
+     label17:
+        $r5 := @caughtexception;
+
+        $r13_3 = Phi($r13 #0, $r13_1 #6);
+
+        $r10_4 = Phi($r10 #0, $r10_1 #4, $r10_2 #5);
+
+        $r12_4 = Phi($r12 #0, $r12_1 #5);
+
+        $z0_4 = Phi($z0 #0, $z0_1 #5, $z0_2 #7);
+
+        $r7_3 = Phi($r7 #0, $r7_1 #8);
+
+        virtualinvoke $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: void requestFailed(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest,java.lang.Throwable,java.lang.Object)>($r1, null, null);
+
+        return;
+
+     label18:
+        virtualinvoke $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: void requestSucceeded(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest,java.lang.Object)>($r1, $r7_2);
+
+        return;
+
+        catch java.lang.Throwable from label01 to label02 with label17;
+        catch java.lang.Throwable from label03 to label04 with label17;
+        catch java.lang.Throwable from label05 to label06 with label17;
+        catch java.lang.Throwable from label07 to label08 with label17;
+        catch java.lang.Throwable from label09 to label10 with label17;
+        catch java.lang.Throwable from label11 to label12 with label17;
+        catch java.lang.Throwable from label13 to label14 with label17;
+        catch java.lang.Throwable from label15 to label16 with label17;
+    }
+
+    public void setCacheExpiry(long)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        long $l0;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $l0 := @parameter0: long;
+
+        $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: long cacheExpiry> = $l0;
+
+        return;
+    }
+
+    public void setCanUseCachedResponse(boolean)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: boolean canUseCachedResponse> = $z0;
+
+        return;
+    }
+
+    public void setShouldCacheResponse(boolean)
+    {
+        com.contextlogic.wish.http.StringHttpResponseHandler $r0;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.http.StringHttpResponseHandler;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.contextlogic.wish.http.StringHttpResponseHandler: boolean shouldCacheResponse> = $z0;
+
+        return;
+    }
+}

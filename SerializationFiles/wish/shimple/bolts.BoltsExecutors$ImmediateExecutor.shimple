@@ -1,0 +1,165 @@
+class bolts.BoltsExecutors$ImmediateExecutor extends java.lang.Object implements java.util.concurrent.Executor
+{
+    private static final int MAX_DEPTH;
+    private java.lang.ThreadLocal executionDepth;
+
+    private void <init>()
+    {
+        bolts.BoltsExecutors$ImmediateExecutor $r0;
+        java.lang.ThreadLocal $r1;
+
+        $r0 := @this: bolts.BoltsExecutors$ImmediateExecutor;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new java.lang.ThreadLocal;
+
+        specialinvoke $r1.<java.lang.ThreadLocal: void <init>()>();
+
+        $r0.<bolts.BoltsExecutors$ImmediateExecutor: java.lang.ThreadLocal executionDepth> = $r1;
+
+        return;
+    }
+
+    void <init>(bolts.BoltsExecutors$1)
+    {
+        bolts.BoltsExecutors$ImmediateExecutor $r0;
+        bolts.BoltsExecutors$1 $r1;
+
+        $r0 := @this: bolts.BoltsExecutors$ImmediateExecutor;
+
+        $r1 := @parameter0: bolts.BoltsExecutors$1;
+
+        specialinvoke $r0.<bolts.BoltsExecutors$ImmediateExecutor: void <init>()>();
+
+        return;
+    }
+
+    private int decrementDepth()
+    {
+        bolts.BoltsExecutors$ImmediateExecutor $r0;
+        java.lang.ThreadLocal $r1, $r1_1, $r1_2;
+        java.lang.Object $r2;
+        java.lang.Integer $r3, $r4, $r4_1, $r4_2, $r3_1;
+        int $i0, $i0_1;
+
+        $r0 := @this: bolts.BoltsExecutors$ImmediateExecutor;
+
+        $r1 = $r0.<bolts.BoltsExecutors$ImmediateExecutor: java.lang.ThreadLocal executionDepth>;
+
+        $r2 = virtualinvoke $r1.<java.lang.ThreadLocal: java.lang.Object get()>();
+
+        $r3 = (java.lang.Integer) $r2;
+
+        $r4 = $r3;
+
+(0)     if $r3 != null goto label1;
+
+(1)     $r4_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $i0 = virtualinvoke $r4_2.<java.lang.Integer: int intValue()>();
+
+        $i0_1 = $i0 + -1;
+
+        if $i0_1 != 0 goto label2;
+
+        $r1_1 = $r0.<bolts.BoltsExecutors$ImmediateExecutor: java.lang.ThreadLocal executionDepth>;
+
+        virtualinvoke $r1_1.<java.lang.ThreadLocal: void remove()>();
+
+        return $i0_1;
+
+     label2:
+        $r1_2 = $r0.<bolts.BoltsExecutors$ImmediateExecutor: java.lang.ThreadLocal executionDepth>;
+
+        $r3_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_1);
+
+        virtualinvoke $r1_2.<java.lang.ThreadLocal: void set(java.lang.Object)>($r3_1);
+
+        return $i0_1;
+    }
+
+    private int incrementDepth()
+    {
+        bolts.BoltsExecutors$ImmediateExecutor $r0;
+        java.lang.ThreadLocal $r1, $r1_1;
+        java.lang.Object $r2;
+        java.lang.Integer $r3, $r4, $r4_1, $r4_2, $r3_1;
+        int $i0, $i0_1;
+
+        $r0 := @this: bolts.BoltsExecutors$ImmediateExecutor;
+
+        $r1 = $r0.<bolts.BoltsExecutors$ImmediateExecutor: java.lang.ThreadLocal executionDepth>;
+
+        $r2 = virtualinvoke $r1.<java.lang.ThreadLocal: java.lang.Object get()>();
+
+        $r3 = (java.lang.Integer) $r2;
+
+        $r4 = $r3;
+
+(0)     if $r3 != null goto label1;
+
+(1)     $r4_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $i0 = virtualinvoke $r4_2.<java.lang.Integer: int intValue()>();
+
+        $i0_1 = $i0 + 1;
+
+        $r1_1 = $r0.<bolts.BoltsExecutors$ImmediateExecutor: java.lang.ThreadLocal executionDepth>;
+
+        $r3_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_1);
+
+        virtualinvoke $r1_1.<java.lang.ThreadLocal: void set(java.lang.Object)>($r3_1);
+
+        return $i0_1;
+    }
+
+    public void execute(java.lang.Runnable)
+    {
+        bolts.BoltsExecutors$ImmediateExecutor $r0;
+        java.lang.Runnable $r1;
+        java.lang.Throwable $r2;
+        int $i0;
+        java.util.concurrent.ExecutorService $r3;
+
+        $r0 := @this: bolts.BoltsExecutors$ImmediateExecutor;
+
+        $r1 := @parameter0: java.lang.Runnable;
+
+        $i0 = specialinvoke $r0.<bolts.BoltsExecutors$ImmediateExecutor: int incrementDepth()>();
+
+        if $i0 > 15 goto label3;
+
+     label1:
+        interfaceinvoke $r1.<java.lang.Runnable: void run()>();
+
+     label2:
+        specialinvoke $r0.<bolts.BoltsExecutors$ImmediateExecutor: int decrementDepth()>();
+
+        return;
+
+     label3:
+        $r3 = staticinvoke <bolts.BoltsExecutors: java.util.concurrent.ExecutorService background()>();
+
+        interfaceinvoke $r3.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r1);
+
+     label4:
+        goto label2;
+
+     label5:
+        $r2 := @caughtexception;
+
+        specialinvoke $r0.<bolts.BoltsExecutors$ImmediateExecutor: int decrementDepth()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.lang.Throwable from label3 to label4 with label5;
+    }
+}

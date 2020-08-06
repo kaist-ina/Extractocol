@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 
 /**
  * Test taint propagation of fields. A certain length of the access paths is
@@ -25,7 +25,7 @@ public class LengthTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void easyLengthTest(){
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.LengthTestCode: void easy1()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -34,7 +34,7 @@ public class LengthTests extends JUnitTests {
 	
 	@Test(timeout=300000)
 	public void lengthTest(){
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.LengthTestCode: void method1()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -43,7 +43,7 @@ public class LengthTests extends JUnitTests {
 	
 	@Test(timeout=300000)
 	public void lengthTest2(){
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.LengthTestCode: void method2()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);

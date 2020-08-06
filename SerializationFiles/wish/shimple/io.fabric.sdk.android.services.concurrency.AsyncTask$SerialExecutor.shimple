@@ -1,0 +1,132 @@
+class io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor extends java.lang.Object implements java.util.concurrent.Executor
+{
+    java.lang.Runnable active;
+    final java.util.LinkedList tasks;
+
+    private void <init>()
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor $r0;
+        java.util.LinkedList $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new java.util.LinkedList;
+
+        specialinvoke $r1.<java.util.LinkedList: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor: java.util.LinkedList tasks> = $r1;
+
+        return;
+    }
+
+    void <init>(io.fabric.sdk.android.services.concurrency.AsyncTask$1)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor $r0;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$1 $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.concurrency.AsyncTask$1;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor: void <init>()>();
+
+        return;
+    }
+
+    public void execute(java.lang.Runnable)
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor $r0;
+        java.util.LinkedList $r1;
+        io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor$1 $r2;
+        java.lang.Throwable $r3;
+        java.lang.Runnable $r4, $r4_1, $r4_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor;
+
+        $r4 := @parameter0: java.lang.Runnable;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor: java.util.LinkedList tasks>;
+
+        $r2 = new io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor$1;
+
+        specialinvoke $r2.<io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor$1: void <init>(io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor,java.lang.Runnable)>($r0, $r4);
+
+        virtualinvoke $r1.<java.util.LinkedList: boolean offer(java.lang.Object)>($r2);
+
+(1)     $r4_1 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor: java.lang.Runnable active>;
+
+        if $r4_1 != null goto label2;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor: void scheduleNext()>();
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    protected void scheduleNext()
+    {
+        io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor $r0;
+        java.util.LinkedList $r1;
+        java.util.concurrent.Executor $r2;
+        java.lang.Throwable $r3;
+        java.lang.Object $r4;
+        java.lang.Runnable $r5, $r5_1, $r5_2, $r5_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor: java.util.LinkedList tasks>;
+
+        $r4 = virtualinvoke $r1.<java.util.LinkedList: java.lang.Object poll()>();
+
+        $r5 = (java.lang.Runnable) $r4;
+
+        $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor: java.lang.Runnable active> = $r5;
+
+(1)     if $r5 == null goto label2;
+
+        $r2 = <io.fabric.sdk.android.services.concurrency.AsyncTask: java.util.concurrent.Executor THREAD_POOL_EXECUTOR>;
+
+(2)     $r5_1 = $r0.<io.fabric.sdk.android.services.concurrency.AsyncTask$SerialExecutor: java.lang.Runnable active>;
+
+(3)     interfaceinvoke $r2.<java.util.concurrent.Executor: void execute(java.lang.Runnable)>($r5_1);
+
+     label2:
+        $r5_2 = Phi($r5 #1, $r5_1 #3);
+
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r5_3 = Phi($r5 #0, $r5_1 #2);
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+}

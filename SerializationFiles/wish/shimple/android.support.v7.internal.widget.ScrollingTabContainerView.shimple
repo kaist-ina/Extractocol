@@ -1,0 +1,1116 @@
+public class android.support.v7.internal.widget.ScrollingTabContainerView extends android.widget.HorizontalScrollView implements android.support.v7.internal.widget.AdapterViewCompat$OnItemClickListener
+{
+    private static final int FADE_DURATION;
+    private static final java.lang.String TAG;
+    private static final android.view.animation.Interpolator sAlphaInterpolator;
+    private boolean mAllowCollapse;
+    private int mContentHeight;
+    int mMaxTabWidth;
+    private int mSelectedTabIndex;
+    int mStackedTabMaxWidth;
+    private android.support.v7.internal.widget.ScrollingTabContainerView$TabClickListener mTabClickListener;
+    private android.support.v7.widget.LinearLayoutCompat mTabLayout;
+    java.lang.Runnable mTabSelector;
+    private android.support.v7.internal.widget.SpinnerCompat mTabSpinner;
+    protected final android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener mVisAnimListener;
+    protected android.support.v4.view.ViewPropertyAnimatorCompat mVisibilityAnim;
+
+    static void <clinit>()
+    {
+        android.view.animation.DecelerateInterpolator $r0;
+
+        $r0 = new android.view.animation.DecelerateInterpolator;
+
+        specialinvoke $r0.<android.view.animation.DecelerateInterpolator: void <init>()>();
+
+        <android.support.v7.internal.widget.ScrollingTabContainerView: android.view.animation.Interpolator sAlphaInterpolator> = $r0;
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.content.Context $r1;
+        android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener $r2;
+        android.view.ViewGroup$LayoutParams $r3;
+        android.support.v7.internal.view.ActionBarPolicy $r4;
+        int $i0, $i0_1;
+        android.support.v7.widget.LinearLayoutCompat $r5, $r5_1;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<android.widget.HorizontalScrollView: void <init>(android.content.Context)>($r1);
+
+        $r2 = new android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener;
+
+        specialinvoke $r2.<android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener: void <init>(android.support.v7.internal.widget.ScrollingTabContainerView)>($r0);
+
+        $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener mVisAnimListener> = $r2;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void setHorizontalScrollBarEnabled(boolean)>(0);
+
+        $r4 = staticinvoke <android.support.v7.internal.view.ActionBarPolicy: android.support.v7.internal.view.ActionBarPolicy get(android.content.Context)>($r1);
+
+        $i0 = virtualinvoke $r4.<android.support.v7.internal.view.ActionBarPolicy: int getTabContainerHeight()>();
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void setContentHeight(int)>($i0);
+
+        $i0_1 = virtualinvoke $r4.<android.support.v7.internal.view.ActionBarPolicy: int getStackedTabMaxWidth()>();
+
+        $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mStackedTabMaxWidth> = $i0_1;
+
+        $r5 = specialinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat createTabLayout()>();
+
+        $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout> = $r5;
+
+        $r5_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        $r3 = new android.view.ViewGroup$LayoutParams;
+
+        specialinvoke $r3.<android.view.ViewGroup$LayoutParams: void <init>(int,int)>(-2, -1);
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r5_1, $r3);
+
+        return;
+    }
+
+    static android.support.v7.widget.LinearLayoutCompat access$200(android.support.v7.internal.widget.ScrollingTabContainerView)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.widget.LinearLayoutCompat r1;
+
+        $r0 := @parameter0: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        return r1;
+    }
+
+    static android.support.v7.internal.widget.ScrollingTabContainerView$TabView access$300(android.support.v7.internal.widget.ScrollingTabContainerView, android.support.v7.app.ActionBar$Tab, boolean)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.app.ActionBar$Tab $r1;
+        boolean $z0;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabView $r2;
+
+        $r0 := @parameter0: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r1 := @parameter1: android.support.v7.app.ActionBar$Tab;
+
+        $z0 := @parameter2: boolean;
+
+        $r2 = specialinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.ScrollingTabContainerView$TabView createTabView(android.support.v7.app.ActionBar$Tab,boolean)>($r1, $z0);
+
+        return $r2;
+    }
+
+    private android.support.v7.internal.widget.SpinnerCompat createSpinner()
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.internal.widget.SpinnerCompat $r1;
+        int $i0;
+        android.support.v7.widget.LinearLayoutCompat$LayoutParams $r2;
+        android.content.Context $r3;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r1 = new android.support.v7.internal.widget.SpinnerCompat;
+
+        $r3 = virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.content.Context getContext()>();
+
+        $i0 = <android.support.v7.appcompat.R$attr: int actionDropDownStyle>;
+
+        specialinvoke $r1.<android.support.v7.internal.widget.SpinnerCompat: void <init>(android.content.Context,android.util.AttributeSet,int)>($r3, null, $i0);
+
+        $r2 = new android.support.v7.widget.LinearLayoutCompat$LayoutParams;
+
+        specialinvoke $r2.<android.support.v7.widget.LinearLayoutCompat$LayoutParams: void <init>(int,int)>(-2, -1);
+
+        virtualinvoke $r1.<android.support.v7.internal.widget.SpinnerCompat: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r2);
+
+        virtualinvoke $r1.<android.support.v7.internal.widget.SpinnerCompat: void setOnItemClickListenerInt(android.support.v7.internal.widget.AdapterViewCompat$OnItemClickListener)>($r0);
+
+        return $r1;
+    }
+
+    private android.support.v7.widget.LinearLayoutCompat createTabLayout()
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.widget.LinearLayoutCompat $r1;
+        int $i0;
+        android.support.v7.widget.LinearLayoutCompat$LayoutParams $r2;
+        android.content.Context $r3;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r1 = new android.support.v7.widget.LinearLayoutCompat;
+
+        $r3 = virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.content.Context getContext()>();
+
+        $i0 = <android.support.v7.appcompat.R$attr: int actionBarTabBarStyle>;
+
+        specialinvoke $r1.<android.support.v7.widget.LinearLayoutCompat: void <init>(android.content.Context,android.util.AttributeSet,int)>($r3, null, $i0);
+
+        virtualinvoke $r1.<android.support.v7.widget.LinearLayoutCompat: void setMeasureWithLargestChildEnabled(boolean)>(1);
+
+        virtualinvoke $r1.<android.support.v7.widget.LinearLayoutCompat: void setGravity(int)>(17);
+
+        $r2 = new android.support.v7.widget.LinearLayoutCompat$LayoutParams;
+
+        specialinvoke $r2.<android.support.v7.widget.LinearLayoutCompat$LayoutParams: void <init>(int,int)>(-2, -1);
+
+        virtualinvoke $r1.<android.support.v7.widget.LinearLayoutCompat: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r2);
+
+        return $r1;
+    }
+
+    private android.support.v7.internal.widget.ScrollingTabContainerView$TabView createTabView(android.support.v7.app.ActionBar$Tab, boolean)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.app.ActionBar$Tab $r1;
+        boolean $z0;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabView $r2;
+        android.widget.AbsListView$LayoutParams $r3;
+        int $i0;
+        android.content.Context $r4;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabClickListener $r5, $r5_1, $r5_2, $r5_3;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r1 := @parameter0: android.support.v7.app.ActionBar$Tab;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 = new android.support.v7.internal.widget.ScrollingTabContainerView$TabView;
+
+        $r4 = virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.content.Context getContext()>();
+
+        specialinvoke $r2.<android.support.v7.internal.widget.ScrollingTabContainerView$TabView: void <init>(android.support.v7.internal.widget.ScrollingTabContainerView,android.content.Context,android.support.v7.app.ActionBar$Tab,boolean)>($r0, $r4, $r1, $z0);
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r2.<android.support.v7.internal.widget.ScrollingTabContainerView$TabView: void setBackgroundDrawable(android.graphics.drawable.Drawable)>(null);
+
+        $r3 = new android.widget.AbsListView$LayoutParams;
+
+        $i0 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mContentHeight>;
+
+        specialinvoke $r3.<android.widget.AbsListView$LayoutParams: void <init>(int,int)>(-1, $i0);
+
+        virtualinvoke $r2.<android.support.v7.internal.widget.ScrollingTabContainerView$TabView: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r3);
+
+        return $r2;
+
+     label1:
+        virtualinvoke $r2.<android.support.v7.internal.widget.ScrollingTabContainerView$TabView: void setFocusable(boolean)>(1);
+
+        $r5 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.ScrollingTabContainerView$TabClickListener mTabClickListener>;
+
+(0)     if $r5 != null goto label2;
+
+        $r5_1 = new android.support.v7.internal.widget.ScrollingTabContainerView$TabClickListener;
+
+        specialinvoke $r5_1.<android.support.v7.internal.widget.ScrollingTabContainerView$TabClickListener: void <init>(android.support.v7.internal.widget.ScrollingTabContainerView,android.support.v7.internal.widget.ScrollingTabContainerView$1)>($r0, null);
+
+(1)     $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.ScrollingTabContainerView$TabClickListener mTabClickListener> = $r5_1;
+
+     label2:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        $r5_3 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.ScrollingTabContainerView$TabClickListener mTabClickListener>;
+
+        virtualinvoke $r2.<android.support.v7.internal.widget.ScrollingTabContainerView$TabView: void setOnClickListener(android.view.View$OnClickListener)>($r5_3);
+
+        return $r2;
+    }
+
+    private boolean isCollapsed()
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.view.ViewParent $r1;
+        android.support.v7.internal.widget.SpinnerCompat $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r2 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $r1 = virtualinvoke $r2_1.<android.support.v7.internal.widget.SpinnerCompat: android.view.ViewParent getParent()>();
+
+(1)     if $r1 != $r0 goto label1;
+
+        return 1;
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return 0;
+    }
+
+    private void performCollapse()
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.widget.LinearLayoutCompat $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter $r3;
+        int $i0;
+        boolean $z0;
+        android.support.v7.internal.widget.SpinnerCompat $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7;
+        android.widget.SpinnerAdapter $r5;
+        java.lang.Runnable $r6, $r6_1, $r6_2;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $z0 = specialinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean isCollapsed()>();
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r4 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+(0)     if $r4 != null goto label2;
+
+        $r4_1 = specialinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat createSpinner()>();
+
+(1)     $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner> = $r4_1;
+
+     label2:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void removeView(android.view.View)>($r1);
+
+        $r4_3 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $r2 = new android.view.ViewGroup$LayoutParams;
+
+        specialinvoke $r2.<android.view.ViewGroup$LayoutParams: void <init>(int,int)>(-2, -1);
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r4_3, $r2);
+
+        $r4_4 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $r5 = virtualinvoke $r4_4.<android.support.v7.internal.widget.SpinnerCompat: android.widget.SpinnerAdapter getAdapter()>();
+
+(2)     if $r5 != null goto label3;
+
+        $r4_5 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $r3 = new android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter;
+
+        specialinvoke $r3.<android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter: void <init>(android.support.v7.internal.widget.ScrollingTabContainerView,android.support.v7.internal.widget.ScrollingTabContainerView$1)>($r0, null);
+
+(3)     virtualinvoke $r4_5.<android.support.v7.internal.widget.SpinnerCompat: void setAdapter(android.widget.SpinnerAdapter)>($r3);
+
+     label3:
+        $r4_6 = Phi($r4_4 #2, $r4_5 #3);
+
+        $r6 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector>;
+
+(4)     if $r6 == null goto label4;
+
+        $r6_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector>;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean removeCallbacks(java.lang.Runnable)>($r6_1);
+
+(5)     $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector> = null;
+
+     label4:
+        $r6_2 = Phi($r6 #4, $r6_1 #5);
+
+        $r4_7 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $i0 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mSelectedTabIndex>;
+
+        virtualinvoke $r4_7.<android.support.v7.internal.widget.SpinnerCompat: void setSelection(int)>($i0);
+
+        return;
+    }
+
+    private boolean performExpand()
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.widget.LinearLayoutCompat $r1;
+        android.view.ViewGroup$LayoutParams $r2;
+        boolean $z0;
+        android.support.v7.internal.widget.SpinnerCompat $r3, $r3_1;
+        int $i0;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $z0 = specialinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean isCollapsed()>();
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r3 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void removeView(android.view.View)>($r3);
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        $r2 = new android.view.ViewGroup$LayoutParams;
+
+        specialinvoke $r2.<android.view.ViewGroup$LayoutParams: void <init>(int,int)>(-2, -1);
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r1, $r2);
+
+        $r3_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $i0 = virtualinvoke $r3_1.<android.support.v7.internal.widget.SpinnerCompat: int getSelectedItemPosition()>();
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void setTabSelected(int)>($i0);
+
+        return 0;
+    }
+
+    public void addTab(android.support.v7.app.ActionBar$Tab, int, boolean)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.app.ActionBar$Tab $r1;
+        int $i0;
+        android.support.v7.widget.LinearLayoutCompat $r2;
+        android.support.v7.widget.LinearLayoutCompat$LayoutParams $r3;
+        boolean $z0, $z0_1;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabView $r4;
+        android.support.v7.internal.widget.SpinnerCompat $r5, $r5_1, $r5_2;
+        android.widget.SpinnerAdapter $r6;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter $r7;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r1 := @parameter0: android.support.v7.app.ActionBar$Tab;
+
+        $i0 := @parameter1: int;
+
+        $z0 := @parameter2: boolean;
+
+        $r4 = specialinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.ScrollingTabContainerView$TabView createTabView(android.support.v7.app.ActionBar$Tab,boolean)>($r1, 0);
+
+        $r2 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        $r3 = new android.support.v7.widget.LinearLayoutCompat$LayoutParams;
+
+        specialinvoke $r3.<android.support.v7.widget.LinearLayoutCompat$LayoutParams: void <init>(int,int,float)>(0, -1, 1.0F);
+
+        virtualinvoke $r2.<android.support.v7.widget.LinearLayoutCompat: void addView(android.view.View,int,android.view.ViewGroup$LayoutParams)>($r4, $i0, $r3);
+
+        $r5 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+(0)     if $r5 == null goto label1;
+
+        $r5_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $r6 = virtualinvoke $r5_1.<android.support.v7.internal.widget.SpinnerCompat: android.widget.SpinnerAdapter getAdapter()>();
+
+        $r7 = (android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter) $r6;
+
+(1)     virtualinvoke $r7.<android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter: void notifyDataSetChanged()>();
+
+     label1:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r4.<android.support.v7.internal.widget.ScrollingTabContainerView$TabView: void setSelected(boolean)>(1);
+
+     label2:
+        $z0_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean mAllowCollapse>;
+
+        if $z0_1 == 0 goto label3;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void requestLayout()>();
+
+     label3:
+        return;
+    }
+
+    public void addTab(android.support.v7.app.ActionBar$Tab, boolean)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.app.ActionBar$Tab $r1;
+        android.support.v7.widget.LinearLayoutCompat $r2;
+        android.support.v7.widget.LinearLayoutCompat$LayoutParams $r3;
+        boolean $z0, $z0_1;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabView $r4;
+        android.support.v7.internal.widget.SpinnerCompat $r5, $r5_1, $r5_2;
+        android.widget.SpinnerAdapter $r6;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter $r7;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r1 := @parameter0: android.support.v7.app.ActionBar$Tab;
+
+        $z0 := @parameter1: boolean;
+
+        $r4 = specialinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.ScrollingTabContainerView$TabView createTabView(android.support.v7.app.ActionBar$Tab,boolean)>($r1, 0);
+
+        $r2 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        $r3 = new android.support.v7.widget.LinearLayoutCompat$LayoutParams;
+
+        specialinvoke $r3.<android.support.v7.widget.LinearLayoutCompat$LayoutParams: void <init>(int,int,float)>(0, -1, 1.0F);
+
+        virtualinvoke $r2.<android.support.v7.widget.LinearLayoutCompat: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r4, $r3);
+
+        $r5 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+(0)     if $r5 == null goto label1;
+
+        $r5_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $r6 = virtualinvoke $r5_1.<android.support.v7.internal.widget.SpinnerCompat: android.widget.SpinnerAdapter getAdapter()>();
+
+        $r7 = (android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter) $r6;
+
+(1)     virtualinvoke $r7.<android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter: void notifyDataSetChanged()>();
+
+     label1:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r4.<android.support.v7.internal.widget.ScrollingTabContainerView$TabView: void setSelected(boolean)>(1);
+
+     label2:
+        $z0_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean mAllowCollapse>;
+
+        if $z0_1 == 0 goto label3;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void requestLayout()>();
+
+     label3:
+        return;
+    }
+
+    public void animateToTab(int)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        int $i0;
+        android.support.v7.widget.LinearLayoutCompat $r1;
+        android.support.v7.internal.widget.ScrollingTabContainerView$1 $r2;
+        android.view.View $r3;
+        java.lang.Runnable $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        $r3 = virtualinvoke $r1.<android.support.v7.widget.LinearLayoutCompat: android.view.View getChildAt(int)>($i0);
+
+        $r4 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector>;
+
+(0)     if $r4 == null goto label1;
+
+        $r4_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector>;
+
+(1)     virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean removeCallbacks(java.lang.Runnable)>($r4_1);
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r2 = new android.support.v7.internal.widget.ScrollingTabContainerView$1;
+
+        specialinvoke $r2.<android.support.v7.internal.widget.ScrollingTabContainerView$1: void <init>(android.support.v7.internal.widget.ScrollingTabContainerView,android.view.View)>($r0, $r3);
+
+        $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector> = $r2;
+
+        $r4_3 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector>;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean post(java.lang.Runnable)>($r4_3);
+
+        return;
+    }
+
+    public void animateToVisibility(int)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        int $i0, $i1;
+        android.support.v4.view.ViewPropertyAnimatorCompat $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5, $r1_6;
+        android.view.animation.Interpolator $r2, $r2_1;
+        android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v4.view.ViewPropertyAnimatorCompat mVisibilityAnim>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v4.view.ViewPropertyAnimatorCompat mVisibilityAnim>;
+
+(1)     virtualinvoke $r1_1.<android.support.v4.view.ViewPropertyAnimatorCompat: void cancel()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        if $i0 != 0 goto label3;
+
+        $i1 = virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int getVisibility()>();
+
+        if $i1 == 0 goto label2;
+
+        staticinvoke <android.support.v4.view.ViewCompat: void setAlpha(android.view.View,float)>($r0, 0.0F);
+
+     label2:
+        $r1_3 = staticinvoke <android.support.v4.view.ViewCompat: android.support.v4.view.ViewPropertyAnimatorCompat animate(android.view.View)>($r0);
+
+        $r1_4 = virtualinvoke $r1_3.<android.support.v4.view.ViewPropertyAnimatorCompat: android.support.v4.view.ViewPropertyAnimatorCompat alpha(float)>(1.0F);
+
+        virtualinvoke $r1_4.<android.support.v4.view.ViewPropertyAnimatorCompat: android.support.v4.view.ViewPropertyAnimatorCompat setDuration(long)>(200L);
+
+        $r2 = <android.support.v7.internal.widget.ScrollingTabContainerView: android.view.animation.Interpolator sAlphaInterpolator>;
+
+        virtualinvoke $r1_4.<android.support.v4.view.ViewPropertyAnimatorCompat: android.support.v4.view.ViewPropertyAnimatorCompat setInterpolator(android.view.animation.Interpolator)>($r2);
+
+        $r3 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener mVisAnimListener>;
+
+        $r3_1 = virtualinvoke $r3.<android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener: android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener withFinalVisibility(android.support.v4.view.ViewPropertyAnimatorCompat,int)>($r1_4, $i0);
+
+        virtualinvoke $r1_4.<android.support.v4.view.ViewPropertyAnimatorCompat: android.support.v4.view.ViewPropertyAnimatorCompat setListener(android.support.v4.view.ViewPropertyAnimatorListener)>($r3_1);
+
+        virtualinvoke $r1_4.<android.support.v4.view.ViewPropertyAnimatorCompat: void start()>();
+
+        return;
+
+     label3:
+        $r1_5 = staticinvoke <android.support.v4.view.ViewCompat: android.support.v4.view.ViewPropertyAnimatorCompat animate(android.view.View)>($r0);
+
+        $r1_6 = virtualinvoke $r1_5.<android.support.v4.view.ViewPropertyAnimatorCompat: android.support.v4.view.ViewPropertyAnimatorCompat alpha(float)>(0.0F);
+
+        virtualinvoke $r1_6.<android.support.v4.view.ViewPropertyAnimatorCompat: android.support.v4.view.ViewPropertyAnimatorCompat setDuration(long)>(200L);
+
+        $r2_1 = <android.support.v7.internal.widget.ScrollingTabContainerView: android.view.animation.Interpolator sAlphaInterpolator>;
+
+        virtualinvoke $r1_6.<android.support.v4.view.ViewPropertyAnimatorCompat: android.support.v4.view.ViewPropertyAnimatorCompat setInterpolator(android.view.animation.Interpolator)>($r2_1);
+
+        $r3_2 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener mVisAnimListener>;
+
+        $r3_3 = virtualinvoke $r3_2.<android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener: android.support.v7.internal.widget.ScrollingTabContainerView$VisibilityAnimListener withFinalVisibility(android.support.v4.view.ViewPropertyAnimatorCompat,int)>($r1_6, $i0);
+
+        virtualinvoke $r1_6.<android.support.v4.view.ViewPropertyAnimatorCompat: android.support.v4.view.ViewPropertyAnimatorCompat setListener(android.support.v4.view.ViewPropertyAnimatorListener)>($r3_3);
+
+        virtualinvoke $r1_6.<android.support.v4.view.ViewPropertyAnimatorCompat: void start()>();
+
+        return;
+    }
+
+    public void onAttachedToWindow()
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        java.lang.Runnable $r1, $r1_1, $r1_2;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        specialinvoke $r0.<android.widget.HorizontalScrollView: void onAttachedToWindow()>();
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector>;
+
+(1)     virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean post(java.lang.Runnable)>($r1_1);
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    protected void onConfigurationChanged(android.content.res.Configuration)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.content.res.Configuration $r1;
+        int $i0, $i0_1, $i0_2;
+        android.content.Context $r2;
+        android.support.v7.internal.view.ActionBarPolicy $r3;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r1 := @parameter0: android.content.res.Configuration;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0 < 8 goto label1;
+
+        specialinvoke $r0.<android.widget.HorizontalScrollView: void onConfigurationChanged(android.content.res.Configuration)>($r1);
+
+     label1:
+        $r2 = virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.content.Context getContext()>();
+
+        $r3 = staticinvoke <android.support.v7.internal.view.ActionBarPolicy: android.support.v7.internal.view.ActionBarPolicy get(android.content.Context)>($r2);
+
+        $i0_1 = virtualinvoke $r3.<android.support.v7.internal.view.ActionBarPolicy: int getTabContainerHeight()>();
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void setContentHeight(int)>($i0_1);
+
+        $i0_2 = virtualinvoke $r3.<android.support.v7.internal.view.ActionBarPolicy: int getStackedTabMaxWidth()>();
+
+        $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mStackedTabMaxWidth> = $i0_2;
+
+        return;
+    }
+
+    public void onDetachedFromWindow()
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        java.lang.Runnable $r1, $r1_1, $r1_2;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        specialinvoke $r0.<android.widget.HorizontalScrollView: void onDetachedFromWindow()>();
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: java.lang.Runnable mTabSelector>;
+
+(1)     virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean removeCallbacks(java.lang.Runnable)>($r1_1);
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void onItemClick(android.support.v7.internal.widget.AdapterViewCompat, android.view.View, int, long)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.internal.widget.AdapterViewCompat $r1;
+        android.view.View $r2;
+        int $i0;
+        long $l1;
+        android.support.v7.app.ActionBar$Tab $r3;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabView $r4;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r1 := @parameter0: android.support.v7.internal.widget.AdapterViewCompat;
+
+        $r2 := @parameter1: android.view.View;
+
+        $i0 := @parameter2: int;
+
+        $l1 := @parameter3: long;
+
+        $r4 = (android.support.v7.internal.widget.ScrollingTabContainerView$TabView) $r2;
+
+        $r3 = virtualinvoke $r4.<android.support.v7.internal.widget.ScrollingTabContainerView$TabView: android.support.v7.app.ActionBar$Tab getTab()>();
+
+        virtualinvoke $r3.<android.support.v7.app.ActionBar$Tab: void select()>();
+
+        return;
+    }
+
+    public void onMeasure(int, int)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        int $i0, $i1, $i2, $i3, $i1_1, $i1_2, $i1_3, $i1_4, $i1_5, $i2_1, $i1_6, $i1_7, $i1_8, $i2_2, $i1_9, $i1_10, $i1_11, $i2_3, $i2_4, $i2_5, $i0_1, $i0_2;
+        boolean $z0, $z1, $z0_1, $z1_1, $z1_2, $z1_3, $z1_4, $z0_2;
+        android.support.v7.widget.LinearLayoutCompat $r1, $r1_1, $r1_2, $r1_3;
+        float $f0, $f0_1, $f0_2, $f0_3;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i1_1 = staticinvoke <android.view.View$MeasureSpec: int getMode(int)>($i0);
+
+        if $i1_1 != 1073741824 goto label07;
+
+(0)     $z0 = 1;
+
+     label01:
+        $z0_1 = Phi($z0 #0, $z0_2 #7);
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void setFillViewport(boolean)>($z0_1);
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        $i2 = virtualinvoke $r1.<android.support.v7.widget.LinearLayoutCompat: int getChildCount()>();
+
+        if $i2 <= 1 goto label09;
+
+        if $i1_1 == 1073741824 goto label02;
+
+        if $i1_1 != -2147483648 goto label09;
+
+     label02:
+        if $i2 <= 2 goto label08;
+
+        $i1_2 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i0);
+
+        $f0 = (float) $i1_2;
+
+        $f0_1 = $f0 * 0.4F;
+
+        $i1_3 = (int) $f0_1;
+
+(1)     $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mMaxTabWidth> = $i1_3;
+
+     label03:
+        $f0_2 = Phi($f0_1 #1, $f0 #8);
+
+        $i1_4 = Phi($i1_3 #1, $i1_8 #8);
+
+        $i1_5 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mMaxTabWidth>;
+
+        $i2_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mStackedTabMaxWidth>;
+
+        $i1_6 = staticinvoke <java.lang.Math: int min(int,int)>($i1_5, $i2_1);
+
+(2)     $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mMaxTabWidth> = $i1_6;
+
+     label04:
+        $i2_2 = Phi($i2_1 #2, $i2 #9);
+
+        $f0_3 = Phi($f0_2 #2, $f0 #9);
+
+        $i1_9 = Phi($i1_6 #2, $i1_1 #9);
+
+        $i1_10 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mContentHeight>;
+
+        $i1_11 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i1_10, 1073741824);
+
+(3)     if $z0_1 != 0 goto label10;
+
+        $z1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean mAllowCollapse>;
+
+(4)     if $z1 == 0 goto label10;
+
+(5)     $z1_1 = 1;
+
+     label05:
+        $z1_2 = Phi($z1_1 #5, $z1_4 #10);
+
+        if $z1_2 == 0 goto label12;
+
+        $r1_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        virtualinvoke $r1_1.<android.support.v7.widget.LinearLayoutCompat: void measure(int,int)>(0, $i1_11);
+
+        $r1_2 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        $i2_3 = virtualinvoke $r1_2.<android.support.v7.widget.LinearLayoutCompat: int getMeasuredWidth()>();
+
+        $i3 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i0);
+
+        if $i2_3 <= $i3 goto label11;
+
+(6)     specialinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void performCollapse()>();
+
+     label06:
+        $r1_3 = Phi($r1_2 #6, $r1_2 #11, $r1 #12);
+
+        $i2_4 = Phi($i2_3 #6, $i2_3 #11, $i2_2 #12);
+
+        $i2_5 = virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int getMeasuredWidth()>();
+
+        specialinvoke $r0.<android.widget.HorizontalScrollView: void onMeasure(int,int)>($i0, $i1_11);
+
+        $i0_1 = virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int getMeasuredWidth()>();
+
+        if $z0_1 == 0 goto label13;
+
+        if $i2_5 == $i0_1 goto label13;
+
+        $i0_2 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mSelectedTabIndex>;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void setTabSelected(int)>($i0_2);
+
+        return;
+
+     label07:
+        $z0_2 = 0;
+
+(7)     goto label01;
+
+     label08:
+        $i1_7 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i0);
+
+        $i1_8 = $i1_7 / 2;
+
+        $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mMaxTabWidth> = $i1_8;
+
+(8)     goto label03;
+
+     label09:
+        $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mMaxTabWidth> = -1;
+
+(9)     goto label04;
+
+     label10:
+        $z1_3 = Phi($z1 #3, $z1 #4);
+
+        $z1_4 = 0;
+
+(10)    goto label05;
+
+     label11:
+        specialinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean performExpand()>();
+
+(11)    goto label06;
+
+     label12:
+        specialinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean performExpand()>();
+
+(12)    goto label06;
+
+     label13:
+        return;
+    }
+
+    public void removeAllTabs()
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        android.support.v7.widget.LinearLayoutCompat $r1;
+        boolean $z0;
+        android.widget.SpinnerAdapter $r2;
+        android.support.v7.internal.widget.SpinnerCompat $r3, $r3_1, $r3_2;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter $r4;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        virtualinvoke $r1.<android.support.v7.widget.LinearLayoutCompat: void removeAllViews()>();
+
+        $r3 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+(0)     if $r3 == null goto label1;
+
+        $r3_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $r2 = virtualinvoke $r3_1.<android.support.v7.internal.widget.SpinnerCompat: android.widget.SpinnerAdapter getAdapter()>();
+
+        $r4 = (android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter) $r2;
+
+(1)     virtualinvoke $r4.<android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter: void notifyDataSetChanged()>();
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $z0 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean mAllowCollapse>;
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void requestLayout()>();
+
+     label2:
+        return;
+    }
+
+    public void removeTabAt(int)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        int $i0;
+        android.support.v7.widget.LinearLayoutCompat $r1;
+        boolean $z0;
+        android.widget.SpinnerAdapter $r2;
+        android.support.v7.internal.widget.SpinnerCompat $r3, $r3_1, $r3_2;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter $r4;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        virtualinvoke $r1.<android.support.v7.widget.LinearLayoutCompat: void removeViewAt(int)>($i0);
+
+        $r3 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+(0)     if $r3 == null goto label1;
+
+        $r3_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $r2 = virtualinvoke $r3_1.<android.support.v7.internal.widget.SpinnerCompat: android.widget.SpinnerAdapter getAdapter()>();
+
+        $r4 = (android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter) $r2;
+
+(1)     virtualinvoke $r4.<android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter: void notifyDataSetChanged()>();
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        $z0 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean mAllowCollapse>;
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void requestLayout()>();
+
+     label2:
+        return;
+    }
+
+    public void setAllowCollapse(boolean)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        boolean $z0;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean mAllowCollapse> = $z0;
+
+        return;
+    }
+
+    public void setContentHeight(int)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        int $i0;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $i0 := @parameter0: int;
+
+        $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mContentHeight> = $i0;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void requestLayout()>();
+
+        return;
+    }
+
+    public void setTabSelected(int)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        int $i0, $i1, $i2, $i2_1, $i2_2;
+        android.support.v7.widget.LinearLayoutCompat $r1, $r1_1, $r1_2;
+        android.view.View $r2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.support.v7.internal.widget.SpinnerCompat $r3, $r3_1, $r3_2;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $i0 := @parameter0: int;
+
+        $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: int mSelectedTabIndex> = $i0;
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        $i1 = virtualinvoke $r1.<android.support.v7.widget.LinearLayoutCompat: int getChildCount()>();
+
+(0)     $i2 = 0;
+
+     label1:
+        $i2_1 = Phi($i2 #0, $i2_2 #2);
+
+        $r1_1 = Phi($r1 #0, $r1_2 #2);
+
+        $z0 = Phi($z0 #0, $z0_2 #2);
+
+        if $i2_1 >= $i1 goto label5;
+
+        $r1_2 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        $r2 = virtualinvoke $r1_2.<android.support.v7.widget.LinearLayoutCompat: android.view.View getChildAt(int)>($i2_1);
+
+        if $i2_1 != $i0 goto label4;
+
+(1)     $z0_1 = 1;
+
+     label2:
+        $z0_2 = Phi($z0_1 #1, $z0_3 #3);
+
+        virtualinvoke $r2.<android.view.View: void setSelected(boolean)>($z0_2);
+
+        if $z0_2 == 0 goto label3;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void animateToTab(int)>($i0);
+
+     label3:
+        $i2_2 = $i2_1 + 1;
+
+(2)     goto label1;
+
+     label4:
+        $z0_3 = 0;
+
+(3)     goto label2;
+
+     label5:
+        $r3 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+(4)     if $r3 == null goto label6;
+
+(5)     if $i0 < 0 goto label6;
+
+        $r3_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+(6)     virtualinvoke $r3_1.<android.support.v7.internal.widget.SpinnerCompat: void setSelection(int)>($i0);
+
+     label6:
+        $r3_2 = Phi($r3 #4, $r3 #5, $r3_1 #6);
+
+        return;
+    }
+
+    public void updateTab(int)
+    {
+        android.support.v7.internal.widget.ScrollingTabContainerView $r0;
+        int $i0;
+        android.support.v7.widget.LinearLayoutCompat $r1;
+        boolean $z0;
+        android.view.View $r2;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabView $r3;
+        android.support.v7.internal.widget.SpinnerCompat $r4, $r4_1, $r4_2;
+        android.widget.SpinnerAdapter $r5;
+        android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter $r6;
+
+        $r0 := @this: android.support.v7.internal.widget.ScrollingTabContainerView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.widget.LinearLayoutCompat mTabLayout>;
+
+        $r2 = virtualinvoke $r1.<android.support.v7.widget.LinearLayoutCompat: android.view.View getChildAt(int)>($i0);
+
+        $r3 = (android.support.v7.internal.widget.ScrollingTabContainerView$TabView) $r2;
+
+        virtualinvoke $r3.<android.support.v7.internal.widget.ScrollingTabContainerView$TabView: void update()>();
+
+        $r4 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+(0)     if $r4 == null goto label1;
+
+        $r4_1 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: android.support.v7.internal.widget.SpinnerCompat mTabSpinner>;
+
+        $r5 = virtualinvoke $r4_1.<android.support.v7.internal.widget.SpinnerCompat: android.widget.SpinnerAdapter getAdapter()>();
+
+        $r6 = (android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter) $r5;
+
+(1)     virtualinvoke $r6.<android.support.v7.internal.widget.ScrollingTabContainerView$TabAdapter: void notifyDataSetChanged()>();
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $z0 = $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: boolean mAllowCollapse>;
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r0.<android.support.v7.internal.widget.ScrollingTabContainerView: void requestLayout()>();
+
+     label2:
+        return;
+    }
+}

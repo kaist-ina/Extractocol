@@ -1,0 +1,2366 @@
+public class com.contextlogic.wish.ui.components.grid.StaggeredGridView extends com.contextlogic.wish.ui.components.scrollview.InterceptingTouchScrollView
+{
+    private static final int LOAD_BUFFER_FACTOR;
+    private static final int MARGIN;
+    private static final double VISIBLE_RECT_BUFFER_RATIO;
+    private com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter;
+    private android.graphics.Rect cachedVisibleRect;
+    private android.util.SparseBooleanArray cleanupArray;
+    private java.util.ArrayList columnHeights;
+    private int columnWidth;
+    private boolean disableContentRequestLayout;
+    private int displayWidth;
+    private android.view.View footer;
+    private boolean forceAlternatingColumns;
+    private android.view.View header;
+    private int horizontalMargin;
+    private boolean inEditMode;
+    private android.util.SparseArray indexRectMapping;
+    private int lastColumnIndex;
+    private java.lang.ref.WeakReference listenerReference;
+    private int numColumns;
+    private int orientation;
+    private java.lang.Runnable recycleRunnable;
+    private java.util.HashMap reusableViews;
+    private int scrollPositionOverride;
+    private android.widget.LinearLayout scrollViewContent;
+    private android.widget.FrameLayout scrollViewContentHolder;
+    private int totalContentHeight;
+    private int verticalMargin;
+    private android.util.SparseArray visibleViews;
+
+    public void <init>(android.content.Context)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, 0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.scrollview.InterceptingTouchScrollView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void init()>();
+
+        return;
+    }
+
+    static boolean access$000(com.contextlogic.wish.ui.components.grid.StaggeredGridView)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        z0 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean disableContentRequestLayout>;
+
+        return z0;
+    }
+
+    static void access$100(com.contextlogic.wish.ui.components.grid.StaggeredGridView)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void recycleViewsIfNecessary()>();
+
+        return;
+    }
+
+    static void access$200(com.contextlogic.wish.ui.components.grid.StaggeredGridView, com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter1: com.contextlogic.wish.ui.components.grid.StaggeredGridCellView;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void alertListenerOnClickView(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)>($r1);
+
+        return;
+    }
+
+    static boolean access$300(com.contextlogic.wish.ui.components.grid.StaggeredGridView, com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter1: com.contextlogic.wish.ui.components.grid.StaggeredGridCellView;
+
+        $z0 = specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean alertListenerOnLongClickView(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)>($r1);
+
+        return $z0;
+    }
+
+    private void addCells(int)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        boolean $z0;
+        android.graphics.Rect $r1;
+        android.widget.LinearLayout$LayoutParams $r2;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i0_1, $i3_1, $i3_2, $i3_3, $i4_1, $i3_4, $i4_2, $i6_1, $i4_3, $i5_1, $i3_5, $i5_2, $i5_3, $i6_2, $i7_1, $i6_3, $i5_4, $i6_4, $i6_5, $i7_2, $i7_3, $i7_4, $i4_4, $i4_5, $i0_2, $i4_6, $i5_5, $i6_6, $i4_7, $i5_6, $i3_6, $i6_7, $i6_8, $i4_8, $i3_7, $i4_9, $i3_8, $i5_7, $i0_3, $i0_4, $i1_1, $i2_1, $i1_2, $i1_3, $i2_2, $i2_3, $i0_5, $i6_9, $i4_10, $i5_8, $i0_6, $i1_4, $i3_9, $i7_5, $i2_4, $i0_7;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter $r3, $r3_1, $r3_2, $r3_3;
+        java.util.ArrayList $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9;
+        java.lang.Object $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8;
+        java.lang.Integer $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8, $r6_9;
+        android.util.SparseArray $r7;
+        android.widget.FrameLayout $r8;
+        java.lang.Runnable $r9;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $i0 := @parameter0: int;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        $i1 = interfaceinvoke $r3.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter: int getNumItems()>();
+
+        $i2 = 0;
+
+(0)     if $i1 <= 0 goto label9;
+
+     label1:
+        $i6 = Phi($i6 #0, $i6_5 #2);
+
+        $i4 = Phi($i4 #0, $i4_5 #2);
+
+        $r3_1 = Phi($r3 #0, $r3_2 #2);
+
+        $i5 = Phi($i5 #0, $i5_4 #2);
+
+        $r4 = Phi($r4 #0, $r4_3 #2);
+
+        $i0_1 = Phi($i0 #0, $i0_2 #2);
+
+        $r5 = Phi($r5 #0, $r5_2 #2);
+
+        $i3 = Phi($i3 #0, $i3_5 #2);
+
+        $i7 = Phi($i7 #0, $i7_4 #2);
+
+        $r6 = Phi($r6 #0, $r6_3 #2);
+
+        if $i0_1 >= $i1 goto label6;
+
+        $i3_1 = 0;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean forceAlternatingColumns>;
+
+        if $z0 == 0 goto label3;
+
+        $i3_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int lastColumnIndex>;
+
+        $i3_3 = $i3_2 + 1;
+
+        $i4_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+        $i3_4 = $i3_3 % $i4_1;
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int lastColumnIndex> = $i3_4;
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        $r5_1 = virtualinvoke $r4_1.<java.util.ArrayList: java.lang.Object get(int)>($i3_4);
+
+        $r6_1 = (java.lang.Integer) $r5_1;
+
+(1)     $i4_2 = virtualinvoke $r6_1.<java.lang.Integer: int intValue()>();
+
+     label2:
+        $i6_1 = Phi($i6 #1, $i6_7 #4);
+
+        $i4_3 = Phi($i4_2 #1, $i4_7 #4);
+
+        $i5_1 = Phi($i5 #1, $i5_6 #4);
+
+        $r4_2 = Phi($r4_1 #1, $r4_5 #4);
+
+        $r5_2 = Phi($r5_1 #1, $r5_4 #4);
+
+        $i3_5 = Phi($i3_4 #1, $i3_6 #4);
+
+        $r6_2 = Phi($r6_1 #1, $r6_5 #4);
+
+        $i5_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int columnWidth>;
+
+        $i5_3 = $i5_2 * $i3_5;
+
+        $i6_2 = $i3_5 + 1;
+
+        $i7_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int horizontalMargin>;
+
+        $i6_3 = $i6_2 * $i7_1;
+
+        $i5_4 = $i5_3 + $i6_3;
+
+        $i6_4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int columnWidth>;
+
+        $i6_5 = $i5_4 + $i6_4;
+
+        $r3_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        $i7_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int columnWidth>;
+
+        $i7_3 = interfaceinvoke $r3_2.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter: int getHeightForViewAtIndex(int,int)>($i0_1, $i7_2);
+
+        $i7_4 = $i4_3 + $i7_3;
+
+        $r1 = new android.graphics.Rect;
+
+        specialinvoke $r1.<android.graphics.Rect: void <init>(int,int,int,int)>($i5_4, $i4_3, $i6_5, $i7_4);
+
+        $r7 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        virtualinvoke $r7.<android.util.SparseArray: void put(int,java.lang.Object)>($i0_1, $r1);
+
+        $r4_3 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        $i4_4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int verticalMargin>;
+
+        $i4_5 = $i4_4 + $i7_4;
+
+        $r6_3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i4_5);
+
+        virtualinvoke $r4_3.<java.util.ArrayList: java.lang.Object set(int,java.lang.Object)>($i3_5, $r6_3);
+
+        $i0_2 = $i0_1 + 1;
+
+(2)     goto label1;
+
+     label3:
+        $r4_4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        $r5_3 = virtualinvoke $r4_4.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        $r6_4 = (java.lang.Integer) $r5_3;
+
+        $i4_6 = virtualinvoke $r6_4.<java.lang.Integer: int intValue()>();
+
+(3)     $i5_5 = 1;
+
+     label4:
+        $i6_6 = Phi($i6 #3, $i6_8 #7);
+
+        $i4_7 = Phi($i4_6 #3, $i4_9 #7);
+
+        $i5_6 = Phi($i5_5 #3, $i5_7 #7);
+
+        $r4_5 = Phi($r4_4 #3, $r4_6 #7);
+
+        $r5_4 = Phi($r5_3 #3, $r5_5 #7);
+
+        $i3_6 = Phi($i3_1 #3, $i3_8 #7);
+
+        $r6_5 = Phi($r6_4 #3, $r6_6 #7);
+
+        $i6_7 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+(4)     if $i5_6 >= $i6_7 goto label2;
+
+        $r4_6 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        $r5_5 = virtualinvoke $r4_6.<java.util.ArrayList: java.lang.Object get(int)>($i5_6);
+
+        $r6_6 = (java.lang.Integer) $r5_5;
+
+        $i6_8 = virtualinvoke $r6_6.<java.lang.Integer: int intValue()>();
+
+(5)     if $i6_8 >= $i4_7 goto label5;
+
+        $i4_8 = $i6_8;
+
+(6)     $i3_7 = $i5_6;
+
+     label5:
+        $i4_9 = Phi($i4_7 #5, $i4_8 #6);
+
+        $i3_8 = Phi($i3_6 #5, $i3_7 #6);
+
+        $i5_7 = $i5_6 + 1;
+
+(7)     goto label4;
+
+     label6:
+(8)     $i0_3 = 0;
+
+     label7:
+        $r4_7 = Phi($r4 #8, $r4_8 #12);
+
+        $i0_4 = Phi($i0_3 #8, $i0_5 #12);
+
+        $i1_1 = Phi($i1 #8, $i1_3 #12);
+
+        $r5_6 = Phi($r5 #8, $r5_7 #12);
+
+        $i2_1 = Phi($i2 #8, $i2_3 #12);
+
+        $r6_7 = Phi($r6 #8, $r6_8 #12);
+
+        $i1_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+(9)     if $i0_4 >= $i1_2 goto label9;
+
+        $r4_8 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        $r5_7 = virtualinvoke $r4_8.<java.util.ArrayList: java.lang.Object get(int)>($i0_4);
+
+        $r6_8 = (java.lang.Integer) $r5_7;
+
+        $i1_3 = virtualinvoke $r6_8.<java.lang.Integer: int intValue()>();
+
+(10)    if $i2_1 >= $i1_3 goto label8;
+
+(11)    $i2_2 = $i1_3;
+
+     label8:
+        $i2_3 = Phi($i2_1 #10, $i2_2 #11);
+
+        $i0_5 = $i0_4 + 1;
+
+(12)    goto label7;
+
+     label9:
+        $i6_9 = Phi($i6 #0, $i6 #9);
+
+        $i4_10 = Phi($i4 #0, $i4 #9);
+
+        $r3_3 = Phi($r3 #0, $r3_1 #9);
+
+        $i5_8 = Phi($i5 #0, $i5 #9);
+
+        $r4_9 = Phi($r4 #0, $r4_7 #9);
+
+        $i0_6 = Phi($i0 #0, $i0_4 #9);
+
+        $i1_4 = Phi($i1 #0, $i1_2 #9);
+
+        $r5_8 = Phi($r5 #0, $r5_6 #9);
+
+        $i3_9 = Phi($i3 #0, $i3 #9);
+
+        $i7_5 = Phi($i7 #0, $i7 #9);
+
+        $i2_4 = Phi($i2 #0, $i2_1 #9);
+
+        $r6_9 = Phi($r6 #0, $r6_7 #9);
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int totalContentHeight> = $i2_4;
+
+        $r8 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        $r2 = new android.widget.LinearLayout$LayoutParams;
+
+        $i0_7 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int displayWidth>;
+
+        specialinvoke $r2.<android.widget.LinearLayout$LayoutParams: void <init>(int,int)>($i0_7, $i2_4);
+
+        virtualinvoke $r8.<android.widget.FrameLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r2);
+
+        $r9 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.Runnable recycleRunnable>;
+
+        interfaceinvoke $r9.<java.lang.Runnable: void run()>();
+
+        return;
+    }
+
+    private void alertListenerOnClickView(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r1;
+        java.lang.ref.WeakReference $r2, $r2_1;
+        java.lang.Object $r3;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener $r4;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridCellView;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.ref.WeakReference listenerReference>;
+
+        if $r2 != null goto label1;
+
+        return;
+
+     label1:
+        $r2_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.ref.WeakReference listenerReference>;
+
+        $r3 = virtualinvoke $r2_1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r4 = (com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener) $r3;
+
+        if $r4 == null goto label2;
+
+        $i0 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: int getIndex()>();
+
+        interfaceinvoke $r4.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener: void onSelectCell(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView,int)>($r1, $i0);
+
+     label2:
+        return;
+    }
+
+    private boolean alertListenerOnLongClickView(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r1;
+        java.lang.ref.WeakReference $r2, $r2_1;
+        java.lang.Object $r3;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener $r4;
+        int $i0;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridCellView;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.ref.WeakReference listenerReference>;
+
+        if $r2 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r2_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.ref.WeakReference listenerReference>;
+
+        $r3 = virtualinvoke $r2_1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r4 = (com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener) $r3;
+
+        if $r4 == null goto label2;
+
+        $i0 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: int getIndex()>();
+
+        $z0 = interfaceinvoke $r4.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener: boolean onLongClickCell(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView,int)>($r1, $i0);
+
+        return $z0;
+
+     label2:
+        return 0;
+    }
+
+    private void alertListenerOnScrollChanged(int, int)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        int $i0, $i1, $i2, $i3;
+        java.lang.ref.WeakReference $r1, $r1_1;
+        java.lang.Object $r2;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.ref.WeakReference listenerReference>;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $r1_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.ref.WeakReference listenerReference>;
+
+        $r2 = virtualinvoke $r1_1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r3 = (com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener) $r2;
+
+        if $r3 == null goto label2;
+
+        $i3 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int getHeight()>();
+
+        $i2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int totalContentHeight>;
+
+        interfaceinvoke $r3.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener: void onScrollChanged(int,int,int,int)>($i0, $i1, $i3, $i2);
+
+     label2:
+        return;
+    }
+
+    private void enqueueView(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r1;
+        android.view.ViewGroup $r2;
+        java.lang.String $r3, $r3_1, $r3_2, $r3_3;
+        java.util.HashMap $r4, $r4_1, $r4_2;
+        java.lang.Object $r5;
+        java.util.ArrayList $r6, $r6_1, $r6_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridCellView;
+
+        virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: void prepareForRecycle()>();
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean disableContentRequestLayout> = 1;
+
+        $r2 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        virtualinvoke $r2.<android.view.ViewGroup: void setVisibility(int)>(8);
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean disableContentRequestLayout> = 0;
+
+        $r3 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: java.lang.String getIdentifier()>();
+
+(0)     if $r3 == null goto label2;
+
+        $r4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.HashMap reusableViews>;
+
+        $r3_1 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: java.lang.String getIdentifier()>();
+
+        $r5 = virtualinvoke $r4.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r3_1);
+
+        $r6 = (java.util.ArrayList) $r5;
+
+        if $r6 == null goto label1;
+
+        virtualinvoke $r6.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        return;
+
+     label1:
+        $r6_1 = new java.util.ArrayList;
+
+        specialinvoke $r6_1.<java.util.ArrayList: void <init>()>();
+
+        virtualinvoke $r6_1.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.HashMap reusableViews>;
+
+        $r3_2 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: java.lang.String getIdentifier()>();
+
+(1)     virtualinvoke $r4_1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r3_2, $r6_1);
+
+     label2:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r3_3 = Phi($r3 #0, $r3_2 #1);
+
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        return;
+    }
+
+    private void init()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.graphics.Rect $r1;
+        android.util.SparseBooleanArray $r2;
+        android.widget.LinearLayout$LayoutParams $r3;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView$1 $r4;
+        android.widget.FrameLayout $r5;
+        java.util.HashMap $r6;
+        java.util.ArrayList $r7;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView$2 $r8;
+        android.widget.LinearLayout $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+        android.content.Context $r10, $r10_1;
+        android.util.SparseArray $r11, $r11_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 = new android.graphics.Rect;
+
+        specialinvoke $r1.<android.graphics.Rect: void <init>(int,int,int,int)>(0, 0, 0, 0);
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.graphics.Rect cachedVisibleRect> = $r1;
+
+        $r2 = new android.util.SparseBooleanArray;
+
+        specialinvoke $r2.<android.util.SparseBooleanArray: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseBooleanArray cleanupArray> = $r2;
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean forceAlternatingColumns> = 0;
+
+        $r9 = new android.widget.LinearLayout;
+
+        $r10 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.content.Context getContext()>();
+
+        specialinvoke $r9.<android.widget.LinearLayout: void <init>(android.content.Context)>($r10);
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.LinearLayout scrollViewContent> = $r9;
+
+        $r9_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.LinearLayout scrollViewContent>;
+
+        $r3 = new android.widget.LinearLayout$LayoutParams;
+
+        specialinvoke $r3.<android.widget.LinearLayout$LayoutParams: void <init>(int,int)>(-1, -1);
+
+        virtualinvoke $r9_1.<android.widget.LinearLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r3);
+
+        $r9_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.LinearLayout scrollViewContent>;
+
+        virtualinvoke $r9_2.<android.widget.LinearLayout: void setOrientation(int)>(1);
+
+        $r9_3 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.LinearLayout scrollViewContent>;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void addView(android.view.View)>($r9_3);
+
+        $r4 = new com.contextlogic.wish.ui.components.grid.StaggeredGridView$1;
+
+        $r10_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.content.Context getContext()>();
+
+        specialinvoke $r4.<com.contextlogic.wish.ui.components.grid.StaggeredGridView$1: void <init>(com.contextlogic.wish.ui.components.grid.StaggeredGridView,android.content.Context)>($r0, $r10_1);
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.FrameLayout scrollViewContentHolder> = $r4;
+
+        $r9_4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.LinearLayout scrollViewContent>;
+
+        $r5 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        virtualinvoke $r9_4.<android.widget.LinearLayout: void addView(android.view.View)>($r5);
+
+        $r6 = new java.util.HashMap;
+
+        specialinvoke $r6.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.HashMap reusableViews> = $r6;
+
+        $r11 = new android.util.SparseArray;
+
+        specialinvoke $r11.<android.util.SparseArray: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews> = $r11;
+
+        $r11_1 = new android.util.SparseArray;
+
+        specialinvoke $r11_1.<android.util.SparseArray: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping> = $r11_1;
+
+        $r7 = new java.util.ArrayList;
+
+        specialinvoke $r7.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights> = $r7;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setHorizontalMargin(int)>(8);
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setVerticalMargin(int)>(8);
+
+        $r8 = new com.contextlogic.wish.ui.components.grid.StaggeredGridView$2;
+
+        specialinvoke $r8.<com.contextlogic.wish.ui.components.grid.StaggeredGridView$2: void <init>(com.contextlogic.wish.ui.components.grid.StaggeredGridView)>($r0);
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.Runnable recycleRunnable> = $r8;
+
+        return;
+    }
+
+    private void recycleViewsIfNecessary()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView$3 $r1;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView$4 $r2;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        int $i0, $i1, $i2, $i3, $i4, $i1_1, $i3_1, $i3_2, $i1_2, $i0_1, $i0_2, $i0_3, $i0_4, $i2_1, $i0_5, $i2_2, $i0_6, $i2_3, $i4_1, $i3_3, $i3_4, $i1_3, $i3_5, $i0_7, $i2_4, $i2_5, $i3_6, $i1_4, $i4_2, $i4_3, $i3_7, $i1_5, $i2_6, $i1_6, $i1_7, $i3_8, $i0_8, $i2_7, $i2_8, $i4_4, $i4_5, $i2_9, $i0_9, $i2_10, $i1_8, $i3_9, $i2_11, $i3_10, $i1_9, $i0_10, $i4_6, $i2_12, $i0_11, $i4_7, $i1_10, $i0_12, $i0_13, $i2_13, $i0_14, $i2_14, $i4_8, $i2_15, $i0_15, $i0_16, $i0_17, $i2_16, $i0_18, $i2_17, $i0_19, $i2_18, $i4_9, $i2_19, $i0_20, $i0_21, $i2_20, $i2_21, $i1_11, $i1_12, $i2_22, $i2_23, $i3_11, $i3_12, $i0_22;
+        android.content.Context $r4, $r4_1, $r4_2;
+        android.app.Activity $r5, $r5_1, $r5_2;
+        android.view.WindowManager $r6, $r6_1, $r6_2;
+        android.view.Display $r7, $r7_1, $r7_2;
+        android.widget.FrameLayout $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6;
+        boolean $z0, $z1, $z2, $z0_1, $z1_1, $z1_2, $z1_3, $z1_4, $z1_5, $z1_6, $z1_7, $z0_2;
+        android.view.View $r9, $r9_1, $r9_2;
+        double $d0, $d0_1;
+        android.graphics.Rect $r10, $r14, $r10_1, $r10_2, $r14_1, $r14_2, $r10_3, $r10_4, $r14_3, $r14_4, $r14_5;
+        android.util.SparseArray $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8, $r11_9, $r11_10, $r11_11, $r11_12, $r11_13;
+        android.util.SparseBooleanArray $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6;
+        java.lang.Object $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6;
+        android.widget.FrameLayout$LayoutParams $r16, $r16_1, $r16_2, $r16_3, $r16_4;
+        android.view.ViewGroup $r17, $r19, $r17_1, $r17_2, $r17_3, $r17_4, $r17_5, $r17_6, $r17_7, $r17_8, $r17_9, $r17_10, $r17_11, $r17_12, $r17_13, $r17_14, $r17_15;
+        android.view.ViewParent $r18, $r18_1, $r18_2, $r18_3, $r18_4, $r18_5, $r18_6;
+        android.view.ViewGroup$LayoutParams $r20;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        if $r3 != null goto label01;
+
+        return;
+
+     label01:
+        $i0 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int getWidth()>();
+
+        $i1 = $i0;
+
+        $i2 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int getHeight()>();
+
+        $i3 = $i2;
+
+        if $i2 == 0 goto label02;
+
+(0)     if $i0 != 0 goto label03;
+
+     label02:
+        $r4 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.content.Context getContext()>();
+
+        $r5 = (android.app.Activity) $r4;
+
+        $r6 = virtualinvoke $r5.<android.app.Activity: android.view.WindowManager getWindowManager()>();
+
+        $r7 = interfaceinvoke $r6.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        $i1_1 = virtualinvoke $r7.<android.view.Display: int getWidth()>();
+
+        $r4_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.content.Context getContext()>();
+
+        $r5_1 = (android.app.Activity) $r4_1;
+
+        $r6_1 = virtualinvoke $r5_1.<android.app.Activity: android.view.WindowManager getWindowManager()>();
+
+        $r7_1 = interfaceinvoke $r6_1.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+(1)     $i3_1 = virtualinvoke $r7_1.<android.view.Display: int getHeight()>();
+
+     label03:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        $i3_2 = Phi($i3 #0, $i3_1 #1);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $i1_2 = Phi($i1 #0, $i1_1 #1);
+
+        $r7_2 = Phi($r7 #0, $r7_1 #1);
+
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        $r8 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        $i0_1 = virtualinvoke $r8.<android.widget.FrameLayout: int getChildCount()>();
+
+        if $i0_1 <= 0 goto label09;
+
+(2)     $z0 = 1;
+
+     label04:
+        $z0_1 = Phi($z0 #2, $z0_2 #9);
+
+        $i0_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int scrollPositionOverride>;
+
+        if $i0_2 == 0 goto label10;
+
+(3)     $i0_3 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int scrollPositionOverride>;
+
+     label05:
+        $i0_4 = Phi($i0_3 #3, $i0_22 #10);
+
+        $r9 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.view.View header>;
+
+(4)     if $r9 == null goto label06;
+
+        $r9_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.view.View header>;
+
+        $i2_1 = virtualinvoke $r9_1.<android.view.View: int getHeight()>();
+
+(5)     $i0_5 = $i0_4 - $i2_1;
+
+     label06:
+        $i2_2 = Phi($i2 #4, $i2_1 #5);
+
+        $i0_6 = Phi($i0_4 #4, $i0_5 #5);
+
+        $r9_2 = Phi($r9 #4, $r9_1 #5);
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int scrollPositionOverride> = 0;
+
+        $d0 = (double) $i3_2;
+
+        $d0_1 = $d0 * 0.75;
+
+        $i2_3 = (int) $d0_1;
+
+        $i4 = $i0_6 - $i2_3;
+
+        $i4_1 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i4);
+
+        $i3_3 = $i0_6 + $i3_2;
+
+        $i3_4 = $i3_3 + $i2_3;
+
+        $r10 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.graphics.Rect cachedVisibleRect>;
+
+        virtualinvoke $r10.<android.graphics.Rect: void set(int,int,int,int)>(0, $i4_1, $i1_2, $i3_4);
+
+        $i1_3 = -1;
+
+        $i3_5 = -1;
+
+        $r11 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $i0_7 = virtualinvoke $r11.<android.util.SparseArray: int size()>();
+
+        $r12 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseBooleanArray cleanupArray>;
+
+        virtualinvoke $r12.<android.util.SparseBooleanArray: void clear()>();
+
+(6)     $i2_4 = 0;
+
+     label07:
+        $i2_5 = Phi($i2_4 #6, $i2_6 #8);
+
+        $r14 = Phi($r14 #6, $r14_1 #8);
+
+        $i3_6 = Phi($i3_5 #6, $i3_7 #8);
+
+        $r13 = Phi($r13 #6, $r13_3 #8);
+
+        $r15 = Phi($r15 #6, $r15_2 #8);
+
+        $i1_4 = Phi($i1_3 #6, $i1_5 #8);
+
+        $r11_1 = Phi($r11 #6, $r11_5 #8);
+
+        $i4_2 = Phi($i4_1 #6, $i4_3 #8);
+
+        $z1 = Phi($z1 #6, $z1_1 #8);
+
+        $r10_1 = Phi($r10 #6, $r10_2 #8);
+
+        $r12_1 = Phi($r12 #6, $r12_3 #8);
+
+        if $i2_5 >= $i0_7 goto label15;
+
+        $r11_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $i4_3 = virtualinvoke $r11_2.<android.util.SparseArray: int keyAt(int)>($i2_5);
+
+        $r11_3 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        $r13_1 = virtualinvoke $r11_3.<android.util.SparseArray: java.lang.Object get(int)>($i4_3);
+
+        $r10_2 = (android.graphics.Rect) $r13_1;
+
+        $r14_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.graphics.Rect cachedVisibleRect>;
+
+        $z1_1 = staticinvoke <android.graphics.Rect: boolean intersects(android.graphics.Rect,android.graphics.Rect)>($r10_2, $r14_1);
+
+        if $z1_1 != 0 goto label11;
+
+        $r11_4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $r13_2 = virtualinvoke $r11_4.<android.util.SparseArray: java.lang.Object get(int)>($i4_3);
+
+        $r15_1 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r13_2;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void enqueueView(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)>($r15_1);
+
+        $r12_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseBooleanArray cleanupArray>;
+
+(7)     virtualinvoke $r12_2.<android.util.SparseBooleanArray: void put(int,boolean)>($i4_3, 1);
+
+     label08:
+        $i3_7 = Phi($i3_6 #7, $i3_6 #13, $i3_8 #14);
+
+        $r13_3 = Phi($r13_2 #7, $r13_1 #13, $r13_1 #14);
+
+        $r15_2 = Phi($r15_1 #7, $r15 #13, $r15 #14);
+
+        $i1_5 = Phi($i1_4 #7, $i1_7 #13, $i1_7 #14);
+
+        $r11_5 = Phi($r11_4 #7, $r11_3 #13, $r11_3 #14);
+
+        $r12_3 = Phi($r12_2 #7, $r12_1 #13, $r12_1 #14);
+
+        $i2_6 = $i2_5 + 1;
+
+(8)     goto label07;
+
+     label09:
+        $z0_2 = 0;
+
+(9)     goto label04;
+
+     label10:
+        $i0_22 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int getScrollY()>();
+
+(10)    goto label05;
+
+     label11:
+        if $i1_4 == -1 goto label12;
+
+(11)    if $i4_3 >= $i1_4 goto label13;
+
+     label12:
+(12)    $i1_6 = $i4_3;
+
+     label13:
+        $i1_7 = Phi($i1_4 #11, $i1_6 #12);
+
+        if $i3_6 == -1 goto label14;
+
+(13)    if $i4_3 <= $i3_6 goto label08;
+
+     label14:
+        $i3_8 = $i4_3;
+
+(14)    goto label08;
+
+     label15:
+        $r12_4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseBooleanArray cleanupArray>;
+
+        $i0_8 = virtualinvoke $r12_4.<android.util.SparseBooleanArray: int size()>();
+
+(15)    $i2_7 = 0;
+
+     label16:
+        $i2_8 = Phi($i2_7 #15, $i2_9 #16);
+
+        $r11_6 = Phi($r11_1 #15, $r11_7 #16);
+
+        $i4_4 = Phi($i4_2 #15, $i4_5 #16);
+
+        $r12_5 = Phi($r12_4 #15, $r12_6 #16);
+
+        if $i2_8 >= $i0_8 goto label17;
+
+        $r11_7 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $r12_6 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseBooleanArray cleanupArray>;
+
+        $i4_5 = virtualinvoke $r12_6.<android.util.SparseBooleanArray: int keyAt(int)>($i2_8);
+
+        virtualinvoke $r11_7.<android.util.SparseArray: void remove(int)>($i4_5);
+
+        $i2_9 = $i2_8 + 1;
+
+(16)    goto label16;
+
+     label17:
+        $r3_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        $i0_9 = interfaceinvoke $r3_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter: int getNumItems()>();
+
+        $r11_8 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $i2_10 = virtualinvoke $r11_8.<android.util.SparseArray: int size()>();
+
+        if $i2_10 != 0 goto label20;
+
+        $i1_8 = 0;
+
+(17)    $i3_9 = $i0_9;
+
+     label18:
+        $r8_1 = Phi($r8 #17, $r8_2 #19, $r8 #20);
+
+        $i2_11 = Phi($i2_10 #17, $i2_12 #19, $i2_23 #20);
+
+        $r3_2 = Phi($r3_1 #17, $r3_3 #19, $r3_1 #20);
+
+        $r14_2 = Phi($r14 #17, $r14_3 #19, $r14 #20);
+
+        $i3_10 = Phi($i3_9 #17, $i3_10 #19, $i3_12 #20);
+
+        $r17 = Phi($r17 #17, $r17_1 #19, $r17 #20);
+
+        $r16 = Phi($r16 #17, $r16_1 #19, $r16 #20);
+
+        $r13_4 = Phi($r13 #17, $r13_6 #19, $r13 #20);
+
+        $r15_3 = Phi($r15 #17, $r15_4 #19, $r15 #20);
+
+        $i1_9 = Phi($i1_8 #17, $i1_10 #19, $i1_12 #20);
+
+        $i0_10 = Phi($i0_9 #17, $i0_11 #19, $i0_9 #20);
+
+        $r11_9 = Phi($r11_8 #17, $r11_11 #19, $r11_8 #20);
+
+        $i4_6 = Phi($i4_4 #17, $i4_7 #19, $i4_4 #20);
+
+        $r18 = Phi($r18 #17, $r18_1 #19, $r18 #20);
+
+        $z1_2 = Phi($z1 #17, $z1_3 #19, $z1 #20);
+
+        $r10_3 = Phi($r10_1 #17, $r10_4 #19, $r10_1 #20);
+
+        if $i1_9 >= $i3_10 goto label27;
+
+        $r11_10 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        $r13_5 = virtualinvoke $r11_10.<android.util.SparseArray: java.lang.Object get(int)>($i1_9);
+
+        $r10_4 = (android.graphics.Rect) $r13_5;
+
+(18)    if $r10_4 != null goto label21;
+
+     label19:
+        $r8_2 = Phi($r8_1 #18, $r8_6 #29, $r8_1 #31, $r8_1 #32, $r8_1 #33);
+
+        $i2_12 = Phi($i2_11 #18, $i2_15 #29, $i2_11 #31, $i2_16 #32, $i2_19 #33);
+
+        $r3_3 = Phi($r3_2 #18, $r3_4 #29, $r3_2 #31, $r3_2 #32, $r3_2 #33);
+
+        $r14_3 = Phi($r14_2 #18, $r14_4 #29, $r14_5 #31, $r14_5 #32, $r14_5 #33);
+
+        $r17_1 = Phi($r17 #18, $r17_13 #29, $r17 #31, $r17_14 #32, $r17_15 #33);
+
+        $r16_1 = Phi($r16 #18, $r16_2 #29, $r16 #31, $r16_3 #32, $r16_4 #33);
+
+        $r13_6 = Phi($r13_5 #18, $r13_7 #29, $r13_7 #31, $r13_7 #32, $r13_7 #33);
+
+        $r15_4 = Phi($r15_3 #18, $r15_6 #29, $r15_5 #31, $r15_5 #32, $r15_5 #33);
+
+        $i0_11 = Phi($i0_10 #18, $i0_16 #29, $i0_10 #31, $i0_17 #32, $i0_21 #33);
+
+        $r11_11 = Phi($r11_10 #18, $r11_13 #29, $r11_12 #31, $r11_12 #32, $r11_12 #33);
+
+        $i4_7 = Phi($i4_6 #18, $i4_8 #29, $i4_6 #31, $i4_6 #32, $i4_9 #33);
+
+        $r18_1 = Phi($r18 #18, $r18_6 #29, $r18 #31, $r18 #32, $r18 #33);
+
+        $z1_3 = Phi($z1_2 #18, $z1_6 #29, $z1_5 #31, $z1_5 #32, $z1_5 #33);
+
+        $i1_10 = $i1_9 + 1;
+
+(19)    goto label18;
+
+     label20:
+        $i2_20 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+        $i2_21 = $i2_20 * 10;
+
+        $i1_11 = $i1_4 - $i2_21;
+
+        $i1_12 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i1_11);
+
+        $i2_22 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+        $i2_23 = $i2_22 * 10;
+
+        $i3_11 = $i2_23 + $i3_6;
+
+        $i3_12 = staticinvoke <java.lang.Math: int min(int,int)>($i0_9, $i3_11);
+
+(20)    goto label18;
+
+     label21:
+        $r11_12 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $r13_7 = virtualinvoke $r11_12.<android.util.SparseArray: java.lang.Object get(int)>($i1_9);
+
+        $r15_5 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r13_7;
+
+        if $r15_5 == null goto label25;
+
+(21)    $z1_4 = 1;
+
+     label22:
+        $z1_5 = Phi($z1_4 #21, $z1_7 #30);
+
+(22)    if $z1_5 != 0 goto label26;
+
+        $r14_4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.graphics.Rect cachedVisibleRect>;
+
+        $z2 = staticinvoke <android.graphics.Rect: boolean intersects(android.graphics.Rect,android.graphics.Rect)>($r10_4, $r14_4);
+
+(23)    if $z2 == 0 goto label26;
+
+        $r3_4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        $i0_12 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int columnWidth>;
+
+        $r15_6 = interfaceinvoke $r3_4.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter: com.contextlogic.wish.ui.components.grid.StaggeredGridCellView getViewAtIndex(int,int,boolean)>($i1_9, $i0_12, $z0_1);
+
+        virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: void setIndex(int)>($i1_9);
+
+        $z1_6 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean inEditMode>;
+
+        virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: void setEditModeEnabled(boolean)>($z1_6);
+
+        $r16_2 = new android.widget.FrameLayout$LayoutParams;
+
+        $i0_13 = $r10_4.<android.graphics.Rect: int right>;
+
+        $i2_13 = $r10_4.<android.graphics.Rect: int left>;
+
+        $i0_14 = $i0_13 - $i2_13;
+
+        $i2_14 = $r10_4.<android.graphics.Rect: int bottom>;
+
+        $i4_8 = $r10_4.<android.graphics.Rect: int top>;
+
+        $i2_15 = $i2_14 - $i4_8;
+
+        specialinvoke $r16_2.<android.widget.FrameLayout$LayoutParams: void <init>(int,int)>($i0_14, $i2_15);
+
+        $r16_2.<android.widget.FrameLayout$LayoutParams: int gravity> = 48;
+
+        $i0_15 = $r10_4.<android.graphics.Rect: int top>;
+
+        $r16_2.<android.view.ViewGroup$MarginLayoutParams: int topMargin> = $i0_15;
+
+        $i0_16 = $r10_4.<android.graphics.Rect: int left>;
+
+        $r16_2.<android.view.ViewGroup$MarginLayoutParams: int leftMargin> = $i0_16;
+
+        $r17_2 = virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        $r18_2 = virtualinvoke $r17_2.<android.view.ViewGroup: android.view.ViewParent getParent()>();
+
+(24)    if $r18_2 == null goto label23;
+
+        $r17_3 = virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        $r18_3 = virtualinvoke $r17_3.<android.view.ViewGroup: android.view.ViewParent getParent()>();
+
+        $r8_3 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.FrameLayout scrollViewContentHolder>;
+
+(25)    if $r18_3 == $r8_3 goto label23;
+
+        $r17_4 = virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        $r18_4 = virtualinvoke $r17_4.<android.view.ViewGroup: android.view.ViewParent getParent()>();
+
+        $r17_5 = (android.view.ViewGroup) $r18_4;
+
+        $r19 = virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+(26)    virtualinvoke $r17_5.<android.view.ViewGroup: void removeView(android.view.View)>($r19);
+
+     label23:
+        $r8_4 = Phi($r8_1 #24, $r8_3 #25, $r8_3 #26);
+
+        $r17_6 = Phi($r17_2 #24, $r17_3 #25, $r17_5 #26);
+
+        $r18_5 = Phi($r18_2 #24, $r18_3 #25, $r18_4 #26);
+
+        $r17_7 = virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        $r18_6 = virtualinvoke $r17_7.<android.view.ViewGroup: android.view.ViewParent getParent()>();
+
+(27)    if $r18_6 != null goto label24;
+
+        $r8_5 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        $r17_8 = virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+(28)    virtualinvoke $r8_5.<android.widget.FrameLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r17_8, $r16_2);
+
+     label24:
+        $r8_6 = Phi($r8_4 #27, $r8_5 #28);
+
+        $r17_9 = Phi($r17_7 #27, $r17_8 #28);
+
+        $r17_10 = virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        virtualinvoke $r17_10.<android.view.ViewGroup: void setVisibility(int)>(0);
+
+        $r17_11 = virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        virtualinvoke $r17_11.<android.view.ViewGroup: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r16_2);
+
+        $r17_12 = virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        $r1 = new com.contextlogic.wish.ui.components.grid.StaggeredGridView$3;
+
+        specialinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView$3: void <init>(com.contextlogic.wish.ui.components.grid.StaggeredGridView,com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)>($r0, $r15_6);
+
+        virtualinvoke $r17_12.<android.view.ViewGroup: void setOnClickListener(android.view.View$OnClickListener)>($r1);
+
+        $r17_13 = virtualinvoke $r15_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        $r2 = new com.contextlogic.wish.ui.components.grid.StaggeredGridView$4;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.components.grid.StaggeredGridView$4: void <init>(com.contextlogic.wish.ui.components.grid.StaggeredGridView,com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)>($r0, $r15_6);
+
+        virtualinvoke $r17_13.<android.view.ViewGroup: void setOnLongClickListener(android.view.View$OnLongClickListener)>($r2);
+
+        $r11_13 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        virtualinvoke $r11_13.<android.util.SparseArray: void put(int,java.lang.Object)>($i1_9, $r15_6);
+
+(29)    goto label19;
+
+     label25:
+        $z1_7 = 0;
+
+(30)    goto label22;
+
+     label26:
+        $r14_5 = Phi($r14_2 #22, $r14_4 #23);
+
+(31)    if $z1_5 == 0 goto label19;
+
+        virtualinvoke $r15_5.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: void setIndex(int)>($i1_9);
+
+        $r17_14 = virtualinvoke $r15_5.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        $r20 = virtualinvoke $r17_14.<android.view.ViewGroup: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r16_3 = (android.widget.FrameLayout$LayoutParams) $r20;
+
+        $i0_17 = $r16_3.<android.view.ViewGroup$MarginLayoutParams: int topMargin>;
+
+        $i2_16 = $r10_4.<android.graphics.Rect: int top>;
+
+(32)    if $i0_17 == $i2_16 goto label19;
+
+        $r16_4 = new android.widget.FrameLayout$LayoutParams;
+
+        $i0_18 = $r10_4.<android.graphics.Rect: int right>;
+
+        $i2_17 = $r10_4.<android.graphics.Rect: int left>;
+
+        $i0_19 = $i0_18 - $i2_17;
+
+        $i2_18 = $r10_4.<android.graphics.Rect: int bottom>;
+
+        $i4_9 = $r10_4.<android.graphics.Rect: int top>;
+
+        $i2_19 = $i2_18 - $i4_9;
+
+        specialinvoke $r16_4.<android.widget.FrameLayout$LayoutParams: void <init>(int,int)>($i0_19, $i2_19);
+
+        $r16_4.<android.widget.FrameLayout$LayoutParams: int gravity> = 48;
+
+        $i0_20 = $r10_4.<android.graphics.Rect: int top>;
+
+        $r16_4.<android.view.ViewGroup$MarginLayoutParams: int topMargin> = $i0_20;
+
+        $i0_21 = $r10_4.<android.graphics.Rect: int left>;
+
+        $r16_4.<android.view.ViewGroup$MarginLayoutParams: int leftMargin> = $i0_21;
+
+        $r17_15 = virtualinvoke $r15_5.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: android.view.ViewGroup getContentView()>();
+
+        virtualinvoke $r17_15.<android.view.ViewGroup: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r16_4);
+
+(33)    goto label19;
+
+     label27:
+        return;
+    }
+
+    public void addColumnSpanningView(android.view.View, int)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.view.View $r1;
+        android.widget.FrameLayout$LayoutParams $r2;
+        int $i0, $i1, $i2, $i3, $i2_1, $i0_1, $i2_2, $i2_3, $i0_2, $i3_1, $i0_3, $i3_2;
+        java.util.ArrayList $r3;
+        android.widget.LinearLayout$LayoutParams $r4;
+        android.content.Context $r5;
+        android.app.Activity $r6;
+        android.view.WindowManager $r7;
+        android.view.Display $r8;
+        android.widget.FrameLayout $r9, $r9_1;
+        java.lang.Integer $r10;
+        java.lang.Runnable $r11;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $r5 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.content.Context getContext()>();
+
+        $r6 = (android.app.Activity) $r5;
+
+        $r7 = virtualinvoke $r6.<android.app.Activity: android.view.WindowManager getWindowManager()>();
+
+        $r8 = interfaceinvoke $r7.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        $i1 = virtualinvoke $r8.<android.view.Display: int getWidth()>();
+
+        $r2 = new android.widget.FrameLayout$LayoutParams;
+
+        specialinvoke $r2.<android.widget.FrameLayout$LayoutParams: void <init>(int,int)>(-1, $i0);
+
+        $r2.<android.widget.FrameLayout$LayoutParams: int gravity> = 48;
+
+        $i2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int totalContentHeight>;
+
+        $r2.<android.view.ViewGroup$MarginLayoutParams: int topMargin> = $i2;
+
+        $r2.<android.view.ViewGroup$MarginLayoutParams: int leftMargin> = 0;
+
+        $r9 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        virtualinvoke $r9.<android.widget.FrameLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r1, $r2);
+
+        $i2_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int totalContentHeight>;
+
+        $i0_1 = $i2_1 + $i0;
+
+        $i2_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int verticalMargin>;
+
+        $i2_3 = $i0_1 + $i2_2;
+
+(0)     $i3 = 0;
+
+     label1:
+        $i0_2 = Phi($i0_1 #0, $i0_3 #1);
+
+        $i3_1 = Phi($i3 #0, $i3_2 #1);
+
+        $i0_3 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+        if $i3_1 >= $i0_3 goto label2;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        $r10 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2_3);
+
+        virtualinvoke $r3.<java.util.ArrayList: java.lang.Object set(int,java.lang.Object)>($i3_1, $r10);
+
+        $i3_2 = $i3_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int totalContentHeight> = $i2_3;
+
+        $r9_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        $r4 = new android.widget.LinearLayout$LayoutParams;
+
+        specialinvoke $r4.<android.widget.LinearLayout$LayoutParams: void <init>(int,int)>($i1, $i2_3);
+
+        virtualinvoke $r9_1.<android.widget.FrameLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r4);
+
+        $r11 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.Runnable recycleRunnable>;
+
+        interfaceinvoke $r11.<java.lang.Runnable: void run()>();
+
+        return;
+    }
+
+    public void addFooterView(android.view.View)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.view.View $r1;
+        android.widget.LinearLayout $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: android.view.View;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void removeFooterView()>();
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.LinearLayout scrollViewContent>;
+
+        virtualinvoke $r2.<android.widget.LinearLayout: void addView(android.view.View)>($r1);
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.view.View footer> = $r1;
+
+        return;
+    }
+
+    public void addHeaderView(android.view.View)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.view.View $r1;
+        android.widget.LinearLayout $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: android.view.View;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void removeHeaderView()>();
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.LinearLayout scrollViewContent>;
+
+        virtualinvoke $r2.<android.widget.LinearLayout: void addView(android.view.View,int)>($r1, 0);
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.view.View header> = $r1;
+
+        return;
+    }
+
+    public com.contextlogic.wish.ui.components.grid.StaggeredGridCellView dequeueView(java.lang.String)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        java.lang.String $r1;
+        java.util.HashMap $r2;
+        java.lang.Object $r3, $r3_1;
+        java.util.ArrayList $r4;
+        int $i0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r5;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.HashMap reusableViews>;
+
+        $r3 = virtualinvoke $r2.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r4 = (java.util.ArrayList) $r3;
+
+        if $r4 == null goto label1;
+
+        $i0 = virtualinvoke $r4.<java.util.ArrayList: int size()>();
+
+        if $i0 <= 0 goto label1;
+
+        $r3_1 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object remove(int)>(0);
+
+        $r5 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r3_1;
+
+        return $r5;
+
+     label1:
+        return null;
+    }
+
+    public void forceAlternatingColumns()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean forceAlternatingColumns> = 1;
+
+        return;
+    }
+
+    public int getColumnWidth()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        int i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        i0 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int columnWidth>;
+
+        return i0;
+    }
+
+    public int getContentHeight()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        int i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        i0 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int totalContentHeight>;
+
+        return i0;
+    }
+
+    public android.view.View getHeaderView()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.view.View r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.view.View header>;
+
+        return r1;
+    }
+
+    public android.util.SparseArray getVisibleViews()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.util.SparseArray r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        return r1;
+    }
+
+    public void insertCells(int)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.util.SparseArray $r1;
+        int $i0, $i1, $i1_1, $i0_1;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter $r2, $r2_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $i0 := @parameter0: int;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        if $r2 != null goto label1;
+
+        return;
+
+     label1:
+        $r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        $i1 = virtualinvoke $r1.<android.util.SparseArray: int size()>();
+
+        if $i1 != 0 goto label2;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void reloadData()>();
+
+        return;
+
+     label2:
+        $r2_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        $i1_1 = interfaceinvoke $r2_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter: int getNumItems()>();
+
+        $i0_1 = $i1_1 - $i0;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void addCells(int)>($i0_1);
+
+        return;
+    }
+
+    public boolean isInEditMode()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        boolean z0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        z0 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean inEditMode>;
+
+        return z0;
+    }
+
+    protected void onScrollChanged(int, int, int, int)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        int $i0, $i1, $i2, $i3, $i3_1;
+        java.lang.Runnable $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $i3 := @parameter0: int;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 := @parameter3: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.scrollview.InterceptingTouchScrollView: void onScrollChanged(int,int,int,int)>($i3, $i0, $i1, $i2);
+
+        $i3_1 = $i0 - $i2;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void alertListenerOnScrollChanged(int,int)>($i0, $i3_1);
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.Runnable recycleRunnable>;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean post(java.lang.Runnable)>($r1);
+
+        return;
+    }
+
+    public void releaseImages()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.util.SparseArray $r1, $r1_1, $r1_2;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.lang.Object $r2;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $i0 = virtualinvoke $r1.<android.util.SparseArray: int size()>();
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $r1_1 = Phi($r1 #0, $r1_2 #1);
+
+        if $i1_1 >= $i0 goto label2;
+
+        $r1_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $r2 = virtualinvoke $r1_2.<android.util.SparseArray: java.lang.Object valueAt(int)>($i1_1);
+
+        $r3 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r2;
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: void releaseImages()>();
+
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    public void reloadData()
+    {
+        int $i0, $i1, $i2, $i0_1, $i0_2, $i1_1, $i1_2, $i1_3, $i1_4, $i1_5, $i1_6, $i0_3, $i0_4, $i0_5, $i1_7, $i1_8, $i1_9, $i1_10, $i1_11, $i0_6, $i0_7, $i0_8, $i1_12, $i0_9, $i1_13, $i1_14;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0, $r9, $r9_1, $r0_1, $r0_2, $r0_3, $r9_2;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5, $r1_6;
+        android.util.SparseArray $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        java.lang.Object $r3;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r4;
+        java.util.ArrayList $r5, $r5_1, $r5_2;
+        android.content.Context $r6, $r6_1;
+        android.content.res.Resources $r7;
+        android.content.res.Configuration $r8;
+        java.lang.Integer $r10;
+        android.app.Activity $r11;
+        android.view.WindowManager $r12;
+        android.view.Display $r13;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $r2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $i1 = virtualinvoke $r2.<android.util.SparseArray: int size()>();
+
+(0)     $i0 = 0;
+
+     label2:
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        $r2_1 = Phi($r2 #0, $r2_2 #1);
+
+        if $i0_1 >= $i1 goto label3;
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $r3 = virtualinvoke $r2_2.<android.util.SparseArray: java.lang.Object valueAt(int)>($i0_1);
+
+        $r4 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r3;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void enqueueView(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)>($r4);
+
+        $i0_2 = $i0_1 + 1;
+
+(1)     goto label2;
+
+     label3:
+        $r2_3 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        virtualinvoke $r2_3.<android.util.SparseArray: void clear()>();
+
+        $r5 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        virtualinvoke $r5.<java.util.ArrayList: void clear()>();
+
+        $r2_4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        virtualinvoke $r2_4.<android.util.SparseArray: void clear()>();
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int lastColumnIndex> = -1;
+
+        $r6 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.content.Context getContext()>();
+
+        $r7 = virtualinvoke $r6.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r8 = virtualinvoke $r7.<android.content.res.Resources: android.content.res.Configuration getConfiguration()>();
+
+        $i1_1 = $r8.<android.content.res.Configuration: int orientation>;
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int orientation> = $i1_1;
+
+        $i1_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int orientation>;
+
+        if $i1_2 != 2 goto label6;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        $r9 = $r0;
+
+        $i1_3 = interfaceinvoke $r1_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter: int getNumColumnsInLandscape()>();
+
+(2)     $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns> = $i1_3;
+
+     label4:
+        $i1_4 = Phi($i1_3 #2, $i1_14 #5);
+
+        $r9_1 = Phi($r9 #2, $r9_2 #5);
+
+        $r1_2 = Phi($r1_1 #2, $r1_6 #5);
+
+(3)     $i1_5 = 0;
+
+     label5:
+        $i1_6 = Phi($i1_5 #3, $i1_7 #4);
+
+        $i0_3 = Phi($i0_1 #3, $i0_5 #4);
+
+        $r5_1 = Phi($r5 #3, $r5_2 #4);
+
+        $i0_4 = $r9_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+        if $i1_6 >= $i0_4 goto label7;
+
+        $r5_2 = $r9_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        $i0_5 = $r9_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int verticalMargin>;
+
+        $r10 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_5);
+
+        virtualinvoke $r5_2.<java.util.ArrayList: boolean add(java.lang.Object)>($r10);
+
+        $i1_7 = $i1_6 + 1;
+
+(4)     goto label5;
+
+     label6:
+        $r1_6 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        $r9_2 = $r0;
+
+        $i1_14 = interfaceinvoke $r1_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter: int getNumColumnsInPortrait()>();
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns> = $i1_14;
+
+(5)     goto label4;
+
+     label7:
+        $r6_1 = virtualinvoke $r9_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.content.Context getContext()>();
+
+        $r11 = (android.app.Activity) $r6_1;
+
+        $r12 = virtualinvoke $r11.<android.app.Activity: android.view.WindowManager getWindowManager()>();
+
+        $r13 = interfaceinvoke $r12.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        $i1_8 = virtualinvoke $r13.<android.view.Display: int getWidth()>();
+
+        $r9_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int displayWidth> = $i1_8;
+
+        $r1_3 = $r9_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        $r0_1 = $r9_1;
+
+        $z0 = interfaceinvoke $r1_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter: boolean overrideScreenWidth()>();
+
+(6)     if $z0 == 0 goto label8;
+
+        $r1_4 = $r9_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        $r0_2 = $r9_1;
+
+        $i1_9 = interfaceinvoke $r1_4.<com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter: int getScreenWidthOverride()>();
+
+(7)     $r9_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int displayWidth> = $i1_9;
+
+     label8:
+        $i1_10 = Phi($i1_8 #6, $i1_9 #7);
+
+        $r1_5 = Phi($r1_3 #6, $r1_4 #7);
+
+        $r0_3 = Phi($r0_1 #6, $r0_2 #7);
+
+        $i1_11 = $r0_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int displayWidth>;
+
+        $i0_6 = $r0_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+        $i0_7 = $i0_6 + 1;
+
+        $i2 = $r0_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int horizontalMargin>;
+
+        $i0_8 = $i0_7 * $i2;
+
+        $i1_12 = $i1_11 - $i0_8;
+
+        $i0_9 = $r0_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+        $i1_13 = $i1_12 / $i0_9;
+
+        $r0_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int columnWidth> = $i1_13;
+
+        specialinvoke $r0_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void addCells(int)>(0);
+
+        return;
+    }
+
+    public void removeCell(int)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i2_1, $i3_1, $i2_2, $i3_2, $i3_3, $i4_1, $i4_2, $i4_3, $i0_1, $i0_2, $i4_4, $i0_3, $i4_5, $i4_6, $i4_7, $i3_4, $i3_5, $i1_1, $i0_4, $i4_8, $i1_2, $i0_5, $i4_9, $i1_3, $i4_10, $i0_6, $i4_11, $i4_12, $i4_13, $i4_14, $i4_15, $i4_16, $i4_17, $i1_4, $i2_3, $i3_6, $i2_4, $i4_18, $i3_7, $i4_19, $i4_20, $i2_5, $i2_6, $i3_8;
+        android.widget.LinearLayout$LayoutParams $r1;
+        android.util.SparseArray $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6, $r2_7, $r2_8, $r2_9, $r2_10, $r2_11, $r2_12, $r2_13;
+        java.lang.Object $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8, $r3_9, $r3_10;
+        android.graphics.Rect $r4, $r8;
+        java.util.ArrayList $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        java.lang.Integer $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r7, $r7_1, $r7_2, $r7_3;
+        android.content.Context $r9;
+        android.app.Activity $r10;
+        android.view.WindowManager $r11;
+        android.view.Display $r12;
+        android.widget.FrameLayout $r13;
+        java.lang.Runnable $r14;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $i1 := @parameter0: int;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        $r3 = virtualinvoke $r2.<android.util.SparseArray: java.lang.Object get(int)>($i1);
+
+        $r4 = (android.graphics.Rect) $r3;
+
+        $i2 = $r4.<android.graphics.Rect: int bottom>;
+
+        $i3 = $r4.<android.graphics.Rect: int top>;
+
+        $i2_1 = $i2 - $i3;
+
+        $i3_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int verticalMargin>;
+
+        $i2_2 = $i2_1 + $i3_1;
+
+(0)     $i3_2 = 0;
+
+     label01:
+        $r6 = Phi($r6 #0, $r6_3 #3);
+
+        $r3_1 = Phi($r3 #0, $r3_3 #3);
+
+        $r5 = Phi($r5 #0, $r5_3 #3);
+
+        $i0 = Phi($i0 #0, $i0_3 #3);
+
+        $i4 = Phi($i4 #0, $i4_7 #3);
+
+        $i3_3 = Phi($i3_2 #0, $i3_4 #3);
+
+        $i4_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+        if $i3_3 >= $i4_1 goto label03;
+
+        $i4_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int columnWidth>;
+
+        $i4_3 = $i4_2 * $i3_3;
+
+        $i5 = $i3_3 + 1;
+
+        $i0_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int horizontalMargin>;
+
+        $i0_2 = $i5 * $i0_1;
+
+        $i4_4 = $i4_3 + $i0_2;
+
+        $i0_3 = $r4.<android.graphics.Rect: int left>;
+
+(1)     if $i4_4 != $i0_3 goto label02;
+
+        $r5_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        $r3_2 = virtualinvoke $r5_1.<java.util.ArrayList: java.lang.Object get(int)>($i3_3);
+
+        $r6_1 = (java.lang.Integer) $r3_2;
+
+        $i4_5 = virtualinvoke $r6_1.<java.lang.Integer: int intValue()>();
+
+        $r5_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        $i4_6 = $i4_5 - $i2_2;
+
+        $r6_2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i4_6);
+
+(2)     virtualinvoke $r5_2.<java.util.ArrayList: java.lang.Object set(int,java.lang.Object)>($i3_3, $r6_2);
+
+     label02:
+        $r6_3 = Phi($r6 #1, $r6_2 #2);
+
+        $r3_3 = Phi($r3_1 #1, $r3_2 #2);
+
+        $r5_3 = Phi($r5 #1, $r5_2 #2);
+
+        $i4_7 = Phi($i4_4 #1, $i4_6 #2);
+
+        $i3_4 = $i3_3 + 1;
+
+(3)     goto label01;
+
+     label03:
+        $r2_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $r3_4 = virtualinvoke $r2_1.<android.util.SparseArray: java.lang.Object get(int)>($i1);
+
+        $r7 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r3_4;
+
+(4)     if $r7 == null goto label04;
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        virtualinvoke $r2_2.<android.util.SparseArray: void remove(int)>($i1);
+
+(5)     specialinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void enqueueView(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView)>($r7);
+
+     label04:
+        $r2_3 = Phi($r2_1 #4, $r2_2 #5);
+
+        $r2_4 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        $i3_5 = virtualinvoke $r2_4.<android.util.SparseArray: int size()>();
+
+        $r2_5 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        virtualinvoke $r2_5.<android.util.SparseArray: void remove(int)>($i1);
+
+(6)     $i1_1 = $i1 + 1;
+
+     label05:
+        $r7_1 = Phi($r7 #6, $r7_2 #8);
+
+        $r3_5 = Phi($r3_4 #6, $r3_7 #8);
+
+        $r2_6 = Phi($r2_5 #6, $r2_8 #8);
+
+        $i0_4 = Phi($i0 #6, $i0_5 #8);
+
+        $i4_8 = Phi($i4_1 #6, $i4_9 #8);
+
+        $i1_2 = Phi($i1_1 #6, $i1_3 #8);
+
+        if $i1_2 >= $i3_5 goto label09;
+
+        $r2_7 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        $r3_6 = virtualinvoke $r2_7.<android.util.SparseArray: java.lang.Object get(int)>($i1_2);
+
+        $r8 = (android.graphics.Rect) $r3_6;
+
+(7)     if $r8 != null goto label07;
+
+     label06:
+        $r7_2 = Phi($r7_1 #7, $r7_3 #11, $r7_3 #12);
+
+        $r3_7 = Phi($r3_6 #7, $r3_8 #11, $r3_8 #12);
+
+        $r2_8 = Phi($r2_7 #7, $r2_11 #11, $r2_13 #12);
+
+        $i0_5 = Phi($i0_4 #7, $i0_6 #11, $i0_6 #12);
+
+        $i4_9 = Phi($i4_8 #7, $i4_16 #11, $i4_17 #12);
+
+        $i1_3 = $i1_2 + 1;
+
+(8)     goto label05;
+
+     label07:
+        $i4_10 = $r8.<android.graphics.Rect: int left>;
+
+        $i0_6 = $r4.<android.graphics.Rect: int left>;
+
+(9)     if $i4_10 != $i0_6 goto label08;
+
+        $i4_11 = $r8.<android.graphics.Rect: int top>;
+
+        $i4_12 = $i4_11 - $i2_2;
+
+        $r8.<android.graphics.Rect: int top> = $i4_12;
+
+        $i4_13 = $r8.<android.graphics.Rect: int bottom>;
+
+        $i4_14 = $i4_13 - $i2_2;
+
+(10)    $r8.<android.graphics.Rect: int bottom> = $i4_14;
+
+     label08:
+        $i4_15 = Phi($i4_10 #9, $i4_14 #10);
+
+        $r2_9 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        virtualinvoke $r2_9.<android.util.SparseArray: void remove(int)>($i1_2);
+
+        $r2_10 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray indexRectMapping>;
+
+        $i4_16 = $i1_2 + -1;
+
+        virtualinvoke $r2_10.<android.util.SparseArray: void put(int,java.lang.Object)>($i4_16, $r8);
+
+        $r2_11 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $r3_8 = virtualinvoke $r2_11.<android.util.SparseArray: java.lang.Object get(int)>($i1_2);
+
+        $r7_3 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r3_8;
+
+(11)    if $r7_3 == null goto label06;
+
+        $r2_12 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        virtualinvoke $r2_12.<android.util.SparseArray: void remove(int)>($i1_2);
+
+        $r2_13 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $i4_17 = $i1_2 + -1;
+
+        virtualinvoke $r2_13.<android.util.SparseArray: void put(int,java.lang.Object)>($i4_17, $r7_3);
+
+(12)    goto label06;
+
+     label09:
+        $r9 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.content.Context getContext()>();
+
+        $r10 = (android.app.Activity) $r9;
+
+        $r11 = virtualinvoke $r10.<android.app.Activity: android.view.WindowManager getWindowManager()>();
+
+        $r12 = interfaceinvoke $r11.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        $i1_4 = virtualinvoke $r12.<android.view.Display: int getWidth()>();
+
+        $i2_3 = 0;
+
+(13)    $i3_6 = 0;
+
+     label10:
+        $r6_4 = Phi($r6 #13, $r6_5 #16);
+
+        $i2_4 = Phi($i2_3 #13, $i2_6 #16);
+
+        $r3_9 = Phi($r3_5 #13, $r3_10 #16);
+
+        $r5_4 = Phi($r5 #13, $r5_5 #16);
+
+        $i4_18 = Phi($i4_8 #13, $i4_20 #16);
+
+        $i3_7 = Phi($i3_6 #13, $i3_8 #16);
+
+        $i4_19 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int numColumns>;
+
+        if $i3_7 >= $i4_19 goto label12;
+
+        $r5_5 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.util.ArrayList columnHeights>;
+
+        $r3_10 = virtualinvoke $r5_5.<java.util.ArrayList: java.lang.Object get(int)>($i3_7);
+
+        $r6_5 = (java.lang.Integer) $r3_10;
+
+        $i4_20 = virtualinvoke $r6_5.<java.lang.Integer: int intValue()>();
+
+(14)    if $i2_4 >= $i4_20 goto label11;
+
+(15)    $i2_5 = $i4_20;
+
+     label11:
+        $i2_6 = Phi($i2_4 #14, $i2_5 #15);
+
+        $i3_8 = $i3_7 + 1;
+
+(16)    goto label10;
+
+     label12:
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int totalContentHeight> = $i2_4;
+
+        $r13 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        $r1 = new android.widget.LinearLayout$LayoutParams;
+
+        specialinvoke $r1.<android.widget.LinearLayout$LayoutParams: void <init>(int,int)>($i1_4, $i2_4);
+
+        virtualinvoke $r13.<android.widget.FrameLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r1);
+
+        $r14 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.Runnable recycleRunnable>;
+
+        interfaceinvoke $r14.<java.lang.Runnable: void run()>();
+
+        return;
+    }
+
+    public void removeFooterView()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.widget.LinearLayout $r1;
+        android.view.View $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.view.View footer>;
+
+(0)     if $r2 == null goto label1;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.LinearLayout scrollViewContent>;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.view.View footer>;
+
+(1)     virtualinvoke $r1.<android.widget.LinearLayout: void removeView(android.view.View)>($r2_1);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    public void removeHeaderView()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.widget.LinearLayout $r1;
+        android.view.View $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.view.View header>;
+
+(0)     if $r2 == null goto label1;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.LinearLayout scrollViewContent>;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.view.View header>;
+
+(1)     virtualinvoke $r1.<android.widget.LinearLayout: void removeView(android.view.View)>($r2_1);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    public void restoreImages()
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        android.util.SparseArray $r1, $r1_1, $r1_2;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.lang.Object $r2;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $i0 = virtualinvoke $r1.<android.util.SparseArray: int size()>();
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $r1_1 = Phi($r1 #0, $r1_2 #1);
+
+        if $i1_1 >= $i0 goto label2;
+
+        $r1_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $r2 = virtualinvoke $r1_2.<android.util.SparseArray: java.lang.Object valueAt(int)>($i1_1);
+
+        $r3 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r2;
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: void restoreImages()>();
+
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    public void setAdapter(com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter;
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter> = $r1;
+
+        return;
+    }
+
+    public void setClipChildren(boolean)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        boolean $z0;
+        android.widget.FrameLayout $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.widget.FrameLayout scrollViewContentHolder>;
+
+        virtualinvoke $r1.<android.widget.FrameLayout: void setClipChildren(boolean)>($z0);
+
+        return;
+    }
+
+    public void setEditModeEnabled(boolean)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        boolean $z0;
+        android.util.SparseArray $r1, $r1_1, $r1_2;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.lang.Object $r2;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean inEditMode> = $z0;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $i0 = virtualinvoke $r1.<android.util.SparseArray: int size()>();
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $r1_1 = Phi($r1 #0, $r1_2 #1);
+
+        if $i1_1 >= $i0 goto label2;
+
+        $r1_2 = $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray visibleViews>;
+
+        $r2 = virtualinvoke $r1_2.<android.util.SparseArray: java.lang.Object valueAt(int)>($i1_1);
+
+        $r3 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r2;
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.components.grid.StaggeredGridCellView: void setEditModeEnabled(boolean)>($z0);
+
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    public void setHorizontalMargin(int)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        int $i0, $i0_1;
+        float $f0, $f0_1;
+        android.content.Context $r1;
+        android.content.res.Resources $r2;
+        android.util.DisplayMetrics $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $i0 := @parameter0: int;
+
+        $f0 = (float) $i0;
+
+        $r1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.content.Context getContext()>();
+
+        $r2 = virtualinvoke $r1.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r3 = virtualinvoke $r2.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0_1 = staticinvoke <android.util.TypedValue: float applyDimension(int,float,android.util.DisplayMetrics)>(1, $f0, $r3);
+
+        $i0_1 = (int) $f0_1;
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int horizontalMargin> = $i0_1;
+
+        return;
+    }
+
+    public void setListener(com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener $r1;
+        java.lang.ref.WeakReference $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener;
+
+        $r2 = new java.lang.ref.WeakReference;
+
+        specialinvoke $r2.<java.lang.ref.WeakReference: void <init>(java.lang.Object)>($r1);
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: java.lang.ref.WeakReference listenerReference> = $r2;
+
+        return;
+    }
+
+    public void setScrollPosition(int)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $i0 := @parameter0: int;
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int scrollPositionOverride> = $i0;
+
+        return;
+    }
+
+    public void setVerticalMargin(int)
+    {
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r0;
+        int $i0, $i0_1;
+        float $f0, $f0_1;
+        android.content.Context $r1;
+        android.content.res.Resources $r2;
+        android.util.DisplayMetrics $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.components.grid.StaggeredGridView;
+
+        $i0 := @parameter0: int;
+
+        $f0 = (float) $i0;
+
+        $r1 = virtualinvoke $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.content.Context getContext()>();
+
+        $r2 = virtualinvoke $r1.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r3 = virtualinvoke $r2.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0_1 = staticinvoke <android.util.TypedValue: float applyDimension(int,float,android.util.DisplayMetrics)>(1, $f0, $r3);
+
+        $i0_1 = (int) $f0_1;
+
+        $r0.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int verticalMargin> = $i0_1;
+
+        return;
+    }
+}

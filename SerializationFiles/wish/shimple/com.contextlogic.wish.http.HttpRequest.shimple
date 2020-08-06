@@ -1,0 +1,683 @@
+public class com.contextlogic.wish.http.HttpRequest extends java.lang.Object implements java.lang.Runnable
+{
+    private final ch.boye.httpclientandroidlib.client.HttpClient httpClient;
+    private final ch.boye.httpclientandroidlib.protocol.HttpContext httpContext;
+    private final com.contextlogic.wish.http.HttpRequestParams params;
+    private ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request;
+    private final com.contextlogic.wish.http.HttpRequest$RequestType requestType;
+    private java.lang.String requestUrl;
+    private final com.contextlogic.wish.http.HttpResponseHandler responseHandler;
+
+    public void <init>(ch.boye.httpclientandroidlib.client.HttpClient, ch.boye.httpclientandroidlib.protocol.HttpContext, java.lang.String, com.contextlogic.wish.http.HttpRequest$RequestType, com.contextlogic.wish.http.HttpRequestParams, com.contextlogic.wish.http.HttpResponseHandler)
+    {
+        com.contextlogic.wish.http.HttpRequest $r0;
+        ch.boye.httpclientandroidlib.client.HttpClient $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        java.lang.String $r3;
+        com.contextlogic.wish.http.HttpRequest$RequestType $r4;
+        com.contextlogic.wish.http.HttpRequestParams $r5;
+        com.contextlogic.wish.http.HttpResponseHandler $r6;
+
+        $r0 := @this: com.contextlogic.wish.http.HttpRequest;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.client.HttpClient;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: com.contextlogic.wish.http.HttpRequest$RequestType;
+
+        $r5 := @parameter4: com.contextlogic.wish.http.HttpRequestParams;
+
+        $r6 := @parameter5: com.contextlogic.wish.http.HttpResponseHandler;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.HttpClient httpClient> = $r1;
+
+        $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.protocol.HttpContext httpContext> = $r2;
+
+        $r0.<com.contextlogic.wish.http.HttpRequest: java.lang.String requestUrl> = $r3;
+
+        $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler> = $r6;
+
+        $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpRequest$RequestType requestType> = $r4;
+
+        $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpRequestParams params> = $r5;
+
+        return;
+    }
+
+    private void executeRequest() throws java.io.IOException
+    {
+        com.contextlogic.wish.http.HttpRequest $r0;
+        ch.boye.httpclientandroidlib.client.HttpClient $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        long $l0, $l1, $l0_1, $l0_2;
+        com.contextlogic.wish.analytics.Analytics$PageViewType $r3;
+        java.lang.Thread $r4, $r4_1, $r4_2;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9;
+        com.contextlogic.wish.http.HttpResponseHandler $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8;
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8, $r6_9, $r6_10, $r6_11, $r6_12;
+        java.net.URI $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8, $r7_9, $r7_10;
+        java.lang.String $r8, $r10, $r14, $r8_1, $r8_2, $r10_1, $r10_2, $r14_1, $r10_3, $r10_4, $r14_2, $r10_5, $r10_6, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r10_7, $r10_8, $r8_8, $r8_9, $r10_9, $r10_10, $r10_11, $r8_10, $r14_3, $r10_12, $r8_11;
+        com.contextlogic.wish.http.WishHttpClient $r9, $r9_1, $r9_2, $r9_3;
+        ch.boye.httpclientandroidlib.HttpResponse $r11;
+        java.lang.Long $r12, $r13, $r12_1, $r12_2;
+        ch.boye.httpclientandroidlib.StatusLine $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5;
+        int $i2, $i2_1, $i2_2, $i2_3, $i2_4;
+        com.contextlogic.wish.analytics.Analytics $r16, $r16_1, $r16_2, $r16_3;
+        java.util.HashMap $r17;
+        java.lang.Object $r18;
+        com.contextlogic.wish.api.core.WishApi $r19;
+        com.contextlogic.wish.api.core.WishApiConfig $r20;
+        ch.boye.httpclientandroidlib.HttpEntity $r21, $r21_1, $r21_2;
+
+        $r0 := @this: com.contextlogic.wish.http.HttpRequest;
+
+        $r4 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.Thread: boolean isInterrupted()>();
+
+(0)     if $z0 != 0 goto label5;
+
+        $r5 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+(1)     if $r5 == null goto label1;
+
+        $r5_1 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+        $r6 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+        $r7 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI getURI()>();
+
+        $r8 = virtualinvoke $r7.<java.net.URI: java.lang.String toString()>();
+
+        $z0_1 = virtualinvoke $r5_1.<com.contextlogic.wish.http.HttpResponseHandler: boolean loadResponseFromCache(java.lang.String)>($r8);
+
+(2)     if $z0_1 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r7_1 = Phi($r7 #1, $r7 #2);
+
+        $r5_2 = Phi($r5 #1, $r5_1 #2);
+
+        $r8_1 = Phi($r8 #1, $r8 #2);
+
+        $z0_2 = Phi($z0 #1, $z0_1 #2);
+
+        $r6_1 = Phi($r6 #1, $r6 #2);
+
+        $r9 = staticinvoke <com.contextlogic.wish.http.WishHttpClient: com.contextlogic.wish.http.WishHttpClient getInstance()>();
+
+        virtualinvoke $r9.<com.contextlogic.wish.http.WishHttpClient: void closeIdleConnections()>();
+
+        $r1 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.HttpClient httpClient>;
+
+        $r6_2 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+        $r2 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.protocol.HttpContext httpContext>;
+
+        $r7_2 = virtualinvoke $r6_2.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI getURI()>();
+
+        $r8_2 = virtualinvoke $r7_2.<java.net.URI: java.lang.String toString()>();
+
+        $r10 = "";
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r11 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.client.HttpClient: ch.boye.httpclientandroidlib.HttpResponse execute(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r6_2, $r2);
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r12 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        $r13 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r14 = virtualinvoke $r13.<java.lang.Long: java.lang.String toString()>();
+
+        $r10_1 = virtualinvoke $r10.<java.lang.String: java.lang.String concat(java.lang.String)>($r14);
+
+        $r10_2 = virtualinvoke $r10_1.<java.lang.String: java.lang.String concat(java.lang.String)>("   ");
+
+        $r14_1 = virtualinvoke $r12.<java.lang.Long: java.lang.String toString()>();
+
+        $r10_3 = virtualinvoke $r10_2.<java.lang.String: java.lang.String concat(java.lang.String)>($r14_1);
+
+        $r10_4 = virtualinvoke $r10_3.<java.lang.String: java.lang.String concat(java.lang.String)>("   ");
+
+        $l0_1 = $l1 - $l0;
+
+        $r12_1 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0_1);
+
+        $r14_2 = virtualinvoke $r12_1.<java.lang.Long: java.lang.String toString()>();
+
+        $r10_5 = virtualinvoke $r10_4.<java.lang.String: java.lang.String concat(java.lang.String)>($r14_2);
+
+        $r10_6 = virtualinvoke $r10_5.<java.lang.String: java.lang.String concat(java.lang.String)>("   ");
+
+        $r8_3 = virtualinvoke $r10_6.<java.lang.String: java.lang.String concat(java.lang.String)>($r8_2);
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("$EXTRACTOCOL$ ", $r8_3, null);
+
+        $r4_1 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        $z0_3 = virtualinvoke $r4_1.<java.lang.Thread: boolean isInterrupted()>();
+
+        if $z0_3 != 0 goto label4;
+
+        $r15 = interfaceinvoke $r11.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+(3)     if $r15 == null goto label2;
+
+        $r15_1 = interfaceinvoke $r11.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i2 = interfaceinvoke $r15_1.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+(4)     if $i2 == 200 goto label2;
+
+        $r6_3 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+(5)     if $r6_3 == null goto label2;
+
+        $r6_4 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+        $r7_3 = virtualinvoke $r6_4.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI getURI()>();
+
+(6)     if $r7_3 == null goto label2;
+
+        $r6_5 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+        $r7_4 = virtualinvoke $r6_5.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI getURI()>();
+
+        $r8_4 = virtualinvoke $r7_4.<java.net.URI: java.lang.String getHost()>();
+
+(7)     if $r8_4 == null goto label2;
+
+        $r6_6 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+        $r7_5 = virtualinvoke $r6_6.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI getURI()>();
+
+        $r8_5 = virtualinvoke $r7_5.<java.net.URI: java.lang.String getHost()>();
+
+        $z0_4 = virtualinvoke $r8_5.<java.lang.String: boolean contains(java.lang.CharSequence)>("wish.com");
+
+(8)     if $z0_4 == 0 goto label2;
+
+        $r16 = staticinvoke <com.contextlogic.wish.analytics.Analytics: com.contextlogic.wish.analytics.Analytics getInstance()>();
+
+        $r15_2 = interfaceinvoke $r11.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i2_1 = interfaceinvoke $r15_2.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+        $r8_6 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i2_1);
+
+        virtualinvoke $r16.<com.contextlogic.wish.analytics.Analytics: void trackPageView(java.lang.String)>($r8_6);
+
+        $r16_1 = staticinvoke <com.contextlogic.wish.analytics.Analytics: com.contextlogic.wish.analytics.Analytics getInstance()>();
+
+        $r15_3 = interfaceinvoke $r11.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i2_2 = interfaceinvoke $r15_3.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+        $r8_7 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i2_2);
+
+        $r3 = <com.contextlogic.wish.analytics.Analytics$PageViewType: com.contextlogic.wish.analytics.Analytics$PageViewType Api>;
+
+        $r6_7 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+        $r7_6 = virtualinvoke $r6_7.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI getURI()>();
+
+        $r10_7 = virtualinvoke $r7_6.<java.net.URI: java.lang.String toString()>();
+
+(9)     virtualinvoke $r16_1.<com.contextlogic.wish.analytics.Analytics: void trackRawEvent(java.lang.String,com.contextlogic.wish.analytics.Analytics$PageViewType,java.lang.String)>($r8_7, $r3, $r10_7);
+
+     label2:
+        $r16_2 = Phi($r16 #3, $r16 #4, $r16 #5, $r16 #6, $r16 #7, $r16 #8, $r16_1 #9);
+
+        $r10_8 = Phi($r10_6 #3, $r10_6 #4, $r10_6 #5, $r10_6 #6, $r10_6 #7, $r10_6 #8, $r10_7 #9);
+
+        $r7_7 = Phi($r7_2 #3, $r7_2 #4, $r7_2 #5, $r7_3 #6, $r7_4 #7, $r7_5 #8, $r7_6 #9);
+
+        $i2_3 = Phi($i2 #3, $i2 #4, $i2 #5, $i2 #6, $i2 #7, $i2 #8, $i2_2 #9);
+
+        $r8_8 = Phi($r8_3 #3, $r8_3 #4, $r8_3 #5, $r8_3 #6, $r8_4 #7, $r8_5 #8, $r8_7 #9);
+
+        $z0_5 = Phi($z0_3 #3, $z0_3 #4, $z0_3 #5, $z0_3 #6, $z0_3 #7, $z0_4 #8, $z0_4 #9);
+
+        $r6_8 = Phi($r6_2 #3, $r6_2 #4, $r6_3 #5, $r6_4 #6, $r6_5 #7, $r6_6 #8, $r6_7 #9);
+
+        $r15_4 = Phi($r15 #3, $r15_1 #4, $r15_1 #5, $r15_1 #6, $r15_1 #7, $r15_1 #8, $r15_3 #9);
+
+        $r5_3 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+(10)    if $r5_3 == null goto label5;
+
+        $r5_4 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+        $z0_6 = $r5_4 instanceof com.contextlogic.wish.http.ImageHttpResponseHandler;
+
+(11)    if $z0_6 != 0 goto label3;
+
+        $r17 = specialinvoke $r0.<com.contextlogic.wish.http.HttpRequest: java.util.HashMap getResponseCookies(ch.boye.httpclientandroidlib.HttpResponse)>($r11);
+
+        $r5_5 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+        virtualinvoke $r5_5.<com.contextlogic.wish.http.HttpResponseHandler: void setResponseCookies(java.util.HashMap)>($r17);
+
+        $r18 = virtualinvoke $r17.<java.util.HashMap: java.lang.Object get(java.lang.Object)>("bsid");
+
+        $r8_9 = (java.lang.String) $r18;
+
+(12)    if $r8_9 == null goto label3;
+
+        $r6_9 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+        $r7_8 = virtualinvoke $r6_9.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI getURI()>();
+
+        $r10_9 = virtualinvoke $r7_8.<java.net.URI: java.lang.String getHost()>();
+
+        $z0_7 = virtualinvoke $r10_9.<java.lang.String: boolean contains(java.lang.CharSequence)>("wish.com");
+
+(13)    if $z0_7 == 0 goto label3;
+
+        $r9_1 = staticinvoke <com.contextlogic.wish.http.WishHttpClient: com.contextlogic.wish.http.WishHttpClient getInstance()>();
+
+        $r19 = staticinvoke <com.contextlogic.wish.api.core.WishApi: com.contextlogic.wish.api.core.WishApi getInstance()>();
+
+        $r20 = virtualinvoke $r19.<com.contextlogic.wish.api.core.WishApi: com.contextlogic.wish.api.core.WishApiConfig getConfig()>();
+
+        $r10_10 = virtualinvoke $r20.<com.contextlogic.wish.api.core.WishApiConfig: java.lang.String getApiBaseUrlString()>();
+
+(14)    virtualinvoke $r9_1.<com.contextlogic.wish.http.WishHttpClient: void addBsidCookie(java.lang.String,java.lang.String)>($r8_9, $r10_10);
+
+     label3:
+        $r10_11 = Phi($r10_8 #11, $r10_8 #12, $r10_9 #13, $r10_10 #14);
+
+        $r7_9 = Phi($r7_7 #11, $r7_7 #12, $r7_8 #13, $r7_8 #14);
+
+        $r5_6 = Phi($r5_4 #11, $r5_5 #12, $r5_5 #13, $r5_5 #14);
+
+        $r8_10 = Phi($r8_8 #11, $r8_9 #12, $r8_9 #13, $r8_9 #14);
+
+        $z0_8 = Phi($z0_6 #11, $z0_6 #12, $z0_7 #13, $z0_7 #14);
+
+        $r6_10 = Phi($r6_8 #11, $r6_8 #12, $r6_9 #13, $r6_9 #14);
+
+        $r9_2 = Phi($r9 #11, $r9 #12, $r9 #13, $r9_1 #14);
+
+        $r5_7 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+        $r6_11 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+        virtualinvoke $r5_7.<com.contextlogic.wish.http.HttpResponseHandler: void receiveResponse(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest,ch.boye.httpclientandroidlib.HttpResponse)>($r6_11, $r11);
+
+        return;
+
+     label4:
+(15)    if $r11 == null goto label5;
+
+        $r21 = interfaceinvoke $r11.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+(16)    if $r21 == null goto label5;
+
+        $r21_1 = interfaceinvoke $r11.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+(17)    staticinvoke <ch.boye.httpclientandroidlib.util.EntityUtils: void consume(ch.boye.httpclientandroidlib.HttpEntity)>($r21_1);
+
+     label5:
+        $r14_3 = Phi($r14 #0, $r14_2 #10, $r14_2 #15, $r14_2 #16, $r14_2 #17);
+
+        $r16_3 = Phi($r16 #0, $r16_2 #10, $r16 #15, $r16 #16, $r16 #17);
+
+        $r10_12 = Phi($r10 #0, $r10_8 #10, $r10_6 #15, $r10_6 #16, $r10_6 #17);
+
+        $r7_10 = Phi($r7 #0, $r7_7 #10, $r7_2 #15, $r7_2 #16, $r7_2 #17);
+
+        $r5_8 = Phi($r5 #0, $r5_3 #10, $r5_2 #15, $r5_2 #16, $r5_2 #17);
+
+        $i2_4 = Phi($i2 #0, $i2_3 #10, $i2 #15, $i2 #16, $i2 #17);
+
+        $l0_2 = Phi($l0 #0, $l0_1 #10, $l0_1 #15, $l0_1 #16, $l0_1 #17);
+
+        $r12_2 = Phi($r12 #0, $r12_1 #10, $r12_1 #15, $r12_1 #16, $r12_1 #17);
+
+        $r8_11 = Phi($r8 #0, $r8_8 #10, $r8_3 #15, $r8_3 #16, $r8_3 #17);
+
+        $z0_9 = Phi($z0 #0, $z0_5 #10, $z0_3 #15, $z0_3 #16, $z0_3 #17);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #10, $r4_1 #15, $r4_1 #16, $r4_1 #17);
+
+        $r21_2 = Phi($r21 #0, $r21 #10, $r21 #15, $r21 #16, $r21_1 #17);
+
+        $r6_12 = Phi($r6 #0, $r6_8 #10, $r6_2 #15, $r6_2 #16, $r6_2 #17);
+
+        $r15_5 = Phi($r15 #0, $r15_4 #10, $r15 #15, $r15 #16, $r15 #17);
+
+        $r9_3 = Phi($r9 #0, $r9 #10, $r9 #15, $r9 #16, $r9 #17);
+
+        return;
+    }
+
+    private java.util.HashMap getResponseCookies(ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        com.contextlogic.wish.http.HttpRequest $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        java.util.HashMap $r2;
+        ch.boye.httpclientandroidlib.Header $r3;
+        ch.boye.httpclientandroidlib.Header[] $r4;
+        int $i0, $i1, $i2, $i3, $i0_1, $i1_1, $i2_1, $i2_2, $i2_3, $i1_2, $i2_4, $i1_3, $i0_2;
+        java.lang.String $r5, $r6, $r5_1, $r6_1, $r6_2, $r6_3, $r5_2, $r6_4, $r6_5, $r5_3, $r6_6, $r5_4;
+
+        $r0 := @this: com.contextlogic.wish.http.HttpRequest;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header[] getHeaders(java.lang.String)>("Set-Cookie");
+
+(0)     if $r4 == null goto label4;
+
+        $i0 = lengthof $r4;
+
+(1)     if $i0 <= 0 goto label4;
+
+        $i0_1 = lengthof $r4;
+
+(2)     $i1 = 0;
+
+     label1:
+        $i2 = Phi($i2 #2, $i2_3 #8);
+
+        $i1_1 = Phi($i1 #2, $i1_2 #8);
+
+        $r6 = Phi($r6 #2, $r6_5 #8);
+
+        $r5 = Phi($r5 #2, $r5_3 #8);
+
+(3)     if $i1_1 >= $i0_1 goto label4;
+
+        $r3 = $r4[$i1_1];
+
+        $r5_1 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $r6_1 = $r5_1;
+
+        $i2_1 = virtualinvoke $r5_1.<java.lang.String: int indexOf(java.lang.String)>(";");
+
+        $i3 = virtualinvoke $r5_1.<java.lang.String: int indexOf(java.lang.String)>("=");
+
+(4)     if $i2_1 <= 0 goto label2;
+
+(5)     $r6_2 = virtualinvoke $r5_1.<java.lang.String: java.lang.String substring(int,int)>(0, $i2_1);
+
+     label2:
+        $r6_3 = Phi($r6_1 #4, $r6_2 #5);
+
+(6)     if $i3 <= 0 goto label3;
+
+        $r5_2 = virtualinvoke $r6_3.<java.lang.String: java.lang.String substring(int,int)>(0, $i3);
+
+        $i2_2 = $i3 + 1;
+
+        $r6_4 = virtualinvoke $r6_3.<java.lang.String: java.lang.String substring(int)>($i2_2);
+
+(7)     virtualinvoke $r2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r5_2, $r6_4);
+
+     label3:
+        $i2_3 = Phi($i2_1 #6, $i2_2 #7);
+
+        $r6_5 = Phi($r6_3 #6, $r6_4 #7);
+
+        $r5_3 = Phi($r5_1 #6, $r5_2 #7);
+
+        $i1_2 = $i1_1 + 1;
+
+(8)     goto label1;
+
+     label4:
+        $i2_4 = Phi($i2 #0, $i2 #1, $i2 #3);
+
+        $i1_3 = Phi($i1 #0, $i1 #1, $i1_1 #3);
+
+        $r6_6 = Phi($r6 #0, $r6 #1, $r6 #3);
+
+        $r5_4 = Phi($r5 #0, $r5 #1, $r5 #3);
+
+        $i0_2 = Phi($i0 #0, $i0 #1, $i0_1 #3);
+
+        return $r2;
+    }
+
+    public void cancelRequest()
+    {
+        com.contextlogic.wish.http.HttpRequest $r0;
+        java.lang.Exception $r1;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+
+        $r0 := @this: com.contextlogic.wish.http.HttpRequest;
+
+        $r2 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+(0)     if $r2 == null goto label4;
+
+        $r2_1 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+        $z0 = virtualinvoke $r2_1.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: boolean isAborted()>();
+
+(1)     if $z0 != 0 goto label4;
+
+     label1:
+(2)     $r2_2 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+        virtualinvoke $r2_2.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: void abort()>();
+
+     label2:
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+(3)     $r2_3 = Phi($r2_1 #1, $r2_2 #2);
+
+     label4:
+        $r2_4 = Phi($r2 #0, $r2_1 #1, $r2_3 #3);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public void run()
+    {
+        com.contextlogic.wish.http.HttpRequest $r0;
+        ch.boye.httpclientandroidlib.client.methods.HttpGet $r1;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.client.methods.HttpPost $r2;
+        java.io.IOException $r3;
+        com.contextlogic.wish.http.HttpRequest$RequestType $r4, $r5, $r4_1, $r5_1, $r4_2, $r5_2, $r4_3, $r5_3, $r4_4, $r5_4;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        com.contextlogic.wish.http.HttpResponseHandler $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8, $r7_9, $r7_10, $r7_11;
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7;
+        com.contextlogic.wish.http.WishHttpClient $r9;
+        com.contextlogic.wish.http.HttpRequestParams $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5;
+        ch.boye.httpclientandroidlib.HttpEntity $r11;
+
+        $r0 := @this: com.contextlogic.wish.http.HttpRequest;
+
+        $r4 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpRequest$RequestType requestType>;
+
+        $r5 = <com.contextlogic.wish.http.HttpRequest$RequestType: com.contextlogic.wish.http.HttpRequest$RequestType Get>;
+
+        if $r4 != $r5 goto label12;
+
+        $r1 = new ch.boye.httpclientandroidlib.client.methods.HttpGet;
+
+(0)     $r6 = $r0.<com.contextlogic.wish.http.HttpRequest: java.lang.String requestUrl>;
+
+     label01:
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.client.methods.HttpGet: void <init>(java.lang.String)>($r6);
+
+     label02:
+(1)     $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request> = $r1;
+
+     label03:
+        $r6_1 = Phi($r6 #1, $r6 #12, $r6_2 #18);
+
+        $r10 = Phi($r10 #1, $r10 #12, $r10_3 #18);
+
+        $r4_1 = Phi($r4 #1, $r4_2 #12, $r4_2 #18);
+
+        $r5_1 = Phi($r5 #1, $r5_2 #12, $r5_2 #18);
+
+        $r7 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+(2)     if $r7 == null goto label05;
+
+        $r7_1 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+        $z0 = $r7_1 instanceof com.contextlogic.wish.http.StringHttpResponseHandler;
+
+(3)     if $z0 == 0 goto label05;
+
+        $r8 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+     label04:
+(4)     virtualinvoke $r8.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: void setHeader(java.lang.String,java.lang.String)>("Accept-Encoding", "gzip");
+
+     label05:
+        $r8_1 = Phi($r8 #2, $r8 #3, $r8 #4);
+
+        $r7_2 = Phi($r7 #2, $r7_1 #3, $r7_1 #4);
+
+(5)     $r9 = staticinvoke <com.contextlogic.wish.http.WishHttpClient: com.contextlogic.wish.http.WishHttpClient getInstance()>();
+
+        virtualinvoke $r9.<com.contextlogic.wish.http.WishHttpClient: void registerSchemes()>();
+
+     label06:
+        $r7_3 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+(6)     if $r7_3 == null goto label08;
+
+        $r7_4 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+(7)     $r8_2 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+     label07:
+(8)     virtualinvoke $r7_4.<com.contextlogic.wish.http.HttpResponseHandler: void requestStarted(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest)>($r8_2);
+
+     label08:
+        $r8_3 = Phi($r8_1 #6, $r8_2 #8);
+
+        $r7_5 = Phi($r7_3 #6, $r7_4 #8);
+
+(9)     specialinvoke $r0.<com.contextlogic.wish.http.HttpRequest: void executeRequest()>();
+
+     label09:
+        $r7_6 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+(10)    if $r7_6 == null goto label20;
+
+        $r7_7 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+(11)    $r8_4 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+     label10:
+        virtualinvoke $r7_7.<com.contextlogic.wish.http.HttpResponseHandler: void requestFinished(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest)>($r8_4);
+
+     label11:
+        return;
+
+     label12:
+        $r4_2 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpRequest$RequestType requestType>;
+
+        $r5_2 = <com.contextlogic.wish.http.HttpRequest$RequestType: com.contextlogic.wish.http.HttpRequest$RequestType Post>;
+
+(12)    if $r4_2 != $r5_2 goto label03;
+
+        $r2 = new ch.boye.httpclientandroidlib.client.methods.HttpPost;
+
+(13)    $r6_2 = $r0.<com.contextlogic.wish.http.HttpRequest: java.lang.String requestUrl>;
+
+     label13:
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.client.methods.HttpPost: void <init>(java.lang.String)>($r6_2);
+
+     label14:
+        $r10_1 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpRequestParams params>;
+
+(14)    if $r10_1 == null goto label18;
+
+(15)    $r10_2 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpRequestParams params>;
+
+     label15:
+        $r11 = virtualinvoke $r10_2.<com.contextlogic.wish.http.HttpRequestParams: ch.boye.httpclientandroidlib.HttpEntity toEntity()>();
+
+     label16:
+(16)    if $r11 == null goto label18;
+
+     label17:
+(17)    virtualinvoke $r2.<ch.boye.httpclientandroidlib.client.methods.HttpPost: void setEntity(ch.boye.httpclientandroidlib.HttpEntity)>($r11);
+
+     label18:
+        $r10_3 = Phi($r10_1 #14, $r10_2 #16, $r10_2 #17);
+
+        $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request> = $r2;
+
+(18)    goto label03;
+
+     label19:
+        $r3 := @caughtexception;
+
+        $r6_3 = Phi($r6 #0, $r6_1 #2, $r6_2 #13);
+
+        $r8_5 = Phi($r8 #0, $r8 #2, $r8_1 #5, $r8_2 #7, $r8_3 #9, $r8_4 #11, $r8 #13);
+
+        $r10_4 = Phi($r10 #0, $r10 #2, $r10 #13, $r10_2 #15);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #2, $r4_2 #13);
+
+        $r5_3 = Phi($r5 #0, $r5_1 #2, $r5_2 #13);
+
+        $r7_8 = Phi($r7 #0, $r7 #2, $r7_1 #3, $r7_2 #5, $r7_4 #7, $r7_3 #6, $r7_5 #9, $r7_7 #11, $r7 #13);
+
+        $r7_9 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+(19)    if $r7_9 == null goto label20;
+
+        $r7_10 = $r0.<com.contextlogic.wish.http.HttpRequest: com.contextlogic.wish.http.HttpResponseHandler responseHandler>;
+
+        $r8_6 = $r0.<com.contextlogic.wish.http.HttpRequest: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase request>;
+
+(20)    virtualinvoke $r7_10.<com.contextlogic.wish.http.HttpResponseHandler: void requestFailed(ch.boye.httpclientandroidlib.client.methods.HttpUriRequest,java.lang.Throwable,java.lang.Object)>($r8_6, $r3, null);
+
+     label20:
+        $r6_4 = Phi($r6_1 #10, $r6_3 #19, $r6_3 #20);
+
+        $r8_7 = Phi($r8_3 #10, $r8_5 #19, $r8_6 #20);
+
+        $r10_5 = Phi($r10 #10, $r10_4 #19, $r10_4 #20);
+
+        $r4_4 = Phi($r4_1 #10, $r4_3 #19, $r4_3 #20);
+
+        $r5_4 = Phi($r5_1 #10, $r5_3 #19, $r5_3 #20);
+
+        $r7_11 = Phi($r7_6 #10, $r7_9 #19, $r7_10 #20);
+
+        return;
+
+        catch java.io.IOException from label01 to label02 with label19;
+        catch java.io.IOException from label04 to label06 with label19;
+        catch java.io.IOException from label07 to label09 with label19;
+        catch java.io.IOException from label10 to label11 with label19;
+        catch java.io.IOException from label13 to label14 with label19;
+        catch java.io.IOException from label15 to label16 with label19;
+        catch java.io.IOException from label17 to label18 with label19;
+    }
+}

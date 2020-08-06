@@ -1,0 +1,330 @@
+public class ch.boye.httpclientandroidlib.impl.auth.NTLMScheme extends ch.boye.httpclientandroidlib.impl.auth.AuthSchemeBase
+{
+    private java.lang.String challenge;
+    private final ch.boye.httpclientandroidlib.impl.auth.NTLMEngine engine;
+    private ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state;
+
+    public void <init>(ch.boye.httpclientandroidlib.impl.auth.NTLMEngine)
+    {
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme $r0;
+        ch.boye.httpclientandroidlib.impl.auth.NTLMEngine $r1;
+        java.lang.IllegalArgumentException $r2;
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.impl.auth.NTLMEngine;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.AuthSchemeBase: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("NTLM engine may not be null");
+
+        throw $r2;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMEngine engine> = $r1;
+
+        $r3 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State UNINITIATED>;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state> = $r3;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: java.lang.String challenge> = null;
+
+        return;
+    }
+
+    public ch.boye.httpclientandroidlib.Header authenticate(ch.boye.httpclientandroidlib.auth.Credentials, ch.boye.httpclientandroidlib.HttpRequest) throws ch.boye.httpclientandroidlib.auth.AuthenticationException
+    {
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme $r0;
+        ch.boye.httpclientandroidlib.auth.Credentials $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.util.CharArrayBuffer $r3;
+        ch.boye.httpclientandroidlib.message.BufferedHeader $r4;
+        java.lang.ClassCastException $r5;
+        ch.boye.httpclientandroidlib.auth.InvalidCredentialsException $r6;
+        ch.boye.httpclientandroidlib.auth.AuthenticationException $r7;
+        ch.boye.httpclientandroidlib.auth.NTCredentials $r8;
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State $r9, $r10, $r9_1, $r10_1, $r9_2, $r10_2, $r9_3, $r9_4, $r9_5, $r10_3, $r9_6, $r9_7, $r10_4;
+        ch.boye.httpclientandroidlib.impl.auth.NTLMEngine $r11, $r11_1, $r11_2;
+        java.lang.String $r12, $r13, $r16, $r17, $r18, $r12_1, $r12_2, $r12_3, $r13_1, $r12_4, $r13_2, $r12_5, $r12_6, $r12_7;
+        boolean $z0;
+        java.lang.StringBuilder $r14, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5;
+        java.lang.Class $r15;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.auth.Credentials;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+     label1:
+        $r8 = (ch.boye.httpclientandroidlib.auth.NTCredentials) $r1;
+
+     label2:
+        $r9 = $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state>;
+
+        $r10 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State CHALLENGE_RECEIVED>;
+
+(0)     if $r9 == $r10 goto label3;
+
+        $r9_1 = $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state>;
+
+        $r10_1 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State FAILED>;
+
+(1)     if $r9_1 != $r10_1 goto label7;
+
+     label3:
+        $r9_5 = Phi($r9 #0, $r9_1 #1);
+
+        $r10_3 = Phi($r10 #0, $r10_1 #1);
+
+        $r11_1 = $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMEngine engine>;
+
+        $r12_3 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.auth.NTCredentials: java.lang.String getDomain()>();
+
+        $r13_1 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.auth.NTCredentials: java.lang.String getWorkstation()>();
+
+        $r12_4 = interfaceinvoke $r11_1.<ch.boye.httpclientandroidlib.impl.auth.NTLMEngine: java.lang.String generateType1Msg(java.lang.String,java.lang.String)>($r12_3, $r13_1);
+
+        $r9_6 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State MSG_TYPE1_GENERATED>;
+
+(2)     $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state> = $r9_6;
+
+     label4:
+        $r13_2 = Phi($r13_1 #2, $r13 #3);
+
+        $r11_2 = Phi($r11_1 #2, $r11 #3);
+
+        $r12_5 = Phi($r12_4 #2, $r12_1 #3);
+
+        $r9_7 = Phi($r9_6 #2, $r9_3 #3);
+
+        $r10_4 = Phi($r10_3 #2, $r10_2 #3);
+
+        $r3 = new ch.boye.httpclientandroidlib.util.CharArrayBuffer;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void <init>(int)>(32);
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: boolean isProxy()>();
+
+        if $z0 == 0 goto label9;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>("Proxy-Authorization");
+
+     label5:
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>(": NTLM ");
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>($r12_5);
+
+        $r4 = new ch.boye.httpclientandroidlib.message.BufferedHeader;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.message.BufferedHeader: void <init>(ch.boye.httpclientandroidlib.util.CharArrayBuffer)>($r3);
+
+        return $r4;
+
+     label6:
+        $r5 := @caughtexception;
+
+        $r6 = new ch.boye.httpclientandroidlib.auth.InvalidCredentialsException;
+
+        $r14_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r14_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r14_4 = virtualinvoke $r14_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Credentials cannot be used for NTLM authentication: ");
+
+        $r15 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r12_6 = virtualinvoke $r15.<java.lang.Class: java.lang.String getName()>();
+
+        $r14_5 = virtualinvoke $r14_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12_6);
+
+        $r12_7 = virtualinvoke $r14_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r6.<ch.boye.httpclientandroidlib.auth.InvalidCredentialsException: void <init>(java.lang.String)>($r12_7);
+
+        throw $r6;
+
+     label7:
+        $r9_2 = $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state>;
+
+        $r10_2 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State MSG_TYPE2_RECEVIED>;
+
+        if $r9_2 != $r10_2 goto label8;
+
+        $r11 = $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMEngine engine>;
+
+        $r12 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.auth.NTCredentials: java.lang.String getUserName()>();
+
+        $r13 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.auth.NTCredentials: java.lang.String getPassword()>();
+
+        $r16 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.auth.NTCredentials: java.lang.String getDomain()>();
+
+        $r17 = virtualinvoke $r8.<ch.boye.httpclientandroidlib.auth.NTCredentials: java.lang.String getWorkstation()>();
+
+        $r18 = $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: java.lang.String challenge>;
+
+        $r12_1 = interfaceinvoke $r11.<ch.boye.httpclientandroidlib.impl.auth.NTLMEngine: java.lang.String generateType3Msg(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)>($r12, $r13, $r16, $r17, $r18);
+
+        $r9_3 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State MSG_TYPE3_GENERATED>;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state> = $r9_3;
+
+(3)     goto label4;
+
+     label8:
+        $r7 = new ch.boye.httpclientandroidlib.auth.AuthenticationException;
+
+        $r14 = new java.lang.StringBuilder;
+
+        specialinvoke $r14.<java.lang.StringBuilder: void <init>()>();
+
+        $r14_1 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unexpected state: ");
+
+        $r9_4 = $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state>;
+
+        $r14_2 = virtualinvoke $r14_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r9_4);
+
+        $r12_2 = virtualinvoke $r14_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<ch.boye.httpclientandroidlib.auth.AuthenticationException: void <init>(java.lang.String)>($r12_2);
+
+        throw $r7;
+
+     label9:
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>("Authorization");
+
+        goto label5;
+
+        catch java.lang.ClassCastException from label1 to label2 with label6;
+    }
+
+    public java.lang.String getParameter(java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme;
+
+        $r1 := @parameter0: java.lang.String;
+
+        return null;
+    }
+
+    public java.lang.String getRealm()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme;
+
+        return null;
+    }
+
+    public java.lang.String getSchemeName()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme;
+
+        return "ntlm";
+    }
+
+    public boolean isComplete()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme $r0;
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State $r1, $r2, $r1_1, $r2_1, $r2_2, $r1_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state>;
+
+        $r2 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State MSG_TYPE3_GENERATED>;
+
+(0)     if $r1 == $r2 goto label1;
+
+        $r1_1 = $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state>;
+
+        $r2_1 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State FAILED>;
+
+(1)     if $r1_1 != $r2_1 goto label2;
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public boolean isConnectionBased()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme;
+
+        return 1;
+    }
+
+    protected void parseChallenge(ch.boye.httpclientandroidlib.util.CharArrayBuffer, int, int) throws ch.boye.httpclientandroidlib.auth.MalformedChallengeException
+    {
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme $r0;
+        ch.boye.httpclientandroidlib.util.CharArrayBuffer $r1;
+        int $i0, $i1, $i1_1;
+        ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State $r2, $r4, $r2_1, $r2_2, $r2_3, $r2_4;
+        java.lang.String $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.util.CharArrayBuffer;
+
+        $i1 := @parameter1: int;
+
+        $i0 := @parameter2: int;
+
+        $r3 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: java.lang.String substringTrimmed(int,int)>($i1, $i0);
+
+        $i1_1 = virtualinvoke $r3.<java.lang.String: int length()>();
+
+        if $i1_1 != 0 goto label3;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state>;
+
+        $r4 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State UNINITIATED>;
+
+        if $r2 != $r4 goto label2;
+
+        $r2_1 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State CHALLENGE_RECEIVED>;
+
+(0)     $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state> = $r2_1;
+
+     label1:
+        $r2_2 = Phi($r2_1 #0, $r2_3 #1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: java.lang.String challenge> = null;
+
+        return;
+
+     label2:
+        $r2_3 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State FAILED>;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state> = $r2_3;
+
+(1)     goto label1;
+
+     label3:
+        $r2_4 = <ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State MSG_TYPE2_RECEVIED>;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: ch.boye.httpclientandroidlib.impl.auth.NTLMScheme$State state> = $r2_4;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.NTLMScheme: java.lang.String challenge> = $r3;
+
+        return;
+    }
+}

@@ -1,0 +1,161 @@
+public class ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer extends java.lang.Object
+{
+    private final ch.boye.httpclientandroidlib.entity.ContentLengthStrategy lenStrategy;
+
+    public void <init>(ch.boye.httpclientandroidlib.entity.ContentLengthStrategy)
+    {
+        ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer $r0;
+        ch.boye.httpclientandroidlib.entity.ContentLengthStrategy $r1;
+        java.lang.IllegalArgumentException $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.entity.ContentLengthStrategy;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Content length strategy may not be null");
+
+        throw $r2;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer: ch.boye.httpclientandroidlib.entity.ContentLengthStrategy lenStrategy> = $r1;
+
+        return;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpEntity deserialize(ch.boye.httpclientandroidlib.io.SessionInputBuffer, ch.boye.httpclientandroidlib.HttpMessage) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        ch.boye.httpclientandroidlib.HttpMessage $r2;
+        ch.boye.httpclientandroidlib.entity.BasicHttpEntity $r3;
+        java.lang.IllegalArgumentException $r4, $r4_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpMessage;
+
+        if $r1 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Session input buffer may not be null");
+
+        throw $r4;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r4_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP message may not be null");
+
+        throw $r4_1;
+
+     label2:
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer: ch.boye.httpclientandroidlib.entity.BasicHttpEntity doDeserialize(ch.boye.httpclientandroidlib.io.SessionInputBuffer,ch.boye.httpclientandroidlib.HttpMessage)>($r1, $r2);
+
+        return $r3;
+    }
+
+    protected ch.boye.httpclientandroidlib.entity.BasicHttpEntity doDeserialize(ch.boye.httpclientandroidlib.io.SessionInputBuffer, ch.boye.httpclientandroidlib.HttpMessage) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        ch.boye.httpclientandroidlib.HttpMessage $r2;
+        ch.boye.httpclientandroidlib.entity.BasicHttpEntity $r3;
+        ch.boye.httpclientandroidlib.entity.ContentLengthStrategy $r4;
+        ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream $r5;
+        ch.boye.httpclientandroidlib.impl.io.IdentityInputStream $r6;
+        ch.boye.httpclientandroidlib.impl.io.ContentLengthInputStream $r7;
+        long $l0;
+        byte $b1, $b1_1, $b1_2;
+        ch.boye.httpclientandroidlib.Header $r8, $r8_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpMessage;
+
+        $r3 = new ch.boye.httpclientandroidlib.entity.BasicHttpEntity;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void <init>()>();
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer: ch.boye.httpclientandroidlib.entity.ContentLengthStrategy lenStrategy>;
+
+        $l0 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.entity.ContentLengthStrategy: long determineLength(ch.boye.httpclientandroidlib.HttpMessage)>($r2);
+
+        $b1 = $l0 cmp -2L;
+
+        if $b1 != 0 goto label3;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setChunked(boolean)>(1);
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setContentLength(long)>(-1L);
+
+        $r5 = new ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream;
+
+        specialinvoke $r5.<ch.boye.httpclientandroidlib.impl.io.ChunkedInputStream: void <init>(ch.boye.httpclientandroidlib.io.SessionInputBuffer)>($r1);
+
+(0)     virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setContent(java.io.InputStream)>($r5);
+
+     label1:
+        $b1_1 = Phi($b1 #0, $b1_2 #1, $b1_2 #2);
+
+        $r8 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpMessage: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Content-Type");
+
+        if $r8 == null goto label2;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setContentType(ch.boye.httpclientandroidlib.Header)>($r8);
+
+     label2:
+        $r8_1 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpMessage: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Content-Encoding");
+
+        if $r8_1 == null goto label5;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setContentEncoding(ch.boye.httpclientandroidlib.Header)>($r8_1);
+
+        return $r3;
+
+     label3:
+        $b1_2 = $l0 cmp -1L;
+
+        if $b1_2 != 0 goto label4;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setChunked(boolean)>(0);
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setContentLength(long)>(-1L);
+
+        $r6 = new ch.boye.httpclientandroidlib.impl.io.IdentityInputStream;
+
+        specialinvoke $r6.<ch.boye.httpclientandroidlib.impl.io.IdentityInputStream: void <init>(ch.boye.httpclientandroidlib.io.SessionInputBuffer)>($r1);
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setContent(java.io.InputStream)>($r6);
+
+(1)     goto label1;
+
+     label4:
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setChunked(boolean)>(0);
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setContentLength(long)>($l0);
+
+        $r7 = new ch.boye.httpclientandroidlib.impl.io.ContentLengthInputStream;
+
+        specialinvoke $r7.<ch.boye.httpclientandroidlib.impl.io.ContentLengthInputStream: void <init>(ch.boye.httpclientandroidlib.io.SessionInputBuffer,long)>($r1, $l0);
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.entity.BasicHttpEntity: void setContent(java.io.InputStream)>($r7);
+
+(2)     goto label1;
+
+     label5:
+        return $r3;
+    }
+}

@@ -1,0 +1,2190 @@
+public class com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView extends android.widget.FrameLayout implements com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener
+{
+    private com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter;
+    private boolean canChangeScrollDirection;
+    private int currentOffset;
+    private com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection currentScrollDirection;
+    private com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView;
+    private android.view.View errorView;
+    private boolean feedSetup;
+    private com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment;
+    private com.contextlogic.wish.api.service.GetFilteredFeedService getFilteredFeedService;
+    private android.widget.LinearLayout headerContainer;
+    private int index;
+    private int lastScrollEndPosition;
+    private java.util.HashSet lastSeenProductIds;
+    private boolean loadingComplete;
+    private boolean loadingErrored;
+    private com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow;
+    private android.view.View loadingView;
+    private com.contextlogic.wish.api.data.WishFilter mainCategory;
+    private android.view.View noItemsView;
+    private boolean noMoreItems;
+    private boolean pagerSettled;
+    private java.util.ArrayList pagerSettledTasks;
+    private com.contextlogic.wish.ui.components.grid.StaggeredGridView productView;
+    private java.util.ArrayList products;
+    private android.support.v4.widget.SwipeRefreshLayout refresherView;
+    private android.view.View rootLayout;
+    private java.lang.Runnable scrollEndTask;
+    private android.view.View spacerView;
+    private int startScrollPosition;
+    private int startTabBarOffset;
+    private boolean updatingList;
+
+    public void <init>(android.content.Context)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        android.content.Context $r1;
+        com.contextlogic.wish.api.service.GetFilteredFeedService $r2;
+        java.util.HashSet $r3;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection $r4;
+        java.util.ArrayList $r5;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$1 $r6;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        $r2 = new com.contextlogic.wish.api.service.GetFilteredFeedService;
+
+        specialinvoke $r2.<com.contextlogic.wish.api.service.GetFilteredFeedService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.api.service.GetFilteredFeedService getFilteredFeedService> = $r2;
+
+        $r3 = new java.util.HashSet;
+
+        specialinvoke $r3.<java.util.HashSet: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.HashSet lastSeenProductIds> = $r3;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int startScrollPosition> = -1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int startTabBarOffset> = -1;
+
+        $r4 = <com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection UNKNOWN>;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection currentScrollDirection> = $r4;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean feedSetup> = 0;
+
+        $r5 = new java.util.ArrayList;
+
+        specialinvoke $r5.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList pagerSettledTasks> = $r5;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean pagerSettled> = 1;
+
+        $r6 = new com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$1;
+
+        specialinvoke $r6.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$1: void <init>(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)>($r0);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.lang.Runnable scrollEndTask> = $r6;
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, 0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<android.widget.FrameLayout: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void init()>();
+
+        return;
+    }
+
+    static com.contextlogic.wish.ui.components.grid.StaggeredGridView access$000(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        return r1;
+    }
+
+    static int access$100(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        int i0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        i0 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int lastScrollEndPosition>;
+
+        return i0;
+    }
+
+    static com.contextlogic.wish.ui.fragment.dealdash.DealDashView access$1000(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.fragment.dealdash.DealDashView r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+        return r1;
+    }
+
+    static int access$102(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView, int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        int $i0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $i0 := @parameter1: int;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int lastScrollEndPosition> = $i0;
+
+        return $i0;
+    }
+
+    static void access$1100(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView, java.util.ArrayList, boolean, int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        java.util.ArrayList $r1;
+        boolean $z0;
+        int $i0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter1: java.util.ArrayList;
+
+        $z0 := @parameter2: boolean;
+
+        $i0 := @parameter3: int;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void handleLoadingSuccess(java.util.ArrayList,boolean,int)>($r1, $z0, $i0);
+
+        return;
+    }
+
+    static void access$1200(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView, java.lang.Runnable)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        java.lang.Runnable $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter1: java.lang.Runnable;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void queuePagerSettledTask(java.lang.Runnable)>($r1);
+
+        return;
+    }
+
+    static void access$1300(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void handleLoadingFailure()>();
+
+        return;
+    }
+
+    static void access$200(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void handleScrollEnded()>();
+
+        return;
+    }
+
+    static java.lang.Runnable access$300(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        java.lang.Runnable r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.lang.Runnable scrollEndTask>;
+
+        return r1;
+    }
+
+    static com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment access$400(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        return r1;
+    }
+
+    static void access$500(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void loadNextPage()>();
+
+        return;
+    }
+
+    static boolean access$602(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView, boolean)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean canChangeScrollDirection> = $z0;
+
+        return $z0;
+    }
+
+    static void access$700(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void waitForScrollEnd()>();
+
+        return;
+    }
+
+    static boolean access$802(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView, boolean)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean updatingList> = $z0;
+
+        return $z0;
+    }
+
+    static com.contextlogic.wish.api.data.WishFilter access$900(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.api.data.WishFilter r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.api.data.WishFilter mainCategory>;
+
+        return r1;
+    }
+
+    private void handleLoadingFailure()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        android.support.v4.widget.SwipeRefreshLayout $r1, $r1_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingErrored> = 1;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r1.<android.support.v4.widget.SwipeRefreshLayout: void setRefreshing(boolean)>(0);
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r1_1.<android.support.v4.widget.SwipeRefreshLayout: void setEnabled(boolean)>(1);
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void refreshViewState()>();
+
+        return;
+    }
+
+    private void handleLoadingProductCollections(java.util.ArrayList, boolean, int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        java.util.ArrayList $r1, $r2, $r2_1, $r2_2;
+        boolean $z0, $z1, $z0_1;
+        int $i0, $i1, $i1_1, $i0_1, $i0_2, $i1_2;
+        java.util.Iterator $r3;
+        java.lang.Object $r4;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r5, $r5_1, $r5_2, $r5_3;
+        android.support.v4.widget.SwipeRefreshLayout $r6, $r6_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r2 := @parameter0: java.util.ArrayList;
+
+        $z0 := @parameter1: boolean;
+
+        $i0 := @parameter2: int;
+
+        $r3 = virtualinvoke $r2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label1:
+        $z1 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label2;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r4);
+
+        goto label1;
+
+     label2:
+        $i1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int currentOffset>;
+
+        if $i1 != 0 goto label5;
+
+        $r5 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        virtualinvoke $r5.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void scrollTo(int,int)>(0, 0);
+
+        $r5_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+(0)     virtualinvoke $r5_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void reloadData()>();
+
+     label3:
+        $i1_1 = Phi($i1 #0, $i1_2 #4);
+
+        $r5_2 = Phi($r5_1 #0, $r5_3 #4);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingComplete> = 1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int currentOffset> = $i0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean noMoreItems> = $z0;
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean noMoreItems>;
+
+(1)     if $z0_1 != 0 goto label4;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        $i0_1 = virtualinvoke $r2_1.<java.util.ArrayList: int size()>();
+
+(2)     if $i0_1 >= 30 goto label4;
+
+(3)     specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void loadNextPage()>();
+
+     label4:
+        $i0_2 = Phi($i0 #1, $i0_1 #2, $i0_1 #3);
+
+        $r2_2 = Phi($r2 #1, $r2_1 #2, $r2_1 #3);
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void refreshViewState()>();
+
+        $r6 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r6.<android.support.v4.widget.SwipeRefreshLayout: void setRefreshing(boolean)>(0);
+
+        $r6_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r6_1.<android.support.v4.widget.SwipeRefreshLayout: void setEnabled(boolean)>(1);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean updatingList> = 0;
+
+        return;
+
+     label5:
+        $r5_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        $i1_2 = virtualinvoke $r2.<java.util.ArrayList: int size()>();
+
+        virtualinvoke $r5_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void insertCells(int)>($i1_2);
+
+(4)     goto label3;
+    }
+
+    private void handleLoadingSuccess(java.util.ArrayList, boolean, int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        java.util.HashSet $r1, $r7, $r1_1, $r1_2, $r1_3;
+        java.util.ArrayList $r2, $r3, $r3_1, $r3_2, $r2_1, $r2_2, $r2_3, $r2_4;
+        boolean $z0, $z1, $z1_1, $z1_2, $z0_1, $z1_3, $z1_4, $z1_5, $z1_6;
+        int $i0, $i1, $i1_1, $i1_2, $i0_1, $i0_2, $i1_3;
+        java.util.Iterator $r4, $r4_1, $r4_2;
+        java.lang.Object $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        com.contextlogic.wish.api.data.WishProduct $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        java.lang.String $r8;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r9, $r9_1, $r9_2, $r9_3;
+        android.support.v4.widget.SwipeRefreshLayout $r10, $r10_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r2 := @parameter0: java.util.ArrayList;
+
+        $z0 := @parameter1: boolean;
+
+        $i0 := @parameter2: int;
+
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        $i1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int currentOffset>;
+
+        if $i1 != 0 goto label3;
+
+        $r3_1 = $r2;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.HashSet lastSeenProductIds>;
+
+(0)     virtualinvoke $r1.<java.util.HashSet: void clear()>();
+
+     label1:
+        $r3_2 = Phi($r3_1 #0, $r3 #7);
+
+        $r6 = Phi($r6 #0, $r6_3 #7);
+
+        $r5 = Phi($r5 #0, $r5_3 #7);
+
+        $z1 = Phi($z1 #0, $z1_4 #7);
+
+        $r4 = Phi($r4 #0, $r4_2 #7);
+
+        $r1_1 = Phi($r1 #0, $r1_2 #7);
+
+(1)     $r4_1 = virtualinvoke $r3_2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label2:
+        $r6_1 = Phi($r6 #1, $r6_2 #2);
+
+        $r5_1 = Phi($r5 #1, $r5_2 #2);
+
+        $z1_1 = Phi($z1 #1, $z1_2 #2);
+
+        $r2_1 = Phi($r2 #1, $r2_2 #2);
+
+        $z1_2 = interfaceinvoke $r4_1.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1_2 == 0 goto label6;
+
+        $r5_2 = interfaceinvoke $r4_1.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6_2 = (com.contextlogic.wish.api.data.WishProduct) $r5_2;
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        virtualinvoke $r2_2.<java.util.ArrayList: boolean add(java.lang.Object)>($r6_2);
+
+(2)     goto label2;
+
+     label3:
+        $r7 = new java.util.HashSet;
+
+        specialinvoke $r7.<java.util.HashSet: void <init>()>();
+
+(3)     $r4_2 = virtualinvoke $r2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label4:
+        $r6_3 = Phi($r6 #3, $r6_4 #4, $r6_4 #5, $r6_4 #6);
+
+        $r5_3 = Phi($r5 #3, $r5_4 #4, $r5_4 #5, $r5_4 #6);
+
+        $z1_3 = Phi($z1 #3, $z1_5 #4, $z1_6 #5, $z1_6 #6);
+
+        $r1_2 = Phi($r1 #3, $r1_3 #4, $r1_3 #5, $r1_3 #6);
+
+        $z1_4 = interfaceinvoke $r4_2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1_4 == 0 goto label5;
+
+        $r5_4 = interfaceinvoke $r4_2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6_4 = (com.contextlogic.wish.api.data.WishProduct) $r5_4;
+
+        $r8 = virtualinvoke $r6_4.<com.contextlogic.wish.api.data.WishProduct: java.lang.String getProductId()>();
+
+        $r1_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.HashSet lastSeenProductIds>;
+
+        $z1_5 = virtualinvoke $r1_3.<java.util.HashSet: boolean contains(java.lang.Object)>($r8);
+
+(4)     if $z1_5 != 0 goto label4;
+
+        $z1_6 = virtualinvoke $r7.<java.util.HashSet: boolean contains(java.lang.Object)>($r8);
+
+(5)     if $z1_6 != 0 goto label4;
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>($r6_4);
+
+        virtualinvoke $r7.<java.util.HashSet: boolean add(java.lang.Object)>($r8);
+
+(6)     goto label4;
+
+     label5:
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.HashSet lastSeenProductIds> = $r7;
+
+(7)     goto label1;
+
+     label6:
+        $i1_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int currentOffset>;
+
+        if $i1_1 != 0 goto label9;
+
+        $r9 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        virtualinvoke $r9.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void scrollTo(int,int)>(0, 0);
+
+        $r9_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+(8)     virtualinvoke $r9_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void reloadData()>();
+
+     label7:
+        $i1_2 = Phi($i1_1 #8, $i1_3 #12);
+
+        $r9_2 = Phi($r9_1 #8, $r9_3 #12);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingComplete> = 1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int currentOffset> = $i0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean noMoreItems> = $z0;
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean noMoreItems>;
+
+(9)     if $z0_1 != 0 goto label8;
+
+        $r2_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        $i0_1 = virtualinvoke $r2_3.<java.util.ArrayList: int size()>();
+
+(10)    if $i0_1 >= 15 goto label8;
+
+(11)    specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void loadNextPage()>();
+
+     label8:
+        $r2_4 = Phi($r2_1 #9, $r2_3 #10, $r2_3 #11);
+
+        $i0_2 = Phi($i0 #9, $i0_1 #10, $i0_1 #11);
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void refreshViewState()>();
+
+        $r10 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r10.<android.support.v4.widget.SwipeRefreshLayout: void setRefreshing(boolean)>(0);
+
+        $r10_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r10_1.<android.support.v4.widget.SwipeRefreshLayout: void setEnabled(boolean)>(1);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean updatingList> = 0;
+
+        return;
+
+     label9:
+        $r9_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        $i1_3 = virtualinvoke $r3_2.<java.util.ArrayList: int size()>();
+
+        virtualinvoke $r9_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void insertCells(int)>($i1_3);
+
+(12)    goto label7;
+    }
+
+    private void handleScrollEnded()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r1;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection $r2;
+        int $i0, $i1, $i1_1, $i1_2;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        $i0 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: int getScrollY()>();
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        $i1 = virtualinvoke $r3.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: int getTabBarStripHeight()>();
+
+        if $i0 > $i1 goto label2;
+
+        $r3_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+(0)     virtualinvoke $r3_1.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: void showTabBarStrip(boolean)>(1);
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1, $i1_2 #2);
+
+        $r3_2 = Phi($r3_1 #0, $r3_3 #1, $r3_4 #2);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int startScrollPosition> = -1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int startTabBarOffset> = -1;
+
+        $r2 = <com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection UNKNOWN>;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection currentScrollDirection> = $r2;
+
+        return;
+
+     label2:
+        $i1_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int startScrollPosition>;
+
+        if $i0 >= $i1_2 goto label3;
+
+        $r3_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        virtualinvoke $r3_3.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: void showTabBarStrip(boolean)>(1);
+
+(1)     goto label1;
+
+     label3:
+        $r3_4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        virtualinvoke $r3_4.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: void hideTabBarStrip(boolean)>(1);
+
+(2)     goto label1;
+    }
+
+    private void handleScrollLoad(int, int, int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        int $i0, $i1, $i2, $i2_1, $i2_2, $i2_3;
+        com.contextlogic.wish.api.service.GetFilteredFeedService $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $i0 := @parameter0: int;
+
+        $i2 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingErrored>;
+
+(0)     if $z0 != 0 goto label2;
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean noMoreItems>;
+
+(1)     if $z0_1 != 0 goto label2;
+
+        $z0_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean updatingList>;
+
+(2)     if $z0_2 != 0 goto label2;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.api.service.GetFilteredFeedService getFilteredFeedService>;
+
+        $z0_3 = virtualinvoke $r1.<com.contextlogic.wish.api.service.GetFilteredFeedService: boolean isPending()>();
+
+(3)     if $z0_3 != 0 goto label2;
+
+        $z0_4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingComplete>;
+
+(4)     if $z0_4 == 0 goto label2;
+
+(5)     $z0_5 = 1;
+
+     label1:
+        $z0_6 = Phi($z0_5 #5, $z0_8 #8);
+
+(6)     if $z0_6 == 0 goto label3;
+
+        $i2_1 = $i2 * 2;
+
+        $i2_2 = $i1 - $i2_1;
+
+(7)     if $i0 <= $i2_2 goto label3;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void loadNextPage()>();
+
+        return;
+
+     label2:
+        $z0_7 = Phi($z0 #0, $z0_1 #1, $z0_2 #2, $z0_3 #3, $z0_4 #4);
+
+        $z0_8 = 0;
+
+(8)     goto label1;
+
+     label3:
+        $i2_3 = Phi($i2 #6, $i2_2 #7);
+
+        return;
+    }
+
+    private void hideAllUiElements()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        android.support.v4.widget.SwipeRefreshLayout $r1;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r2;
+        android.view.View $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r1.<android.support.v4.widget.SwipeRefreshLayout: void setVisibility(int)>(8);
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        virtualinvoke $r2.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setVisibility(int)>(8);
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View errorView>;
+
+        virtualinvoke $r3.<android.view.View: void setVisibility(int)>(8);
+
+        $r3_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View noItemsView>;
+
+        virtualinvoke $r3_1.<android.view.View: void setVisibility(int)>(8);
+
+        $r3_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View loadingView>;
+
+        virtualinvoke $r3_2.<android.view.View: void setVisibility(int)>(8);
+
+        return;
+    }
+
+    private void init()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        java.util.ArrayList $r1;
+        android.content.Context $r2;
+        java.lang.Object $r3;
+        android.view.LayoutInflater $r4;
+        android.view.View $r5;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r2 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.content.Context getContext()>();
+
+        $r3 = virtualinvoke $r2.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("layout_inflater");
+
+        $r4 = (android.view.LayoutInflater) $r3;
+
+        $r5 = virtualinvoke $r4.<android.view.LayoutInflater: android.view.View inflate(int,android.view.ViewGroup)>(2130903136, $r0);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View rootLayout> = $r5;
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products> = $r1;
+
+        return;
+    }
+
+    private void loadNextPage()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.api.service.GetFilteredFeedService $r1;
+        int $i0, $i1;
+        com.contextlogic.wish.api.data.WishFilter $r2;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r3;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$5 $r4;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$6 $r5;
+        java.lang.String $r6;
+        java.util.ArrayList $r7;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingErrored> = 0;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.api.service.GetFilteredFeedService getFilteredFeedService>;
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int currentOffset>;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.api.data.WishFilter mainCategory>;
+
+        $r6 = virtualinvoke $r2.<com.contextlogic.wish.api.data.WishFilter: java.lang.String getFilterId()>();
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        $i1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int index>;
+
+        $r7 = virtualinvoke $r3.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: java.util.ArrayList getSelectedFilters(int)>($i1);
+
+        $r4 = new com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$5;
+
+        specialinvoke $r4.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$5: void <init>(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)>($r0);
+
+        $r5 = new com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$6;
+
+        specialinvoke $r5.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$6: void <init>(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)>($r0);
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.GetFilteredFeedService: void requestService(int,int,boolean,java.lang.String,java.util.ArrayList,boolean,com.contextlogic.wish.api.service.GetFilteredFeedService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($i0, 30, 0, $r6, $r7, 0, $r4, $r5);
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void refreshViewState()>();
+
+        return;
+    }
+
+    private void processPagerSettledTasks()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r1;
+        int $i0, $i1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.util.ArrayList $r2, $r2_1, $r2_2;
+        java.util.Iterator $r3;
+        java.lang.Object $r4;
+        java.lang.Runnable $r5;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean pagerSettled>;
+
+(0)     if $z0 == 0 goto label4;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        $i1 = virtualinvoke $r1.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: int getCurrentIndex()>();
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int index>;
+
+        if $i1 == $i0 goto label1;
+
+        return;
+
+     label1:
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList pagerSettledTasks>;
+
+(1)     $r3 = virtualinvoke $r2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label2:
+        $z0_1 = Phi($z0 #1, $z0_2 #2);
+
+        $z0_2 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_2 == 0 goto label3;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.lang.Runnable) $r4;
+
+        interfaceinvoke $r5.<java.lang.Runnable: void run()>();
+
+(2)     goto label2;
+
+     label3:
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList pagerSettledTasks>;
+
+(3)     virtualinvoke $r2_1.<java.util.ArrayList: void clear()>();
+
+     label4:
+        $z0_3 = Phi($z0 #0, $z0_2 #3);
+
+        $r2_2 = Phi($r2 #0, $r2_1 #3);
+
+        return;
+    }
+
+    private void queuePagerSettledTask(java.lang.Runnable)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        java.lang.Runnable $r1;
+        java.util.ArrayList $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter0: java.lang.Runnable;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList pagerSettledTasks>;
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void processPagerSettledTasks()>();
+
+        return;
+    }
+
+    private void setSpacerHeight(int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        int $i0;
+        android.view.ViewGroup$LayoutParams $r1;
+        android.view.View $r2, $r2_1;
+        android.widget.LinearLayout$LayoutParams $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $i0 := @parameter0: int;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View spacerView>;
+
+        $r1 = virtualinvoke $r2.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.widget.LinearLayout$LayoutParams) $r1;
+
+        $r3.<android.view.ViewGroup$LayoutParams: int height> = $i0;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View spacerView>;
+
+        virtualinvoke $r2_1.<android.view.View: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r3);
+
+        return;
+    }
+
+    private void updateRefresherOffset()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        android.support.v4.widget.SwipeRefreshLayout $r1;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r2;
+        com.contextlogic.wish.WishApplication $r3;
+        android.content.res.Resources $r4;
+        android.util.DisplayMetrics $r5;
+        float $f0;
+        int $i0, $i1, $i1_1, $i0_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r3 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r4 = virtualinvoke $r3.<com.contextlogic.wish.WishApplication: android.content.res.Resources getResources()>();
+
+        $r5 = virtualinvoke $r4.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0 = staticinvoke <android.util.TypedValue: float applyDimension(int,float,android.util.DisplayMetrics)>(1, 100.0F, $r5);
+
+        $i0 = (int) $f0;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        $i1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int index>;
+
+        $i1_1 = virtualinvoke $r2.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: int getTabBarStripHeight(int)>($i1);
+
+        $i0_1 = $i1_1 + $i0;
+
+        virtualinvoke $r1.<android.support.v4.widget.SwipeRefreshLayout: void setProgressViewOffset(boolean,int,int)>(0, 0, $i0_1);
+
+        return;
+    }
+
+    private void waitForScrollEnd()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r1;
+        java.lang.Runnable $r2, $r2_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.lang.Runnable scrollEndTask>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: boolean removeCallbacks(java.lang.Runnable)>($r2);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int lastScrollEndPosition> = -1;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.lang.Runnable scrollEndTask>;
+
+        interfaceinvoke $r2_1.<java.lang.Runnable: void run()>();
+
+        return;
+    }
+
+    public void adjustForCountdown(int, int, android.view.View, int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        int $i0, $i1, $i2;
+        android.view.View $r1;
+        com.contextlogic.wish.analytics.WishAnalyticsEvent $r2;
+        com.contextlogic.wish.ui.fragment.dealdash.DealDashView $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        com.contextlogic.wish.api.data.DealDashPageInfo$PAGE $r4, $r5, $r4_1, $r5_1, $r5_2, $r4_2, $r5_3, $r4_3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: android.view.View;
+
+        $i2 := @parameter3: int;
+
+(0)     if $i0 != $i2 goto label1;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+        $r4 = virtualinvoke $r3.<com.contextlogic.wish.ui.fragment.dealdash.DealDashView: com.contextlogic.wish.api.data.DealDashPageInfo$PAGE getState()>();
+
+        $r5 = <com.contextlogic.wish.api.data.DealDashPageInfo$PAGE: com.contextlogic.wish.api.data.DealDashPageInfo$PAGE PLAYING>;
+
+(1)     if $r4 == $r5 goto label3;
+
+     label1:
+        $r5_2 = Phi($r5 #0, $r5 #1);
+
+        $r3_2 = Phi($r3 #0, $r3 #1);
+
+        $r4_2 = Phi($r4 #0, $r4 #1);
+
+(2)     virtualinvoke $r1.<android.view.View: void setVisibility(int)>(8);
+
+     label2:
+        $r5_3 = Phi($r5_2 #2, $r5_1 #3, $r5_1 #4);
+
+        $r3_3 = Phi($r3_2 #2, $r3_1 #3, $r3_1 #4);
+
+        $r4_3 = Phi($r4_2 #2, $r4_1 #3, $r4_1 #4);
+
+        if $i1 != $i2 goto label4;
+
+        if $i0 == $i1 goto label4;
+
+        $r3_4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+        $r2 = <com.contextlogic.wish.analytics.WishAnalyticsEvent: com.contextlogic.wish.analytics.WishAnalyticsEvent CLICK_DEAL_DASH_LEAVE>;
+
+        virtualinvoke $r3_4.<com.contextlogic.wish.ui.fragment.dealdash.DealDashView: void trackEvent(com.contextlogic.wish.analytics.WishAnalyticsEvent)>($r2);
+
+        return;
+
+     label3:
+        $r3_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+        $r4_1 = virtualinvoke $r3_1.<com.contextlogic.wish.ui.fragment.dealdash.DealDashView: com.contextlogic.wish.api.data.DealDashPageInfo$PAGE getState()>();
+
+        $r5_1 = <com.contextlogic.wish.api.data.DealDashPageInfo$PAGE: com.contextlogic.wish.api.data.DealDashPageInfo$PAGE PLAYING>;
+
+(3)     if $r4_1 != $r5_1 goto label2;
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>(0);
+
+(4)     goto label2;
+
+     label4:
+        return;
+    }
+
+    public void cleanup()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.api.service.GetFilteredFeedService $r1;
+        com.contextlogic.wish.ui.fragment.dealdash.DealDashView $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void releaseImages()>();
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.api.service.GetFilteredFeedService getFilteredFeedService>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.GetFilteredFeedService: void cancelAllRequests()>();
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+(1)     virtualinvoke $r2_1.<com.contextlogic.wish.ui.fragment.dealdash.DealDashView: void cleanup()>();
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    public java.util.Date getCountDownTargetDate()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.fragment.dealdash.DealDashView $r1;
+        java.util.Date $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+        $r2 = virtualinvoke $r1.<com.contextlogic.wish.ui.fragment.dealdash.DealDashView: java.util.Date getCountDownTargetDate()>();
+
+        return $r2;
+    }
+
+    public void handleOrientationChanged()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void reloadData()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public boolean isFeedSetup()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        boolean z0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        z0 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean feedSetup>;
+
+        return z0;
+    }
+
+    public boolean onLongClickCell(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView, int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r1;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridCellView;
+
+        $i0 := @parameter1: int;
+
+        return 0;
+    }
+
+    public void onPagerScrollSettled()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean pagerSettled> = 1;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void processPagerSettledTasks()>();
+
+        return;
+    }
+
+    public void onPagerScrollUnsettled()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean pagerSettled> = 0;
+
+        return;
+    }
+
+    public void onScrollChanged(int, int, int, int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i2_1, $i3_1, $i3_2, $i3_3, $i3_4, $i3_5, $i4_1, $i3_6, $i4_2, $i3_7;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection $r1, $r2, $r2_1, $r2_2, $r2_3;
+        boolean $z0;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $i2 := @parameter0: int;
+
+        $i3 := @parameter1: int;
+
+        $i0 := @parameter2: int;
+
+        $i1 := @parameter3: int;
+
+        $i2_1 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i2);
+
+        if $i3 >= 0 goto label5;
+
+(0)     $r2 = <com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection UP>;
+
+     label1:
+        $r2_1 = Phi($r2 #0, $r2_2 #6, $r2_3 #7);
+
+        $i4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int startScrollPosition>;
+
+        if $i4 == -1 goto label2;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection currentScrollDirection>;
+
+(1)     if $r2_1 == $r1 goto label3;
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean canChangeScrollDirection>;
+
+(2)     if $z0 == 0 goto label3;
+
+     label2:
+        $i3_1 = $i2_1 - $i3;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int startScrollPosition> = $i3_1;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        $i3_2 = virtualinvoke $r3.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: int getTabBarStripOffset()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int startTabBarOffset> = $i3_2;
+
+(3)     $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection currentScrollDirection> = $r2_1;
+
+     label3:
+        $r3_1 = Phi($r3 #1, $r3 #2, $r3 #3);
+
+        $i3_3 = Phi($i3 #1, $i3 #2, $i3_2 #3);
+
+        $i3_4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int startScrollPosition>;
+
+        $i3_5 = $i3_4 - $i2_1;
+
+(4)     if $i3_5 == 0 goto label4;
+
+        $r3_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        $i4_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int startTabBarOffset>;
+
+        $i3_6 = $i4_1 + $i3_5;
+
+(5)     virtualinvoke $r3_2.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: void setTabBarStripOffset(int)>($i3_6);
+
+     label4:
+        $r3_3 = Phi($r3_1 #4, $r3_2 #5);
+
+        $i4_2 = Phi($i4 #4, $i4_1 #5);
+
+        $i3_7 = Phi($i3_5 #4, $i3_6 #5);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void handleScrollLoad(int,int,int)>($i2_1, $i0, $i1);
+
+        return;
+
+     label5:
+        if $i3 != 0 goto label6;
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection currentScrollDirection>;
+
+(6)     goto label1;
+
+     label6:
+        $r2_3 = <com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$ScrollDirection DOWN>;
+
+(7)     goto label1;
+    }
+
+    public void onSelectCell(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView, int)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r1;
+        int $i0, $i1;
+        boolean $z0;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r2;
+        java.util.ArrayList $r3, $r3_1, $r3_2, $r3_3;
+        java.lang.Object $r4;
+        com.contextlogic.wish.api.data.WishProduct $r5;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridCellView;
+
+        $i0 := @parameter1: int;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        $i1 = virtualinvoke $r3_1.<java.util.ArrayList: int size()>();
+
+        if $i0 < $i1 goto label1;
+
+        return;
+
+     label1:
+        $r3_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        $r4 = virtualinvoke $r3_2.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $z0 = $r4 instanceof com.contextlogic.wish.api.data.WishProduct;
+
+(1)     if $z0 == 0 goto label2;
+
+        $r5 = (com.contextlogic.wish.api.data.WishProduct) $r4;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+(2)     virtualinvoke $r2.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: void handleProductClick(com.contextlogic.wish.api.data.WishProduct)>($r5);
+
+     label2:
+        $r3_3 = Phi($r3 #0, $r3_2 #1, $r3_2 #2);
+
+        return;
+    }
+
+    public void prepareForUpdateFeed()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.api.service.GetFilteredFeedService $r1;
+        java.util.ArrayList $r2;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.api.service.GetFilteredFeedService getFilteredFeedService>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.GetFilteredFeedService: void cancelAllRequests()>();
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        virtualinvoke $r2.<java.util.ArrayList: void clear()>();
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        virtualinvoke $r3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void reloadData()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingComplete> = 0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingErrored> = 0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean feedSetup> = 0;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void refreshViewState()>();
+
+        return;
+    }
+
+    public void refreshViewState()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r1;
+        com.contextlogic.wish.ui.fragment.dealdash.DealDashView $r2;
+        com.contextlogic.wish.api.data.DealDashPageInfo$PAGE $r3, $r11;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8;
+        java.util.ArrayList $r4, $r4_1, $r4_2, $r4_3;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4;
+        android.support.v4.widget.SwipeRefreshLayout $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r6, $r6_1;
+        com.contextlogic.wish.ui.components.list.LoadingListRow $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        com.contextlogic.wish.api.service.GetFilteredFeedService $r9, $r9_1;
+        android.view.View $r10, $r10_1, $r10_2, $r10_3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void hideAllUiElements()>();
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingErrored>;
+
+        if $z0 == 0 goto label04;
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        $i0 = virtualinvoke $r4.<java.util.ArrayList: int size()>();
+
+        if $i0 <= 0 goto label03;
+
+        $r5 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r5.<android.support.v4.widget.SwipeRefreshLayout: void setVisibility(int)>(0);
+
+        $r6 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        virtualinvoke $r6.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setVisibility(int)>(0);
+
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean noMoreItems>;
+
+        if $z0_1 == 0 goto label01;
+
+        $r7 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r8 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode NoMoreItems>;
+
+        virtualinvoke $r7.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r8);
+
+        return;
+
+     label01:
+        $r9 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.api.service.GetFilteredFeedService getFilteredFeedService>;
+
+        $z0_2 = virtualinvoke $r9.<com.contextlogic.wish.api.service.GetFilteredFeedService: boolean isPending()>();
+
+        if $z0_2 == 0 goto label02;
+
+        $r7_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r8_1 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode Loading>;
+
+        virtualinvoke $r7_1.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r8_1);
+
+        return;
+
+     label02:
+        $r7_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r8_2 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode ClickToLoad>;
+
+        virtualinvoke $r7_2.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r8_2);
+
+        return;
+
+     label03:
+        $r5_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r5_1.<android.support.v4.widget.SwipeRefreshLayout: void setVisibility(int)>(0);
+
+        $r10 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View errorView>;
+
+        virtualinvoke $r10.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label04:
+        $z0_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingComplete>;
+
+(0)     if $z0_3 == 0 goto label06;
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        $i0_1 = virtualinvoke $r4_1.<java.util.ArrayList: int size()>();
+
+(1)     if $i0_1 != 0 goto label06;
+
+        $i0_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int index>;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        $i1 = virtualinvoke $r1.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: int getDealDashPosition()>();
+
+        if $i0_2 == $i1 goto label05;
+
+        $r10_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View noItemsView>;
+
+        virtualinvoke $r10_1.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label05:
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+        $r11 = virtualinvoke $r2.<com.contextlogic.wish.ui.fragment.dealdash.DealDashView: com.contextlogic.wish.api.data.DealDashPageInfo$PAGE getState()>();
+
+        $r3 = <com.contextlogic.wish.api.data.DealDashPageInfo$PAGE: com.contextlogic.wish.api.data.DealDashPageInfo$PAGE COUNTDOWN>;
+
+(2)     if $r11 != $r3 goto label11;
+
+        $r10_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View loadingView>;
+
+        virtualinvoke $r10_2.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label06:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $i0_3 = Phi($i0 #0, $i0_1 #1);
+
+        $z0_4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingComplete>;
+
+        if $z0_4 == 0 goto label09;
+
+        $r5_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r5_2.<android.support.v4.widget.SwipeRefreshLayout: void setVisibility(int)>(0);
+
+        $r6_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        virtualinvoke $r6_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setVisibility(int)>(0);
+
+        $z0_5 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean noMoreItems>;
+
+        if $z0_5 == 0 goto label07;
+
+        $r7_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r8_3 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode NoMoreItems>;
+
+        virtualinvoke $r7_3.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r8_3);
+
+        return;
+
+     label07:
+        $r9_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.api.service.GetFilteredFeedService getFilteredFeedService>;
+
+        $z0_6 = virtualinvoke $r9_1.<com.contextlogic.wish.api.service.GetFilteredFeedService: boolean isPending()>();
+
+        if $z0_6 == 0 goto label08;
+
+        $r7_4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r8_4 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode Loading>;
+
+        virtualinvoke $r7_4.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r8_4);
+
+        return;
+
+     label08:
+        $r7_5 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r8_5 = <com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode: com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode ClickToLoad>;
+
+        virtualinvoke $r7_5.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setLoadingMode(com.contextlogic.wish.ui.components.list.LoadingListRow$LoadingMode)>($r8_5);
+
+        return;
+
+     label09:
+        $r5_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        $z0_7 = virtualinvoke $r5_3.<android.support.v4.widget.SwipeRefreshLayout: boolean isRefreshing()>();
+
+        if $z0_7 != 0 goto label10;
+
+        $r10_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View loadingView>;
+
+        virtualinvoke $r10_3.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label10:
+        $r5_4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+(3)     virtualinvoke $r5_4.<android.support.v4.widget.SwipeRefreshLayout: void setVisibility(int)>(0);
+
+     label11:
+        $z0_8 = Phi($z0_3 #2, $z0_7 #3);
+
+        $r4_3 = Phi($r4_1 #2, $r4_2 #3);
+
+        $i0_4 = Phi($i0_2 #2, $i0_3 #3);
+
+        $r5_5 = Phi($r5 #2, $r5_4 #3);
+
+        return;
+    }
+
+    public void refreshWishStates(boolean)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        boolean $z0, $z1;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r1, $r1_1, $r1_2;
+        android.util.SparseArray $r2;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3;
+        java.lang.Object $r3;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r4;
+        com.contextlogic.wish.ui.fragment.productfeed.ProductFeedGridCellView $r5;
+        com.contextlogic.wish.ui.fragment.dealdash.DealDashView $r6, $r6_1, $r6_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+(0)     if $r1 == null goto label3;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        $r2 = virtualinvoke $r1_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray getVisibleViews()>();
+
+        $i0 = virtualinvoke $r2.<android.util.SparseArray: int size()>();
+
+(1)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #1, $i1_2 #3);
+
+(2)     if $i1_1 >= $i0 goto label3;
+
+        $r3 = virtualinvoke $r2.<android.util.SparseArray: java.lang.Object valueAt(int)>($i1_1);
+
+        $r4 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r3;
+
+        $z1 = $r4 instanceof com.contextlogic.wish.ui.fragment.productfeed.ProductFeedGridCellView;
+
+        if $z1 == 0 goto label2;
+
+        $r5 = (com.contextlogic.wish.ui.fragment.productfeed.ProductFeedGridCellView) $r4;
+
+        virtualinvoke $r5.<com.contextlogic.wish.ui.fragment.productfeed.ProductFeedGridCellView: void refreshWishState(boolean)>($z0);
+
+     label2:
+        $i1_2 = $i1_1 + 1;
+
+(3)     goto label1;
+
+     label3:
+        $r1_2 = Phi($r1 #0, $r1_1 #2);
+
+        $i1_3 = Phi($i1 #0, $i1_1 #2);
+
+        $r6 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+(4)     if $r6 == null goto label4;
+
+        $r6_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+(5)     virtualinvoke $r6_1.<com.contextlogic.wish.ui.fragment.dealdash.DealDashView: void refreshWishStates()>();
+
+     label4:
+        $r6_2 = Phi($r6 #4, $r6_1 #5);
+
+        return;
+    }
+
+    public void releaseImages()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void releaseImages()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void restoreImages()
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void restoreImages()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void setDealDashInfo(com.contextlogic.wish.api.data.DealDashInfo, android.view.View, com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.api.data.DealDashInfo $r1;
+        android.view.View $r2;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r3;
+        com.contextlogic.wish.ui.fragment.dealdash.DealDashView $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.DealDashInfo;
+
+        $r2 := @parameter1: android.view.View;
+
+        $r3 := @parameter2: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment;
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+        virtualinvoke $r4.<com.contextlogic.wish.ui.fragment.dealdash.DealDashView: void setCountdownView(android.view.View)>($r2);
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+        virtualinvoke $r4_1.<com.contextlogic.wish.ui.fragment.dealdash.DealDashView: void setFilterFragment(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment)>($r3);
+
+(0)     if $r1 == null goto label1;
+
+        $r4_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView>;
+
+(1)     virtualinvoke $r4_2.<com.contextlogic.wish.ui.fragment.dealdash.DealDashView: void setInfo(com.contextlogic.wish.api.data.DealDashInfo)>($r1);
+
+     label1:
+        $r4_3 = Phi($r4_1 #0, $r4_2 #1);
+
+        return;
+    }
+
+    public void setProductViewHeader(android.view.View)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        android.view.View $r1;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        virtualinvoke $r2.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void addHeaderView(android.view.View)>($r1);
+
+        return;
+    }
+
+    public void setup(com.contextlogic.wish.api.data.WishFilter, int, com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.api.data.WishFilter $r1;
+        int $i0;
+        int[] $r2;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$2 $r3;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$3 $r4;
+        com.contextlogic.wish.ui.fragment.productfeed.ProductFeedAdapter $r5;
+        java.util.ArrayList $r6;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$4 $r7;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r8, $r8_1;
+        android.view.View $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r9_11, $r9_12, $r9_13;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6;
+        android.support.v4.widget.SwipeRefreshLayout $r11, $r11_1, $r11_2, $r11_3;
+        com.contextlogic.wish.ui.components.list.LoadingListRow $r12, $r12_1, $r12_2;
+        android.content.Context $r13, $r13_1, $r13_2, $r13_3;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter $r14;
+        android.widget.LinearLayout $r15, $r15_1, $r15_2, $r15_3;
+        com.contextlogic.wish.ui.fragment.dealdash.DealDashView $r16;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.WishFilter;
+
+        $i0 := @parameter1: int;
+
+        $r8 := @parameter2: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.api.data.WishFilter mainCategory> = $r1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int index> = $i0;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment> = $r8;
+
+        $r9 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View rootLayout>;
+
+        $r9_1 = virtualinvoke $r9.<android.view.View: android.view.View findViewById(int)>(2131558932);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View loadingView> = $r9_1;
+
+        $r9_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View rootLayout>;
+
+        $r9_3 = virtualinvoke $r9_2.<android.view.View: android.view.View findViewById(int)>(2131558933);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View noItemsView> = $r9_3;
+
+        $r9_4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View rootLayout>;
+
+        $r9_5 = virtualinvoke $r9_4.<android.view.View: android.view.View findViewById(int)>(2131558934);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View errorView> = $r9_5;
+
+        $r9_6 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View rootLayout>;
+
+        $r9_7 = virtualinvoke $r9_6.<android.view.View: android.view.View findViewById(int)>(2131558931);
+
+        $r10 = (com.contextlogic.wish.ui.components.grid.StaggeredGridView) $r9_7;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView> = $r10;
+
+        $r9_8 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View rootLayout>;
+
+        $r9_9 = virtualinvoke $r9_8.<android.view.View: android.view.View findViewById(int)>(2131558930);
+
+        $r11 = (android.support.v4.widget.SwipeRefreshLayout) $r9_9;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView> = $r11;
+
+        $r11_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        $r2 = newarray (int)[1];
+
+        $r2[0] = 2131493070;
+
+        virtualinvoke $r11_1.<android.support.v4.widget.SwipeRefreshLayout: void setColorSchemeResources(int[])>($r2);
+
+        $r11_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        virtualinvoke $r11_2.<android.support.v4.widget.SwipeRefreshLayout: void setEnabled(boolean)>(0);
+
+        $r11_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+        $r3 = new com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$2;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$2: void <init>(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)>($r0);
+
+        virtualinvoke $r11_3.<android.support.v4.widget.SwipeRefreshLayout: void setOnRefreshListener(android.support.v4.widget.SwipeRefreshLayout$OnRefreshListener)>($r3);
+
+        $r12 = new com.contextlogic.wish.ui.components.list.LoadingListRow;
+
+        $r13 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.content.Context getContext()>();
+
+        specialinvoke $r12.<com.contextlogic.wish.ui.components.list.LoadingListRow: void <init>(android.content.Context)>($r13);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow> = $r12;
+
+        $r12_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        $r4 = new com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$3;
+
+        specialinvoke $r4.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$3: void <init>(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)>($r0);
+
+        virtualinvoke $r12_1.<com.contextlogic.wish.ui.components.list.LoadingListRow: void setOnClickListener(android.view.View$OnClickListener)>($r4);
+
+        $r5 = new com.contextlogic.wish.ui.fragment.productfeed.ProductFeedAdapter;
+
+        $r13_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.content.Context getContext()>();
+
+        $r6 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        $r10_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        $r8_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        specialinvoke $r5.<com.contextlogic.wish.ui.fragment.productfeed.ProductFeedAdapter: void <init>(android.content.Context,java.util.ArrayList,com.contextlogic.wish.ui.components.grid.StaggeredGridView,com.contextlogic.wish.ui.fragment.productfeed.ProductFeedGridCellView$GridCellFragment)>($r13_1, $r6, $r10_1, $r8_1);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter> = $r5;
+
+        $r10_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        $r14 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter adapter>;
+
+        virtualinvoke $r10_2.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setAdapter(com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter)>($r14);
+
+        $r10_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        virtualinvoke $r10_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setListener(com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener)>($r0);
+
+        $r15 = new android.widget.LinearLayout;
+
+        $r13_2 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.content.Context getContext()>();
+
+        specialinvoke $r15.<android.widget.LinearLayout: void <init>(android.content.Context)>($r13_2);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.widget.LinearLayout headerContainer> = $r15;
+
+        $r15_1 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.widget.LinearLayout headerContainer>;
+
+        virtualinvoke $r15_1.<android.widget.LinearLayout: void setOrientation(int)>(1);
+
+        $r9_10 = new android.view.View;
+
+        $r13_3 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.content.Context getContext()>();
+
+        specialinvoke $r9_10.<android.view.View: void <init>(android.content.Context)>($r13_3);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View spacerView> = $r9_10;
+
+        $r15_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.widget.LinearLayout headerContainer>;
+
+        $r9_11 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View spacerView>;
+
+        virtualinvoke $r15_2.<android.widget.LinearLayout: void addView(android.view.View)>($r9_11);
+
+        $r10_4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        $r15_3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.widget.LinearLayout headerContainer>;
+
+        virtualinvoke $r10_4.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void addHeaderView(android.view.View)>($r15_3);
+
+        $r10_5 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        $r12_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.list.LoadingListRow loadingListRow>;
+
+        virtualinvoke $r10_5.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void addFooterView(android.view.View)>($r12_2);
+
+        $r10_6 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        $r7 = new com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$4;
+
+        specialinvoke $r7.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView$4: void <init>(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView)>($r0);
+
+        virtualinvoke $r10_6.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setOnTouchListener(android.view.View$OnTouchListener)>($r7);
+
+        $r9_12 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.view.View rootLayout>;
+
+        $r9_13 = virtualinvoke $r9_12.<android.view.View: android.view.View findViewById(int)>(2131558935);
+
+        $r16 = (com.contextlogic.wish.ui.fragment.dealdash.DealDashView) $r9_13;
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.dealdash.DealDashView dealDashView> = $r16;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void updateRefresherOffset()>();
+
+        return;
+    }
+
+    public void updateFeed(com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment$InitialProductWrapper, java.util.ArrayList)
+    {
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView $r0;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment$InitialProductWrapper $r1, $r1_1, $r1_2;
+        java.util.ArrayList $r2, $r7, $r2_1, $r7_1, $r2_2, $r2_3, $r7_2, $r7_3, $r2_4, $r2_5, $r2_6, $r7_4;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i1_1, $i0_6, $i1_2, $i0_7, $i1_3, $i0_8, $i0_9, $i0_10, $i0_11, $i0_12, $i0_13, $i0_14, $i0_15, $i0_16;
+        com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment $r3, $r3_1, $r3_2;
+        com.contextlogic.wish.WishApplication $r4;
+        android.content.res.Resources $r5;
+        android.util.DisplayMetrics $r6;
+        float $f0;
+        java.util.HashSet $r8, $r8_1, $r8_2, $r8_3;
+        java.lang.Object $r9, $r9_1, $r9_2, $r9_3;
+        com.contextlogic.wish.api.data.WishProduct $r10;
+        java.lang.String $r11;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        android.support.v4.widget.SwipeRefreshLayout $r12;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r13;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment$InitialProductWrapper;
+
+        $r2 := @parameter1: java.util.ArrayList;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void prepareForUpdateFeed()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean feedSetup> = 1;
+
+(0)     if $r2 == null goto label01;
+
+        $i0 = virtualinvoke $r2.<java.util.ArrayList: int size()>();
+
+(1)     if $i0 <= 0 goto label01;
+
+(2)     $r1_1 = null;
+
+     label01:
+        $i0_1 = Phi($i0 #0, $i0 #1, $i0 #2);
+
+        $r1_2 = Phi($r1 #0, $r1 #1, $r1_1 #2);
+
+        $i0_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int index>;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        $i1 = virtualinvoke $r3.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: int getDealDashPosition()>();
+
+        if $i0_2 != $i1 goto label05;
+
+        $r4 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r5 = virtualinvoke $r4.<com.contextlogic.wish.WishApplication: android.content.res.Resources getResources()>();
+
+        $r6 = virtualinvoke $r5.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0 = staticinvoke <android.util.TypedValue: float applyDimension(int,float,android.util.DisplayMetrics)>(1, 103.0F, $r6);
+
+        $i0_3 = (int) $f0;
+
+(3)     specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void setSpacerHeight(int)>($i0_3);
+
+     label02:
+        $r3_1 = Phi($r3 #3, $r3_2 #9);
+
+        $i0_4 = Phi($i0_3 #3, $i0_16 #9);
+
+        $r2_1 = null;
+
+        if $r1_2 == null goto label06;
+
+(4)     $r7 = $r1_2.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment$InitialProductWrapper: java.util.ArrayList initialProducts>;
+
+     label03:
+        $r7_1 = Phi($r7 #4, $r7_4 #10);
+
+(5)     if $r7_1 == null goto label07;
+
+        $r2_2 = new java.util.ArrayList;
+
+        specialinvoke $r2_2.<java.util.ArrayList: void <init>()>();
+
+        $r8 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.HashSet lastSeenProductIds>;
+
+        virtualinvoke $r8.<java.util.HashSet: void clear()>();
+
+(6)     $i0_5 = 0;
+
+     label04:
+        $r9 = Phi($r9 #6, $r9_2 #8);
+
+        $i1_1 = Phi($i1 #6, $i1_2 #8);
+
+        $r8_1 = Phi($r8 #6, $r8_2 #8);
+
+        $i0_6 = Phi($i0_5 #6, $i0_7 #8);
+
+        $i1_2 = virtualinvoke $r7_1.<java.util.ArrayList: int size()>();
+
+(7)     if $i0_6 >= $i1_2 goto label07;
+
+        $r9_1 = virtualinvoke $r7_1.<java.util.ArrayList: java.lang.Object get(int)>($i0_6);
+
+        virtualinvoke $r2_2.<java.util.ArrayList: boolean add(java.lang.Object)>($r9_1);
+
+        $r8_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.HashSet lastSeenProductIds>;
+
+        $r9_2 = virtualinvoke $r7_1.<java.util.ArrayList: java.lang.Object get(int)>($i0_6);
+
+        $r10 = (com.contextlogic.wish.api.data.WishProduct) $r9_2;
+
+        $r11 = virtualinvoke $r10.<com.contextlogic.wish.api.data.WishProduct: java.lang.String getProductId()>();
+
+        virtualinvoke $r8_2.<java.util.HashSet: boolean add(java.lang.Object)>($r11);
+
+        $i0_7 = $i0_6 + 1;
+
+(8)     goto label04;
+
+     label05:
+        $r3_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment fragment>;
+
+        $i0_15 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int index>;
+
+        $i0_16 = virtualinvoke $r3_2.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment: int getTabBarStripHeight(int)>($i0_15);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void setSpacerHeight(int)>($i0_16);
+
+(9)     goto label02;
+
+     label06:
+        $r7_4 = null;
+
+(10)    goto label03;
+
+     label07:
+        $r9_3 = Phi($r9 #5, $r9 #7);
+
+        $i1_3 = Phi($i1 #5, $i1_2 #7);
+
+        $r2_3 = Phi($r2_1 #5, $r2_2 #7);
+
+        $r8_3 = Phi($r8 #5, $r8_1 #7);
+
+        $i0_8 = Phi($i0_4 #5, $i0_6 #7);
+
+(11)    if $r7_1 == null goto label08;
+
+        $r7_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+(12)    virtualinvoke $r7_2.<java.util.ArrayList: boolean addAll(java.util.Collection)>($r2_3);
+
+     label08:
+        $r7_3 = Phi($r7_1 #11, $r7_2 #12);
+
+        if $r1_2 == null goto label13;
+
+(13)    $i0_9 = $r1_2.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment$InitialProductWrapper: int nextOffset>;
+
+     label09:
+        $i0_10 = Phi($i0_9 #13, $i0_14 #20);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: int currentOffset> = $i0_10;
+
+        if $r1_2 == null goto label14;
+
+(14)    $z0 = $r1_2.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedFragment$InitialProductWrapper: boolean noMoreItems>;
+
+     label10:
+        $z0_1 = Phi($z0 #14, $z0_6 #21);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean noMoreItems> = $z0_1;
+
+        $r2_4 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        $i0_11 = virtualinvoke $r2_4.<java.util.ArrayList: int size()>();
+
+(15)    if $i0_11 > 0 goto label11;
+
+        $z0_2 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean noMoreItems>;
+
+(16)    if $z0_2 == 0 goto label15;
+
+     label11:
+        $z0_3 = Phi($z0_1 #15, $z0_2 #16);
+
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingComplete> = 1;
+
+        $r12 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: android.support.v4.widget.SwipeRefreshLayout refresherView>;
+
+(17)    virtualinvoke $r12.<android.support.v4.widget.SwipeRefreshLayout: void setEnabled(boolean)>(1);
+
+     label12:
+        $z0_4 = Phi($z0_3 #17, $z0_2 #22);
+
+        $r13 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: com.contextlogic.wish.ui.components.grid.StaggeredGridView productView>;
+
+        virtualinvoke $r13.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void reloadData()>();
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void refreshViewState()>();
+
+        $z0_5 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean noMoreItems>;
+
+(18)    if $z0_5 != 0 goto label16;
+
+        $r2_5 = $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: java.util.ArrayList products>;
+
+        $i0_12 = virtualinvoke $r2_5.<java.util.ArrayList: int size()>();
+
+(19)    if $i0_12 >= 15 goto label16;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: void loadNextPage()>();
+
+        return;
+
+     label13:
+        $i0_14 = 0;
+
+(20)    goto label09;
+
+     label14:
+        $z0_6 = 0;
+
+(21)    goto label10;
+
+     label15:
+        $r0.<com.contextlogic.wish.ui.fragment.filterfeed.FilterFeedProductView: boolean loadingComplete> = 0;
+
+(22)    goto label12;
+
+     label16:
+        $r2_6 = Phi($r2_4 #18, $r2_5 #19);
+
+        $i0_13 = Phi($i0_11 #18, $i0_12 #19);
+
+        return;
+    }
+}

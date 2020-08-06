@@ -1,0 +1,411 @@
+public abstract class com.facebook.TokenCachingStrategy extends java.lang.Object
+{
+    public static final java.lang.String DECLINED_PERMISSIONS_KEY;
+    public static final java.lang.String EXPIRATION_DATE_KEY;
+    private static final long INVALID_BUNDLE_MILLISECONDS;
+    private static final java.lang.String IS_SSO_KEY;
+    public static final java.lang.String LAST_REFRESH_DATE_KEY;
+    public static final java.lang.String PERMISSIONS_KEY;
+    public static final java.lang.String TOKEN_KEY;
+    public static final java.lang.String TOKEN_SOURCE_KEY;
+    public static final java.lang.String USER_FBID_KEY;
+
+    public void <init>()
+    {
+        com.facebook.TokenCachingStrategy $r0;
+
+        $r0 := @this: com.facebook.TokenCachingStrategy;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static java.util.Date getDate(android.os.Bundle, java.lang.String)
+    {
+        android.os.Bundle $r0;
+        java.lang.String $r1;
+        byte $b0;
+        java.util.Date $r2;
+        long $l1;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $r1 := @parameter1: java.lang.String;
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $l1 = virtualinvoke $r0.<android.os.Bundle: long getLong(java.lang.String,long)>($r1, -9223372036854775808L);
+
+        $b0 = $l1 cmp -9223372036854775808L;
+
+        if $b0 == 0 goto label2;
+
+        $r2 = new java.util.Date;
+
+        specialinvoke $r2.<java.util.Date: void <init>(long)>($l1);
+
+        return $r2;
+
+     label2:
+        return null;
+    }
+
+    public static java.util.Date getExpirationDate(android.os.Bundle)
+    {
+        android.os.Bundle $r0;
+        java.util.Date $r1;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        $r1 = staticinvoke <com.facebook.TokenCachingStrategy: java.util.Date getDate(android.os.Bundle,java.lang.String)>($r0, "com.facebook.TokenCachingStrategy.ExpirationDate");
+
+        return $r1;
+    }
+
+    public static long getExpirationMilliseconds(android.os.Bundle)
+    {
+        android.os.Bundle $r0;
+        long $l0;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        $l0 = virtualinvoke $r0.<android.os.Bundle: long getLong(java.lang.String)>("com.facebook.TokenCachingStrategy.ExpirationDate");
+
+        return $l0;
+    }
+
+    public static java.util.Date getLastRefreshDate(android.os.Bundle)
+    {
+        android.os.Bundle $r0;
+        java.util.Date $r1;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        $r1 = staticinvoke <com.facebook.TokenCachingStrategy: java.util.Date getDate(android.os.Bundle,java.lang.String)>($r0, "com.facebook.TokenCachingStrategy.LastRefreshDate");
+
+        return $r1;
+    }
+
+    public static long getLastRefreshMilliseconds(android.os.Bundle)
+    {
+        android.os.Bundle $r0;
+        long $l0;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        $l0 = virtualinvoke $r0.<android.os.Bundle: long getLong(java.lang.String)>("com.facebook.TokenCachingStrategy.LastRefreshDate");
+
+        return $l0;
+    }
+
+    public static java.util.List getPermissions(android.os.Bundle)
+    {
+        android.os.Bundle $r0;
+        java.util.ArrayList $r1;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        $r1 = virtualinvoke $r0.<android.os.Bundle: java.util.ArrayList getStringArrayList(java.lang.String)>("com.facebook.TokenCachingStrategy.Permissions");
+
+        return $r1;
+    }
+
+    public static com.facebook.AccessTokenSource getSource(android.os.Bundle)
+    {
+        android.os.Bundle $r0;
+        boolean $z0, $z0_1;
+        java.io.Serializable $r1;
+        com.facebook.AccessTokenSource $r2, $r2_1, $r2_2;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        $z0 = virtualinvoke $r0.<android.os.Bundle: boolean containsKey(java.lang.String)>("com.facebook.TokenCachingStrategy.AccessTokenSource");
+
+        if $z0 == 0 goto label1;
+
+        $r1 = virtualinvoke $r0.<android.os.Bundle: java.io.Serializable getSerializable(java.lang.String)>("com.facebook.TokenCachingStrategy.AccessTokenSource");
+
+        $r2 = (com.facebook.AccessTokenSource) $r1;
+
+        return $r2;
+
+     label1:
+        $z0_1 = virtualinvoke $r0.<android.os.Bundle: boolean getBoolean(java.lang.String)>("com.facebook.TokenCachingStrategy.IsSSO");
+
+        if $z0_1 == 0 goto label2;
+
+        $r2_1 = <com.facebook.AccessTokenSource: com.facebook.AccessTokenSource FACEBOOK_APPLICATION_WEB>;
+
+        return $r2_1;
+
+     label2:
+        $r2_2 = <com.facebook.AccessTokenSource: com.facebook.AccessTokenSource WEB_VIEW>;
+
+        return $r2_2;
+    }
+
+    public static java.lang.String getToken(android.os.Bundle)
+    {
+        android.os.Bundle $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        $r1 = virtualinvoke $r0.<android.os.Bundle: java.lang.String getString(java.lang.String)>("com.facebook.TokenCachingStrategy.Token");
+
+        return $r1;
+    }
+
+    public static boolean hasTokenInformation(android.os.Bundle)
+    {
+        android.os.Bundle $r0;
+        byte $b0;
+        java.lang.String $r1;
+        int $i1;
+        long $l2;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        if $r0 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r1 = virtualinvoke $r0.<android.os.Bundle: java.lang.String getString(java.lang.String)>("com.facebook.TokenCachingStrategy.Token");
+
+        if $r1 == null goto label2;
+
+        $i1 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i1 == 0 goto label2;
+
+        $l2 = virtualinvoke $r0.<android.os.Bundle: long getLong(java.lang.String,long)>("com.facebook.TokenCachingStrategy.ExpirationDate", 0L);
+
+        $b0 = $l2 cmp 0L;
+
+        if $b0 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    static void putDate(android.os.Bundle, java.lang.String, java.util.Date)
+    {
+        android.os.Bundle $r0;
+        java.lang.String $r1;
+        java.util.Date $r2;
+        long $l0;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.util.Date;
+
+        $l0 = virtualinvoke $r2.<java.util.Date: long getTime()>();
+
+        virtualinvoke $r0.<android.os.Bundle: void putLong(java.lang.String,long)>($r1, $l0);
+
+        return;
+    }
+
+    public static void putDeclinedPermissions(android.os.Bundle, java.util.List)
+    {
+        android.os.Bundle $r0;
+        java.util.List $r1;
+        boolean $z0;
+        java.util.ArrayList $r2, $r2_1, $r2_2;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $r1 := @parameter1: java.util.List;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r1, "value");
+
+        $z0 = $r1 instanceof java.util.ArrayList;
+
+        if $z0 == 0 goto label2;
+
+(0)     $r2 = (java.util.ArrayList) $r1;
+
+     label1:
+        $r2_1 = Phi($r2 #0, $r2_2 #1);
+
+        virtualinvoke $r0.<android.os.Bundle: void putStringArrayList(java.lang.String,java.util.ArrayList)>("com.facebook.TokenCachingStrategy.DeclinedPermissions", $r2_1);
+
+        return;
+
+     label2:
+        $r2_2 = new java.util.ArrayList;
+
+        specialinvoke $r2_2.<java.util.ArrayList: void <init>(java.util.Collection)>($r1);
+
+(1)     goto label1;
+    }
+
+    public static void putExpirationDate(android.os.Bundle, java.util.Date)
+    {
+        android.os.Bundle $r0;
+        java.util.Date $r1;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $r1 := @parameter1: java.util.Date;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r1, "value");
+
+        staticinvoke <com.facebook.TokenCachingStrategy: void putDate(android.os.Bundle,java.lang.String,java.util.Date)>($r0, "com.facebook.TokenCachingStrategy.ExpirationDate", $r1);
+
+        return;
+    }
+
+    public static void putExpirationMilliseconds(android.os.Bundle, long)
+    {
+        android.os.Bundle $r0;
+        long $l0;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $l0 := @parameter1: long;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        virtualinvoke $r0.<android.os.Bundle: void putLong(java.lang.String,long)>("com.facebook.TokenCachingStrategy.ExpirationDate", $l0);
+
+        return;
+    }
+
+    public static void putLastRefreshDate(android.os.Bundle, java.util.Date)
+    {
+        android.os.Bundle $r0;
+        java.util.Date $r1;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $r1 := @parameter1: java.util.Date;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r1, "value");
+
+        staticinvoke <com.facebook.TokenCachingStrategy: void putDate(android.os.Bundle,java.lang.String,java.util.Date)>($r0, "com.facebook.TokenCachingStrategy.LastRefreshDate", $r1);
+
+        return;
+    }
+
+    public static void putLastRefreshMilliseconds(android.os.Bundle, long)
+    {
+        android.os.Bundle $r0;
+        long $l0;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $l0 := @parameter1: long;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        virtualinvoke $r0.<android.os.Bundle: void putLong(java.lang.String,long)>("com.facebook.TokenCachingStrategy.LastRefreshDate", $l0);
+
+        return;
+    }
+
+    public static void putPermissions(android.os.Bundle, java.util.List)
+    {
+        android.os.Bundle $r0;
+        java.util.List $r1;
+        boolean $z0;
+        java.util.ArrayList $r2, $r2_1, $r2_2;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $r1 := @parameter1: java.util.List;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r1, "value");
+
+        $z0 = $r1 instanceof java.util.ArrayList;
+
+        if $z0 == 0 goto label2;
+
+(0)     $r2 = (java.util.ArrayList) $r1;
+
+     label1:
+        $r2_1 = Phi($r2 #0, $r2_2 #1);
+
+        virtualinvoke $r0.<android.os.Bundle: void putStringArrayList(java.lang.String,java.util.ArrayList)>("com.facebook.TokenCachingStrategy.Permissions", $r2_1);
+
+        return;
+
+     label2:
+        $r2_2 = new java.util.ArrayList;
+
+        specialinvoke $r2_2.<java.util.ArrayList: void <init>(java.util.Collection)>($r1);
+
+(1)     goto label1;
+    }
+
+    public static void putSource(android.os.Bundle, com.facebook.AccessTokenSource)
+    {
+        android.os.Bundle $r0;
+        com.facebook.AccessTokenSource $r1;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $r1 := @parameter1: com.facebook.AccessTokenSource;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        virtualinvoke $r0.<android.os.Bundle: void putSerializable(java.lang.String,java.io.Serializable)>("com.facebook.TokenCachingStrategy.AccessTokenSource", $r1);
+
+        return;
+    }
+
+    public static void putToken(android.os.Bundle, java.lang.String)
+    {
+        android.os.Bundle $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $r1 := @parameter1: java.lang.String;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r0, "bundle");
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r1, "value");
+
+        virtualinvoke $r0.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("com.facebook.TokenCachingStrategy.Token", $r1);
+
+        return;
+    }
+
+    public abstract void clear();
+
+    public abstract android.os.Bundle load();
+
+    public abstract void save(android.os.Bundle);
+}

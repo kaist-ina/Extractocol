@@ -17,7 +17,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 import soot.jimple.infoflow.entryPointCreators.DefaultEntryPointCreator;
 import soot.jimple.infoflow.source.DefaultSourceSinkManager;
 /**
@@ -36,7 +36,7 @@ public class InFunctionTests extends JUnitTests {
 	
     @Test(timeout=300000)
     public void inFunctionTest1(){
-    	Infoflow infoflow = initInfoflow(true);
+    	IInfoflow infoflow = initInfoflow(true);
     	String epoint = "<soot.jimple.infoflow.test.InFunctionCode: java.lang.String infSourceCode1(java.lang.String)>";
 
     	DefaultSourceSinkManager ssm = new DefaultSourceSinkManager(sources, sinks);
@@ -49,7 +49,7 @@ public class InFunctionTests extends JUnitTests {
 
     @Test(timeout=300000)
     public void inFunctionTest2(){
-    	Infoflow infoflow = initInfoflow(true);
+    	IInfoflow infoflow = initInfoflow(true);
     	String epoint = "<soot.jimple.infoflow.test.InFunctionCode: java.lang.String infSourceCode2(java.lang.String)>";
 
     	DefaultSourceSinkManager ssm = new DefaultSourceSinkManager(sources, sinks);
@@ -62,7 +62,7 @@ public class InFunctionTests extends JUnitTests {
 
     @Test(timeout=300000)
     public void inFunctionTest3(){
-    	Infoflow infoflow = initInfoflow(true);
+    	IInfoflow infoflow = initInfoflow(true);
     	String epoint = "<soot.jimple.infoflow.test.InFunctionCode: java.lang.String infSourceCode3(java.lang.String)>";
 
     	DefaultSourceSinkManager ssm = new DefaultSourceSinkManager(sources, sinks);
@@ -75,7 +75,7 @@ public class InFunctionTests extends JUnitTests {
 
     @Test(timeout=300000)
     public void inFunctionTest4(){
-    	Infoflow infoflow = initInfoflow(true);
+    	IInfoflow infoflow = initInfoflow(true);
     	Assert.assertNotNull(infoflow.getTaintWrapper());
     	
     	List<String> epoint = new ArrayList<String>();
@@ -88,14 +88,14 @@ public class InFunctionTests extends JUnitTests {
 		
     	infoflow.computeInfoflow(appPath, libPath, new DefaultEntryPointCreator(epoint), ssm);
     	Assert.assertFalse(infoflow.getResults().isEmpty());
-    	Assert.assertEquals(3, infoflow.getResults().getResults().entrySet().iterator().next().getValue().size());
+    	Assert.assertEquals(3, infoflow.getResults().numConnections());
 		Assert.assertTrue(infoflow.getResults().isPathBetween(SINK_STRING_RETURN_R5, SOURCE_STRING_PARAMETER));
 		Assert.assertTrue(infoflow.getResults().isPathBetween(SINK_STRING_RETURN_R5, SOURCE_STRING_PARAMETER2));
     }
 
     @Test(timeout=300000)
     public void parameterFlowTest(){
-    	Infoflow infoflow = initInfoflow(true);
+    	IInfoflow infoflow = initInfoflow(true);
     	List<String> epoint = new ArrayList<String>();
     	epoint.add("<soot.jimple.infoflow.test.InFunctionCode: int paraToParaFlow(int,int,"
     			+ "soot.jimple.infoflow.test.InFunctionCode$DataClass,"

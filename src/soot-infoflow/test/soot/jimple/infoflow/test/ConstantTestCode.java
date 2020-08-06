@@ -91,7 +91,7 @@ public class ConstantTestCode {
 	}
 
 	private void leakIfGreaterThan(int i, int j) {
-		if (i > j) {			
+		if (i > j) {
 			String tainted = TelephonyManager.getDeviceId();
 			ConnectionManager cm = new ConnectionManager();
 			cm.publish(tainted);

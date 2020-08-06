@@ -19,7 +19,8 @@ import java.util.Set;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
+import soot.jimple.infoflow.InfoflowConfiguration;
 import soot.jimple.infoflow.config.IInfoflowConfig;
 import soot.jimple.infoflow.taintWrappers.EasyTaintWrapper;
 import soot.options.Options;
@@ -32,9 +33,9 @@ public class ImplicitFlowTests extends JUnitTests {
 	
 	@Test(timeout=300000)
 	public void simpleTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void simpleTest()>");
@@ -44,9 +45,9 @@ public class ImplicitFlowTests extends JUnitTests {
 	
 	@Test(timeout=300000)
 	public void simpleNegativeTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void simpleNegativeTest()>");
@@ -56,9 +57,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void simpleOverwriteTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void simpleOverwriteTest()>");
@@ -68,9 +69,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void switchTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void switchTest()>");
@@ -82,28 +83,29 @@ public class ImplicitFlowTests extends JUnitTests {
 	public void convertTest(){
 		long timeBefore = System.nanoTime();
     	System.out.println("Starting convertTest...");
-    	Infoflow infoflow = initInfoflow();
 
-    	int oldAPLength = Infoflow.getAccessPathLength();
-    	Infoflow.setAccessPathLength(1);
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setEnableStaticFieldTracking(false);
+    	int oldAPLength = InfoflowConfiguration.getAccessPathLength();
+    	InfoflowConfiguration.setAccessPathLength(1);
+    	
+    	IInfoflow infoflow = initInfoflow();
+    	infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setEnableStaticFieldTracking(false);
 		
 	    List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void convertTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
 		checkInfoflow(infoflow, 1);	
 
-		Infoflow.setAccessPathLength(oldAPLength);	// this is a global setting! Restore it when we're done
+		InfoflowConfiguration.setAccessPathLength(oldAPLength);	// this is a global setting! Restore it when we're done
 		System.out.println("convertTest took " + (System.nanoTime() - timeBefore) / 1E9 + " seconds");
 	}
 
 	@Test(timeout=300000)
 	public void sinkTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void sinkTest()>");
@@ -113,9 +115,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void returnTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void returnTest()>");
@@ -125,9 +127,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void callTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void callTest()>");
@@ -137,9 +139,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void callTest2(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void callTest2()>");
@@ -149,9 +151,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void negativeCallTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void negativeCallTest()>");
@@ -161,9 +163,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void recursionTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void recursionTest()>");
@@ -173,9 +175,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void recursionTest2(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void recursionTest2()>");
@@ -185,9 +187,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void recursionTest3(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void recursionTest3()>");
@@ -197,9 +199,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void exceptionTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void exceptionTest()>");
@@ -209,9 +211,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void exceptionTest2(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void exceptionTest2()>");
@@ -221,9 +223,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void exceptionTest3(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void exceptionTest3()>");
@@ -233,9 +235,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void fieldTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void fieldTest()>");
@@ -245,9 +247,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void staticFieldTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void staticFieldTest()>");
@@ -257,9 +259,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void staticFieldTest2(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void staticFieldTest2()>");
@@ -269,9 +271,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void staticFieldTest3(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void staticFieldTest3()>");
@@ -281,9 +283,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void staticFieldTest4(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void staticFieldTest4()>");
@@ -293,9 +295,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void staticFieldTest5(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 	    
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void staticFieldTest4()>");
@@ -305,9 +307,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void integerClassTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void integerClassTest()>");
@@ -319,20 +321,21 @@ public class ImplicitFlowTests extends JUnitTests {
 	public void stringClassTest(){
 		long timeBefore = System.nanoTime();
     	System.out.println("Starting stringClassTest...");
-    	Infoflow infoflow = initInfoflow();
     	
-    	int oldAPLength = Infoflow.getAccessPathLength();
-    	Infoflow.setAccessPathLength(1);
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setEnableStaticFieldTracking(false);
+    	int oldAPLength = InfoflowConfiguration.getAccessPathLength();
+    	InfoflowConfiguration.setAccessPathLength(1);
+    	
+    	IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setEnableStaticFieldTracking(false);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void stringClassTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
 		checkInfoflow(infoflow, 1);	
 
-		Infoflow.setAccessPathLength(oldAPLength);	// this is a global setting! Restore it when we're done
+		InfoflowConfiguration.setAccessPathLength(oldAPLength);	// this is a global setting! Restore it when we're done
 		System.out.println("stringClassTest took " + (System.nanoTime() - timeBefore) / 1E9 + " seconds");
 	}
 
@@ -340,9 +343,9 @@ public class ImplicitFlowTests extends JUnitTests {
 	@Ignore
 	public void conditionalExceptionTest(){
 		// not yet supported
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void conditionalExceptionTest()>");
@@ -353,9 +356,9 @@ public class ImplicitFlowTests extends JUnitTests {
 	@Test(timeout=300000)
 	public void passOverTest(){
 		// not yet supported
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void passOverTest()>");
@@ -366,9 +369,9 @@ public class ImplicitFlowTests extends JUnitTests {
 	@Test(timeout=300000)
 	public void passOverTest2(){
 		// not yet supported
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void passOverTest2()>");
@@ -379,9 +382,9 @@ public class ImplicitFlowTests extends JUnitTests {
 	@Test(timeout=300000)
 	public void callToReturnTest() throws IOException{
 		// not yet supported
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 		infoflow.setTaintWrapper(new EasyTaintWrapper("EasyTaintWrapperSource.txt"));
     	infoflow.setSootConfig(new IInfoflowConfig() {
 			
@@ -393,6 +396,7 @@ public class ImplicitFlowTests extends JUnitTests {
 				excludeList.add("javax.");
 				options.set_exclude(excludeList);
 				options.set_prepend_classpath(false);
+				Options.v().set_ignore_classpath_errors(true);
 			}
 			
 		});
@@ -404,34 +408,10 @@ public class ImplicitFlowTests extends JUnitTests {
 	}
 
 	@Test(timeout=300000)
-	public void createAliasInFunctionTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
-
-		List<String> epoints = new ArrayList<String>();
-	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void createAliasInFunctionTest()>");
-		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
-		checkInfoflow(infoflow, 1);	
-	}
-
-	@Test(timeout=300000)
-	public void createAliasInFunctionTest2(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
-
-		List<String> epoints = new ArrayList<String>();
-	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void createAliasInFunctionTest2()>");
-		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
-		checkInfoflow(infoflow, 1);	
-	}
-
-	@Test(timeout=300000)
-	public void implicitFlowTaintWrapperTest() throws IOException{
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+	public void callToReturnTest2() throws IOException{
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 		infoflow.setTaintWrapper(new EasyTaintWrapper("EasyTaintWrapperSource.txt"));
     	infoflow.setSootConfig(new IInfoflowConfig() {
 			
@@ -443,6 +423,58 @@ public class ImplicitFlowTests extends JUnitTests {
 				excludeList.add("javax.");
 				options.set_exclude(excludeList);
 				options.set_prepend_classpath(false);
+				Options.v().set_ignore_classpath_errors(true);
+			}
+			
+		});
+
+		List<String> epoints = new ArrayList<String>();
+	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void callToReturnTest2()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		checkInfoflow(infoflow, 1);	
+	}
+	
+	@Test(timeout=300000)
+	public void createAliasInFunctionTest(){
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
+
+		List<String> epoints = new ArrayList<String>();
+	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void createAliasInFunctionTest()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		checkInfoflow(infoflow, 1);	
+	}
+
+	@Test(timeout=300000)
+	public void createAliasInFunctionTest2(){
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
+
+		List<String> epoints = new ArrayList<String>();
+	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void createAliasInFunctionTest2()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		checkInfoflow(infoflow, 1);	
+	}
+
+	@Test(timeout=300000)
+	public void implicitFlowTaintWrapperTest() throws IOException{
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.setTaintWrapper(new EasyTaintWrapper("EasyTaintWrapperSource.txt"));
+    	infoflow.setSootConfig(new IInfoflowConfig() {
+			
+			@Override
+			public void setSootOptions(Options options) {
+				options.set_include(Collections.<String>emptyList());
+				List<String> excludeList = new ArrayList<String>();
+				excludeList.add("java.");
+				excludeList.add("javax.");
+				options.set_exclude(excludeList);
+				options.set_prepend_classpath(false);
+				Options.v().set_ignore_classpath_errors(true);
 			}
 			
 		});
@@ -455,9 +487,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void implicitFlowTaintWrapperNegativeTest() throws IOException{
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 		infoflow.setTaintWrapper(new EasyTaintWrapper(Collections.<String, Set<String>>emptyMap()));
     	infoflow.setSootConfig(new IInfoflowConfig() {
 			
@@ -469,6 +501,7 @@ public class ImplicitFlowTests extends JUnitTests {
 				excludeList.add("javax.");
 				options.set_exclude(excludeList);
 				options.set_prepend_classpath(false);
+				Options.v().set_ignore_classpath_errors(true);
 			}
 			
 		});
@@ -481,9 +514,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void hierarchicalCallSetTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void hierarchicalCallSetTest()>");
@@ -493,9 +526,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void conditionalAliasingTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void conditionalAliasingTest()>");
@@ -505,9 +538,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void conditionalAliasingTest2(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void conditionalAliasingTest2()>");
@@ -517,9 +550,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void conditionalAliasingTest3(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableImplicitFlows(true);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableImplicitFlows(true);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void conditionalAliasingTest3()>");
@@ -529,10 +562,10 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000) 
     public void testStringConvert(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
-		infoflow.setEnableStaticFieldTracking(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
+		infoflow.getConfig().setEnableStaticFieldTracking(false);
 
 		List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.StringTestCode: void methodStringConvert()>");
@@ -542,9 +575,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void afterCallNegativeTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void afterCallNegativeTest()>");
@@ -554,9 +587,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void ifInCalleeTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void ifInCalleeTest()>");
@@ -566,9 +599,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void activationConditionalTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void activationConditionalTest()>");
@@ -578,9 +611,9 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void classTypeTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void classTypeTest()>");
@@ -590,14 +623,67 @@ public class ImplicitFlowTests extends JUnitTests {
 
 	@Test(timeout=300000)
 	public void conditionalReturnTest(){
-		Infoflow infoflow = initInfoflow();
-		infoflow.setEnableImplicitFlows(true);
-		infoflow.setInspectSinks(false);
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
 
 		List<String> epoints = new ArrayList<String>();
 	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void conditionalReturnTest()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
 		checkInfoflow(infoflow, 1);
+	}
+
+	@Test(timeout=300000)
+	public void stringObfuscationTest1(){
+		IInfoflow infoflow = initInfoflow(true);
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
+		
+		((EasyTaintWrapper) infoflow.getTaintWrapper()).addMethodForWrapping(
+				"soot.jimple.infoflow.test.android.Base64",
+				"java.lang.String encodeToString(byte[])");
+		((EasyTaintWrapper) infoflow.getTaintWrapper()).addIncludePrefix("soot.jimple.infoflow.test.android.");
+
+		List<String> epoints = new ArrayList<String>();
+	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void stringObfuscationTest1()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		checkInfoflow(infoflow, 1);
+	}
+
+	@Test(timeout=300000)
+	public void arrayIndexTest1(){
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
+
+		List<String> epoints = new ArrayList<String>();
+	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void arrayIndexTest1()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		checkInfoflow(infoflow, 1);
+	}
+
+	@Test(timeout=300000)
+	public void exceptionTest1(){
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
+
+		List<String> epoints = new ArrayList<String>();
+	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void exceptionTest1()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		checkInfoflow(infoflow, 1);
+	}
+
+	@Test(timeout=300000)
+	public void exceptionTest4(){
+		IInfoflow infoflow = initInfoflow();
+		infoflow.getConfig().setEnableImplicitFlows(true);
+		infoflow.getConfig().setInspectSinks(false);
+
+		List<String> epoints = new ArrayList<String>();
+	    epoints.add("<soot.jimple.infoflow.test.ImplicitFlowTestCode: void exceptionTest4()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		negativeCheckInfoflow(infoflow);
 	}
 
 }

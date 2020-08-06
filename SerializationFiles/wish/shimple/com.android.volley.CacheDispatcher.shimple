@@ -1,0 +1,270 @@
+public class com.android.volley.CacheDispatcher extends java.lang.Thread
+{
+    private static final boolean DEBUG;
+    private final com.android.volley.Cache mCache;
+    private final java.util.concurrent.BlockingQueue mCacheQueue;
+    private final com.android.volley.ResponseDelivery mDelivery;
+    private final java.util.concurrent.BlockingQueue mNetworkQueue;
+    private volatile boolean mQuit;
+
+    static void <clinit>()
+    {
+        boolean $z0;
+
+        $z0 = <com.android.volley.VolleyLog: boolean DEBUG>;
+
+        <com.android.volley.CacheDispatcher: boolean DEBUG> = $z0;
+
+        return;
+    }
+
+    public void <init>(java.util.concurrent.BlockingQueue, java.util.concurrent.BlockingQueue, com.android.volley.Cache, com.android.volley.ResponseDelivery)
+    {
+        com.android.volley.CacheDispatcher $r0;
+        java.util.concurrent.BlockingQueue $r1, $r2;
+        com.android.volley.Cache $r3;
+        com.android.volley.ResponseDelivery $r4;
+
+        $r0 := @this: com.android.volley.CacheDispatcher;
+
+        $r1 := @parameter0: java.util.concurrent.BlockingQueue;
+
+        $r2 := @parameter1: java.util.concurrent.BlockingQueue;
+
+        $r3 := @parameter2: com.android.volley.Cache;
+
+        $r4 := @parameter3: com.android.volley.ResponseDelivery;
+
+        specialinvoke $r0.<java.lang.Thread: void <init>()>();
+
+        $r0.<com.android.volley.CacheDispatcher: boolean mQuit> = 0;
+
+        $r0.<com.android.volley.CacheDispatcher: java.util.concurrent.BlockingQueue mCacheQueue> = $r1;
+
+        $r0.<com.android.volley.CacheDispatcher: java.util.concurrent.BlockingQueue mNetworkQueue> = $r2;
+
+        $r0.<com.android.volley.CacheDispatcher: com.android.volley.Cache mCache> = $r3;
+
+        $r0.<com.android.volley.CacheDispatcher: com.android.volley.ResponseDelivery mDelivery> = $r4;
+
+        return;
+    }
+
+    static java.util.concurrent.BlockingQueue access$000(com.android.volley.CacheDispatcher)
+    {
+        com.android.volley.CacheDispatcher $r0;
+        java.util.concurrent.BlockingQueue r1;
+
+        $r0 := @parameter0: com.android.volley.CacheDispatcher;
+
+        r1 = $r0.<com.android.volley.CacheDispatcher: java.util.concurrent.BlockingQueue mNetworkQueue>;
+
+        return r1;
+    }
+
+    public void quit()
+    {
+        com.android.volley.CacheDispatcher $r0;
+
+        $r0 := @this: com.android.volley.CacheDispatcher;
+
+        $r0.<com.android.volley.CacheDispatcher: boolean mQuit> = 1;
+
+        virtualinvoke $r0.<com.android.volley.CacheDispatcher: void interrupt()>();
+
+        return;
+    }
+
+    public void run()
+    {
+        com.android.volley.CacheDispatcher $r0;
+        java.lang.Object[] $r1;
+        java.lang.InterruptedException $r2;
+        com.android.volley.NetworkResponse $r3;
+        com.android.volley.CacheDispatcher$1 $r4;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        com.android.volley.Cache $r5, $r5_1, $r5_2, $r5_3;
+        java.util.concurrent.BlockingQueue $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        java.lang.Object $r7;
+        com.android.volley.Request $r8;
+        java.lang.String $r9;
+        com.android.volley.Cache$Entry $r10;
+        byte[] $r11;
+        java.util.Map $r12;
+        com.android.volley.Response $r13;
+        com.android.volley.ResponseDelivery $r14, $r14_1, $r14_2, $r14_3;
+
+        $r0 := @this: com.android.volley.CacheDispatcher;
+
+        $z0 = <com.android.volley.CacheDispatcher: boolean DEBUG>;
+
+        if $z0 == 0 goto label01;
+
+        $r1 = newarray (java.lang.Object)[0];
+
+        staticinvoke <com.android.volley.VolleyLog: void v(java.lang.String,java.lang.Object[])>("start new dispatcher", $r1);
+
+     label01:
+        staticinvoke <android.os.Process: void setThreadPriority(int)>(10);
+
+        $r5 = $r0.<com.android.volley.CacheDispatcher: com.android.volley.Cache mCache>;
+
+(0)     interfaceinvoke $r5.<com.android.volley.Cache: void initialize()>();
+
+     label02:
+        $r14 = Phi($r14 #0, $r14 #3, $r14_3 #4, $r14 #7, $r14 #10, $r14_1 #13, $r14_2 #15);
+
+        $z0_1 = Phi($z0 #0, $z0_2 #3, $z0_6 #4, $z0_2 #7, $z0_3 #10, $z0_4 #13, $z0_4 #15);
+
+        $r5_1 = Phi($r5 #0, $r5_1 #3, $r5_3 #4, $r5_2 #7, $r5_2 #10, $r5_2 #13, $r5_2 #15);
+
+        $r6 = Phi($r6 #0, $r6_1 #3, $r6_4 #4, $r6_2 #7, $r6_3 #10, $r6_1 #13, $r6_1 #15);
+
+(1)     $r6_1 = $r0.<com.android.volley.CacheDispatcher: java.util.concurrent.BlockingQueue mCacheQueue>;
+
+     label03:
+        $r7 = interfaceinvoke $r6_1.<java.util.concurrent.BlockingQueue: java.lang.Object take()>();
+
+     label04:
+        $r8 = (com.android.volley.Request) $r7;
+
+     label05:
+        virtualinvoke $r8.<com.android.volley.Request: void addMarker(java.lang.String)>("cache-queue-take");
+
+(2)     $z0_2 = virtualinvoke $r8.<com.android.volley.Request: boolean isCanceled()>();
+
+     label06:
+        if $z0_2 == 0 goto label10;
+
+     label07:
+        virtualinvoke $r8.<com.android.volley.Request: void finish(java.lang.String)>("cache-discard-canceled");
+
+     label08:
+(3)     goto label02;
+
+     label09:
+        $r2 := @caughtexception;
+
+        $r14_3 = Phi($r14 #1, $r14_1 #12, $r14_2 #14);
+
+        $z0_5 = Phi($z0_1 #1, $z0_2 #2, $z0_3 #8, $z0_4 #11);
+
+        $r5_3 = Phi($r5_1 #1, $r5_2 #5);
+
+        $r6_4 = Phi($r6_1 #1, $r6_2 #6, $r6_3 #9);
+
+        $z0_6 = $r0.<com.android.volley.CacheDispatcher: boolean mQuit>;
+
+(4)     if $z0_6 == 0 goto label02;
+
+        return;
+
+     label10:
+(5)     $r5_2 = $r0.<com.android.volley.CacheDispatcher: com.android.volley.Cache mCache>;
+
+     label11:
+        $r9 = virtualinvoke $r8.<com.android.volley.Request: java.lang.String getCacheKey()>();
+
+        $r10 = interfaceinvoke $r5_2.<com.android.volley.Cache: com.android.volley.Cache$Entry get(java.lang.String)>($r9);
+
+     label12:
+        if $r10 != null goto label17;
+
+     label13:
+        virtualinvoke $r8.<com.android.volley.Request: void addMarker(java.lang.String)>("cache-miss");
+
+     label14:
+(6)     $r6_2 = $r0.<com.android.volley.CacheDispatcher: java.util.concurrent.BlockingQueue mNetworkQueue>;
+
+     label15:
+        interfaceinvoke $r6_2.<java.util.concurrent.BlockingQueue: void put(java.lang.Object)>($r8);
+
+     label16:
+(7)     goto label02;
+
+     label17:
+(8)     $z0_3 = virtualinvoke $r10.<com.android.volley.Cache$Entry: boolean isExpired()>();
+
+     label18:
+        if $z0_3 == 0 goto label23;
+
+     label19:
+        virtualinvoke $r8.<com.android.volley.Request: void addMarker(java.lang.String)>("cache-hit-expired");
+
+        virtualinvoke $r8.<com.android.volley.Request: com.android.volley.Request setCacheEntry(com.android.volley.Cache$Entry)>($r10);
+
+     label20:
+(9)     $r6_3 = $r0.<com.android.volley.CacheDispatcher: java.util.concurrent.BlockingQueue mNetworkQueue>;
+
+     label21:
+        interfaceinvoke $r6_3.<java.util.concurrent.BlockingQueue: void put(java.lang.Object)>($r8);
+
+     label22:
+(10)    goto label02;
+
+     label23:
+        virtualinvoke $r8.<com.android.volley.Request: void addMarker(java.lang.String)>("cache-hit");
+
+     label24:
+        $r3 = new com.android.volley.NetworkResponse;
+
+        $r11 = $r10.<com.android.volley.Cache$Entry: byte[] data>;
+
+        $r12 = $r10.<com.android.volley.Cache$Entry: java.util.Map responseHeaders>;
+
+     label25:
+        specialinvoke $r3.<com.android.volley.NetworkResponse: void <init>(byte[],java.util.Map)>($r11, $r12);
+
+        $r13 = virtualinvoke $r8.<com.android.volley.Request: com.android.volley.Response parseNetworkResponse(com.android.volley.NetworkResponse)>($r3);
+
+        virtualinvoke $r8.<com.android.volley.Request: void addMarker(java.lang.String)>("cache-hit-parsed");
+
+(11)    $z0_4 = virtualinvoke $r10.<com.android.volley.Cache$Entry: boolean refreshNeeded()>();
+
+     label26:
+        if $z0_4 != 0 goto label29;
+
+(12)    $r14_1 = $r0.<com.android.volley.CacheDispatcher: com.android.volley.ResponseDelivery mDelivery>;
+
+     label27:
+        interfaceinvoke $r14_1.<com.android.volley.ResponseDelivery: void postResponse(com.android.volley.Request,com.android.volley.Response)>($r8, $r13);
+
+     label28:
+(13)    goto label02;
+
+     label29:
+        virtualinvoke $r8.<com.android.volley.Request: void addMarker(java.lang.String)>("cache-hit-refresh-needed");
+
+        virtualinvoke $r8.<com.android.volley.Request: com.android.volley.Request setCacheEntry(com.android.volley.Cache$Entry)>($r10);
+
+     label30:
+        $r13.<com.android.volley.Response: boolean intermediate> = 1;
+
+        $r14_2 = $r0.<com.android.volley.CacheDispatcher: com.android.volley.ResponseDelivery mDelivery>;
+
+(14)    $r4 = new com.android.volley.CacheDispatcher$1;
+
+     label31:
+        specialinvoke $r4.<com.android.volley.CacheDispatcher$1: void <init>(com.android.volley.CacheDispatcher,com.android.volley.Request)>($r0, $r8);
+
+        interfaceinvoke $r14_2.<com.android.volley.ResponseDelivery: void postResponse(com.android.volley.Request,com.android.volley.Response,java.lang.Runnable)>($r8, $r13, $r4);
+
+     label32:
+(15)    goto label02;
+
+        catch java.lang.InterruptedException from label03 to label04 with label09;
+        catch java.lang.InterruptedException from label05 to label06 with label09;
+        catch java.lang.InterruptedException from label07 to label08 with label09;
+        catch java.lang.InterruptedException from label11 to label12 with label09;
+        catch java.lang.InterruptedException from label13 to label14 with label09;
+        catch java.lang.InterruptedException from label15 to label16 with label09;
+        catch java.lang.InterruptedException from label17 to label18 with label09;
+        catch java.lang.InterruptedException from label19 to label20 with label09;
+        catch java.lang.InterruptedException from label21 to label22 with label09;
+        catch java.lang.InterruptedException from label23 to label24 with label09;
+        catch java.lang.InterruptedException from label25 to label26 with label09;
+        catch java.lang.InterruptedException from label27 to label28 with label09;
+        catch java.lang.InterruptedException from label29 to label30 with label09;
+        catch java.lang.InterruptedException from label31 to label32 with label09;
+    }
+}

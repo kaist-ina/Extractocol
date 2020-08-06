@@ -1,0 +1,4621 @@
+class com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler extends java.lang.Object implements java.lang.Thread$UncaughtExceptionHandler
+{
+    private static final int ANALYZER_VERSION;
+    static final java.io.FilenameFilter ANY_SESSION_FILENAME_FILTER;
+    static final java.lang.String CLS_CRASH_MARKER_FILE_NAME;
+    private static final java.lang.String EVENT_TYPE_CRASH;
+    private static final java.lang.String EVENT_TYPE_LOGGED;
+    private static final java.lang.String GENERATOR_FORMAT;
+    static final java.lang.String INVALID_CLS_CACHE_DIR;
+    static final java.util.Comparator LARGEST_FILE_NAME_FIRST;
+    private static final int MAX_COMPLETE_SESSIONS_COUNT;
+    private static final int MAX_LOCAL_LOGGED_EXCEPTIONS;
+    static final int MAX_OPEN_SESSIONS;
+    private static final java.util.Map SEND_AT_CRASHTIME_HEADER;
+    static final java.lang.String SESSION_APP_TAG;
+    static final java.lang.String SESSION_BEGIN_TAG;
+    static final java.lang.String SESSION_DEVICE_TAG;
+    static final java.lang.String SESSION_FATAL_TAG;
+    static final java.io.FilenameFilter SESSION_FILE_FILTER;
+    private static final java.util.regex.Pattern SESSION_FILE_PATTERN;
+    private static final int SESSION_ID_LENGTH;
+    static final java.lang.String SESSION_NON_FATAL_TAG;
+    static final java.lang.String SESSION_OS_TAG;
+    static final java.lang.String SESSION_USER_TAG;
+    static final java.util.Comparator SMALLEST_FILE_NAME_FIRST;
+    private final com.crashlytics.android.core.CrashlyticsCore crashlyticsCore;
+    private final java.lang.Thread$UncaughtExceptionHandler defaultHandler;
+    private final java.util.concurrent.atomic.AtomicInteger eventCounter;
+    private final com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper;
+    private final java.io.File filesDir;
+    private final io.fabric.sdk.android.services.common.IdManager idManager;
+    private final java.util.concurrent.atomic.AtomicBoolean isHandlingException;
+    private final com.crashlytics.android.core.LogFileManager logFileManager;
+    private boolean powerConnected;
+    private final android.content.BroadcastReceiver powerConnectedReceiver;
+    private final android.content.BroadcastReceiver powerDisconnectedReceiver;
+    private final java.util.concurrent.atomic.AtomicBoolean receiversRegistered;
+    private final com.crashlytics.android.core.SessionDataWriter sessionDataWriter;
+
+    static void <clinit>()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$1 $r0;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$2 $r1;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$3 $r2;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$4 $r3;
+        java.util.regex.Pattern $r4;
+        java.util.Map $r5;
+
+        $r0 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$1;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$1: void <init>()>();
+
+        <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.FilenameFilter SESSION_FILE_FILTER> = $r0;
+
+        $r1 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$2;
+
+        specialinvoke $r1.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$2: void <init>()>();
+
+        <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.Comparator LARGEST_FILE_NAME_FIRST> = $r1;
+
+        $r2 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$3;
+
+        specialinvoke $r2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$3: void <init>()>();
+
+        <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.Comparator SMALLEST_FILE_NAME_FIRST> = $r2;
+
+        $r3 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$4;
+
+        specialinvoke $r3.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$4: void <init>()>();
+
+        <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.FilenameFilter ANY_SESSION_FILENAME_FILTER> = $r3;
+
+        $r4 = staticinvoke <java.util.regex.Pattern: java.util.regex.Pattern compile(java.lang.String)>("([\\d|A-Z|a-z]{12}\\-[\\d|A-Z|a-z]{4}\\-[\\d|A-Z|a-z]{4}\\-[\\d|A-Z|a-z]{12}).+");
+
+        <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.regex.Pattern SESSION_FILE_PATTERN> = $r4;
+
+        $r5 = staticinvoke <java.util.Collections: java.util.Map singletonMap(java.lang.Object,java.lang.Object)>("X-CRASHLYTICS-SEND-FLAGS", "1");
+
+        <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.Map SEND_AT_CRASHTIME_HEADER> = $r5;
+
+        return;
+    }
+
+    void <init>(java.lang.Thread$UncaughtExceptionHandler, com.crashlytics.android.core.CrashlyticsListener, com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper, io.fabric.sdk.android.services.common.IdManager, com.crashlytics.android.core.SessionDataWriter, com.crashlytics.android.core.CrashlyticsCore)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.lang.Thread$UncaughtExceptionHandler $r1;
+        com.crashlytics.android.core.CrashlyticsListener $r2;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r3;
+        io.fabric.sdk.android.services.common.IdManager $r4;
+        com.crashlytics.android.core.SessionDataWriter $r5;
+        com.crashlytics.android.core.CrashlyticsCore $r6;
+        java.util.concurrent.atomic.AtomicInteger $r7;
+        com.crashlytics.android.core.LogFileManager $r8;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$5 $r9;
+        android.content.IntentFilter $r10, $r12;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$6 $r11;
+        java.util.concurrent.atomic.AtomicBoolean $r13, $r13_1, $r13_2;
+        java.io.File $r14, $r14_1;
+        android.content.Context $r15, $r15_1;
+        android.content.BroadcastReceiver $r16, $r16_1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.lang.Thread$UncaughtExceptionHandler;
+
+        $r2 := @parameter1: com.crashlytics.android.core.CrashlyticsListener;
+
+        $r3 := @parameter2: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper;
+
+        $r4 := @parameter3: io.fabric.sdk.android.services.common.IdManager;
+
+        $r5 := @parameter4: com.crashlytics.android.core.SessionDataWriter;
+
+        $r6 := @parameter5: com.crashlytics.android.core.CrashlyticsCore;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r7 = new java.util.concurrent.atomic.AtomicInteger;
+
+        specialinvoke $r7.<java.util.concurrent.atomic.AtomicInteger: void <init>(int)>(0);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicInteger eventCounter> = $r7;
+
+        $r13 = new java.util.concurrent.atomic.AtomicBoolean;
+
+        specialinvoke $r13.<java.util.concurrent.atomic.AtomicBoolean: void <init>(boolean)>(0);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicBoolean receiversRegistered> = $r13;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.Thread$UncaughtExceptionHandler defaultHandler> = $r1;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper> = $r3;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: io.fabric.sdk.android.services.common.IdManager idManager> = $r4;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore> = $r6;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.SessionDataWriter sessionDataWriter> = $r5;
+
+        $r13_1 = new java.util.concurrent.atomic.AtomicBoolean;
+
+        specialinvoke $r13_1.<java.util.concurrent.atomic.AtomicBoolean: void <init>(boolean)>(0);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicBoolean isHandlingException> = $r13_1;
+
+        $r14 = virtualinvoke $r6.<com.crashlytics.android.core.CrashlyticsCore: java.io.File getSdkDirectory()>();
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir> = $r14;
+
+        $r8 = new com.crashlytics.android.core.LogFileManager;
+
+        $r15 = virtualinvoke $r6.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+        $r14_1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+        specialinvoke $r8.<com.crashlytics.android.core.LogFileManager: void <init>(android.content.Context,java.io.File)>($r15, $r14_1);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.LogFileManager logFileManager> = $r8;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void notifyCrashlyticsListenerOfPreviousCrash(com.crashlytics.android.core.CrashlyticsListener)>($r2);
+
+        $r9 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$5;
+
+        specialinvoke $r9.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$5: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler)>($r0);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: android.content.BroadcastReceiver powerConnectedReceiver> = $r9;
+
+        $r10 = new android.content.IntentFilter;
+
+        specialinvoke $r10.<android.content.IntentFilter: void <init>(java.lang.String)>("android.intent.action.ACTION_POWER_CONNECTED");
+
+        $r11 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$6;
+
+        specialinvoke $r11.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$6: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler)>($r0);
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: android.content.BroadcastReceiver powerDisconnectedReceiver> = $r11;
+
+        $r12 = new android.content.IntentFilter;
+
+        specialinvoke $r12.<android.content.IntentFilter: void <init>(java.lang.String)>("android.intent.action.ACTION_POWER_DISCONNECTED");
+
+        $r15_1 = virtualinvoke $r6.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+        $r16 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: android.content.BroadcastReceiver powerConnectedReceiver>;
+
+        virtualinvoke $r15_1.<android.content.Context: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r16, $r10);
+
+        $r16_1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: android.content.BroadcastReceiver powerDisconnectedReceiver>;
+
+        virtualinvoke $r15_1.<android.content.Context: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r16_1, $r12);
+
+        $r13_2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicBoolean receiversRegistered>;
+
+        virtualinvoke $r13_2.<java.util.concurrent.atomic.AtomicBoolean: void set(boolean)>(1);
+
+        return;
+    }
+
+    static java.util.regex.Pattern access$000()
+    {
+        java.util.regex.Pattern r0;
+
+        r0 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.regex.Pattern SESSION_FILE_PATTERN>;
+
+        return r0;
+    }
+
+    static void access$1000(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler, com.crashlytics.android.core.internal.models.SessionEventData) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.internal.models.SessionEventData $r1;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter1: com.crashlytics.android.core.internal.models.SessionEventData;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeExternalCrashEvent(com.crashlytics.android.core.internal.models.SessionEventData)>($r1);
+
+        return;
+    }
+
+    static boolean access$102(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler, boolean)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: boolean powerConnected> = $z0;
+
+        return $z0;
+    }
+
+    static void access$1100(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler, boolean) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $z0 := @parameter1: boolean;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void doCloseSessions(boolean)>($z0);
+
+        return;
+    }
+
+    static java.io.File[] access$1300(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler, java.io.FilenameFilter)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.io.FilenameFilter $r1;
+        java.io.File[] $r2;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter1: java.io.FilenameFilter;
+
+        $r2 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listFilesMatching(java.io.FilenameFilter)>($r1);
+
+        return $r2;
+    }
+
+    static java.util.Map access$1400()
+    {
+        java.util.Map r0;
+
+        r0 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.Map SEND_AT_CRASHTIME_HEADER>;
+
+        return r0;
+    }
+
+    static void access$200(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler, java.util.Date, java.lang.Thread, java.lang.Throwable) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.Date $r1;
+        java.lang.Thread $r2;
+        java.lang.Throwable $r3;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter1: java.util.Date;
+
+        $r2 := @parameter2: java.lang.Thread;
+
+        $r3 := @parameter3: java.lang.Throwable;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void handleUncaughtException(java.util.Date,java.lang.Thread,java.lang.Throwable)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    static java.util.concurrent.atomic.AtomicBoolean access$300(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.concurrent.atomic.AtomicBoolean r1;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicBoolean isHandlingException>;
+
+        return r1;
+    }
+
+    static com.crashlytics.android.core.LogFileManager access$400(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.LogFileManager r1;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.LogFileManager logFileManager>;
+
+        return r1;
+    }
+
+    static void access$500(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler, java.util.Date, java.lang.Thread, java.lang.Throwable)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.Date $r1;
+        java.lang.Thread $r2;
+        java.lang.Throwable $r3;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter1: java.util.Date;
+
+        $r2 := @parameter2: java.lang.Thread;
+
+        $r3 := @parameter3: java.lang.Throwable;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void doWriteNonFatal(java.util.Date,java.lang.Thread,java.lang.Throwable)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    static java.lang.String access$600(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.String getCurrentSessionId()>();
+
+        return $r1;
+    }
+
+    static java.io.File access$700(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.io.File r1;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+        return r1;
+    }
+
+    static void access$800(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void doOpenSession()>();
+
+        return;
+    }
+
+    static com.crashlytics.android.core.CrashlyticsCore access$900(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.CrashlyticsCore r1;
+
+        $r0 := @parameter0: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        r1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        return r1;
+    }
+
+    private void closeWithoutRenamingOrLog(com.crashlytics.android.core.ClsFileOutputStream)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.ClsFileOutputStream $r1;
+        java.io.IOException $r2;
+        io.fabric.sdk.android.Logger $r3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: com.crashlytics.android.core.ClsFileOutputStream;
+
+        if $r1 == null goto label4;
+
+     label1:
+        virtualinvoke $r1.<com.crashlytics.android.core.ClsFileOutputStream: void closeInProgressStream()>();
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r3.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Error closing session file stream in the presence of an exception", $r2);
+
+     label4:
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    private void deleteLegacyInvalidCacheDir()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.io.File $r1, $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        com.crashlytics.android.core.CrashlyticsCore $r2;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3, $i1_4;
+        boolean $z0, $z0_1, $z0_2;
+        java.io.File[] $r4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = new java.io.File;
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r3 = virtualinvoke $r2.<com.crashlytics.android.core.CrashlyticsCore: java.io.File getSdkDirectory()>();
+
+        specialinvoke $r1.<java.io.File: void <init>(java.io.File,java.lang.String)>($r3, "invalidClsFiles");
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+(0)     if $z0 == 0 goto label3;
+
+        $z0_1 = virtualinvoke $r1.<java.io.File: boolean isDirectory()>();
+
+(1)     if $z0_1 == 0 goto label2;
+
+        $r4 = virtualinvoke $r1.<java.io.File: java.io.File[] listFiles()>();
+
+        $i0 = lengthof $r4;
+
+(2)     $i1 = 0;
+
+     label1:
+        $r3_1 = Phi($r3 #2, $r3_2 #4);
+
+        $i1_1 = Phi($i1 #2, $i1_2 #4);
+
+(3)     if $i1_1 >= $i0 goto label2;
+
+        $r3_2 = $r4[$i1_1];
+
+        virtualinvoke $r3_2.<java.io.File: boolean delete()>();
+
+        $i1_2 = $i1_1 + 1;
+
+(4)     goto label1;
+
+     label2:
+        $r3_3 = Phi($r3 #1, $r3_1 #3);
+
+        $i1_3 = Phi($i1 #1, $i1_1 #3);
+
+(5)     virtualinvoke $r1.<java.io.File: boolean delete()>();
+
+     label3:
+        $r3_4 = Phi($r3 #0, $r3_3 #5);
+
+        $i1_4 = Phi($i1 #0, $i1_3 #5);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #5);
+
+        return;
+    }
+
+    private void deleteSessionPartFilesFor(java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.lang.String $r1;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.io.File $r2;
+        java.io.File[] $r3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r3 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listSessionPartFilesFor(java.lang.String)>($r1);
+
+        $i0 = lengthof $r3;
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        if $i1_1 >= $i0 goto label2;
+
+        $r2 = $r3[$i1_1];
+
+        virtualinvoke $r2.<java.io.File: boolean delete()>();
+
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    private void doCloseSessions(boolean) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        boolean $z0;
+        java.util.Comparator $r1;
+        com.crashlytics.android.core.CrashlyticsCore $r2;
+        int $i0, $i2, $i3, $i0_1, $i3_1, $i0_2, $i0_3, $i3_2, $i3_3, $i0_4;
+        byte $b1, $b1_1, $b1_2;
+        java.io.File[] $r3;
+        java.io.File $r4, $r4_1, $r4_2, $r4_3;
+        java.lang.String $r5, $r9, $r5_1, $r5_2, $r5_3;
+        io.fabric.sdk.android.services.settings.SessionSettingsData $r6;
+        io.fabric.sdk.android.Logger $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $z0 := @parameter0: boolean;
+
+        if $z0 == 0 goto label3;
+
+(0)     $b1 = 1;
+
+     label1:
+        $b1_1 = Phi($b1 #0, $b1_2 #4);
+
+        $i0 = $b1_1 + 8;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void trimOpenSessions(int)>($i0);
+
+        $r3 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listSessionBeginFiles()>();
+
+        $r1 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.Comparator LARGEST_FILE_NAME_FIRST>;
+
+        staticinvoke <java.util.Arrays: void sort(java.lang.Object[],java.util.Comparator)>($r3, $r1);
+
+        $i0_1 = lengthof $r3;
+
+        if $i0_1 <= $b1_1 goto label5;
+
+        $r4 = $r3[$b1_1];
+
+        $r5 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.String getSessionIdFromSessionFile(java.io.File)>($r4);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeSessionUser(java.lang.String)>($r5);
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r6 = virtualinvoke $r2.<com.crashlytics.android.core.CrashlyticsCore: io.fabric.sdk.android.services.settings.SessionSettingsData getSessionSettingsData()>();
+
+        if $r6 == null goto label4;
+
+        $i2 = $r6.<io.fabric.sdk.android.services.settings.SessionSettingsData: int maxCustomExceptionEvents>;
+
+        $r7 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r7.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Closing open sessions.");
+
+(1)     $i3 = $b1_1;
+
+     label2:
+        $i3_1 = Phi($i3 #1, $i3_2 #3);
+
+        $r7_1 = Phi($r7 #1, $r7_2 #3);
+
+        $r5_1 = Phi($r5 #1, $r5_2 #3);
+
+        $r8 = Phi($r8 #1, $r8_3 #3);
+
+        $r4_1 = Phi($r4 #1, $r4_2 #3);
+
+        $i0_2 = Phi($i0_1 #1, $i0_3 #3);
+
+        $i0_3 = lengthof $r3;
+
+(2)     if $i3_1 >= $i0_3 goto label6;
+
+        $r4_2 = $r3[$i3_1];
+
+        $r5_2 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.String getSessionIdFromSessionFile(java.io.File)>($r4_2);
+
+        $r7_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r8_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r8_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Closing session: ");
+
+        $r8_3 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_2);
+
+        $r9 = virtualinvoke $r8_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r7_2.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r9);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeSessionPartsToSessionFile(java.io.File,java.lang.String,int)>($r4_2, $r5_2, $i2);
+
+        $i3_2 = $i3_1 + 1;
+
+(3)     goto label2;
+
+     label3:
+        $b1_2 = 0;
+
+(4)     goto label1;
+
+     label4:
+        $r7_3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r7_3.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Unable to close session. Settings are not loaded.");
+
+        return;
+
+     label5:
+        $r7_4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(5)     interfaceinvoke $r7_4.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "No open sessions to be closed.");
+
+     label6:
+        $i3_3 = Phi($i3_1 #2, $i3 #5);
+
+        $r7_5 = Phi($r7_1 #2, $r7_4 #5);
+
+        $r5_3 = Phi($r5_1 #2, $r5 #5);
+
+        $r8_4 = Phi($r8 #2, $r8 #5);
+
+        $r4_3 = Phi($r4_1 #2, $r4 #5);
+
+        $i0_4 = Phi($i0_3 #2, $i0_1 #5);
+
+        return;
+    }
+
+    private void doOpenSession() throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.Date $r1;
+        com.crashlytics.android.core.CLSUUID $r2;
+        io.fabric.sdk.android.services.common.IdManager $r3;
+        com.crashlytics.android.core.LogFileManager $r4;
+        java.lang.String $r5, $r8;
+        io.fabric.sdk.android.Logger $r6;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = new java.util.Date;
+
+        specialinvoke $r1.<java.util.Date: void <init>()>();
+
+        $r2 = new com.crashlytics.android.core.CLSUUID;
+
+        $r3 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: io.fabric.sdk.android.services.common.IdManager idManager>;
+
+        specialinvoke $r2.<com.crashlytics.android.core.CLSUUID: void <init>(io.fabric.sdk.android.services.common.IdManager)>($r3);
+
+        $r5 = virtualinvoke $r2.<com.crashlytics.android.core.CLSUUID: java.lang.String toString()>();
+
+        $r6 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Opening an new session with ID ");
+
+        $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r8 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r6.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r8);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeBeginSession(java.lang.String,java.util.Date)>($r5, $r1);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeSessionApp(java.lang.String)>($r5);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeSessionOS(java.lang.String)>($r5);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeSessionDevice(java.lang.String)>($r5);
+
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.LogFileManager logFileManager>;
+
+        virtualinvoke $r4.<com.crashlytics.android.core.LogFileManager: void setCurrentSession(java.lang.String)>($r5);
+
+        return;
+    }
+
+    private void doWriteNonFatal(java.util.Date, java.lang.Thread, java.lang.Throwable)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.Date $r1;
+        java.lang.Thread $r2;
+        java.lang.Throwable $r3, $r16, $r16_1, $r16_2;
+        java.util.concurrent.atomic.AtomicInteger $r4;
+        com.crashlytics.android.core.ClsFileOutputStream $r5, $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7;
+        java.lang.Exception $r6, $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6;
+        java.lang.String $r7, $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8, $r12_9;
+        com.crashlytics.android.core.CodedOutputStream $r9, $r14, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8;
+        io.fabric.sdk.android.Logger $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8, $r10_9;
+        java.lang.StringBuilder $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8, $r11_9, $r11_10, $r11_11, $r11_12, $r11_13, $r11_14;
+        int $i0;
+        java.io.File $r13;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.util.Date;
+
+        $r2 := @parameter1: java.lang.Thread;
+
+        $r3 := @parameter2: java.lang.Throwable;
+
+        $r7 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.String getCurrentSessionId()>();
+
+        if $r7 == null goto label20;
+
+        staticinvoke <com.crashlytics.android.core.CrashlyticsCore: void recordLoggedExceptionEvent(java.lang.String)>($r7);
+
+        $r8 = null;
+
+(0)     $r9 = null;
+
+     label01:
+        $r10 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+     label02:
+        $r11 = new java.lang.StringBuilder;
+
+     label03:
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+(1)     $r11_1 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Crashlytics is logging non-fatal exception \"");
+
+(2)     $r11_2 = virtualinvoke $r11_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+(3)     $r11_3 = virtualinvoke $r11_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\" from thread ");
+
+        $r12 = virtualinvoke $r2.<java.lang.Thread: java.lang.String getName()>();
+
+(4)     $r11_4 = virtualinvoke $r11_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+(5)     $r12_1 = virtualinvoke $r11_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r10.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r12_1);
+
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicInteger eventCounter>;
+
+        $i0 = virtualinvoke $r4.<java.util.concurrent.atomic.AtomicInteger: int getAndIncrement()>();
+
+(6)     $r12_2 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String padWithZerosToMaxIntWidth(int)>($i0);
+
+     label04:
+(7)     $r11_5 = new java.lang.StringBuilder;
+
+     label05:
+        specialinvoke $r11_5.<java.lang.StringBuilder: void <init>()>();
+
+(8)     $r11_6 = virtualinvoke $r11_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+(9)     $r11_7 = virtualinvoke $r11_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionEvent");
+
+(10)    $r11_8 = virtualinvoke $r11_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12_2);
+
+(11)    $r12_3 = virtualinvoke $r11_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label06:
+        $r5 = new com.crashlytics.android.core.ClsFileOutputStream;
+
+     label07:
+        $r13 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+(12)    specialinvoke $r5.<com.crashlytics.android.core.ClsFileOutputStream: void <init>(java.io.File,java.lang.String)>($r13, $r12_3);
+
+     label08:
+        $r14 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream)>($r5);
+
+     label09:
+(13)    $r9_1 = $r14;
+
+     label10:
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeSessionEvent(com.crashlytics.android.core.CodedOutputStream,java.util.Date,java.lang.Thread,java.lang.Throwable,java.lang.String,boolean)>($r14, $r1, $r2, $r3, "error", 0);
+
+     label11:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r14, "Failed to flush to non-fatal file.");
+
+(14)    staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r5, "Failed to close non-fatal file output stream.");
+
+     label12:
+        $r9_4 = Phi($r9_1 #14, $r9_5 #18);
+
+        $r15_1 = Phi($r15 #14, $r15_3 #18);
+
+        $r12_4 = Phi($r12_3 #14, $r12_6 #18);
+
+        $r8_3 = Phi($r8 #14, $r8_4 #18);
+
+        $r10_1 = Phi($r10 #14, $r10_4 #18);
+
+        $r11_9 = Phi($r11_8 #14, $r11_11 #18);
+
+(15)    specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void trimSessionEventFiles(java.lang.String,int)>($r7, 64);
+
+     label13:
+        return;
+
+     label14:
+        $r15_2 := @caughtexception;
+
+        $r12_5 = Phi($r12 #0, $r12_1 #5, $r12_2 #6, $r12_3 #11);
+
+        $r10_2 = Phi($r10 #0);
+
+(16)    $r11_10 = Phi($r11 #0, $r11_1 #1, $r11_2 #2, $r11_3 #3, $r11_4 #4, $r11_5 #7, $r11_6 #8, $r11_7 #9, $r11_8 #10);
+
+     label15:
+        $r9_5 = Phi($r9 #16, $r9_3 #21);
+
+        $r15_3 = Phi($r15_2 #16, $r15 #21);
+
+        $r12_6 = Phi($r12_5 #16, $r12_3 #21);
+
+        $r8_4 = Phi($r8 #16, $r8_2 #21);
+
+        $r10_3 = Phi($r10_2 #16, $r10 #21);
+
+        $r11_11 = Phi($r11_10 #16, $r11_8 #21);
+
+(17)    $r10_4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "An error occurred in the non-fatal exception logger", $r15_3);
+
+        staticinvoke <com.crashlytics.android.core.ExceptionUtils: void writeStackTraceIfNotNull(java.lang.Throwable,java.io.OutputStream)>($r15_3, $r8_4);
+
+     label16:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r9_5, "Failed to flush to non-fatal file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r8_4, "Failed to close non-fatal file output stream.");
+
+(18)    goto label12;
+
+     label17:
+        $r16_1 := @caughtexception;
+
+        $r9_6 = Phi($r9 #0, $r9_3 #21, $r9_5 #17);
+
+        $r15_4 = Phi($r15 #0, $r15_2 #16, $r15_3 #17);
+
+        $r12_7 = Phi($r12 #0, $r12_1 #5, $r12_2 #6, $r12_3 #11, $r12_5 #16, $r12_6 #17);
+
+        $r8_5 = Phi($r8 #0, $r8_2 #21, $r8_4 #17);
+
+        $r10_5 = Phi($r10 #0, $r10_2 #16, $r10_4 #17);
+
+(19)    $r11_12 = Phi($r11 #0, $r11_1 #1, $r11_2 #2, $r11_3 #3, $r11_4 #4, $r11_5 #7, $r11_6 #8, $r11_7 #9, $r11_8 #10, $r11_10 #16, $r11_11 #17);
+
+     label18:
+        $r9_7 = Phi($r9_6 #19, $r9_2 #20);
+
+        $r15_5 = Phi($r15_4 #19, $r15 #20);
+
+        $r12_8 = Phi($r12_7 #19, $r12_3 #20);
+
+        $r8_6 = Phi($r8_5 #19, $r8_1 #20);
+
+        $r16_2 = Phi($r16_1 #19, $r16 #20);
+
+        $r10_6 = Phi($r10_5 #19, $r10 #20);
+
+        $r11_13 = Phi($r11_12 #19, $r11_8 #20);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r9_7, "Failed to flush to non-fatal file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r8_6, "Failed to close non-fatal file output stream.");
+
+        throw $r16_2;
+
+     label19:
+        $r6 := @caughtexception;
+
+        $r9_8 = Phi($r9_1 #14, $r9_5 #18, $r9_4 #15);
+
+        $r15_6 = Phi($r15 #14, $r15_3 #18, $r15_1 #15);
+
+        $r12_9 = Phi($r12_3 #14, $r12_6 #18, $r12_4 #15);
+
+        $r8_7 = Phi($r8 #14, $r8_4 #18, $r8_3 #15);
+
+        $r10_7 = Phi($r10 #14, $r10_4 #18, $r10_1 #15);
+
+        $r11_14 = Phi($r11_8 #14, $r11_11 #18, $r11_9 #15);
+
+        $r10_8 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_8.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "An error occurred when trimming non-fatal files.", $r6);
+
+        return;
+
+     label20:
+        $r10_9 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_9.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Tried to write a non-fatal exception while no session was open.", null);
+
+        return;
+
+     label21:
+        $r16 := @caughtexception;
+
+        $r9_2 = Phi($r9 #12, $r9_1 #13);
+
+        $r8_1 = $r5;
+
+(20)    goto label18;
+
+     label22:
+        $r15 := @caughtexception;
+
+        $r9_3 = Phi($r9 #12, $r9_1 #13);
+
+        $r8_2 = $r5;
+
+(21)    goto label15;
+
+        catch java.lang.Exception from label01 to label02 with label14;
+        catch java.lang.Throwable from label01 to label02 with label17;
+        catch java.lang.Throwable from label02 to label03 with label17;
+        catch java.lang.Exception from label03 to label04 with label14;
+        catch java.lang.Throwable from label03 to label04 with label17;
+        catch java.lang.Throwable from label04 to label05 with label17;
+        catch java.lang.Exception from label05 to label06 with label14;
+        catch java.lang.Throwable from label05 to label06 with label17;
+        catch java.lang.Exception from label07 to label08 with label14;
+        catch java.lang.Throwable from label07 to label08 with label17;
+        catch java.lang.Exception from label08 to label09 with label22;
+        catch java.lang.Throwable from label08 to label09 with label21;
+        catch java.lang.Exception from label10 to label11 with label22;
+        catch java.lang.Throwable from label10 to label11 with label21;
+        catch java.lang.Exception from label12 to label13 with label19;
+        catch java.lang.Throwable from label15 to label16 with label17;
+    }
+
+    private java.io.File[] ensureFileArrayNotNull(java.io.File[])
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.io.File[] $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.io.File[];
+
+(0)     if $r1 != null goto label1;
+
+(1)     $r1_1 = newarray (java.io.File)[0];
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return $r1_2;
+    }
+
+    private java.lang.String getCurrentSessionId()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.Comparator $r1;
+        int $i0;
+        java.io.File $r2;
+        java.io.File[] $r3;
+        java.lang.String $r4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r3 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listSessionBeginFiles()>();
+
+        $r1 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.Comparator LARGEST_FILE_NAME_FIRST>;
+
+        staticinvoke <java.util.Arrays: void sort(java.lang.Object[],java.util.Comparator)>($r3, $r1);
+
+        $i0 = lengthof $r3;
+
+        if $i0 <= 0 goto label1;
+
+        $r2 = $r3[0];
+
+        $r4 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.String getSessionIdFromSessionFile(java.io.File)>($r2);
+
+        return $r4;
+
+     label1:
+        return null;
+    }
+
+    private java.lang.String getPreviousSessionId()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.Comparator $r1;
+        int $i0;
+        java.io.File $r2;
+        java.io.File[] $r3;
+        java.lang.String $r4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r3 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listSessionBeginFiles()>();
+
+        $r1 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.Comparator LARGEST_FILE_NAME_FIRST>;
+
+        staticinvoke <java.util.Arrays: void sort(java.lang.Object[],java.util.Comparator)>($r3, $r1);
+
+        $i0 = lengthof $r3;
+
+        if $i0 <= 1 goto label1;
+
+        $r2 = $r3[1];
+
+        $r4 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.String getSessionIdFromSessionFile(java.io.File)>($r2);
+
+        return $r4;
+
+     label1:
+        return null;
+    }
+
+    private java.lang.String getSessionIdFromSessionFile(java.io.File)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.io.File $r1;
+        java.lang.String $r2, $r2_1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.io.File;
+
+        $r2 = virtualinvoke $r1.<java.io.File: java.lang.String getName()>();
+
+        $r2_1 = virtualinvoke $r2.<java.lang.String: java.lang.String substring(int,int)>(0, 35);
+
+        return $r2_1;
+    }
+
+    private com.crashlytics.android.core.UserMetaData getUserMetaData(java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.MetaDataStore $r1;
+        java.io.File $r2;
+        java.lang.String $r3, $r6, $r7, $r3_1;
+        boolean $z0;
+        com.crashlytics.android.core.UserMetaData $r4, $r4_1;
+        com.crashlytics.android.core.CrashlyticsCore $r5, $r5_1, $r5_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $z0 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: boolean isHandlingException()>();
+
+        if $z0 == 0 goto label1;
+
+        $r4 = new com.crashlytics.android.core.UserMetaData;
+
+        $r5 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r3_1 = virtualinvoke $r5.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getUserIdentifier()>();
+
+        $r5_1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r6 = virtualinvoke $r5_1.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getUserName()>();
+
+        $r5_2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r7 = virtualinvoke $r5_2.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getUserEmail()>();
+
+        specialinvoke $r4.<com.crashlytics.android.core.UserMetaData: void <init>(java.lang.String,java.lang.String,java.lang.String)>($r3_1, $r6, $r7);
+
+        return $r4;
+
+     label1:
+        $r1 = new com.crashlytics.android.core.MetaDataStore;
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+        specialinvoke $r1.<com.crashlytics.android.core.MetaDataStore: void <init>(java.io.File)>($r2);
+
+        $r4_1 = virtualinvoke $r1.<com.crashlytics.android.core.MetaDataStore: com.crashlytics.android.core.UserMetaData readUserData(java.lang.String)>($r3);
+
+        return $r4_1;
+    }
+
+    private void handleUncaughtException(java.util.Date, java.lang.Thread, java.lang.Throwable) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.Date $r1;
+        java.lang.Thread $r2;
+        java.lang.Throwable $r3;
+        com.crashlytics.android.core.CrashlyticsCore $r4;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.util.Date;
+
+        $r2 := @parameter1: java.lang.Thread;
+
+        $r3 := @parameter2: java.lang.Throwable;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeFatal(java.util.Date,java.lang.Thread,java.lang.Throwable)>($r1, $r2, $r3);
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void doCloseSessions()>();
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void doOpenSession()>();
+
+        virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void trimSessionFiles()>();
+
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $z0 = virtualinvoke $r4.<com.crashlytics.android.core.CrashlyticsCore: boolean shouldPromptUserBeforeSendingCrashReports()>();
+
+        if $z0 != 0 goto label1;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void sendSessionReports()>();
+
+     label1:
+        return;
+    }
+
+    private java.io.File[] listCompleteSessionFiles()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.io.FilenameFilter $r1;
+        java.io.File[] $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.FilenameFilter SESSION_FILE_FILTER>;
+
+        $r2 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listFilesMatching(java.io.FilenameFilter)>($r1);
+
+        return $r2;
+    }
+
+    private java.io.File[] listFilesMatching(java.io.FilenameFilter)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.io.FilenameFilter $r1;
+        java.io.File $r2;
+        java.io.File[] $r3, $r3_1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.io.FilenameFilter;
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+        $r3 = virtualinvoke $r2.<java.io.File: java.io.File[] listFiles(java.io.FilenameFilter)>($r1);
+
+        $r3_1 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] ensureFileArrayNotNull(java.io.File[])>($r3);
+
+        return $r3_1;
+    }
+
+    private java.io.File[] listSessionPartFilesFor(java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.lang.String $r1;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$SessionPartFileFilter $r2;
+        java.io.File[] $r3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$SessionPartFileFilter;
+
+        specialinvoke $r2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$SessionPartFileFilter: void <init>(java.lang.String)>($r1);
+
+        $r3 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listFilesMatching(java.io.FilenameFilter)>($r2);
+
+        return $r3;
+    }
+
+    private void notifyCrashlyticsListenerOfPreviousCrash(com.crashlytics.android.core.CrashlyticsListener)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.CrashlyticsListener $r1;
+        java.io.File $r2, $r6;
+        com.crashlytics.android.core.CrashlyticsCore $r3;
+        java.lang.Exception $r4;
+        io.fabric.sdk.android.Logger $r5, $r5_1, $r5_2;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: com.crashlytics.android.core.CrashlyticsListener;
+
+        $r5 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r5.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Checking for previous crash marker.");
+
+        $r2 = new java.io.File;
+
+        $r3 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r6 = virtualinvoke $r3.<com.crashlytics.android.core.CrashlyticsCore: java.io.File getSdkDirectory()>();
+
+        specialinvoke $r2.<java.io.File: void <init>(java.io.File,java.lang.String)>($r6, "crash_marker");
+
+        $z0 = virtualinvoke $r2.<java.io.File: boolean exists()>();
+
+(0)     if $z0 == 0 goto label4;
+
+        virtualinvoke $r2.<java.io.File: boolean delete()>();
+
+(1)     if $r1 == null goto label4;
+
+     label1:
+        interfaceinvoke $r1.<com.crashlytics.android.core.CrashlyticsListener: void crashlyticsDidDetectCrashDuringPreviousExecution()>();
+
+     label2:
+        return;
+
+     label3:
+        $r4 := @caughtexception;
+
+        $r5_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(2)     interfaceinvoke $r5_1.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Exception thrown by CrashlyticsListener while notifying of previous crash.", $r4);
+
+     label4:
+        $r5_2 = Phi($r5 #0, $r5 #1, $r5_1 #2);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    private void sendSessionReports()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.io.File $r1;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r2;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$16 $r3;
+        java.io.File[] $r4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r4 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listCompleteSessionFiles()>();
+
+        $i0 = lengthof $r4;
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        if $i1_1 >= $i0 goto label2;
+
+        $r1 = $r4[$i1_1];
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r3 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$16;
+
+        specialinvoke $r3.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$16: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler,java.io.File)>($r0, $r1);
+
+        virtualinvoke $r2.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.util.concurrent.Future executeAsync(java.lang.Runnable)>($r3);
+
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    private void trimOpenSessions(int)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.HashSet $r1;
+        java.util.Comparator $r2;
+        com.crashlytics.android.core.LogFileManager $r3;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$AnySessionPartFileFilter $r4;
+        java.util.regex.Pattern $r5;
+        int $i0, $i1, $i0_1, $i1_1, $i1_2, $i1_3, $i0_2, $i1_4, $i1_5, $i1_6;
+        java.io.File[] $r6, $r6_1;
+        java.io.File $r7, $r7_1, $r7_2, $r7_3;
+        java.lang.String $r8, $r10, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        java.util.regex.Matcher $r9;
+        boolean $z0;
+        io.fabric.sdk.android.Logger $r11;
+        java.lang.StringBuilder $r12, $r12_1, $r12_2, $r12_3, $r12_4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $i0 := @parameter0: int;
+
+        $r1 = new java.util.HashSet;
+
+        specialinvoke $r1.<java.util.HashSet: void <init>()>();
+
+        $r6 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listSessionBeginFiles()>();
+
+        $r2 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.Comparator LARGEST_FILE_NAME_FIRST>;
+
+        staticinvoke <java.util.Arrays: void sort(java.lang.Object[],java.util.Comparator)>($r6, $r2);
+
+        $i1 = lengthof $r6;
+
+        $i0_1 = staticinvoke <java.lang.Math: int min(int,int)>($i0, $i1);
+
+(0)     $i1_1 = 0;
+
+     label1:
+        $i1_2 = Phi($i1_1 #0, $i1_3 #1);
+
+        $r7 = Phi($r7 #0, $r7_1 #1);
+
+        $r8 = Phi($r8 #0, $r8_1 #1);
+
+        if $i1_2 >= $i0_1 goto label2;
+
+        $r7_1 = $r6[$i1_2];
+
+        $r8_1 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.String getSessionIdFromSessionFile(java.io.File)>($r7_1);
+
+        interfaceinvoke $r1.<java.util.Set: boolean add(java.lang.Object)>($r8_1);
+
+        $i1_3 = $i1_2 + 1;
+
+(1)     goto label1;
+
+     label2:
+        $r3 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.LogFileManager logFileManager>;
+
+        virtualinvoke $r3.<com.crashlytics.android.core.LogFileManager: void discardOldLogFiles(java.util.Set)>($r1);
+
+        $r4 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$AnySessionPartFileFilter;
+
+        specialinvoke $r4.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$AnySessionPartFileFilter: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$1)>(null);
+
+        $r6_1 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listFilesMatching(java.io.FilenameFilter)>($r4);
+
+        $i0_2 = lengthof $r6_1;
+
+(2)     $i1_4 = 0;
+
+     label3:
+        $i1_5 = Phi($i1_4 #2, $i1_6 #5);
+
+        $r12 = Phi($r12 #2, $r12_4 #5);
+
+        $r7_2 = Phi($r7 #2, $r7_3 #5);
+
+        $r8_2 = Phi($r8 #2, $r8_5 #5);
+
+        if $i1_5 >= $i0_2 goto label5;
+
+        $r7_3 = $r6_1[$i1_5];
+
+        $r8_3 = virtualinvoke $r7_3.<java.io.File: java.lang.String getName()>();
+
+        $r5 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.regex.Pattern SESSION_FILE_PATTERN>;
+
+        $r9 = virtualinvoke $r5.<java.util.regex.Pattern: java.util.regex.Matcher matcher(java.lang.CharSequence)>($r8_3);
+
+        virtualinvoke $r9.<java.util.regex.Matcher: boolean matches()>();
+
+        $r10 = virtualinvoke $r9.<java.util.regex.Matcher: java.lang.String group(int)>(1);
+
+        $z0 = interfaceinvoke $r1.<java.util.Set: boolean contains(java.lang.Object)>($r10);
+
+(3)     if $z0 != 0 goto label4;
+
+        $r11 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r12_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r12_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r12_2 = virtualinvoke $r12_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Trimming open session file: ");
+
+        $r12_3 = virtualinvoke $r12_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8_3);
+
+        $r8_4 = virtualinvoke $r12_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r11.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r8_4);
+
+(4)     virtualinvoke $r7_3.<java.io.File: boolean delete()>();
+
+     label4:
+        $r12_4 = Phi($r12 #3, $r12_3 #4);
+
+        $r8_5 = Phi($r8_3 #3, $r8_4 #4);
+
+        $i1_6 = $i1_5 + 1;
+
+(5)     goto label3;
+
+     label5:
+        return;
+    }
+
+    private void trimSessionEventFiles(java.lang.String, int)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        int $i0;
+        java.io.File $r1;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter $r2;
+        java.util.Comparator $r3;
+        java.lang.String $r4, $r4_1;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r4 := @parameter0: java.lang.String;
+
+        $i0 := @parameter1: int;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+        $r2 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionEvent");
+
+        $r4_1 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter: void <init>(java.lang.String)>($r4_1);
+
+        $r3 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.Comparator SMALLEST_FILE_NAME_FIRST>;
+
+        staticinvoke <com.crashlytics.android.core.Utils: void capFileCount(java.io.File,java.io.FilenameFilter,int,java.util.Comparator)>($r1, $r2, $i0, $r3);
+
+        return;
+    }
+
+    private void writeBeginSession(java.lang.String, java.util.Date) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.lang.String $r1, $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8;
+        java.util.Date $r2;
+        com.crashlytics.android.core.ClsFileOutputStream $r3, $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        java.io.File $r4;
+        java.util.Locale $r5;
+        java.lang.Object[] $r6;
+        com.crashlytics.android.core.CodedOutputStream $r8, $r11, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6;
+        java.lang.StringBuilder $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6;
+        com.crashlytics.android.core.CrashlyticsCore $r12;
+        long $l0, $l0_1, $l0_2, $l0_3, $l0_4, $l0_5, $l0_6;
+        com.crashlytics.android.core.SessionDataWriter $r13;
+        java.lang.Exception $r14, $r14_1, $r14_2, $r14_3, $r14_4;
+        java.lang.Throwable $r15, $r15_1, $r15_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.util.Date;
+
+        $r7 = null;
+
+(0)     $r8 = null;
+
+     label01:
+(1)     $r3 = new com.crashlytics.android.core.ClsFileOutputStream;
+
+     label02:
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+     label03:
+        $r9 = new java.lang.StringBuilder;
+
+     label04:
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>()>();
+
+(2)     $r9_1 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+(3)     $r9_2 = virtualinvoke $r9_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("BeginSession");
+
+        $r10 = virtualinvoke $r9_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(4)     specialinvoke $r3.<com.crashlytics.android.core.ClsFileOutputStream: void <init>(java.io.File,java.lang.String)>($r4, $r10);
+
+     label05:
+        $r11 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream)>($r3);
+
+     label06:
+(5)     $r8_1 = $r11;
+
+     label07:
+(6)     $r5 = <java.util.Locale: java.util.Locale US>;
+
+     label08:
+        $r6 = newarray (java.lang.Object)[1];
+
+        $r12 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+(7)     $r10_1 = virtualinvoke $r12.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getVersion()>();
+
+     label09:
+        $r6[0] = $r10_1;
+
+     label10:
+(8)     $r10_2 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r5, "Crashlytics Android SDK/%s", $r6);
+
+        $l0 = virtualinvoke $r2.<java.util.Date: long getTime()>();
+
+     label11:
+(9)     $l0_1 = $l0 / 1000L;
+
+     label12:
+        $r13 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.SessionDataWriter sessionDataWriter>;
+
+        virtualinvoke $r13.<com.crashlytics.android.core.SessionDataWriter: void writeBeginSession(com.crashlytics.android.core.CodedOutputStream,java.lang.String,java.lang.String,long)>($r11, $r1, $r10_2, $l0_1);
+
+     label13:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r11, "Failed to flush to session begin file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r3, "Failed to close begin session file.");
+
+        return;
+
+     label14:
+        $r14_1 := @caughtexception;
+
+        $r9_3 = Phi($r9 #1, $r9_1 #2, $r9_2 #3);
+
+(10)    $r10_5 = Phi($r10 #1);
+
+     label15:
+        $r8_4 = Phi($r8 #10, $r8_3 #14);
+
+        $r9_4 = Phi($r9_3 #10, $r9_2 #14);
+
+        $r10_6 = Phi($r10_5 #10, $r10_4 #14);
+
+        $l0_4 = Phi($l0 #10, $l0_3 #14);
+
+        $r14_2 = Phi($r14_1 #10, $r14 #14);
+
+        $r7_3 = Phi($r7 #10, $r7_2 #14);
+
+(11)    staticinvoke <com.crashlytics.android.core.ExceptionUtils: void writeStackTraceIfNotNull(java.lang.Throwable,java.io.OutputStream)>($r14_2, $r7_3);
+
+        throw $r14_2;
+
+     label16:
+        $r15_1 := @caughtexception;
+
+        $r8_5 = Phi($r8 #0, $r8_3 #14, $r8_4 #11);
+
+        $r9_5 = Phi($r9 #0, $r9_1 #2, $r9_2 #3, $r9_3 #10, $r9_4 #11);
+
+        $r10_7 = Phi($r10 #0, $r10_5 #10, $r10_4 #14, $r10_6 #11);
+
+        $l0_5 = Phi($l0 #0, $l0_3 #14, $l0_4 #11);
+
+        $r14_3 = Phi($r14 #0, $r14_1 #10, $r14_2 #11);
+
+(12)    $r7_4 = Phi($r7 #0, $r7_2 #14, $r7_3 #11);
+
+     label17:
+        $r15_2 = Phi($r15_1 #12, $r15 #13);
+
+        $r8_6 = Phi($r8_5 #12, $r8_2 #13);
+
+        $r9_6 = Phi($r9_5 #12, $r9_2 #13);
+
+        $r10_8 = Phi($r10_7 #12, $r10_3 #13);
+
+        $l0_6 = Phi($l0_5 #12, $l0_2 #13);
+
+        $r14_4 = Phi($r14_3 #12, $r14 #13);
+
+        $r7_5 = Phi($r7_4 #12, $r7_1 #13);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r8_6, "Failed to flush to session begin file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r7_5, "Failed to close begin session file.");
+
+        throw $r15_2;
+
+     label18:
+        $r15 := @caughtexception;
+
+        $r8_2 = Phi($r8 #4, $r8_1 #5);
+
+        $r10_3 = Phi($r10 #4, $r10_1 #7, $r10_2 #8);
+
+        $l0_2 = Phi($l0 #4, $l0_1 #9);
+
+        $r7_1 = $r3;
+
+(13)    goto label17;
+
+     label19:
+        $r14 := @caughtexception;
+
+        $r8_3 = Phi($r8 #4, $r8_1 #6);
+
+        $r10_4 = Phi($r10 #4, $r10_1 #7, $r10_2 #8);
+
+        $l0_3 = Phi($l0 #4, $l0_1 #9);
+
+        $r7_2 = $r3;
+
+(14)    goto label15;
+
+        catch java.lang.Throwable from label01 to label02 with label16;
+        catch java.lang.Exception from label02 to label03 with label14;
+        catch java.lang.Throwable from label02 to label03 with label16;
+        catch java.lang.Exception from label04 to label05 with label14;
+        catch java.lang.Throwable from label04 to label05 with label16;
+        catch java.lang.Exception from label05 to label06 with label19;
+        catch java.lang.Throwable from label05 to label06 with label18;
+        catch java.lang.Throwable from label07 to label08 with label18;
+        catch java.lang.Exception from label08 to label11 with label19;
+        catch java.lang.Throwable from label08 to label09 with label18;
+        catch java.lang.Throwable from label10 to label11 with label18;
+        catch java.lang.Exception from label12 to label13 with label19;
+        catch java.lang.Throwable from label12 to label13 with label18;
+        catch java.lang.Throwable from label15 to label16 with label16;
+    }
+
+    private void writeExternalCrashEvent(com.crashlytics.android.core.internal.models.SessionEventData) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.internal.models.SessionEventData $r1;
+        com.crashlytics.android.core.ClsFileOutputStream $r2, $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7;
+        com.crashlytics.android.core.MetaDataStore $r3;
+        com.crashlytics.android.core.LogFileManager $r4;
+        com.crashlytics.android.core.CrashlyticsCore $r5;
+        com.crashlytics.android.core.CodedOutputStream $r7, $r12, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7;
+        java.lang.String $r8, $r11;
+        java.io.File $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7;
+        java.util.Map $r13;
+        android.content.Context $r14;
+        io.fabric.sdk.android.Logger $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6;
+        java.lang.Exception $r16, $r16_1, $r16_2, $r16_3, $r16_4;
+        java.lang.Throwable $r17, $r17_1, $r17_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: com.crashlytics.android.core.internal.models.SessionEventData;
+
+        $r6 = null;
+
+(0)     $r7 = null;
+
+     label01:
+        $r8 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.String getPreviousSessionId()>();
+
+     label02:
+        if $r8 == null goto label16;
+
+     label03:
+        staticinvoke <com.crashlytics.android.core.CrashlyticsCore: void recordFatalExceptionEvent(java.lang.String)>($r8);
+
+     label04:
+        $r2 = new com.crashlytics.android.core.ClsFileOutputStream;
+
+     label05:
+        $r9 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+     label06:
+        $r10 = new java.lang.StringBuilder;
+
+     label07:
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+(1)     $r10_1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+(2)     $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionCrash");
+
+        $r11 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(3)     specialinvoke $r2.<com.crashlytics.android.core.ClsFileOutputStream: void <init>(java.io.File,java.lang.String)>($r9, $r11);
+
+     label08:
+        $r12 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream)>($r2);
+
+     label09:
+(4)     $r7_1 = $r12;
+
+     label10:
+(5)     $r3 = new com.crashlytics.android.core.MetaDataStore;
+
+     label11:
+(6)     $r9_1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+        specialinvoke $r3.<com.crashlytics.android.core.MetaDataStore: void <init>(java.io.File)>($r9_1);
+
+        $r13 = virtualinvoke $r3.<com.crashlytics.android.core.MetaDataStore: java.util.Map readKeyData(java.lang.String)>($r8);
+
+     label12:
+        $r4 = new com.crashlytics.android.core.LogFileManager;
+
+     label13:
+        $r5 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r14 = virtualinvoke $r5.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+(7)     $r9_2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+        specialinvoke $r4.<com.crashlytics.android.core.LogFileManager: void <init>(android.content.Context,java.io.File,java.lang.String)>($r14, $r9_2, $r8);
+
+        staticinvoke <com.crashlytics.android.core.NativeCrashWriter: void writeNativeCrash(com.crashlytics.android.core.internal.models.SessionEventData,com.crashlytics.android.core.LogFileManager,java.util.Map,com.crashlytics.android.core.CodedOutputStream)>($r1, $r4, $r13, $r12);
+
+     label14:
+(8)     $r6_1 = $r2;
+
+     label15:
+        $r10_3 = Phi($r10_2 #8, $r10 #10);
+
+        $r7_4 = Phi($r7_1 #8, $r7 #10);
+
+        $r6_4 = Phi($r6_1 #8, $r6 #10);
+
+        $r15 = Phi($r15 #8, $r15_1 #10);
+
+        $r9_5 = Phi($r9_2 #8, $r9 #10);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r7_4, "Failed to flush to session begin file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r6_4, "Failed to close fatal exception file output stream.");
+
+        return;
+
+     label16:
+(9)     $r15_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r15_1.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Tried to write a native crash while no session was open.", null);
+
+     label17:
+(10)    goto label15;
+
+     label18:
+        $r16_1 := @caughtexception;
+
+        $r10_4 = Phi($r10 #0, $r10_1 #1, $r10_2 #2);
+
+        $r15_2 = Phi($r15 #0, $r15_1 #9);
+
+(11)    $r9_6 = Phi($r9 #0);
+
+     label19:
+        $r10_5 = Phi($r10_4 #11, $r10_2 #15);
+
+        $r7_5 = Phi($r7 #11, $r7_3 #15);
+
+        $r6_5 = Phi($r6 #11, $r6_3 #15);
+
+        $r15_3 = Phi($r15_2 #11, $r15 #15);
+
+        $r16_2 = Phi($r16_1 #11, $r16 #15);
+
+        $r9_7 = Phi($r9_6 #11, $r9_4 #15);
+
+(12)    $r15_4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r15_4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "An error occurred in the native crash logger", $r16_2);
+
+        staticinvoke <com.crashlytics.android.core.ExceptionUtils: void writeStackTraceIfNotNull(java.lang.Throwable,java.io.OutputStream)>($r16_2, $r6_5);
+
+     label20:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r7_5, "Failed to flush to session begin file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r6_5, "Failed to close fatal exception file output stream.");
+
+        return;
+
+     label21:
+        $r17_1 := @caughtexception;
+
+        $r10_6 = Phi($r10 #0, $r10_1 #1, $r10_2 #2, $r10_4 #11, $r10_5 #12);
+
+        $r7_6 = Phi($r7 #0, $r7_3 #15, $r7_5 #12);
+
+        $r6_6 = Phi($r6 #0, $r6_3 #15, $r6_5 #12);
+
+        $r15_5 = Phi($r15 #0, $r15_1 #9, $r15_2 #11, $r15_4 #12);
+
+        $r16_3 = Phi($r16 #0, $r16_1 #11, $r16_2 #12);
+
+(13)    $r9_8 = Phi($r9 #0, $r9_6 #11, $r9_4 #15, $r9_7 #12);
+
+     label22:
+        $r17_2 = Phi($r17_1 #13, $r17 #14);
+
+        $r10_7 = Phi($r10_6 #13, $r10_2 #14);
+
+        $r7_7 = Phi($r7_6 #13, $r7_2 #14);
+
+        $r6_7 = Phi($r6_6 #13, $r6_2 #14);
+
+        $r15_6 = Phi($r15_5 #13, $r15 #14);
+
+        $r16_4 = Phi($r16_3 #13, $r16 #14);
+
+        $r9_9 = Phi($r9_8 #13, $r9_3 #14);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r7_7, "Failed to flush to session begin file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r6_7, "Failed to close fatal exception file output stream.");
+
+        throw $r17_2;
+
+     label23:
+        $r17 := @caughtexception;
+
+        $r7_2 = Phi($r7 #3, $r7_1 #4);
+
+        $r9_3 = Phi($r9 #3, $r9_1 #6, $r9_2 #7);
+
+        $r6_2 = $r2;
+
+(14)    goto label22;
+
+     label24:
+        $r16 := @caughtexception;
+
+        $r7_3 = Phi($r7 #3, $r7_1 #5);
+
+        $r9_4 = Phi($r9 #3, $r9_1 #6, $r9_2 #7);
+
+        $r6_3 = $r2;
+
+(15)    goto label19;
+
+        catch java.lang.Exception from label01 to label02 with label18;
+        catch java.lang.Throwable from label01 to label02 with label21;
+        catch java.lang.Exception from label03 to label04 with label18;
+        catch java.lang.Throwable from label03 to label04 with label21;
+        catch java.lang.Throwable from label04 to label05 with label21;
+        catch java.lang.Exception from label05 to label06 with label18;
+        catch java.lang.Throwable from label05 to label06 with label21;
+        catch java.lang.Exception from label07 to label08 with label18;
+        catch java.lang.Throwable from label07 to label08 with label21;
+        catch java.lang.Exception from label08 to label09 with label24;
+        catch java.lang.Throwable from label08 to label09 with label23;
+        catch java.lang.Throwable from label10 to label11 with label23;
+        catch java.lang.Exception from label11 to label12 with label24;
+        catch java.lang.Throwable from label11 to label12 with label23;
+        catch java.lang.Exception from label13 to label14 with label24;
+        catch java.lang.Throwable from label13 to label14 with label23;
+        catch java.lang.Exception from label16 to label17 with label18;
+        catch java.lang.Throwable from label16 to label17 with label21;
+        catch java.lang.Throwable from label19 to label20 with label21;
+    }
+
+    private void writeFatal(java.util.Date, java.lang.Thread, java.lang.Throwable)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.Date $r1;
+        java.lang.Thread $r2;
+        java.lang.Throwable $r3, $r14, $r14_1, $r14_2;
+        java.io.File $r4, $r8, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6;
+        com.crashlytics.android.core.ClsFileOutputStream $r5, $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7;
+        com.crashlytics.android.core.CodedOutputStream $r7, $r11, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7;
+        java.lang.String $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7;
+        io.fabric.sdk.android.Logger $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6;
+        java.lang.Exception $r13, $r13_1, $r13_2, $r13_3, $r13_4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.util.Date;
+
+        $r2 := @parameter1: java.lang.Thread;
+
+        $r3 := @parameter2: java.lang.Throwable;
+
+        $r6 = null;
+
+        $r7 = null;
+
+(0)     $r8 = new java.io.File;
+
+     label01:
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+        specialinvoke $r8.<java.io.File: void <init>(java.io.File,java.lang.String)>($r4, "crash_marker");
+
+        virtualinvoke $r8.<java.io.File: boolean createNewFile()>();
+
+        $r9 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.String getCurrentSessionId()>();
+
+     label02:
+        if $r9 == null goto label13;
+
+     label03:
+        staticinvoke <com.crashlytics.android.core.CrashlyticsCore: void recordFatalExceptionEvent(java.lang.String)>($r9);
+
+     label04:
+        $r5 = new com.crashlytics.android.core.ClsFileOutputStream;
+
+     label05:
+(1)     $r4_1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+     label06:
+        $r10 = new java.lang.StringBuilder;
+
+     label07:
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+(2)     $r10_1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+(3)     $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionCrash");
+
+(4)     $r9_1 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(5)     specialinvoke $r5.<com.crashlytics.android.core.ClsFileOutputStream: void <init>(java.io.File,java.lang.String)>($r4_1, $r9_1);
+
+     label08:
+        $r11 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream)>($r5);
+
+     label09:
+(6)     $r7_1 = $r11;
+
+     label10:
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeSessionEvent(com.crashlytics.android.core.CodedOutputStream,java.util.Date,java.lang.Thread,java.lang.Throwable,java.lang.String,boolean)>($r11, $r1, $r2, $r3, "crash", 1);
+
+     label11:
+(7)     $r6_1 = $r5;
+
+     label12:
+        $r12 = Phi($r12 #7, $r12_1 #9);
+
+        $r10_3 = Phi($r10_2 #7, $r10 #9);
+
+        $r7_4 = Phi($r7_1 #7, $r7 #9);
+
+        $r9_2 = Phi($r9_1 #7, $r9 #9);
+
+        $r4_2 = Phi($r4_1 #7, $r4 #9);
+
+        $r6_4 = Phi($r6_1 #7, $r6 #9);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r7_4, "Failed to flush to session begin file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r6_4, "Failed to close fatal exception file output stream.");
+
+        return;
+
+     label13:
+(8)     $r12_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r12_1.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Tried to write a fatal exception while no session was open.", null);
+
+     label14:
+(9)     goto label12;
+
+     label15:
+        $r13_1 := @caughtexception;
+
+        $r12_2 = Phi($r12 #0, $r12_1 #8);
+
+        $r10_4 = Phi($r10 #0, $r10_1 #2, $r10_2 #3);
+
+        $r9_3 = Phi($r9 #0, $r9_1 #4);
+
+(10)    $r4_3 = Phi($r4 #0, $r4_1 #1);
+
+     label16:
+        $r13_2 = Phi($r13_1 #10, $r13 #14);
+
+        $r12_3 = Phi($r12_2 #10, $r12 #14);
+
+        $r10_5 = Phi($r10_4 #10, $r10_2 #14);
+
+        $r7_5 = Phi($r7 #10, $r7_3 #14);
+
+        $r9_4 = Phi($r9_3 #10, $r9_1 #14);
+
+        $r4_4 = Phi($r4_3 #10, $r4_1 #14);
+
+        $r6_5 = Phi($r6 #10, $r6_3 #14);
+
+(11)    $r12_4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r12_4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "An error occurred in the fatal exception logger", $r13_2);
+
+        staticinvoke <com.crashlytics.android.core.ExceptionUtils: void writeStackTraceIfNotNull(java.lang.Throwable,java.io.OutputStream)>($r13_2, $r6_5);
+
+     label17:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r7_5, "Failed to flush to session begin file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r6_5, "Failed to close fatal exception file output stream.");
+
+        return;
+
+     label18:
+        $r14_1 := @caughtexception;
+
+        $r13_3 = Phi($r13 #0, $r13_1 #10, $r13_2 #11);
+
+        $r12_5 = Phi($r12 #0, $r12_1 #8, $r12_2 #10, $r12_4 #11);
+
+        $r10_6 = Phi($r10 #0, $r10_1 #2, $r10_2 #3, $r10_4 #10, $r10_5 #11);
+
+        $r7_6 = Phi($r7 #0, $r7_3 #14, $r7_5 #11);
+
+        $r9_5 = Phi($r9 #0, $r9_1 #4, $r9_3 #10, $r9_4 #11);
+
+        $r4_5 = Phi($r4 #0, $r4_1 #1, $r4_3 #10, $r4_4 #11);
+
+(12)    $r6_6 = Phi($r6 #0, $r6_3 #14, $r6_5 #11);
+
+     label19:
+        $r13_4 = Phi($r13_3 #12, $r13 #13);
+
+        $r12_6 = Phi($r12_5 #12, $r12 #13);
+
+        $r10_7 = Phi($r10_6 #12, $r10_2 #13);
+
+        $r14_2 = Phi($r14_1 #12, $r14 #13);
+
+        $r7_7 = Phi($r7_6 #12, $r7_2 #13);
+
+        $r9_6 = Phi($r9_5 #12, $r9_1 #13);
+
+        $r4_6 = Phi($r4_5 #12, $r4_1 #13);
+
+        $r6_7 = Phi($r6_6 #12, $r6_2 #13);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r7_7, "Failed to flush to session begin file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r6_7, "Failed to close fatal exception file output stream.");
+
+        throw $r14_2;
+
+     label20:
+        $r14 := @caughtexception;
+
+        $r7_2 = Phi($r7 #5, $r7_1 #6);
+
+        $r6_2 = $r5;
+
+(13)    goto label19;
+
+     label21:
+        $r13 := @caughtexception;
+
+        $r7_3 = Phi($r7 #5, $r7_1 #6);
+
+        $r6_3 = $r5;
+
+(14)    goto label16;
+
+        catch java.lang.Exception from label01 to label02 with label15;
+        catch java.lang.Throwable from label01 to label02 with label18;
+        catch java.lang.Exception from label03 to label04 with label15;
+        catch java.lang.Throwable from label03 to label04 with label18;
+        catch java.lang.Throwable from label04 to label05 with label18;
+        catch java.lang.Exception from label05 to label06 with label15;
+        catch java.lang.Throwable from label05 to label06 with label18;
+        catch java.lang.Exception from label07 to label08 with label15;
+        catch java.lang.Throwable from label07 to label08 with label18;
+        catch java.lang.Exception from label08 to label09 with label21;
+        catch java.lang.Throwable from label08 to label09 with label20;
+        catch java.lang.Exception from label10 to label11 with label21;
+        catch java.lang.Throwable from label10 to label11 with label20;
+        catch java.lang.Exception from label13 to label14 with label15;
+        catch java.lang.Throwable from label13 to label14 with label18;
+        catch java.lang.Throwable from label16 to label17 with label18;
+    }
+
+    private void writeInitialPartsTo(com.crashlytics.android.core.CodedOutputStream, java.lang.String) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.CodedOutputStream $r1;
+        java.lang.String $r2, $r6, $r8, $r6_1, $r6_2, $r6_3, $r6_4;
+        java.lang.String[] $r3;
+        int $i0, $i1, $i2, $i2_1, $i2_2;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter $r4;
+        java.io.File $r5;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8, $r7_9, $r7_10, $r7_11, $r7_12, $r7_13, $r7_14;
+        java.io.File[] $r9;
+        io.fabric.sdk.android.Logger $r10, $r10_1, $r10_2, $r10_3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: com.crashlytics.android.core.CodedOutputStream;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = newarray (java.lang.String)[4];
+
+        $r3[0] = "SessionUser";
+
+        $r3[1] = "SessionApp";
+
+        $r3[2] = "SessionOS";
+
+        $r3[3] = "SessionDevice";
+
+        $i0 = lengthof $r3;
+
+(0)     $i2 = 0;
+
+     label1:
+        $r10 = Phi($r10 #0, $r10_2 #2);
+
+        $r7 = Phi($r7 #0, $r7_9 #2);
+
+        $r6 = Phi($r6 #0, $r6_3 #2);
+
+        $i2_1 = Phi($i2 #0, $i2_2 #2);
+
+        if $i2_1 >= $i0 goto label4;
+
+        $r6_1 = $r3[$i2_1];
+
+        $r4 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter;
+
+        $r7_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r7_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r7_3 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6_1);
+
+        $r8 = virtualinvoke $r7_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter: void <init>(java.lang.String)>($r8);
+
+        $r9 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listFilesMatching(java.io.FilenameFilter)>($r4);
+
+        $i1 = lengthof $r9;
+
+        if $i1 != 0 goto label3;
+
+        $r10_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r7_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r7_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_5 = virtualinvoke $r7_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Can\'t find ");
+
+        $r7_6 = virtualinvoke $r7_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6_1);
+
+        $r7_7 = virtualinvoke $r7_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" data for session ID ");
+
+        $r7_8 = virtualinvoke $r7_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r6_2 = virtualinvoke $r7_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     interfaceinvoke $r10_1.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", $r6_2, null);
+
+     label2:
+        $r10_2 = Phi($r10_1 #1, $r10_3 #3);
+
+        $r7_9 = Phi($r7_8 #1, $r7_14 #3);
+
+        $r6_3 = Phi($r6_2 #1, $r6_4 #3);
+
+        $i2_2 = $i2_1 + 1;
+
+(2)     goto label1;
+
+     label3:
+        $r10_3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r7_10 = new java.lang.StringBuilder;
+
+        specialinvoke $r7_10.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_11 = virtualinvoke $r7_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Collecting ");
+
+        $r7_12 = virtualinvoke $r7_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6_1);
+
+        $r7_13 = virtualinvoke $r7_12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" data for session ID ");
+
+        $r7_14 = virtualinvoke $r7_13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r6_4 = virtualinvoke $r7_14.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r10_3.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r6_4);
+
+        $r5 = $r9[0];
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeToCosFromFile(com.crashlytics.android.core.CodedOutputStream,java.io.File)>($r1, $r5);
+
+(3)     goto label2;
+
+     label4:
+        return;
+    }
+
+    private void writeNonFatalEventsTo(com.crashlytics.android.core.CodedOutputStream, java.io.File[], java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.CodedOutputStream $r1;
+        java.io.File[] $r2;
+        java.lang.String $r3, $r10, $r10_1, $r10_2, $r10_3, $r10_4;
+        java.util.Comparator $r4;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.io.File $r5;
+        java.util.Locale $r6;
+        java.lang.Object[] $r7;
+        java.lang.Exception $r8;
+        io.fabric.sdk.android.Logger $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: com.crashlytics.android.core.CodedOutputStream;
+
+        $r2 := @parameter1: java.io.File[];
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 = <io.fabric.sdk.android.services.common.CommonUtils: java.util.Comparator FILE_MODIFIED_COMPARATOR>;
+
+        staticinvoke <java.util.Arrays: void sort(java.lang.Object[],java.util.Comparator)>($r2, $r4);
+
+        $i0 = lengthof $r2;
+
+(0)     $i1 = 0;
+
+     label1:
+        $r10 = Phi($r10 #0, $r10_3 #6);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #6);
+
+        $r9 = Phi($r9 #0, $r9_2 #6);
+
+        if $i1_1 >= $i0 goto label7;
+
+(1)     $r5 = $r2[$i1_1];
+
+     label2:
+(2)     $r9_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+     label3:
+        $r6 = <java.util.Locale: java.util.Locale US>;
+
+     label4:
+        $r7 = newarray (java.lang.Object)[2];
+
+        $r7[0] = $r3;
+
+(3)     $r10_1 = virtualinvoke $r5.<java.io.File: java.lang.String getName()>();
+
+        $r7[1] = $r10_1;
+
+(4)     $r10_2 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r6, "Found Non Fatal for session ID %s in %s ", $r7);
+
+        interfaceinvoke $r9_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r10_2);
+
+(5)     specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeToCosFromFile(com.crashlytics.android.core.CodedOutputStream,java.io.File)>($r1, $r5);
+
+     label5:
+        $r10_3 = Phi($r10_2 #5, $r10_4 #7);
+
+        $r9_2 = Phi($r9_1 #5, $r9_4 #7);
+
+        $i1_2 = $i1_1 + 1;
+
+(6)     goto label1;
+
+     label6:
+        $r8 := @caughtexception;
+
+        $r10_4 = Phi($r10 #1, $r10_1 #3, $r10_2 #4);
+
+        $r9_3 = Phi($r9 #1, $r9_1 #2);
+
+        $r9_4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r9_4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Error writting non-fatal to session.", $r8);
+
+(7)     goto label5;
+
+     label7:
+        return;
+
+        catch java.lang.Exception from label2 to label3 with label6;
+        catch java.lang.Exception from label4 to label5 with label6;
+    }
+
+    private void writeSessionApp(java.lang.String) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.ClsFileOutputStream $r1, $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        java.io.File $r2;
+        java.lang.String $r3, $r9, $r10, $r12, $r13, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8;
+        com.crashlytics.android.core.CodedOutputStream $r5, $r7, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6;
+        com.crashlytics.android.core.CrashlyticsCore $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8;
+        io.fabric.sdk.android.services.common.IdManager $r11;
+        io.fabric.sdk.android.services.common.DeliveryMechanism $r14;
+        int $i0;
+        com.crashlytics.android.core.SessionDataWriter $r15;
+        java.lang.Exception $r16, $r16_1, $r16_2, $r16_3, $r16_4;
+        java.lang.Throwable $r17, $r17_1, $r17_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r4 = null;
+
+(0)     $r5 = null;
+
+     label01:
+(1)     $r1 = new com.crashlytics.android.core.ClsFileOutputStream;
+
+     label02:
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+     label03:
+        $r6 = new java.lang.StringBuilder;
+
+     label04:
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+(2)     $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+(3)     $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionApp");
+
+(4)     $r3_1 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(5)     specialinvoke $r1.<com.crashlytics.android.core.ClsFileOutputStream: void <init>(java.io.File,java.lang.String)>($r2, $r3_1);
+
+     label05:
+        $r7 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream)>($r1);
+
+     label06:
+(6)     $r5_1 = $r7;
+
+     label07:
+        $r8 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+(7)     $r3_2 = virtualinvoke $r8.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getPackageName()>();
+
+(8)     $r8_1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r9 = virtualinvoke $r8_1.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getVersionCode()>();
+
+(9)     $r8_2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r10 = virtualinvoke $r8_2.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getVersionName()>();
+
+        $r11 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: io.fabric.sdk.android.services.common.IdManager idManager>;
+
+        $r12 = virtualinvoke $r11.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getAppInstallIdentifier()>();
+
+(10)    $r8_3 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r13 = virtualinvoke $r8_3.<com.crashlytics.android.core.CrashlyticsCore: java.lang.String getInstallerPackageName()>();
+
+        $r14 = staticinvoke <io.fabric.sdk.android.services.common.DeliveryMechanism: io.fabric.sdk.android.services.common.DeliveryMechanism determineFrom(java.lang.String)>($r13);
+
+        $i0 = virtualinvoke $r14.<io.fabric.sdk.android.services.common.DeliveryMechanism: int getId()>();
+
+        $r15 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.SessionDataWriter sessionDataWriter>;
+
+        virtualinvoke $r15.<com.crashlytics.android.core.SessionDataWriter: void writeSessionApp(com.crashlytics.android.core.CodedOutputStream,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int)>($r7, $r3_2, $r9, $r10, $r12, $i0);
+
+     label08:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r7, "Failed to flush to session app file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r1, "Failed to close session app file.");
+
+        return;
+
+     label09:
+        $r16_1 := @caughtexception;
+
+        $r3_5 = Phi($r3 #1, $r3_1 #4);
+
+(11)    $r6_3 = Phi($r6 #1, $r6_1 #2, $r6_2 #3);
+
+     label10:
+        $r5_4 = Phi($r5 #11, $r5_3 #15);
+
+        $r16_2 = Phi($r16_1 #11, $r16 #15);
+
+        $r4_3 = Phi($r4 #11, $r4_2 #15);
+
+        $r8_6 = Phi($r8 #11, $r8_5 #15);
+
+        $r3_6 = Phi($r3_5 #11, $r3_4 #15);
+
+        $r6_4 = Phi($r6_3 #11, $r6_2 #15);
+
+(12)    staticinvoke <com.crashlytics.android.core.ExceptionUtils: void writeStackTraceIfNotNull(java.lang.Throwable,java.io.OutputStream)>($r16_2, $r4_3);
+
+        throw $r16_2;
+
+     label11:
+        $r17_1 := @caughtexception;
+
+        $r5_5 = Phi($r5 #0, $r5_3 #15, $r5_4 #12);
+
+        $r16_3 = Phi($r16 #0, $r16_1 #11, $r16_2 #12);
+
+        $r4_4 = Phi($r4 #0, $r4_2 #15, $r4_3 #12);
+
+        $r8_7 = Phi($r8 #0, $r8_5 #15, $r8_6 #12);
+
+        $r3_7 = Phi($r3 #0, $r3_1 #4, $r3_5 #11, $r3_4 #15, $r3_6 #12);
+
+(13)    $r6_5 = Phi($r6 #0, $r6_1 #2, $r6_2 #3, $r6_3 #11, $r6_4 #12);
+
+     label12:
+        $r5_6 = Phi($r5_5 #13, $r5_2 #14);
+
+        $r16_4 = Phi($r16_3 #13, $r16 #14);
+
+        $r4_5 = Phi($r4_4 #13, $r4_1 #14);
+
+        $r8_8 = Phi($r8_7 #13, $r8_4 #14);
+
+        $r3_8 = Phi($r3_7 #13, $r3_3 #14);
+
+        $r17_2 = Phi($r17_1 #13, $r17 #14);
+
+        $r6_6 = Phi($r6_5 #13, $r6_2 #14);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r5_6, "Failed to flush to session app file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r4_5, "Failed to close session app file.");
+
+        throw $r17_2;
+
+     label13:
+        $r17 := @caughtexception;
+
+        $r5_2 = Phi($r5 #5, $r5_1 #6);
+
+        $r8_4 = Phi($r8 #5, $r8_1 #8, $r8_2 #9, $r8_3 #10);
+
+        $r3_3 = Phi($r3_1 #5, $r3_2 #7);
+
+        $r4_1 = $r1;
+
+(14)    goto label12;
+
+     label14:
+        $r16 := @caughtexception;
+
+        $r5_3 = Phi($r5 #5, $r5_1 #6);
+
+        $r8_5 = Phi($r8 #5, $r8_1 #8, $r8_2 #9, $r8_3 #10);
+
+        $r3_4 = Phi($r3_1 #5, $r3_2 #7);
+
+        $r4_2 = $r1;
+
+(15)    goto label10;
+
+        catch java.lang.Throwable from label01 to label02 with label11;
+        catch java.lang.Exception from label02 to label03 with label09;
+        catch java.lang.Throwable from label02 to label03 with label11;
+        catch java.lang.Exception from label04 to label05 with label09;
+        catch java.lang.Throwable from label04 to label05 with label11;
+        catch java.lang.Exception from label05 to label06 with label14;
+        catch java.lang.Throwable from label05 to label06 with label13;
+        catch java.lang.Exception from label07 to label08 with label14;
+        catch java.lang.Throwable from label07 to label08 with label13;
+        catch java.lang.Throwable from label10 to label11 with label11;
+    }
+
+    private void writeSessionDevice(java.lang.String) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.ClsFileOutputStream $r1, $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        android.os.StatFs $r2;
+        java.lang.String $r3, $r4, $r13, $r17, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8, $r3_9;
+        com.crashlytics.android.core.CodedOutputStream $r6, $r9, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6;
+        java.io.File $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6;
+        com.crashlytics.android.core.CrashlyticsCore $r10;
+        android.content.Context $r11;
+        io.fabric.sdk.android.services.common.IdManager $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6;
+        int $i0, $i1, $i3, $i3_1, $i3_2, $i3_3, $i3_4, $i3_5, $i3_6, $i3_7;
+        java.lang.Runtime $r14;
+        long $l2, $l4, $l5, $l4_1, $l4_2, $l4_3, $l4_4, $l4_5, $l4_6;
+        boolean $z0;
+        java.util.Map $r15;
+        com.crashlytics.android.core.SessionDataWriter $r16;
+        java.lang.Exception $r18, $r18_1, $r18_2, $r18_3, $r18_4;
+        java.lang.Throwable $r19, $r19_1, $r19_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r5 = null;
+
+(0)     $r6 = null;
+
+     label01:
+(1)     $r1 = new com.crashlytics.android.core.ClsFileOutputStream;
+
+     label02:
+        $r7 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+     label03:
+        $r8 = new java.lang.StringBuilder;
+
+     label04:
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+(2)     $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+(3)     $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionDevice");
+
+(4)     $r3_1 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(5)     specialinvoke $r1.<com.crashlytics.android.core.ClsFileOutputStream: void <init>(java.io.File,java.lang.String)>($r7, $r3_1);
+
+     label05:
+        $r9 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream)>($r1);
+
+     label06:
+(6)     $r6_1 = $r9;
+
+     label07:
+        $r10 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r11 = virtualinvoke $r10.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+     label08:
+        $r2 = new android.os.StatFs;
+
+     label09:
+(7)     $r7_1 = staticinvoke <android.os.Environment: java.io.File getDataDirectory()>();
+
+(8)     $r3_2 = virtualinvoke $r7_1.<java.io.File: java.lang.String getPath()>();
+
+        specialinvoke $r2.<android.os.StatFs: void <init>(java.lang.String)>($r3_2);
+
+        $r12 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: io.fabric.sdk.android.services.common.IdManager idManager>;
+
+        $r13 = virtualinvoke $r12.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getDeviceUUID()>();
+
+        $i0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: int getCpuArchitectureInt()>();
+
+        $r14 = staticinvoke <java.lang.Runtime: java.lang.Runtime getRuntime()>();
+
+        $i1 = virtualinvoke $r14.<java.lang.Runtime: int availableProcessors()>();
+
+        $l2 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: long getTotalRamInBytes()>();
+
+        $i3 = virtualinvoke $r2.<android.os.StatFs: int getBlockCount()>();
+
+     label10:
+        $l4 = (long) $i3;
+
+     label11:
+(9)     $i3_1 = virtualinvoke $r2.<android.os.StatFs: int getBlockSize()>();
+
+     label12:
+        $l5 = (long) $i3_1;
+
+     label13:
+(10)    $l4_1 = $l4 * $l5;
+
+     label14:
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isEmulator(android.content.Context)>($r11);
+
+(11)    $r12_1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: io.fabric.sdk.android.services.common.IdManager idManager>;
+
+        $r15 = virtualinvoke $r12_1.<io.fabric.sdk.android.services.common.IdManager: java.util.Map getDeviceIdentifiers()>();
+
+(12)    $i3_2 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: int getDeviceState(android.content.Context)>($r11);
+
+        $r16 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.SessionDataWriter sessionDataWriter>;
+
+     label15:
+        $r3_3 = <android.os.Build: java.lang.String MODEL>;
+
+        $r4 = <android.os.Build: java.lang.String MANUFACTURER>;
+
+(13)    $r17 = <android.os.Build: java.lang.String PRODUCT>;
+
+     label16:
+        virtualinvoke $r16.<com.crashlytics.android.core.SessionDataWriter: void writeSessionDevice(com.crashlytics.android.core.CodedOutputStream,java.lang.String,int,java.lang.String,int,long,long,boolean,java.util.Map,int,java.lang.String,java.lang.String)>($r9, $r13, $i0, $r3_3, $i1, $l2, $l4_1, $z0, $r15, $i3_2, $r4, $r17);
+
+     label17:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r9, "Failed to flush session device info.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r1, "Failed to close session device file.");
+
+        return;
+
+     label18:
+        $r18_1 := @caughtexception;
+
+        $r3_6 = Phi($r3 #1, $r3_1 #4);
+
+        $r7_4 = Phi($r7 #1);
+
+(14)    $r8_3 = Phi($r8 #1, $r8_1 #2, $r8_2 #3);
+
+     label19:
+        $r5_3 = Phi($r5 #14, $r5_2 #18);
+
+        $r6_4 = Phi($r6 #14, $r6_3 #18);
+
+        $r18_2 = Phi($r18_1 #14, $r18 #18);
+
+        $r3_7 = Phi($r3_6 #14, $r3_5 #18);
+
+        $i3_5 = Phi($i3 #14, $i3_4 #18);
+
+        $l4_4 = Phi($l4 #14, $l4_3 #18);
+
+        $r7_5 = Phi($r7_4 #14, $r7_3 #18);
+
+        $r8_4 = Phi($r8_3 #14, $r8_2 #18);
+
+        $r12_4 = Phi($r12 #14, $r12_3 #18);
+
+(15)    staticinvoke <com.crashlytics.android.core.ExceptionUtils: void writeStackTraceIfNotNull(java.lang.Throwable,java.io.OutputStream)>($r18_2, $r5_3);
+
+        throw $r18_2;
+
+     label20:
+        $r19_1 := @caughtexception;
+
+        $r5_4 = Phi($r5 #0, $r5_2 #18, $r5_3 #15);
+
+        $r6_5 = Phi($r6 #0, $r6_3 #18, $r6_4 #15);
+
+        $r18_3 = Phi($r18 #0, $r18_1 #14, $r18_2 #15);
+
+        $r3_8 = Phi($r3 #0, $r3_1 #4, $r3_6 #14, $r3_5 #18, $r3_7 #15);
+
+        $i3_6 = Phi($i3 #0, $i3_4 #18, $i3_5 #15);
+
+        $l4_5 = Phi($l4 #0, $l4_3 #18, $l4_4 #15);
+
+        $r7_6 = Phi($r7 #0, $r7_4 #14, $r7_3 #18, $r7_5 #15);
+
+        $r8_5 = Phi($r8 #0, $r8_1 #2, $r8_2 #3, $r8_3 #14, $r8_4 #15);
+
+(16)    $r12_5 = Phi($r12 #0, $r12_3 #18, $r12_4 #15);
+
+     label21:
+        $r19_2 = Phi($r19_1 #16, $r19 #17);
+
+        $r5_5 = Phi($r5_4 #16, $r5_1 #17);
+
+        $r6_6 = Phi($r6_5 #16, $r6_2 #17);
+
+        $r18_4 = Phi($r18_3 #16, $r18 #17);
+
+        $r3_9 = Phi($r3_8 #16, $r3_4 #17);
+
+        $i3_7 = Phi($i3_6 #16, $i3_3 #17);
+
+        $l4_6 = Phi($l4_5 #16, $l4_2 #17);
+
+        $r7_7 = Phi($r7_6 #16, $r7_2 #17);
+
+        $r8_6 = Phi($r8_5 #16, $r8_2 #17);
+
+        $r12_6 = Phi($r12_5 #16, $r12_2 #17);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r6_6, "Failed to flush session device info.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r5_5, "Failed to close session device file.");
+
+        throw $r19_2;
+
+     label22:
+        $r19 := @caughtexception;
+
+        $r6_2 = Phi($r6 #5, $r6_1 #6);
+
+        $r3_4 = Phi($r3_1 #5, $r3_2 #8, $r3_3 #13);
+
+        $i3_3 = Phi($i3 #5, $i3_1 #9, $i3_2 #12);
+
+        $l4_2 = Phi($l4 #5, $l4_1 #10);
+
+        $r7_2 = Phi($r7 #5, $r7_1 #7);
+
+        $r12_2 = Phi($r12 #5, $r12_1 #11);
+
+        $r5_1 = $r1;
+
+(17)    goto label21;
+
+     label23:
+        $r18 := @caughtexception;
+
+        $r6_3 = Phi($r6 #5, $r6_1 #6);
+
+        $r3_5 = Phi($r3_1 #5, $r3_2 #8, $r3_3 #13);
+
+        $i3_4 = Phi($i3 #5, $i3_1 #9, $i3_2 #12);
+
+        $l4_3 = Phi($l4 #5, $l4_1 #10);
+
+        $r7_3 = Phi($r7 #5, $r7_1 #7);
+
+        $r12_3 = Phi($r12 #5, $r12_1 #11);
+
+        $r5_2 = $r1;
+
+(18)    goto label19;
+
+        catch java.lang.Throwable from label01 to label02 with label20;
+        catch java.lang.Exception from label02 to label03 with label18;
+        catch java.lang.Throwable from label02 to label03 with label20;
+        catch java.lang.Exception from label04 to label05 with label18;
+        catch java.lang.Throwable from label04 to label05 with label20;
+        catch java.lang.Exception from label05 to label06 with label23;
+        catch java.lang.Throwable from label05 to label06 with label22;
+        catch java.lang.Exception from label07 to label08 with label23;
+        catch java.lang.Throwable from label07 to label08 with label22;
+        catch java.lang.Throwable from label08 to label09 with label22;
+        catch java.lang.Exception from label09 to label10 with label23;
+        catch java.lang.Throwable from label09 to label10 with label22;
+        catch java.lang.Throwable from label10 to label11 with label22;
+        catch java.lang.Exception from label11 to label12 with label23;
+        catch java.lang.Throwable from label11 to label12 with label22;
+        catch java.lang.Throwable from label12 to label13 with label22;
+        catch java.lang.Exception from label14 to label15 with label23;
+        catch java.lang.Throwable from label14 to label15 with label22;
+        catch java.lang.Exception from label16 to label17 with label23;
+        catch java.lang.Throwable from label16 to label17 with label22;
+        catch java.lang.Throwable from label19 to label20 with label20;
+    }
+
+    private void writeSessionEvent(com.crashlytics.android.core.CodedOutputStream, java.util.Date, java.lang.Thread, java.lang.Throwable, java.lang.String, boolean) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.CodedOutputStream $r1;
+        java.util.Date $r2;
+        java.lang.Thread $r3, $r23;
+        java.lang.Throwable $r4;
+        java.lang.String $r5, $r13, $r13_1;
+        java.util.LinkedList $r6;
+        java.util.TreeMap $r7, $r7_1, $r7_2;
+        boolean $z0, $z1, $z1_1, $z0_1, $z0_2, $z0_3, $z0_4;
+        com.crashlytics.android.core.CrashlyticsCore $r8, $r8_1, $r8_2;
+        android.content.Context $r9;
+        long $l0, $l3, $l4, $l0_1, $l3_1, $l4_1;
+        float $f0;
+        int $i1, $i2, $i5, $i5_1, $i5_2, $i5_3, $i5_4, $i5_5, $i5_6;
+        android.content.res.Resources $r10;
+        android.content.res.Configuration $r11;
+        java.io.File $r12;
+        android.app.ActivityManager$RunningAppProcessInfo $r14;
+        java.lang.StackTraceElement[] $r15;
+        java.util.Map $r16, $r26, $r16_1, $r16_2, $r16_3, $r16_4, $r16_5;
+        java.lang.Thread[] $r17, $r18, $r18_1, $r18_2;
+        java.util.Set $r19;
+        java.util.Iterator $r20;
+        java.lang.Object $r21, $r21_1, $r21_2, $r21_3, $r21_4;
+        java.util.Map$Entry $r22;
+        com.crashlytics.android.core.SessionDataWriter $r24;
+        com.crashlytics.android.core.LogFileManager $r25;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: com.crashlytics.android.core.CodedOutputStream;
+
+        $r2 := @parameter1: java.util.Date;
+
+        $r3 := @parameter2: java.lang.Thread;
+
+        $r4 := @parameter3: java.lang.Throwable;
+
+        $r5 := @parameter4: java.lang.String;
+
+        $z0 := @parameter5: boolean;
+
+        $r8 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r9 = virtualinvoke $r8.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+        $l0 = virtualinvoke $r2.<java.util.Date: long getTime()>();
+
+        $l0_1 = $l0 / 1000L;
+
+        $f0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: float getBatteryLevel(android.content.Context)>($r9);
+
+        $z1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: boolean powerConnected>;
+
+        $i1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: int getBatteryVelocity(android.content.Context,boolean)>($r9, $z1);
+
+        $z1_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean getProximitySensorEnabled(android.content.Context)>($r9);
+
+        $r10 = virtualinvoke $r9.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r11 = virtualinvoke $r10.<android.content.res.Resources: android.content.res.Configuration getConfiguration()>();
+
+        $i2 = $r11.<android.content.res.Configuration: int orientation>;
+
+        $l3 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: long getTotalRamInBytes()>();
+
+        $l4 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: long calculateFreeRamInBytes(android.content.Context)>($r9);
+
+        $l3_1 = $l3 - $l4;
+
+        $r12 = staticinvoke <android.os.Environment: java.io.File getDataDirectory()>();
+
+        $r13 = virtualinvoke $r12.<java.io.File: java.lang.String getPath()>();
+
+        $l4_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: long calculateUsedDiskSpaceInBytes(java.lang.String)>($r13);
+
+        $r13_1 = virtualinvoke $r9.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r14 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: android.app.ActivityManager$RunningAppProcessInfo getAppProcessInfo(java.lang.String,android.content.Context)>($r13_1, $r9);
+
+        $r6 = new java.util.LinkedList;
+
+        specialinvoke $r6.<java.util.LinkedList: void <init>()>();
+
+        $r15 = virtualinvoke $r4.<java.lang.Throwable: java.lang.StackTraceElement[] getStackTrace()>();
+
+        if $z0 == 0 goto label2;
+
+        $r16 = staticinvoke <java.lang.Thread: java.util.Map getAllStackTraces()>();
+
+        $i5 = interfaceinvoke $r16.<java.util.Map: int size()>();
+
+        $r17 = newarray (java.lang.Thread)[$i5];
+
+        $r18 = $r17;
+
+        $i5_1 = 0;
+
+        $r19 = interfaceinvoke $r16.<java.util.Map: java.util.Set entrySet()>();
+
+(0)     $r20 = interfaceinvoke $r19.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $r21 = Phi($r21 #0, $r21_3 #2);
+
+        $i5_2 = Phi($i5_1 #0, $i5_3 #2);
+
+        $z0_1 = Phi($z0 #0, $z0_2 #2);
+
+        $z0_2 = interfaceinvoke $r20.<java.util.Iterator: boolean hasNext()>();
+
+(1)     if $z0_2 == 0 goto label3;
+
+        $r21_1 = interfaceinvoke $r20.<java.util.Iterator: java.lang.Object next()>();
+
+        $r22 = (java.util.Map$Entry) $r21_1;
+
+        $r21_2 = interfaceinvoke $r22.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r23 = (java.lang.Thread) $r21_2;
+
+        $r17[$i5_2] = $r23;
+
+        $r21_3 = interfaceinvoke $r22.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        interfaceinvoke $r6.<java.util.List: boolean add(java.lang.Object)>($r21_3);
+
+        $i5_3 = $i5_2 + 1;
+
+(2)     goto label1;
+
+     label2:
+(3)     $r18_1 = newarray (java.lang.Thread)[0];
+
+     label3:
+        $r21_4 = Phi($r21 #1, $r21 #3);
+
+        $i5_4 = Phi($i5_2 #1, $i5 #3);
+
+        $r16_1 = Phi($r16 #1, $r16 #3);
+
+        $r18_2 = Phi($r18 #1, $r18_1 #3);
+
+        $z0_3 = Phi($z0_2 #1, $z0 #3);
+
+        $z0_4 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean getBooleanResourceValue(android.content.Context,java.lang.String,boolean)>($r9, "com.crashlytics.CollectCustomKeys", 1);
+
+        if $z0_4 != 0 goto label5;
+
+        $r7 = new java.util.TreeMap;
+
+        $r16_2 = $r7;
+
+(4)     specialinvoke $r7.<java.util.TreeMap: void <init>()>();
+
+     label4:
+        $i5_5 = Phi($i5_4 #4, $i5_4 #5, $i5_6 #6, $i5_6 #7);
+
+        $r16_3 = Phi($r16_2 #4, $r16_4 #5, $r16_4 #6, $r16_5 #7);
+
+        $r8_1 = Phi($r8 #4, $r8_2 #5, $r8_2 #6, $r8_2 #7);
+
+        $r7_1 = Phi($r7 #4, $r7 #5, $r7 #6, $r7_2 #7);
+
+        $r24 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.SessionDataWriter sessionDataWriter>;
+
+        $r25 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.LogFileManager logFileManager>;
+
+        virtualinvoke $r24.<com.crashlytics.android.core.SessionDataWriter: void writeSessionEvent(com.crashlytics.android.core.CodedOutputStream,long,java.lang.Thread,java.lang.Throwable,java.lang.String,java.lang.Thread[],float,int,boolean,int,long,long,android.app.ActivityManager$RunningAppProcessInfo,java.util.List,java.lang.StackTraceElement[],com.crashlytics.android.core.LogFileManager,java.util.Map)>($r1, $l0_1, $r3, $r4, $r5, $r18_2, $f0, $i1, $z1_1, $i2, $l3_1, $l4_1, $r14, $r6, $r15, $r25, $r16_3);
+
+        return;
+
+     label5:
+        $r8_2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r26 = virtualinvoke $r8_2.<com.crashlytics.android.core.CrashlyticsCore: java.util.Map getAttributes()>();
+
+        $r16_4 = $r26;
+
+(5)     if $r26 == null goto label4;
+
+        $i5_6 = interfaceinvoke $r26.<java.util.Map: int size()>();
+
+(6)     if $i5_6 <= 1 goto label4;
+
+        $r7_2 = new java.util.TreeMap;
+
+        specialinvoke $r7_2.<java.util.TreeMap: void <init>(java.util.Map)>($r26);
+
+        $r16_5 = $r7_2;
+
+(7)     goto label4;
+    }
+
+    private void writeSessionOS(java.lang.String) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.ClsFileOutputStream $r1, $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        java.io.File $r2;
+        com.crashlytics.android.core.CrashlyticsCore $r3;
+        com.crashlytics.android.core.SessionDataWriter $r4;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        com.crashlytics.android.core.CodedOutputStream $r7, $r9, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6;
+        android.content.Context $r10;
+        boolean $z0;
+        java.lang.Exception $r11, $r11_1, $r11_2, $r11_3, $r11_4;
+        java.lang.Throwable $r12, $r12_1, $r12_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r5 := @parameter0: java.lang.String;
+
+        $r6 = null;
+
+(0)     $r7 = null;
+
+     label01:
+(1)     $r1 = new com.crashlytics.android.core.ClsFileOutputStream;
+
+     label02:
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+     label03:
+        $r8 = new java.lang.StringBuilder;
+
+     label04:
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+(2)     $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+(3)     $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionOS");
+
+(4)     $r5_1 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(5)     specialinvoke $r1.<com.crashlytics.android.core.ClsFileOutputStream: void <init>(java.io.File,java.lang.String)>($r2, $r5_1);
+
+     label05:
+        $r9 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream)>($r1);
+
+     label06:
+(6)     $r7_1 = $r9;
+
+     label07:
+        $r3 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r10 = virtualinvoke $r3.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean isRooted(android.content.Context)>($r10);
+
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.SessionDataWriter sessionDataWriter>;
+
+        virtualinvoke $r4.<com.crashlytics.android.core.SessionDataWriter: void writeSessionOS(com.crashlytics.android.core.CodedOutputStream,boolean)>($r9, $z0);
+
+     label08:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r9, "Failed to flush to session OS file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r1, "Failed to close session OS file.");
+
+        return;
+
+     label09:
+        $r11_1 := @caughtexception;
+
+        $r8_3 = Phi($r8 #1, $r8_1 #2, $r8_2 #3);
+
+(7)     $r5_2 = Phi($r5 #1, $r5_1 #4);
+
+     label10:
+        $r8_4 = Phi($r8_3 #7, $r8_2 #11);
+
+        $r11_2 = Phi($r11_1 #7, $r11 #11);
+
+        $r7_4 = Phi($r7 #7, $r7_3 #11);
+
+        $r5_3 = Phi($r5_2 #7, $r5_1 #11);
+
+        $r6_3 = Phi($r6 #7, $r6_2 #11);
+
+(8)     staticinvoke <com.crashlytics.android.core.ExceptionUtils: void writeStackTraceIfNotNull(java.lang.Throwable,java.io.OutputStream)>($r11_2, $r6_3);
+
+        throw $r11_2;
+
+     label11:
+        $r12_1 := @caughtexception;
+
+        $r8_5 = Phi($r8 #0, $r8_1 #2, $r8_2 #3, $r8_3 #7, $r8_4 #8);
+
+        $r11_3 = Phi($r11 #0, $r11_1 #7, $r11_2 #8);
+
+        $r7_5 = Phi($r7 #0, $r7_3 #11, $r7_4 #8);
+
+        $r5_4 = Phi($r5 #0, $r5_1 #4, $r5_2 #7, $r5_3 #8);
+
+(9)     $r6_4 = Phi($r6 #0, $r6_2 #11, $r6_3 #8);
+
+     label12:
+        $r8_6 = Phi($r8_5 #9, $r8_2 #10);
+
+        $r11_4 = Phi($r11_3 #9, $r11 #10);
+
+        $r7_6 = Phi($r7_5 #9, $r7_2 #10);
+
+        $r12_2 = Phi($r12_1 #9, $r12 #10);
+
+        $r5_5 = Phi($r5_4 #9, $r5_1 #10);
+
+        $r6_5 = Phi($r6_4 #9, $r6_1 #10);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r7_6, "Failed to flush to session OS file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r6_5, "Failed to close session OS file.");
+
+        throw $r12_2;
+
+     label13:
+        $r12 := @caughtexception;
+
+        $r7_2 = Phi($r7 #5, $r7_1 #6);
+
+        $r6_1 = $r1;
+
+(10)    goto label12;
+
+     label14:
+        $r11 := @caughtexception;
+
+        $r7_3 = Phi($r7 #5, $r7_1 #6);
+
+        $r6_2 = $r1;
+
+(11)    goto label10;
+
+        catch java.lang.Throwable from label01 to label02 with label11;
+        catch java.lang.Exception from label02 to label03 with label09;
+        catch java.lang.Throwable from label02 to label03 with label11;
+        catch java.lang.Exception from label04 to label05 with label09;
+        catch java.lang.Throwable from label04 to label05 with label11;
+        catch java.lang.Exception from label05 to label06 with label14;
+        catch java.lang.Throwable from label05 to label06 with label13;
+        catch java.lang.Exception from label07 to label08 with label14;
+        catch java.lang.Throwable from label07 to label08 with label13;
+        catch java.lang.Throwable from label10 to label11 with label11;
+    }
+
+    private void writeSessionPartsToSessionFile(java.io.File, java.lang.String, int)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.lang.String $r1, $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8, $r7_9, $r7_10, $r7_11, $r7_12, $r7_13, $r7_14, $r7_15, $r7_16, $r7_17, $r7_18;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3, $i1_4, $i1_5, $i1_6, $i1_7, $i1_8, $i1_9, $i1_10, $i1_11, $i1_12, $i1_13;
+        com.crashlytics.android.core.ClsFileOutputStream $r2, $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6;
+        java.util.Date $r3;
+        java.io.File $r4, $r17, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8;
+        io.fabric.sdk.android.Logger $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8, $r5_9, $r5_10, $r5_11, $r5_12, $r5_13, $r5_14, $r5_15;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8, $r6_9, $r6_10, $r6_11, $r6_12, $r6_13, $r6_14, $r6_15, $r6_16, $r6_17, $r6_18, $r6_19, $r6_20, $r6_21, $r6_22, $r6_23, $r6_24, $r6_25, $r6_26, $r6_27, $r6_28, $r6_29, $r6_30, $r6_31;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8, $r8_9, $r8_10;
+        java.io.File[] $r9, $r13, $r14, $r13_1, $r14_1, $r14_2, $r13_2, $r14_3, $r13_3, $r14_4, $r13_4, $r14_5, $r13_5, $r14_6, $r13_6, $r14_7, $r13_7, $r14_8, $r13_8, $r14_9, $r13_9;
+        boolean $z0, $z1, $z0_1, $z1_1, $z1_2, $z0_2;
+        java.util.Locale $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8, $r10_9, $r10_10;
+        java.lang.Object[] $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8, $r11_9, $r11_10;
+        java.lang.Boolean $r12, $r12_1;
+        com.crashlytics.android.core.CodedOutputStream $r16, $r18, $r16_1, $r16_2, $r16_3, $r16_4, $r16_5, $r16_6, $r16_7;
+        long $l2, $l2_1, $l2_2, $l2_3, $l2_4, $l2_5, $l2_6, $l2_7;
+        java.lang.Integer $r19;
+        java.lang.Exception $r20, $r20_1, $r20_2, $r20_3, $r20_4, $r20_5;
+        java.lang.Throwable $r21, $r21_1, $r21_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r4 := @parameter0: java.io.File;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $i0 := @parameter2: int;
+
+        $r5 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Collecting session parts for ID ");
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r7 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r5.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r7);
+
+        $r8 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter;
+
+        $r6_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_4 = virtualinvoke $r6_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r6_5 = virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionCrash");
+
+        $r7_1 = virtualinvoke $r6_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r8.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter: void <init>(java.lang.String)>($r7_1);
+
+        $r9 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listFilesMatching(java.io.FilenameFilter)>($r8);
+
+(0)     if $r9 == null goto label32;
+
+        $i1 = lengthof $r9;
+
+(1)     if $i1 <= 0 goto label32;
+
+(2)     $z0 = 1;
+
+     label01:
+        $i1_1 = Phi($i1 #2, $i1_13 #33);
+
+        $z0_1 = Phi($z0 #2, $z0_2 #33);
+
+        $r5_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r10 = <java.util.Locale: java.util.Locale US>;
+
+        $r11 = newarray (java.lang.Object)[2];
+
+        $r11[0] = $r1;
+
+        $r12 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>($z0_1);
+
+        $r11[1] = $r12;
+
+        $r7_2 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r10, "Session %s has fatal exception: %s", $r11);
+
+        interfaceinvoke $r5_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r7_2);
+
+        $r8_1 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter;
+
+        $r6_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_7 = virtualinvoke $r6_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r6_8 = virtualinvoke $r6_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionEvent");
+
+        $r7_3 = virtualinvoke $r6_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r8_1.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter: void <init>(java.lang.String)>($r7_3);
+
+        $r13 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listFilesMatching(java.io.FilenameFilter)>($r8_1);
+
+        $r14 = $r13;
+
+(3)     if $r13 == null goto label33;
+
+        $i1_2 = lengthof $r13;
+
+(4)     if $i1_2 <= 0 goto label33;
+
+(5)     $z1 = 1;
+
+     label02:
+        $i1_3 = Phi($i1_2 #5, $i1_12 #34);
+
+        $z1_1 = Phi($z1 #5, $z1_2 #34);
+
+        $r5_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r10_1 = <java.util.Locale: java.util.Locale US>;
+
+        $r11_1 = newarray (java.lang.Object)[2];
+
+        $r11_1[0] = $r1;
+
+        $r12_1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>($z1_1);
+
+        $r11_1[1] = $r12_1;
+
+        $r7_4 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r10_1, "Session %s has non-fatal exceptions: %s", $r11_1);
+
+        interfaceinvoke $r5_2.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r7_4);
+
+        if $z0_1 != 0 goto label03;
+
+        if $z1_1 == 0 goto label42;
+
+     label03:
+        $r15 = null;
+
+        $r16 = null;
+
+(6)     $r2 = new com.crashlytics.android.core.ClsFileOutputStream;
+
+     label04:
+        $r17 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+(7)     specialinvoke $r2.<com.crashlytics.android.core.ClsFileOutputStream: void <init>(java.io.File,java.lang.String)>($r17, $r1);
+
+     label05:
+        $r18 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream)>($r2);
+
+     label06:
+(8)     $r16_1 = $r18;
+
+     label07:
+(9)     $r5_4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+     label08:
+(10)    $r6_12 = new java.lang.StringBuilder;
+
+     label09:
+        specialinvoke $r6_12.<java.lang.StringBuilder: void <init>()>();
+
+(11)    $r6_13 = virtualinvoke $r6_12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Collecting SessionStart data for session ID ");
+
+(12)    $r6_14 = virtualinvoke $r6_13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+(13)    $r7_6 = virtualinvoke $r6_14.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r5_4.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r7_6);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeToCosFromFile(com.crashlytics.android.core.CodedOutputStream,java.io.File)>($r18, $r4);
+
+     label10:
+        $r3 = new java.util.Date;
+
+     label11:
+        specialinvoke $r3.<java.util.Date: void <init>()>();
+
+        $l2 = virtualinvoke $r3.<java.util.Date: long getTime()>();
+
+     label12:
+(14)    $l2_1 = $l2 / 1000L;
+
+     label13:
+        virtualinvoke $r18.<com.crashlytics.android.core.CodedOutputStream: void writeUInt64(int,long)>(4, $l2_1);
+
+        virtualinvoke $r18.<com.crashlytics.android.core.CodedOutputStream: void writeBool(int,boolean)>(5, $z0_1);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeInitialPartsTo(com.crashlytics.android.core.CodedOutputStream,java.lang.String)>($r18, $r1);
+
+     label14:
+(15)    if $z1_1 == 0 goto label26;
+
+     label15:
+(16)    $i1_4 = lengthof $r13;
+
+     label16:
+(17)    if $i1_4 <= $i0 goto label25;
+
+     label17:
+(18)    $r5_5 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+     label18:
+(19)    $r10_2 = <java.util.Locale: java.util.Locale US>;
+
+     label19:
+(20)    $r11_2 = newarray (java.lang.Object)[1];
+
+        $r19 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+     label20:
+        $r11_2[0] = $r19;
+
+     label21:
+(21)    $r7_7 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r10_2, "Trimming down to %d logged exceptions.", $r11_2);
+
+        interfaceinvoke $r5_5.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r7_7);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void trimSessionEventFiles(java.lang.String,int)>($r1, $i0);
+
+     label22:
+        $r8_2 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter;
+
+(22)    $r6_15 = new java.lang.StringBuilder;
+
+     label23:
+        specialinvoke $r6_15.<java.lang.StringBuilder: void <init>()>();
+
+(23)    $r6_16 = virtualinvoke $r6_15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+(24)    $r6_17 = virtualinvoke $r6_16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionEvent");
+
+(25)    $r7_8 = virtualinvoke $r6_17.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r8_2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter: void <init>(java.lang.String)>($r7_8);
+
+(26)    $r13_1 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listFilesMatching(java.io.FilenameFilter)>($r8_2);
+
+     label24:
+(27)    $r14_1 = $r13_1;
+
+     label25:
+        $r5_6 = Phi($r5_4 #17, $r5_5 #27);
+
+        $r7_9 = Phi($r7_6 #17, $r7_8 #27);
+
+        $r11_3 = Phi($r11_1 #17, $r11_2 #27);
+
+        $r6_18 = Phi($r6_14 #17, $r6_17 #27);
+
+        $r14_2 = Phi($r14 #17, $r14_1 #27);
+
+        $r10_3 = Phi($r10_1 #17, $r10_2 #27);
+
+        $r8_3 = Phi($r8_1 #17, $r8_2 #27);
+
+        $r13_2 = Phi($r13 #17, $r13_1 #27);
+
+(28)    specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeNonFatalEventsTo(com.crashlytics.android.core.CodedOutputStream,java.io.File[],java.lang.String)>($r18, $r14_2, $r1);
+
+     label26:
+        $i1_5 = Phi($i1_3 #15, $i1_4 #28);
+
+        $r5_7 = Phi($r5_4 #15, $r5_6 #28);
+
+        $r7_10 = Phi($r7_6 #15, $r7_9 #28);
+
+        $r11_4 = Phi($r11_1 #15, $r11_3 #28);
+
+        $r6_19 = Phi($r6_14 #15, $r6_18 #28);
+
+        $r14_3 = Phi($r14 #15, $r14_2 #28);
+
+        $r10_4 = Phi($r10_1 #15, $r10_3 #28);
+
+        $r8_4 = Phi($r8_1 #15, $r8_3 #28);
+
+        $r13_3 = Phi($r13 #15, $r13_2 #28);
+
+(29)    if $z0_1 == 0 goto label29;
+
+     label27:
+(30)    $r4_1 = $r9[0];
+
+     label28:
+(31)    specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void writeToCosFromFile(com.crashlytics.android.core.CodedOutputStream,java.io.File)>($r18, $r4_1);
+
+     label29:
+        $r4_2 = Phi($r4 #29, $r4_1 #31);
+
+(32)    virtualinvoke $r18.<com.crashlytics.android.core.CodedOutputStream: void writeUInt32(int,int)>(11, 1);
+
+        virtualinvoke $r18.<com.crashlytics.android.core.CodedOutputStream: void writeEnum(int,int)>(12, 3);
+
+     label30:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r18, "Error flushing session file stream");
+
+        goto label34;
+
+     label31:
+        $i1_11 = Phi($i1_5 #35, $i1_8 #42, $i1_3 #44);
+
+        $r5_14 = Phi($r5_7 #35, $r5_11 #42, $r5_3 #44);
+
+        $r15_6 = Phi($r15 #35, $r15_3 #42, $r15 #44);
+
+        $r7_17 = Phi($r7_10 #35, $r7_14 #42, $r7_5 #44);
+
+        $l2_7 = Phi($l2_1 #35, $l2_4 #42, $l2 #44);
+
+        $r11_10 = Phi($r11_4 #35, $r11_7 #42, $r11_1 #44);
+
+        $r20_5 = Phi($r20 #35, $r20_2 #42, $r20 #44);
+
+        $r6_28 = Phi($r6_19 #35, $r6_25 #42, $r6_11 #44);
+
+        $r16_7 = Phi($r16_1 #35, $r16_4 #42, $r16 #44);
+
+        $r14_9 = Phi($r14_3 #35, $r14_6 #42, $r14 #44);
+
+        $r10_10 = Phi($r10_4 #35, $r10_7 #42, $r10_1 #44);
+
+        $r8_10 = Phi($r8_4 #35, $r8_7 #42, $r8_1 #44);
+
+        $r13_9 = Phi($r13_3 #35, $r13_6 #42, $r13 #44);
+
+        $r4_8 = Phi($r4_2 #35, $r4_5 #42, $r4 #44);
+
+        $r5_15 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r6_29 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_29.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_30 = virtualinvoke $r6_29.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Removing session part files for ID ");
+
+        $r6_31 = virtualinvoke $r6_30.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r7_18 = virtualinvoke $r6_31.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r5_15.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r7_18);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void deleteSessionPartFilesFor(java.lang.String)>($r1);
+
+        return;
+
+     label32:
+        $i1_13 = Phi($i1 #0, $i1 #1);
+
+        $z0_2 = 0;
+
+(33)    goto label01;
+
+     label33:
+        $i1_12 = Phi($i1_1 #3, $i1_2 #4);
+
+        $z1_2 = 0;
+
+(34)    goto label02;
+
+     label34:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r2, "Failed to close CLS file");
+
+(35)    goto label31;
+
+     label35:
+(36)    $r20_1 := @caughtexception;
+
+     label36:
+        $i1_8 = Phi($i1_3 #36, $i1_7 #46);
+
+        $r5_10 = Phi($r5_2 #36, $r5_9 #46);
+
+        $r15_3 = Phi($r15 #36, $r15_2 #46);
+
+        $r7_13 = Phi($r7_4 #36, $r7_12 #46);
+
+        $l2_4 = Phi($l2 #36, $l2_3 #46);
+
+        $r11_7 = Phi($r11_1 #36, $r11_6 #46);
+
+        $r20_2 = Phi($r20_1 #36, $r20 #46);
+
+        $r6_22 = Phi($r6_8 #36, $r6_21 #46);
+
+        $r16_4 = Phi($r16 #36, $r16_3 #46);
+
+        $r14_6 = Phi($r14 #36, $r14_5 #46);
+
+        $r10_7 = Phi($r10_1 #36, $r10_6 #46);
+
+        $r8_7 = Phi($r8_1 #36, $r8_6 #46);
+
+        $r13_6 = Phi($r13 #36, $r13_5 #46);
+
+        $r4_5 = Phi($r4 #36, $r4_4 #46);
+
+(37)    $r5_11 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(38)    $r6_23 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_23.<java.lang.StringBuilder: void <init>()>();
+
+(39)    $r6_24 = virtualinvoke $r6_23.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Failed to write session file for session ID: ");
+
+(40)    $r6_25 = virtualinvoke $r6_24.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+(41)    $r7_14 = virtualinvoke $r6_25.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r5_11.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", $r7_14, $r20_2);
+
+        staticinvoke <com.crashlytics.android.core.ExceptionUtils: void writeStackTraceIfNotNull(java.lang.Throwable,java.io.OutputStream)>($r20_2, $r15_3);
+
+     label37:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r16_4, "Error flushing session file stream");
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void closeWithoutRenamingOrLog(com.crashlytics.android.core.ClsFileOutputStream)>($r15_3);
+
+(42)    goto label31;
+
+     label38:
+        $r21_1 := @caughtexception;
+
+        $i1_9 = Phi($i1_3 #6, $i1_7 #46, $i1_8 #37);
+
+        $r5_12 = Phi($r5_2 #6, $r5_9 #46, $r5_11 #37);
+
+        $r15_4 = Phi($r15 #6, $r15_2 #46, $r15_3 #37);
+
+        $r7_15 = Phi($r7_4 #6, $r7_12 #46, $r7_13 #37, $r7_14 #41);
+
+        $l2_5 = Phi($l2 #6, $l2_3 #46, $l2_4 #37);
+
+        $r11_8 = Phi($r11_1 #6, $r11_6 #46, $r11_7 #37);
+
+        $r20_3 = Phi($r20 #6, $r20_1 #36, $r20_2 #37);
+
+        $r6_26 = Phi($r6_8 #6, $r6_21 #46, $r6_22 #37, $r6_23 #38, $r6_24 #39, $r6_25 #40);
+
+        $r16_5 = Phi($r16 #6, $r16_3 #46, $r16_4 #37);
+
+        $r14_7 = Phi($r14 #6, $r14_5 #46, $r14_6 #37);
+
+        $r10_8 = Phi($r10_1 #6, $r10_6 #46, $r10_7 #37);
+
+        $r8_8 = Phi($r8_1 #6, $r8_6 #46, $r8_7 #37);
+
+        $r13_7 = Phi($r13 #6, $r13_5 #46, $r13_6 #37);
+
+(43)    $r4_6 = Phi($r4 #6, $r4_4 #46, $r4_5 #37);
+
+     label39:
+        $i1_10 = Phi($i1_9 #43, $i1_6 #45);
+
+        $r21_2 = Phi($r21_1 #43, $r21 #45);
+
+        $r5_13 = Phi($r5_12 #43, $r5_8 #45);
+
+        $r15_5 = Phi($r15_4 #43, $r15_1 #45);
+
+        $r7_16 = Phi($r7_15 #43, $r7_11 #45);
+
+        $l2_6 = Phi($l2_5 #43, $l2_2 #45);
+
+        $r11_9 = Phi($r11_8 #43, $r11_5 #45);
+
+        $r20_4 = Phi($r20_3 #43, $r20 #45);
+
+        $r6_27 = Phi($r6_26 #43, $r6_20 #45);
+
+        $r16_6 = Phi($r16_5 #43, $r16_2 #45);
+
+        $r14_8 = Phi($r14_7 #43, $r14_4 #45);
+
+        $r10_9 = Phi($r10_8 #43, $r10_5 #45);
+
+        $r8_9 = Phi($r8_8 #43, $r8_5 #45);
+
+        $r13_8 = Phi($r13_7 #43, $r13_4 #45);
+
+        $r4_7 = Phi($r4_6 #43, $r4_3 #45);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r16_6, "Error flushing session file stream");
+
+        goto label41;
+
+     label40:
+        throw $r21_2;
+
+     label41:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r15_5, "Failed to close CLS file");
+
+        goto label40;
+
+     label42:
+        $r5_3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r6_9 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_9.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_10 = virtualinvoke $r6_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("No events present for session ID ");
+
+        $r6_11 = virtualinvoke $r6_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r7_5 = virtualinvoke $r6_11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r5_3.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r7_5);
+
+(44)    goto label31;
+
+     label43:
+        $r21 := @caughtexception;
+
+        $i1_6 = Phi($i1_3 #7, $i1_4 #17, $i1_5 #29);
+
+        $r5_8 = Phi($r5_2 #7, $r5_4 #9, $r5_5 #18, $r5_6 #28, $r5_7 #29);
+
+        $r7_11 = Phi($r7_4 #7, $r7_6 #13, $r7_7 #21, $r7_8 #25, $r7_9 #28, $r7_10 #29);
+
+        $l2_2 = Phi($l2 #7, $l2_1 #14);
+
+        $r11_5 = Phi($r11_1 #7, $r11_2 #20, $r11_3 #28, $r11_4 #29);
+
+        $r6_20 = Phi($r6_8 #7, $r6_12 #10, $r6_13 #11, $r6_14 #12, $r6_15 #22, $r6_16 #23, $r6_17 #24, $r6_18 #28, $r6_19 #29);
+
+        $r16_2 = Phi($r16 #7, $r16_1 #8);
+
+        $r14_4 = Phi($r14 #7, $r14_1 #27, $r14_2 #28, $r14_3 #29);
+
+        $r10_5 = Phi($r10_1 #7, $r10_2 #19, $r10_3 #28, $r10_4 #29);
+
+        $r8_5 = Phi($r8_1 #7, $r8_2 #22, $r8_3 #28, $r8_4 #29);
+
+        $r13_4 = Phi($r13 #7, $r13_1 #26, $r13_2 #28, $r13_3 #29);
+
+        $r4_3 = Phi($r4 #7, $r4_1 #30, $r4_2 #32);
+
+        $r15_1 = $r2;
+
+(45)    goto label39;
+
+     label44:
+        $r20 := @caughtexception;
+
+        $i1_7 = Phi($i1_3 #7, $i1_4 #16, $i1_5 #29);
+
+        $r5_9 = Phi($r5_2 #7, $r5_4 #9, $r5_5 #18, $r5_6 #28, $r5_7 #29);
+
+        $r7_12 = Phi($r7_4 #7, $r7_6 #13, $r7_7 #21, $r7_8 #25, $r7_9 #28, $r7_10 #29);
+
+        $l2_3 = Phi($l2 #7, $l2_1 #14);
+
+        $r11_6 = Phi($r11_1 #7, $r11_2 #20, $r11_3 #28, $r11_4 #29);
+
+        $r6_21 = Phi($r6_8 #7, $r6_12 #10, $r6_13 #11, $r6_14 #12, $r6_15 #22, $r6_16 #23, $r6_17 #24, $r6_18 #28, $r6_19 #29);
+
+        $r16_3 = Phi($r16 #7, $r16_1 #8);
+
+        $r14_5 = Phi($r14 #7, $r14_1 #27, $r14_2 #28, $r14_3 #29);
+
+        $r10_6 = Phi($r10_1 #7, $r10_2 #19, $r10_3 #28, $r10_4 #29);
+
+        $r8_6 = Phi($r8_1 #7, $r8_2 #22, $r8_3 #28, $r8_4 #29);
+
+        $r13_5 = Phi($r13 #7, $r13_1 #26, $r13_2 #28, $r13_3 #29);
+
+        $r4_4 = Phi($r4 #7, $r4_1 #30, $r4_2 #32);
+
+        $r15_2 = $r2;
+
+(46)    goto label36;
+
+        catch java.lang.Exception from label04 to label05 with label35;
+        catch java.lang.Throwable from label04 to label05 with label38;
+        catch java.lang.Exception from label05 to label06 with label44;
+        catch java.lang.Throwable from label05 to label06 with label43;
+        catch java.lang.Exception from label07 to label08 with label44;
+        catch java.lang.Throwable from label07 to label08 with label43;
+        catch java.lang.Throwable from label08 to label09 with label43;
+        catch java.lang.Exception from label09 to label10 with label44;
+        catch java.lang.Throwable from label09 to label10 with label43;
+        catch java.lang.Exception from label11 to label12 with label44;
+        catch java.lang.Throwable from label11 to label12 with label43;
+        catch java.lang.Exception from label13 to label14 with label44;
+        catch java.lang.Throwable from label13 to label14 with label43;
+        catch java.lang.Exception from label15 to label16 with label44;
+        catch java.lang.Exception from label17 to label18 with label44;
+        catch java.lang.Throwable from label17 to label18 with label43;
+        catch java.lang.Throwable from label18 to label19 with label43;
+        catch java.lang.Exception from label19 to label20 with label44;
+        catch java.lang.Throwable from label19 to label20 with label43;
+        catch java.lang.Exception from label20 to label21 with label44;
+        catch java.lang.Exception from label21 to label22 with label44;
+        catch java.lang.Throwable from label21 to label22 with label43;
+        catch java.lang.Exception from label23 to label24 with label44;
+        catch java.lang.Throwable from label23 to label24 with label43;
+        catch java.lang.Exception from label25 to label26 with label44;
+        catch java.lang.Throwable from label25 to label26 with label43;
+        catch java.lang.Exception from label27 to label30 with label44;
+        catch java.lang.Throwable from label28 to label30 with label43;
+        catch java.lang.Throwable from label36 to label37 with label38;
+    }
+
+    private void writeSessionUser(java.lang.String) throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.ClsFileOutputStream $r1, $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        java.io.File $r2;
+        com.crashlytics.android.core.SessionDataWriter $r3;
+        java.lang.String $r4, $r8, $r11, $r8_1, $r4_1, $r8_2, $r4_2, $r8_3, $r4_3, $r8_4, $r8_5, $r4_4, $r8_6, $r4_5, $r8_7, $r4_6;
+        com.crashlytics.android.core.CodedOutputStream $r6, $r9, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6;
+        com.crashlytics.android.core.UserMetaData $r10;
+        boolean $z0;
+        java.lang.Exception $r12, $r12_1, $r12_2, $r12_3, $r12_4;
+        java.lang.Throwable $r13, $r13_1, $r13_2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r4 := @parameter0: java.lang.String;
+
+        $r5 = null;
+
+(0)     $r6 = null;
+
+     label01:
+(1)     $r1 = new com.crashlytics.android.core.ClsFileOutputStream;
+
+     label02:
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+     label03:
+        $r7 = new java.lang.StringBuilder;
+
+     label04:
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+(2)     $r7_1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+(3)     $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("SessionUser");
+
+        $r8 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(4)     specialinvoke $r1.<com.crashlytics.android.core.ClsFileOutputStream: void <init>(java.io.File,java.lang.String)>($r2, $r8);
+
+     label05:
+        $r9 = staticinvoke <com.crashlytics.android.core.CodedOutputStream: com.crashlytics.android.core.CodedOutputStream newInstance(java.io.OutputStream)>($r1);
+
+     label06:
+(5)     $r6_1 = $r9;
+
+     label07:
+        $r10 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.UserMetaData getUserMetaData(java.lang.String)>($r4);
+
+        $z0 = virtualinvoke $r10.<com.crashlytics.android.core.UserMetaData: boolean isEmpty()>();
+
+     label08:
+        if $z0 == 0 goto label09;
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r9, "Failed to flush session user file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r1, "Failed to close session user file.");
+
+        return;
+
+     label09:
+        $r3 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.SessionDataWriter sessionDataWriter>;
+
+(6)     $r8_1 = $r10.<com.crashlytics.android.core.UserMetaData: java.lang.String id>;
+
+(7)     $r4_1 = $r10.<com.crashlytics.android.core.UserMetaData: java.lang.String name>;
+
+        $r11 = $r10.<com.crashlytics.android.core.UserMetaData: java.lang.String email>;
+
+        virtualinvoke $r3.<com.crashlytics.android.core.SessionDataWriter: void writeSessionUser(com.crashlytics.android.core.CodedOutputStream,java.lang.String,java.lang.String,java.lang.String)>($r9, $r8_1, $r4_1, $r11);
+
+     label10:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r9, "Failed to flush session user file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r1, "Failed to close session user file.");
+
+        return;
+
+     label11:
+        $r12_1 := @caughtexception;
+
+        $r8_4 = Phi($r8 #1);
+
+(8)     $r7_3 = Phi($r7 #1, $r7_1 #2, $r7_2 #3);
+
+     label12:
+        $r5_3 = Phi($r5 #8, $r5_2 #12);
+
+        $r12_2 = Phi($r12_1 #8, $r12 #12);
+
+        $r6_4 = Phi($r6 #8, $r6_3 #12);
+
+        $r8_5 = Phi($r8_4 #8, $r8_3 #12);
+
+        $r7_4 = Phi($r7_3 #8, $r7_2 #12);
+
+        $r4_4 = Phi($r4 #8, $r4_3 #12);
+
+(9)     staticinvoke <com.crashlytics.android.core.ExceptionUtils: void writeStackTraceIfNotNull(java.lang.Throwable,java.io.OutputStream)>($r12_2, $r5_3);
+
+        throw $r12_2;
+
+     label13:
+        $r13_1 := @caughtexception;
+
+        $r5_4 = Phi($r5 #0, $r5_2 #12, $r5_3 #9);
+
+        $r12_3 = Phi($r12 #0, $r12_1 #8, $r12_2 #9);
+
+        $r6_5 = Phi($r6 #0, $r6_3 #12, $r6_4 #9);
+
+        $r8_6 = Phi($r8 #0, $r8_4 #8, $r8_3 #12, $r8_5 #9);
+
+        $r7_5 = Phi($r7 #0, $r7_1 #2, $r7_2 #3, $r7_3 #8, $r7_4 #9);
+
+(10)    $r4_5 = Phi($r4 #0, $r4_3 #12, $r4_4 #9);
+
+     label14:
+        $r5_5 = Phi($r5_4 #10, $r5_1 #11);
+
+        $r13_2 = Phi($r13_1 #10, $r13 #11);
+
+        $r12_4 = Phi($r12_3 #10, $r12 #11);
+
+        $r6_6 = Phi($r6_5 #10, $r6_2 #11);
+
+        $r8_7 = Phi($r8_6 #10, $r8_2 #11);
+
+        $r7_6 = Phi($r7_5 #10, $r7_2 #11);
+
+        $r4_6 = Phi($r4_5 #10, $r4_2 #11);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void flushOrLog(java.io.Flushable,java.lang.String)>($r6_6, "Failed to flush session user file.");
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r5_5, "Failed to close session user file.");
+
+        throw $r13_2;
+
+     label15:
+        $r13 := @caughtexception;
+
+        $r6_2 = Phi($r6 #4, $r6_1 #5);
+
+        $r8_2 = Phi($r8 #4, $r8_1 #6);
+
+        $r4_2 = Phi($r4 #4, $r4_1 #7);
+
+        $r5_1 = $r1;
+
+(11)    goto label14;
+
+     label16:
+        $r12 := @caughtexception;
+
+        $r6_3 = Phi($r6 #4, $r6_1 #5);
+
+        $r8_3 = Phi($r8 #4, $r8_1 #6);
+
+        $r4_3 = Phi($r4 #4, $r4_1 #7);
+
+        $r5_2 = $r1;
+
+(12)    goto label12;
+
+        catch java.lang.Throwable from label01 to label02 with label13;
+        catch java.lang.Exception from label02 to label03 with label11;
+        catch java.lang.Throwable from label02 to label03 with label13;
+        catch java.lang.Exception from label04 to label05 with label11;
+        catch java.lang.Throwable from label04 to label05 with label13;
+        catch java.lang.Exception from label05 to label06 with label16;
+        catch java.lang.Throwable from label05 to label06 with label15;
+        catch java.lang.Exception from label07 to label08 with label16;
+        catch java.lang.Throwable from label07 to label08 with label15;
+        catch java.lang.Exception from label09 to label10 with label16;
+        catch java.lang.Throwable from label09 to label10 with label15;
+        catch java.lang.Throwable from label12 to label13 with label13;
+    }
+
+    private void writeToCosFromFile(com.crashlytics.android.core.CodedOutputStream, java.io.File) throws java.io.IOException
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.CodedOutputStream $r1;
+        java.io.File $r2;
+        byte[] $r3;
+        java.io.FileInputStream $r4, $r5, $r5_1, $r5_2;
+        boolean $z0;
+        long $l0;
+        int $i1, $i2, $i1_1, $i1_2, $i2_1, $i2_2, $i2_3, $i2_4, $i1_3, $i2_5, $i2_6, $i1_4, $i2_7, $i1_5;
+        java.lang.Throwable $r6, $r6_1, $r6_2;
+        io.fabric.sdk.android.Logger $r7;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2;
+        java.lang.String $r9, $r9_1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: com.crashlytics.android.core.CodedOutputStream;
+
+        $r2 := @parameter1: java.io.File;
+
+        $z0 = virtualinvoke $r2.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label12;
+
+        $l0 = virtualinvoke $r2.<java.io.File: long length()>();
+
+        $i1 = (int) $l0;
+
+        $r3 = newarray (byte)[$i1];
+
+        $r5 = null;
+
+     label01:
+        $r4 = new java.io.FileInputStream;
+
+        specialinvoke $r4.<java.io.FileInputStream: void <init>(java.io.File)>($r2);
+
+     label02:
+(0)     $i1_1 = 0;
+
+     label03:
+        $i2 = Phi($i2 #0, $i2_4 #7);
+
+        $i1_2 = Phi($i1_1 #0, $i1_3 #7);
+
+(1)     $i2_1 = lengthof $r3;
+
+     label04:
+(2)     if $i1_2 >= $i2_1 goto label09;
+
+     label05:
+(3)     $i2_2 = lengthof $r3;
+
+     label06:
+(4)     $i2_3 = $i2_2 - $i1_2;
+
+     label07:
+(5)     $i2_4 = virtualinvoke $r4.<java.io.FileInputStream: int read(byte[],int,int)>($r3, $i1_2, $i2_3);
+
+     label08:
+(6)     if $i2_4 < 0 goto label09;
+
+        $i1_3 = $i1_2 + $i2_4;
+
+(7)     goto label03;
+
+     label09:
+        $i2_5 = Phi($i2_1 #2, $i2_4 #6);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r4, "Failed to close file input stream.");
+
+        virtualinvoke $r1.<com.crashlytics.android.core.CodedOutputStream: void writeRawBytes(byte[])>($r3);
+
+        return;
+
+     label10:
+(8)     $r6_1 := @caughtexception;
+
+     label11:
+        $r5_2 = Phi($r5 #8, $r5_1 #9);
+
+        $r6_2 = Phi($r6_1 #8, $r6 #9);
+
+        $i2_7 = Phi($i2 #8, $i2_6 #9);
+
+        $i1_5 = Phi($i1 #8, $i1_4 #9);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r5_2, "Failed to close file input stream.");
+
+        throw $r6_2;
+
+     label12:
+        $r7 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Tried to include a file that doesn\'t exist: ");
+
+        $r9 = virtualinvoke $r2.<java.io.File: java.lang.String getName()>();
+
+        $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9_1 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r7.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", $r9_1, null);
+
+        return;
+
+     label13:
+        $r6 := @caughtexception;
+
+        $i2_6 = Phi($i2 #0, $i2_1 #1, $i2_2 #3, $i2_3 #4, $i2_4 #5);
+
+        $i1_4 = Phi($i1_1 #0, $i1_3 #7, $i1_2 #1);
+
+        $r5_1 = $r4;
+
+(9)     goto label11;
+
+        catch java.lang.Throwable from label01 to label02 with label10;
+        catch java.lang.Throwable from label03 to label04 with label13;
+        catch java.lang.Throwable from label05 to label06 with label13;
+        catch java.lang.Throwable from label07 to label08 with label13;
+    }
+
+    void cacheKeyData(java.util.Map)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.Map $r1;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r2;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$11 $r3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.util.Map;
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r3 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$11;
+
+        specialinvoke $r3.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$11: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler,java.util.Map)>($r0, $r1);
+
+        virtualinvoke $r2.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.util.concurrent.Future executeAsync(java.util.concurrent.Callable)>($r3);
+
+        return;
+    }
+
+    void cacheUserData(java.lang.String, java.lang.String, java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.lang.String $r1, $r2, $r3;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r4;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$10 $r5;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r5 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$10;
+
+        specialinvoke $r5.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$10: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler,java.lang.String,java.lang.String,java.lang.String)>($r0, $r1, $r2, $r3);
+
+        virtualinvoke $r4.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.util.concurrent.Future executeAsync(java.util.concurrent.Callable)>($r5);
+
+        return;
+    }
+
+    void cleanInvalidTempFiles()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r1;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$14 $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r2 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$14;
+
+        specialinvoke $r2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$14: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler)>($r0);
+
+        virtualinvoke $r1.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.util.concurrent.Future executeAsync(java.lang.Runnable)>($r2);
+
+        return;
+    }
+
+    void doCleanInvalidTempFiles(java.io.File[])
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.io.File[] $r1, $r7;
+        int $i0, $i1, $i2, $i3, $i2_1, $i3_1, $i3_2, $i3_3, $i2_2;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$15 $r2;
+        java.io.File $r3, $r3_1, $r3_2, $r3_3;
+        io.fabric.sdk.android.Logger $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8, $r5_9, $r5_10;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.io.File[];
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void deleteLegacyInvalidCacheDir()>();
+
+        $i0 = lengthof $r1;
+
+(0)     $i2 = 0;
+
+     label1:
+        $i2_1 = Phi($i2 #0, $i2_2 #3);
+
+        $r5 = Phi($r5 #0, $r5_7 #3);
+
+        $i3 = Phi($i3 #0, $i3_2 #3);
+
+        $r6 = Phi($r6 #0, $r6_4 #3);
+
+        $r4 = Phi($r4 #0, $r4_3 #3);
+
+        $r3 = Phi($r3 #0, $r3_2 #3);
+
+        if $i2_1 >= $i0 goto label4;
+
+        $r3_1 = $r1[$i2_1];
+
+        $r4_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r5_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r5_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Found invalid session part file: ");
+
+        $r5_3 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3_1);
+
+        $r6_1 = virtualinvoke $r5_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r4_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r6_1);
+
+        $r6_2 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.String getSessionIdFromSessionFile(java.io.File)>($r3_1);
+
+        $r2 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$15;
+
+        specialinvoke $r2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$15: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler,java.lang.String)>($r0, $r6_2);
+
+        $r4_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r5_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r5_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_5 = virtualinvoke $r5_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Deleting all part files for invalid session: ");
+
+        $r5_6 = virtualinvoke $r5_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6_2);
+
+        $r6_3 = virtualinvoke $r5_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r4_2.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r6_3);
+
+        $r7 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listFilesMatching(java.io.FilenameFilter)>($r2);
+
+        $i1 = lengthof $r7;
+
+(1)     $i3_1 = 0;
+
+     label2:
+        $r5_7 = Phi($r5_6 #1, $r5_10 #2);
+
+        $i3_2 = Phi($i3_1 #1, $i3_3 #2);
+
+        $r6_4 = Phi($r6_3 #1, $r6_5 #2);
+
+        $r4_3 = Phi($r4_2 #1, $r4_4 #2);
+
+        $r3_2 = Phi($r3_1 #1, $r3_3 #2);
+
+        if $i3_2 >= $i1 goto label3;
+
+        $r3_3 = $r7[$i3_2];
+
+        $r4_4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r5_8 = new java.lang.StringBuilder;
+
+        specialinvoke $r5_8.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_9 = virtualinvoke $r5_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Deleting session file: ");
+
+        $r5_10 = virtualinvoke $r5_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3_3);
+
+        $r6_5 = virtualinvoke $r5_10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r4_4.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r6_5);
+
+        virtualinvoke $r3_3.<java.io.File: boolean delete()>();
+
+        $i3_3 = $i3_2 + 1;
+
+(2)     goto label2;
+
+     label3:
+        $i2_2 = $i2_1 + 1;
+
+(3)     goto label1;
+
+     label4:
+        return;
+    }
+
+    void doCloseSessions() throws java.lang.Exception
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: void doCloseSessions(boolean)>(0);
+
+        return;
+    }
+
+    boolean finalizeSessions()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r1;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$13 $r2;
+        java.lang.Object $r3;
+        java.lang.Boolean $r4;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r2 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$13;
+
+        specialinvoke $r2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$13: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler)>($r0);
+
+        $r3 = virtualinvoke $r1.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.lang.Object executeSyncLoggingException(java.util.concurrent.Callable)>($r2);
+
+        $r4 = (java.lang.Boolean) $r3;
+
+        $z0 = virtualinvoke $r4.<java.lang.Boolean: boolean booleanValue()>();
+
+        return $z0;
+    }
+
+    boolean hasOpenSession()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        int $i0;
+        java.io.File[] $r1;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = virtualinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listSessionBeginFiles()>();
+
+        $i0 = lengthof $r1;
+
+        if $i0 <= 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    boolean isHandlingException()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.util.concurrent.atomic.AtomicBoolean $r1;
+        boolean $z0;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicBoolean isHandlingException>;
+
+        $z0 = virtualinvoke $r1.<java.util.concurrent.atomic.AtomicBoolean: boolean get()>();
+
+        return $z0;
+    }
+
+    java.io.File[] listSessionBeginFiles()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter $r1;
+        java.io.File[] $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter;
+
+        specialinvoke $r1.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$FileNameContainsFilter: void <init>(java.lang.String)>("BeginSession");
+
+        $r2 = specialinvoke $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File[] listFilesMatching(java.io.FilenameFilter)>($r1);
+
+        return $r2;
+    }
+
+    void openSession()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r1;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$12 $r2;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r2 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$12;
+
+        specialinvoke $r2.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$12: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler)>($r0);
+
+        virtualinvoke $r1.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.util.concurrent.Future executeAsync(java.util.concurrent.Callable)>($r2);
+
+        return;
+    }
+
+    void trimSessionFiles()
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.io.File $r1;
+        java.io.FilenameFilter $r2;
+        java.util.Comparator $r3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.File filesDir>;
+
+        $r2 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.io.FilenameFilter SESSION_FILE_FILTER>;
+
+        $r3 = <com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.Comparator SMALLEST_FILE_NAME_FIRST>;
+
+        staticinvoke <com.crashlytics.android.core.Utils: void capFileCount(java.io.File,java.io.FilenameFilter,int,java.util.Comparator)>($r1, $r2, 4, $r3);
+
+        return;
+    }
+
+    public void uncaughtException(java.lang.Thread, java.lang.Throwable)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.lang.Thread $r1;
+        java.lang.Throwable $r2, $r7, $r8;
+        com.crashlytics.android.core.CrashlyticsCore $r3;
+        java.util.Date $r4;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$7 $r5;
+        java.lang.Exception $r6;
+        java.util.concurrent.atomic.AtomicBoolean $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8;
+        io.fabric.sdk.android.Logger $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8, $r10_9, $r10_10;
+        java.lang.StringBuilder $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8;
+        java.lang.String $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5;
+        boolean $z0;
+        android.content.Context $r13;
+        android.content.BroadcastReceiver $r14, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5, $r14_6;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r15;
+        java.lang.Thread$UncaughtExceptionHandler $r16, $r16_1, $r16_2, $r16_3, $r16_4;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.lang.Thread;
+
+        $r2 := @parameter1: java.lang.Throwable;
+
+(0)     entermonitor $r0;
+
+     label01:
+        $r9 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicBoolean isHandlingException>;
+
+(1)     virtualinvoke $r9.<java.util.concurrent.atomic.AtomicBoolean: void set(boolean)>(1);
+
+     label02:
+        $r10 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+     label03:
+        $r11 = new java.lang.StringBuilder;
+
+     label04:
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+(2)     $r11_1 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Crashlytics is handling uncaught exception \"");
+
+(3)     $r11_2 = virtualinvoke $r11_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+(4)     $r11_3 = virtualinvoke $r11_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\" from thread ");
+
+        $r12 = virtualinvoke $r1.<java.lang.Thread: java.lang.String getName()>();
+
+(5)     $r11_4 = virtualinvoke $r11_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+(6)     $r12_1 = virtualinvoke $r11_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r10.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", $r12_1);
+
+(7)     $r9_1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicBoolean receiversRegistered>;
+
+        $z0 = virtualinvoke $r9_1.<java.util.concurrent.atomic.AtomicBoolean: boolean getAndSet(boolean)>(1);
+
+     label05:
+(8)     if $z0 != 0 goto label07;
+
+     label06:
+(9)     $r10_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Unregistering power receivers.");
+
+        $r3 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsCore crashlyticsCore>;
+
+        $r13 = virtualinvoke $r3.<com.crashlytics.android.core.CrashlyticsCore: android.content.Context getContext()>();
+
+        $r14 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: android.content.BroadcastReceiver powerConnectedReceiver>;
+
+        virtualinvoke $r13.<android.content.Context: void unregisterReceiver(android.content.BroadcastReceiver)>($r14);
+
+(10)    $r14_1 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: android.content.BroadcastReceiver powerDisconnectedReceiver>;
+
+(11)    virtualinvoke $r13.<android.content.Context: void unregisterReceiver(android.content.BroadcastReceiver)>($r14_1);
+
+     label07:
+        $r10_2 = Phi($r10 #8, $r10_1 #11);
+
+        $r14_2 = Phi($r14 #8, $r14_1 #11);
+
+(12)    $r4 = new java.util.Date;
+
+     label08:
+        specialinvoke $r4.<java.util.Date: void <init>()>();
+
+        $r15 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+     label09:
+        $r5 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$7;
+
+     label10:
+        specialinvoke $r5.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$7: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler,java.util.Date,java.lang.Thread,java.lang.Throwable)>($r0, $r4, $r1, $r2);
+
+(13)    virtualinvoke $r15.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.lang.Object executeSyncLoggingException(java.util.concurrent.Callable)>($r5);
+
+     label11:
+(14)    $r10_3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_3.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Crashlytics completed exception processing. Invoking default exception handler.");
+
+        $r16 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.Thread$UncaughtExceptionHandler defaultHandler>;
+
+        interfaceinvoke $r16.<java.lang.Thread$UncaughtExceptionHandler: void uncaughtException(java.lang.Thread,java.lang.Throwable)>($r1, $r2);
+
+(15)    $r9_2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicBoolean isHandlingException>;
+
+(16)    virtualinvoke $r9_2.<java.util.concurrent.atomic.AtomicBoolean: void set(boolean)>(0);
+
+     label12:
+        $r10_4 = Phi($r10_3 #16, $r10_7 #23);
+
+        $r11_5 = Phi($r11_4 #16, $r11_6 #23);
+
+        $r14_3 = Phi($r14_2 #16, $r14_4 #23);
+
+        $r12_2 = Phi($r12_1 #16, $r12_3 #23);
+
+        $r9_3 = Phi($r9_2 #16, $r9_5 #23);
+
+        $r16_1 = Phi($r16 #16, $r16_2 #23);
+
+        exitmonitor $r0;
+
+        return;
+
+     label13:
+        $r6 := @caughtexception;
+
+        $r10_5 = Phi($r10 #1, $r10_1 #9, $r10_2 #12);
+
+        $r11_6 = Phi($r11 #1, $r11_1 #2, $r11_2 #3, $r11_3 #4, $r11_4 #5);
+
+        $r14_4 = Phi($r14 #1, $r14_1 #10, $r14_2 #12);
+
+        $r12_3 = Phi($r12 #1, $r12_1 #6);
+
+(17)    $r9_4 = Phi($r9 #1, $r9_1 #7);
+
+     label14:
+(18)    $r10_6 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(19)    interfaceinvoke $r10_6.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "An error occurred in the uncaught exception handler", $r6);
+
+     label15:
+(20)    $r10_7 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_7.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Crashlytics completed exception processing. Invoking default exception handler.");
+
+(21)    $r16_2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.Thread$UncaughtExceptionHandler defaultHandler>;
+
+        interfaceinvoke $r16_2.<java.lang.Thread$UncaughtExceptionHandler: void uncaughtException(java.lang.Thread,java.lang.Throwable)>($r1, $r2);
+
+(22)    $r9_5 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicBoolean isHandlingException>;
+
+        virtualinvoke $r9_5.<java.util.concurrent.atomic.AtomicBoolean: void set(boolean)>(0);
+
+     label16:
+(23)    goto label12;
+
+     label17:
+        $r7 := @caughtexception;
+
+        $r10_10 = Phi($r10 #0, $r10_2 #13, $r10_3 #14, $r10_6 #19, $r10_7 #20, $r10_8 #24, $r10_9 #25);
+
+        $r11_8 = Phi($r11 #0, $r11_4 #13, $r11_6 #19, $r11_7 #24);
+
+        $r14_6 = Phi($r14 #0, $r14_2 #13, $r14_4 #19, $r14_5 #24);
+
+        $r12_5 = Phi($r12 #0, $r12_1 #13, $r12_3 #19, $r12_4 #24);
+
+        $r9_8 = Phi($r9 #0, $r9_1 #13, $r9_2 #15, $r9_4 #19, $r9_5 #22, $r9_6 #24, $r9_7 #27);
+
+        $r16_4 = Phi($r16 #0, $r16_2 #21, $r16_3 #26);
+
+        exitmonitor $r0;
+
+        throw $r7;
+
+     label18:
+        $r8 := @caughtexception;
+
+        $r10_8 = Phi($r10 #1, $r10_1 #9, $r10_2 #12, $r10_5 #17, $r10_6 #18);
+
+        $r11_7 = Phi($r11 #1, $r11_1 #2, $r11_2 #3, $r11_3 #4, $r11_4 #5, $r11_6 #17);
+
+        $r14_5 = Phi($r14 #1, $r14_1 #10, $r14_2 #12, $r14_4 #17);
+
+        $r12_4 = Phi($r12 #1, $r12_1 #6, $r12_3 #17);
+
+(24)    $r9_6 = Phi($r9 #1, $r9_1 #7, $r9_4 #17);
+
+     label19:
+(25)    $r10_9 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10_9.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("CrashlyticsCore", "Crashlytics completed exception processing. Invoking default exception handler.");
+
+(26)    $r16_3 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.lang.Thread$UncaughtExceptionHandler defaultHandler>;
+
+        interfaceinvoke $r16_3.<java.lang.Thread$UncaughtExceptionHandler: void uncaughtException(java.lang.Thread,java.lang.Throwable)>($r1, $r2);
+
+(27)    $r9_7 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: java.util.concurrent.atomic.AtomicBoolean isHandlingException>;
+
+        virtualinvoke $r9_7.<java.util.concurrent.atomic.AtomicBoolean: void set(boolean)>(0);
+
+        throw $r8;
+
+     label20:
+        nop;
+
+        catch java.lang.Throwable from label01 to label02 with label17;
+        catch java.lang.Exception from label02 to label03 with label13;
+        catch java.lang.Throwable from label02 to label03 with label18;
+        catch java.lang.Throwable from label03 to label04 with label18;
+        catch java.lang.Exception from label04 to label05 with label13;
+        catch java.lang.Throwable from label04 to label05 with label18;
+        catch java.lang.Throwable from label05 to label06 with label18;
+        catch java.lang.Exception from label06 to label07 with label13;
+        catch java.lang.Throwable from label06 to label07 with label18;
+        catch java.lang.Throwable from label07 to label08 with label18;
+        catch java.lang.Exception from label08 to label09 with label13;
+        catch java.lang.Throwable from label08 to label09 with label18;
+        catch java.lang.Exception from label10 to label11 with label13;
+        catch java.lang.Throwable from label10 to label11 with label18;
+        catch java.lang.Throwable from label11 to label12 with label17;
+        catch java.lang.Throwable from label14 to label15 with label18;
+        catch java.lang.Throwable from label15 to label16 with label17;
+        catch java.lang.Throwable from label19 to label20 with label17;
+    }
+
+    void writeNonFatalException(java.lang.Thread, java.lang.Throwable)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        java.lang.Thread $r1;
+        java.lang.Throwable $r2;
+        java.util.Date $r3;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r4;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$9 $r5;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $r1 := @parameter0: java.lang.Thread;
+
+        $r2 := @parameter1: java.lang.Throwable;
+
+        $r3 = new java.util.Date;
+
+        specialinvoke $r3.<java.util.Date: void <init>()>();
+
+        $r4 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r5 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$9;
+
+        specialinvoke $r5.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$9: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler,java.util.Date,java.lang.Thread,java.lang.Throwable)>($r0, $r3, $r1, $r2);
+
+        virtualinvoke $r4.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.util.concurrent.Future executeAsync(java.lang.Runnable)>($r5);
+
+        return;
+    }
+
+    void writeToLog(long, java.lang.String)
+    {
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler $r0;
+        long $l0;
+        java.lang.String $r1;
+        com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper $r2;
+        com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$8 $r3;
+
+        $r0 := @this: com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = $r0.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler: com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper executorServiceWrapper>;
+
+        $r3 = new com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$8;
+
+        specialinvoke $r3.<com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler$8: void <init>(com.crashlytics.android.core.CrashlyticsUncaughtExceptionHandler,long,java.lang.String)>($r0, $l0, $r1);
+
+        virtualinvoke $r2.<com.crashlytics.android.core.CrashlyticsExecutorServiceWrapper: java.util.concurrent.Future executeAsync(java.util.concurrent.Callable)>($r3);
+
+        return;
+    }
+}

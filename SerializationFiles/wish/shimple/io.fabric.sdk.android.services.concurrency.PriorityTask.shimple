@@ -1,0 +1,300 @@
+public class io.fabric.sdk.android.services.concurrency.PriorityTask extends java.lang.Object implements io.fabric.sdk.android.services.concurrency.Dependency, io.fabric.sdk.android.services.concurrency.PriorityProvider, io.fabric.sdk.android.services.concurrency.Task
+{
+    private final java.util.List dependencies;
+    private final java.util.concurrent.atomic.AtomicBoolean hasRun;
+    private final java.util.concurrent.atomic.AtomicReference throwable;
+
+    public void <init>()
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        java.util.ArrayList $r1;
+        java.util.concurrent.atomic.AtomicBoolean $r2;
+        java.util.concurrent.atomic.AtomicReference $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: java.util.List dependencies> = $r1;
+
+        $r2 = new java.util.concurrent.atomic.AtomicBoolean;
+
+        specialinvoke $r2.<java.util.concurrent.atomic.AtomicBoolean: void <init>(boolean)>(0);
+
+        $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: java.util.concurrent.atomic.AtomicBoolean hasRun> = $r2;
+
+        $r3 = new java.util.concurrent.atomic.AtomicReference;
+
+        specialinvoke $r3.<java.util.concurrent.atomic.AtomicReference: void <init>(java.lang.Object)>(null);
+
+        $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: java.util.concurrent.atomic.AtomicReference throwable> = $r3;
+
+        return;
+    }
+
+    public static boolean isProperDelegate(java.lang.Object)
+    {
+        java.lang.Object $r0;
+        java.lang.ClassCastException $r1;
+        io.fabric.sdk.android.services.concurrency.Dependency $r2;
+        io.fabric.sdk.android.services.concurrency.Task $r3;
+        io.fabric.sdk.android.services.concurrency.PriorityProvider $r4;
+
+        $r0 := @parameter0: java.lang.Object;
+
+     label1:
+        $r2 = (io.fabric.sdk.android.services.concurrency.Dependency) $r0;
+
+        $r3 = (io.fabric.sdk.android.services.concurrency.Task) $r0;
+
+        $r4 = (io.fabric.sdk.android.services.concurrency.PriorityProvider) $r0;
+
+     label2:
+        if $r2 == null goto label4;
+
+        if $r3 == null goto label4;
+
+        if $r4 == null goto label4;
+
+        return 1;
+
+     label3:
+        $r1 := @caughtexception;
+
+     label4:
+        return 0;
+
+        catch java.lang.ClassCastException from label1 to label2 with label3;
+    }
+
+    public void addDependency(io.fabric.sdk.android.services.concurrency.Task)
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        io.fabric.sdk.android.services.concurrency.Task $r1;
+        java.util.List $r2;
+        java.lang.Throwable $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.concurrency.Task;
+
+        entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: java.util.List dependencies>;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public volatile void addDependency(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        java.lang.Object $r1;
+        io.fabric.sdk.android.services.concurrency.Task $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = (io.fabric.sdk.android.services.concurrency.Task) $r1;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: void addDependency(io.fabric.sdk.android.services.concurrency.Task)>($r2);
+
+        return;
+    }
+
+    public boolean areDependenciesMet()
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        java.util.Collection $r1;
+        java.util.Iterator $r2;
+        boolean $z0, $z0_1, $z0_2;
+        java.lang.Object $r3;
+        io.fabric.sdk.android.services.concurrency.Task $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        $r1 = virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: java.util.Collection getDependencies()>();
+
+(0)     $r2 = interfaceinvoke $r1.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = Phi($z0 #0, $z0_2 #1);
+
+        $z0_1 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label2;
+
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r4 = (io.fabric.sdk.android.services.concurrency.Task) $r3;
+
+        $z0_2 = interfaceinvoke $r4.<io.fabric.sdk.android.services.concurrency.Task: boolean isFinished()>();
+
+(1)     if $z0_2 != 0 goto label1;
+
+        return 0;
+
+     label2:
+        return 1;
+    }
+
+    public int compareTo(java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        java.lang.Object $r1;
+        int $i0;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $i0 = staticinvoke <io.fabric.sdk.android.services.concurrency.Priority: int compareTo(io.fabric.sdk.android.services.concurrency.PriorityProvider,java.lang.Object)>($r0, $r1);
+
+        return $i0;
+    }
+
+    public java.util.Collection getDependencies()
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        java.util.List $r1;
+        java.lang.Throwable $r2;
+        java.util.Collection $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        entermonitor $r0;
+
+     label1:
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: java.util.List dependencies>;
+
+        $r3 = staticinvoke <java.util.Collections: java.util.Collection unmodifiableCollection(java.util.Collection)>($r1);
+
+     label2:
+        exitmonitor $r0;
+
+        return $r3;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public java.lang.Throwable getError()
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        java.util.concurrent.atomic.AtomicReference $r1;
+        java.lang.Object $r2;
+        java.lang.Throwable $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: java.util.concurrent.atomic.AtomicReference throwable>;
+
+        $r2 = virtualinvoke $r1.<java.util.concurrent.atomic.AtomicReference: java.lang.Object get()>();
+
+        $r3 = (java.lang.Throwable) $r2;
+
+        return $r3;
+    }
+
+    public io.fabric.sdk.android.services.concurrency.Priority getPriority()
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        io.fabric.sdk.android.services.concurrency.Priority r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        r1 = <io.fabric.sdk.android.services.concurrency.Priority: io.fabric.sdk.android.services.concurrency.Priority NORMAL>;
+
+        return r1;
+    }
+
+    public boolean isFinished()
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        java.util.concurrent.atomic.AtomicBoolean $r1;
+        boolean $z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: java.util.concurrent.atomic.AtomicBoolean hasRun>;
+
+        $z0 = virtualinvoke $r1.<java.util.concurrent.atomic.AtomicBoolean: boolean get()>();
+
+        return $z0;
+    }
+
+    public void setError(java.lang.Throwable)
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        java.lang.Throwable $r1;
+        java.util.concurrent.atomic.AtomicReference $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        $r1 := @parameter0: java.lang.Throwable;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: java.util.concurrent.atomic.AtomicReference throwable>;
+
+        virtualinvoke $r2.<java.util.concurrent.atomic.AtomicReference: void set(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void setFinished(boolean)
+    {
+        io.fabric.sdk.android.services.concurrency.PriorityTask $r0;
+        boolean $z0;
+        java.util.concurrent.atomic.AtomicBoolean $r1;
+        java.lang.Throwable $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.PriorityTask;
+
+        $z0 := @parameter0: boolean;
+
+        entermonitor $r0;
+
+     label1:
+        $r1 = $r0.<io.fabric.sdk.android.services.concurrency.PriorityTask: java.util.concurrent.atomic.AtomicBoolean hasRun>;
+
+        virtualinvoke $r1.<java.util.concurrent.atomic.AtomicBoolean: void set(boolean)>($z0);
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+}

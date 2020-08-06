@@ -1,0 +1,1325 @@
+public class io.fabric.sdk.android.services.common.IdManager extends java.lang.Object
+{
+    public static final java.lang.String APPLICATION_INSTALL_ID_FIELD;
+    private static final java.lang.String BAD_ANDROID_ID;
+    public static final java.lang.String BETA_DEVICE_TOKEN_FIELD;
+    private static final java.lang.String BLUETOOTH_ERROR_MESSAGE;
+    public static final java.lang.String COLLECT_DEVICE_IDENTIFIERS;
+    public static final java.lang.String COLLECT_USER_IDENTIFIERS;
+    public static final java.lang.String DEFAULT_VERSION_NAME;
+    private static final java.lang.String FORWARD_SLASH_REGEX;
+    private static final java.util.regex.Pattern ID_PATTERN;
+    public static final java.lang.String MODEL_FIELD;
+    public static final java.lang.String OS_VERSION_FIELD;
+    private static final java.lang.String PREFKEY_INSTALLATION_UUID;
+    private static final java.lang.String SDK_ASSETS_ROOT;
+    io.fabric.sdk.android.services.common.AdvertisingInfo advertisingInfo;
+    io.fabric.sdk.android.services.common.AdvertisingInfoProvider advertisingInfoProvider;
+    private final android.content.Context appContext;
+    private final java.lang.String appIdentifier;
+    private final java.lang.String appInstallIdentifier;
+    private final boolean collectHardwareIds;
+    private final boolean collectUserIds;
+    boolean fetchedAdvertisingInfo;
+    private final java.util.concurrent.locks.ReentrantLock installationIdLock;
+    private final io.fabric.sdk.android.services.common.InstallerPackageNameProvider installerPackageNameProvider;
+    private final java.util.Collection kits;
+
+    static void <clinit>()
+    {
+        java.util.regex.Pattern $r0;
+        java.lang.String $r1;
+
+        $r0 = staticinvoke <java.util.regex.Pattern: java.util.regex.Pattern compile(java.lang.String)>("[^\\p{Alnum}]");
+
+        <io.fabric.sdk.android.services.common.IdManager: java.util.regex.Pattern ID_PATTERN> = $r0;
+
+        $r1 = staticinvoke <java.util.regex.Pattern: java.lang.String quote(java.lang.String)>("/");
+
+        <io.fabric.sdk.android.services.common.IdManager: java.lang.String FORWARD_SLASH_REGEX> = $r1;
+
+        return;
+    }
+
+    public void <init>(android.content.Context, java.lang.String, java.lang.String, java.util.Collection)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        android.content.Context $r1;
+        java.lang.String $r2, $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6;
+        java.util.Collection $r3;
+        java.util.concurrent.locks.ReentrantLock $r4;
+        io.fabric.sdk.android.services.common.InstallerPackageNameProvider $r5;
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r6;
+        java.lang.IllegalArgumentException $r8, $r8_1, $r8_2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        io.fabric.sdk.android.Logger $r9, $r9_1, $r9_2, $r9_3;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r7 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: java.util.Collection;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r4 = new java.util.concurrent.locks.ReentrantLock;
+
+        specialinvoke $r4.<java.util.concurrent.locks.ReentrantLock: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.common.IdManager: java.util.concurrent.locks.ReentrantLock installationIdLock> = $r4;
+
+        if $r1 != null goto label1;
+
+        $r8 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r8.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("appContext must not be null");
+
+        throw $r8;
+
+     label1:
+        if $r7 != null goto label2;
+
+        $r8_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r8_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("appIdentifier must not be null");
+
+        throw $r8_1;
+
+     label2:
+        if $r3 != null goto label3;
+
+        $r8_2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r8_2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("kits must not be null");
+
+        throw $r8_2;
+
+     label3:
+        $r0.<io.fabric.sdk.android.services.common.IdManager: android.content.Context appContext> = $r1;
+
+        $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String appIdentifier> = $r7;
+
+        $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String appInstallIdentifier> = $r2;
+
+        $r0.<io.fabric.sdk.android.services.common.IdManager: java.util.Collection kits> = $r3;
+
+        $r5 = new io.fabric.sdk.android.services.common.InstallerPackageNameProvider;
+
+        specialinvoke $r5.<io.fabric.sdk.android.services.common.InstallerPackageNameProvider: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.common.IdManager: io.fabric.sdk.android.services.common.InstallerPackageNameProvider installerPackageNameProvider> = $r5;
+
+        $r6 = new io.fabric.sdk.android.services.common.AdvertisingInfoProvider;
+
+        specialinvoke $r6.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: void <init>(android.content.Context)>($r1);
+
+        $r0.<io.fabric.sdk.android.services.common.IdManager: io.fabric.sdk.android.services.common.AdvertisingInfoProvider advertisingInfoProvider> = $r6;
+
+        $z0 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean getBooleanResourceValue(android.content.Context,java.lang.String,boolean)>($r1, "com.crashlytics.CollectDeviceIdentifiers", 1);
+
+        $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectHardwareIds> = $z0;
+
+        $z0_1 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectHardwareIds>;
+
+(0)     if $z0_1 != 0 goto label4;
+
+        $r9 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Device ID collection disabled for ");
+
+        $r7_1 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7_1);
+
+        $r7_2 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     interfaceinvoke $r9.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Fabric", $r7_2);
+
+     label4:
+        $r7_3 = Phi($r7 #0, $r7_2 #1);
+
+        $r10_3 = Phi($r10 #0, $r10_2 #1);
+
+        $r9_1 = Phi($r9 #0, $r9 #1);
+
+        $z0_2 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: boolean getBooleanResourceValue(android.content.Context,java.lang.String,boolean)>($r1, "com.crashlytics.CollectUserIdentifiers", 1);
+
+        $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectUserIds> = $z0_2;
+
+        $z0_3 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectUserIds>;
+
+(2)     if $z0_3 != 0 goto label5;
+
+        $r9_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r10_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_5 = virtualinvoke $r10_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("User information collection disabled for ");
+
+        $r7_4 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r10_6 = virtualinvoke $r10_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7_4);
+
+        $r7_5 = virtualinvoke $r10_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(3)     interfaceinvoke $r9_2.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Fabric", $r7_5);
+
+     label5:
+        $r7_6 = Phi($r7_3 #2, $r7_5 #3);
+
+        $r10_7 = Phi($r10_3 #2, $r10_6 #3);
+
+        $r9_3 = Phi($r9_1 #2, $r9_2 #3);
+
+        return;
+    }
+
+    private void addAppInstallIdTo(org.json.JSONObject)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        org.json.JSONObject $r1;
+        java.util.Locale $r2;
+        java.lang.Exception $r3;
+        java.lang.String $r4, $r5, $r4_1, $r4_2;
+        io.fabric.sdk.android.Logger $r6;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+        $r4 = "APPLICATION_INSTALLATION_UUID";
+
+(0)     $r2 = <java.util.Locale: java.util.Locale US>;
+
+     label1:
+(1)     $r4_1 = virtualinvoke $r4.<java.lang.String: java.lang.String toLowerCase(java.util.Locale)>($r2);
+
+        $r5 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getAppInstallIdentifier()>();
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>($r4_1, $r5);
+
+     label2:
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r6 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r6.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Could not write application id to JSON", $r3);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    private void addDeviceIdentifiersTo(org.json.JSONObject)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        org.json.JSONObject $r1;
+        java.util.Locale $r2;
+        java.lang.Exception $r3;
+        java.util.Map $r4;
+        java.util.Set $r5;
+        java.util.Iterator $r6;
+        boolean $z0;
+        java.lang.Object $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        java.util.Map$Entry $r8;
+        io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType $r9, $r9_1, $r9_2, $r9_3;
+        java.lang.String $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5;
+        io.fabric.sdk.android.Logger $r11;
+        java.lang.StringBuilder $r12, $r12_1, $r12_2, $r12_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+        $r4 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.util.Map getDeviceIdentifiers()>();
+
+        $r5 = interfaceinvoke $r4.<java.util.Map: java.util.Set entrySet()>();
+
+(0)     $r6 = interfaceinvoke $r5.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $r9 = Phi($r9 #0, $r9_1 #7, $r9_3 #8);
+
+        $r7 = Phi($r7 #0, $r7_3 #7, $r7_5 #8);
+
+        $r10 = Phi($r10 #0, $r10_2 #7, $r10_5 #8);
+
+        $r12 = Phi($r12 #0, $r12 #7, $r12_3 #8);
+
+        $z0 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label7;
+
+        $r7_1 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+(1)     $r8 = (java.util.Map$Entry) $r7_1;
+
+     label2:
+(2)     $r7_2 = interfaceinvoke $r8.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+(3)     $r9_1 = (io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType) $r7_2;
+
+(4)     $r10_1 = virtualinvoke $r9_1.<io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType: java.lang.String name()>();
+
+     label3:
+        $r2 = <java.util.Locale: java.util.Locale US>;
+
+     label4:
+(5)     $r10_2 = virtualinvoke $r10_1.<java.lang.String: java.lang.String toLowerCase(java.util.Locale)>($r2);
+
+(6)     $r7_3 = interfaceinvoke $r8.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>($r10_2, $r7_3);
+
+     label5:
+(7)     goto label1;
+
+     label6:
+        $r3 := @caughtexception;
+
+        $r9_2 = Phi($r9 #1, $r9_1 #3);
+
+        $r7_4 = Phi($r7_1 #1, $r7_2 #2, $r7_3 #6);
+
+        $r10_3 = Phi($r10 #1, $r10_1 #4, $r10_2 #5);
+
+        $r11 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r12_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r12_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r12_2 = virtualinvoke $r12_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Could not write value to JSON: ");
+
+        $r7_5 = interfaceinvoke $r8.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r9_3 = (io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType) $r7_5;
+
+        $r10_4 = virtualinvoke $r9_3.<io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType: java.lang.String name()>();
+
+        $r12_3 = virtualinvoke $r12_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10_4);
+
+        $r10_5 = virtualinvoke $r12_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r11.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", $r10_5, $r3);
+
+(8)     goto label1;
+
+     label7:
+        return;
+
+        catch java.lang.Exception from label2 to label3 with label6;
+        catch java.lang.Exception from label4 to label5 with label6;
+    }
+
+    private void addModelName(org.json.JSONObject)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        org.json.JSONObject $r1;
+        java.lang.Exception $r2;
+        java.lang.String $r3;
+        io.fabric.sdk.android.Logger $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+     label1:
+        $r3 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getModelName()>();
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("model", $r3);
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Could not write model to JSON", $r2);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    private void addOsVersionTo(org.json.JSONObject)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        org.json.JSONObject $r1;
+        java.lang.Exception $r2;
+        java.lang.String $r3;
+        io.fabric.sdk.android.Logger $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+     label1:
+        $r3 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getOsVersionString()>();
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("os_version", $r3);
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Could not write OS version to JSON", $r2);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    private java.lang.String createInstallationUUID(android.content.SharedPreferences)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        android.content.SharedPreferences $r1;
+        java.lang.Throwable $r2;
+        java.util.concurrent.locks.ReentrantLock $r3, $r3_1, $r3_2;
+        java.lang.String $r4, $r5, $r5_1, $r4_1, $r5_2, $r5_3, $r4_2, $r5_4, $r4_3;
+        java.util.UUID $r6;
+        android.content.SharedPreferences$Editor $r7, $r7_1, $r7_2, $r7_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 := @parameter0: android.content.SharedPreferences;
+
+        $r3 = $r0.<io.fabric.sdk.android.services.common.IdManager: java.util.concurrent.locks.ReentrantLock installationIdLock>;
+
+(0)     virtualinvoke $r3.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+     label1:
+        $r4 = interfaceinvoke $r1.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("crashlytics.installation.id", null);
+
+     label2:
+        $r5 = $r4;
+
+(1)     if $r4 != null goto label6;
+
+     label3:
+        $r6 = staticinvoke <java.util.UUID: java.util.UUID randomUUID()>();
+
+(2)     $r5_1 = virtualinvoke $r6.<java.util.UUID: java.lang.String toString()>();
+
+(3)     $r4_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String formatId(java.lang.String)>($r5_1);
+
+     label4:
+(4)     $r5_2 = $r4_1;
+
+     label5:
+        $r7 = interfaceinvoke $r1.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+(5)     $r7_1 = interfaceinvoke $r7.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("crashlytics.installation.id", $r4_1);
+
+(6)     interfaceinvoke $r7_1.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+     label6:
+        $r5_3 = Phi($r5 #1, $r5_2 #6);
+
+        $r4_2 = Phi($r4 #1, $r4_1 #6);
+
+        $r7_2 = Phi($r7 #1, $r7_1 #6);
+
+        $r3_1 = $r0.<io.fabric.sdk.android.services.common.IdManager: java.util.concurrent.locks.ReentrantLock installationIdLock>;
+
+        virtualinvoke $r3_1.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return $r5_3;
+
+     label7:
+        $r2 := @caughtexception;
+
+        $r5_4 = Phi($r5 #0, $r5_1 #2, $r5_2 #4);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #3);
+
+        $r7_3 = Phi($r7 #0, $r7_1 #5);
+
+        $r3_2 = $r0.<io.fabric.sdk.android.services.common.IdManager: java.util.concurrent.locks.ReentrantLock installationIdLock>;
+
+        virtualinvoke $r3_2.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label3 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+
+    private java.lang.String formatId(java.lang.String)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        java.util.regex.Pattern $r1;
+        java.util.Locale $r2;
+        java.lang.String $r3, $r3_1, $r3_2;
+        java.util.regex.Matcher $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r3 := @parameter0: java.lang.String;
+
+        if $r3 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1 = <io.fabric.sdk.android.services.common.IdManager: java.util.regex.Pattern ID_PATTERN>;
+
+        $r4 = virtualinvoke $r1.<java.util.regex.Pattern: java.util.regex.Matcher matcher(java.lang.CharSequence)>($r3);
+
+        $r3_1 = virtualinvoke $r4.<java.util.regex.Matcher: java.lang.String replaceAll(java.lang.String)>("");
+
+        $r2 = <java.util.Locale: java.util.Locale US>;
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.String: java.lang.String toLowerCase(java.util.Locale)>($r2);
+
+        return $r3_2;
+    }
+
+    private java.lang.String[] getTwitterSdkAssetsList()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        java.lang.String[] $r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 = newarray (java.lang.String)[0];
+
+        return $r1;
+    }
+
+    private boolean hasPermission(java.lang.String)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        java.lang.String $r1;
+        android.content.Context $r2;
+        int $i0;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.IdManager: android.content.Context appContext>;
+
+        $i0 = virtualinvoke $r2.<android.content.Context: int checkCallingPermission(java.lang.String)>($r1);
+
+        if $i0 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private void putNonNullIdInto(java.util.Map, io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType, java.lang.String)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        java.util.Map $r1;
+        io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType $r2;
+        java.lang.String $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 := @parameter0: java.util.Map;
+
+        $r2 := @parameter1: io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType;
+
+        $r3 := @parameter2: java.lang.String;
+
+        if $r3 == null goto label1;
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2, $r3);
+
+     label1:
+        return;
+    }
+
+    private java.lang.String removeForwardSlashesIn(java.lang.String)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        java.lang.String $r1, $r2, $r2_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $r1 = <io.fabric.sdk.android.services.common.IdManager: java.lang.String FORWARD_SLASH_REGEX>;
+
+        $r2_1 = virtualinvoke $r2.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>($r1, "");
+
+        return $r2_1;
+    }
+
+    public boolean canCollectUserIds()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        boolean z0;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        z0 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectUserIds>;
+
+        return z0;
+    }
+
+    public java.lang.String createIdHeaderValue(java.lang.String, java.lang.String)
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        char[] $r1;
+        org.json.JSONObject $r2;
+        java.security.GeneralSecurityException $r3, $r4;
+        java.lang.String $r5, $r6, $r7, $r7_1, $r6_1, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r7_2, $r6_2, $r5_7;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        javax.crypto.Cipher $r9;
+        int $i0;
+        byte[] $r10, $r10_1, $r10_2, $r10_3;
+        io.fabric.sdk.android.Logger $r11, $r11_1, $r11_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r5 := @parameter0: java.lang.String;
+
+        $r6 := @parameter1: java.lang.String;
+
+        $r7 = new java.lang.String;
+
+        $r1 = newarray (char)[3];
+
+        $r1[0] = 115;
+
+        $r1[1] = 108;
+
+(0)     $r1[2] = 99;
+
+     label01:
+        specialinvoke $r7.<java.lang.String: void <init>(char[])>($r1);
+
+     label02:
+        $r8 = new java.lang.StringBuilder;
+
+     label03:
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>($r7);
+
+(1)     $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder reverse()>();
+
+(2)     $r7_1 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(3)     $r6_1 = virtualinvoke $r6.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>("\\.", $r7_1);
+
+     label04:
+(4)     $r8_2 = new java.lang.StringBuilder;
+
+     label05:
+        specialinvoke $r8_2.<java.lang.StringBuilder: void <init>()>();
+
+(5)     $r8_3 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+(6)     $r8_4 = virtualinvoke $r8_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6_1);
+
+(7)     $r5_1 = virtualinvoke $r8_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(8)     $r5_2 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String sha1(java.lang.String)>($r5_1);
+
+        $r9 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: javax.crypto.Cipher createCipher(int,java.lang.String)>(1, $r5_2);
+
+     label06:
+        $r2 = new org.json.JSONObject;
+
+        specialinvoke $r2.<org.json.JSONObject: void <init>()>();
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void addAppInstallIdTo(org.json.JSONObject)>($r2);
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void addDeviceIdentifiersTo(org.json.JSONObject)>($r2);
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void addOsVersionTo(org.json.JSONObject)>($r2);
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void addModelName(org.json.JSONObject)>($r2);
+
+        $i0 = virtualinvoke $r2.<org.json.JSONObject: int length()>();
+
+(9)     if $i0 <= 0 goto label11;
+
+     label07:
+(10)    $r5_3 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String toString()>();
+
+        $r10 = virtualinvoke $r5_3.<java.lang.String: byte[] getBytes()>();
+
+(11)    $r10_1 = virtualinvoke $r9.<javax.crypto.Cipher: byte[] doFinal(byte[])>($r10);
+
+(12)    $r5_4 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String hexify(byte[])>($r10_1);
+
+     label08:
+        return $r5_4;
+
+     label09:
+        $r3 := @caughtexception;
+
+        $r8_5 = Phi($r8 #0, $r8_1 #1, $r8_2 #4, $r8_3 #5, $r8_4 #6);
+
+        $r7_2 = Phi($r7 #0, $r7_1 #2);
+
+        $r6_2 = Phi($r6 #0, $r6_1 #3);
+
+        $r5_7 = Phi($r5 #0, $r5_1 #7, $r5_2 #8);
+
+        $r11_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r11_2.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Could not create cipher to encrypt headers.", $r3);
+
+        return "";
+
+     label10:
+        $r4 := @caughtexception;
+
+        $r5_5 = Phi($r5_2 #9, $r5_3 #10, $r5_4 #12);
+
+        $r10_2 = Phi($r10 #9, $r10_1 #11);
+
+        $r11 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(13)    interfaceinvoke $r11.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Could not encrypt IDs", $r4);
+
+     label11:
+        $r11_1 = Phi($r11 #9, $r11 #13);
+
+        $r5_6 = Phi($r5_2 #9, $r5_5 #13);
+
+        $r10_3 = Phi($r10 #9, $r10_2 #13);
+
+        return "";
+
+        catch java.security.GeneralSecurityException from label01 to label02 with label09;
+        catch java.security.GeneralSecurityException from label03 to label04 with label09;
+        catch java.security.GeneralSecurityException from label05 to label06 with label09;
+        catch java.security.GeneralSecurityException from label07 to label08 with label10;
+    }
+
+    public java.lang.String getAdvertisingId()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        boolean $z0;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r1;
+        java.lang.String r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $z0 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectHardwareIds>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: io.fabric.sdk.android.services.common.AdvertisingInfo getAdvertisingInfo()>();
+
+        if $r1 == null goto label1;
+
+        r2 = $r1.<io.fabric.sdk.android.services.common.AdvertisingInfo: java.lang.String advertisingId>;
+
+        return r2;
+
+     label1:
+        return null;
+    }
+
+    io.fabric.sdk.android.services.common.AdvertisingInfo getAdvertisingInfo()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        boolean $z0;
+        io.fabric.sdk.android.services.common.AdvertisingInfoProvider $r1;
+        java.lang.Throwable $r2;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $z0 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean fetchedAdvertisingInfo>;
+
+(1)     if $z0 != 0 goto label2;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.common.IdManager: io.fabric.sdk.android.services.common.AdvertisingInfoProvider advertisingInfoProvider>;
+
+        $r3 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.AdvertisingInfoProvider: io.fabric.sdk.android.services.common.AdvertisingInfo getAdvertisingInfo()>();
+
+        $r0.<io.fabric.sdk.android.services.common.IdManager: io.fabric.sdk.android.services.common.AdvertisingInfo advertisingInfo> = $r3;
+
+(2)     $r0.<io.fabric.sdk.android.services.common.IdManager: boolean fetchedAdvertisingInfo> = 1;
+
+     label2:
+        $r3_1 = Phi($r3 #1, $r3 #2);
+
+(3)     $r3_2 = $r0.<io.fabric.sdk.android.services.common.IdManager: io.fabric.sdk.android.services.common.AdvertisingInfo advertisingInfo>;
+
+     label3:
+        exitmonitor $r0;
+
+        return $r3_2;
+
+     label4:
+        $r2 := @caughtexception;
+
+        $r3_3 = Phi($r3 #0, $r3_2 #3);
+
+        exitmonitor $r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public java.lang.String getAndroidId()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        android.content.Context $r1;
+        java.lang.String $r2, $r4, $r2_1, $r2_2;
+        boolean $z0, $z0_1, $z0_2;
+        android.content.ContentResolver $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $z0 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectHardwareIds>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.common.IdManager: android.content.Context appContext>;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r4 = staticinvoke <android.provider.Settings$Secure: java.lang.String getString(android.content.ContentResolver,java.lang.String)>($r3, "android_id");
+
+        $r2 = "9774d56d682e549c";
+
+        $z0_1 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r4);
+
+(1)     if $z0_1 != 0 goto label1;
+
+        $r2_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String formatId(java.lang.String)>($r4);
+
+        return $r2_1;
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2 #1);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return null;
+    }
+
+    public java.lang.String getAppIdentifier()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        java.lang.String r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        r1 = $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String appIdentifier>;
+
+        return r1;
+    }
+
+    public java.lang.String getAppInstallIdentifier()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        android.content.Context $r1;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3;
+        android.content.SharedPreferences $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String appInstallIdentifier>;
+
+(0)     if $r2 != null goto label1;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.common.IdManager: android.content.Context appContext>;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: android.content.SharedPreferences getSharedPrefs(android.content.Context)>($r1);
+
+        $r2_1 = interfaceinvoke $r3.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("crashlytics.installation.id", null);
+
+(1)     if $r2_1 != null goto label1;
+
+(2)     $r2_2 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String createInstallationUUID(android.content.SharedPreferences)>($r3);
+
+     label1:
+        $r2_3 = Phi($r2 #0, $r2_1 #1, $r2_2 #2);
+
+        return $r2_3;
+    }
+
+    public java.lang.String getBluetoothMacAddress()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        java.lang.Exception $r1;
+        boolean $z0, $z0_1, $z0_2;
+        android.bluetooth.BluetoothAdapter $r2;
+        java.lang.String $r3;
+        io.fabric.sdk.android.Logger $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $z0 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectHardwareIds>;
+
+(0)     if $z0 == 0 goto label4;
+
+        $z0_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: boolean hasPermission(java.lang.String)>("android.permission.BLUETOOTH");
+
+(1)     if $z0_1 == 0 goto label4;
+
+     label1:
+        $r2 = staticinvoke <android.bluetooth.BluetoothAdapter: android.bluetooth.BluetoothAdapter getDefaultAdapter()>();
+
+     label2:
+(2)     if $r2 == null goto label4;
+
+     label3:
+        $r3 = virtualinvoke $r2.<android.bluetooth.BluetoothAdapter: java.lang.String getAddress()>();
+
+(3)     specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String formatId(java.lang.String)>($r3);
+
+     label4:
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2, $z0_1 #3, $z0_1 #4);
+
+        return null;
+
+     label5:
+        $r1 := @caughtexception;
+
+        $r4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Utils#getBluetoothMacAddress failed, returning null. Requires prior call to BluetoothAdatpter.getDefaultAdapter() on thread that has called Looper.prepare()", $r1);
+
+(4)     goto label4;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+
+    public java.util.Map getDeviceIdentifiers()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        java.util.HashMap $r1;
+        java.util.Collection $r2;
+        java.util.Iterator $r3, $r9;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.lang.Object $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        io.fabric.sdk.android.Kit $r5;
+        io.fabric.sdk.android.services.common.DeviceIdentifierProvider $r6;
+        java.util.Map $r7, $r7_1, $r7_2;
+        java.util.Set $r8;
+        java.util.Map$Entry $r10;
+        io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6, $r11_7, $r11_8;
+        java.lang.String $r12, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r12_6, $r12_7, $r12_8;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.IdManager: java.util.Collection kits>;
+
+(0)     $r3 = interfaceinvoke $r2.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = Phi($z0 #0, $z0_2 #1, $z0_4 #3);
+
+        $r7 = Phi($r7 #0, $r7 #1, $r7_1 #3);
+
+        $r11 = Phi($r11 #0, $r11 #1, $r11_1 #3);
+
+        $r4 = Phi($r4 #0, $r4_1 #1, $r4_2 #3);
+
+        $r12 = Phi($r12 #0, $r12 #1, $r12_1 #3);
+
+        $z0_1 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label3;
+
+        $r4_1 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (io.fabric.sdk.android.Kit) $r4_1;
+
+        $z0_2 = $r5 instanceof io.fabric.sdk.android.services.common.DeviceIdentifierProvider;
+
+(1)     if $z0_2 == 0 goto label1;
+
+        $r6 = (io.fabric.sdk.android.services.common.DeviceIdentifierProvider) $r5;
+
+        $r7_1 = interfaceinvoke $r6.<io.fabric.sdk.android.services.common.DeviceIdentifierProvider: java.util.Map getDeviceIdentifiers()>();
+
+        $r8 = interfaceinvoke $r7_1.<java.util.Map: java.util.Set entrySet()>();
+
+(2)     $r9 = interfaceinvoke $r8.<java.util.Set: java.util.Iterator iterator()>();
+
+     label2:
+        $z0_3 = Phi($z0_2 #2, $z0_4 #4);
+
+        $r11_1 = Phi($r11 #2, $r11_2 #4);
+
+        $r4_2 = Phi($r4_1 #2, $r4_5 #4);
+
+        $r12_1 = Phi($r12 #2, $r12_2 #4);
+
+        $z0_4 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+(3)     if $z0_4 == 0 goto label1;
+
+        $r4_3 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        $r10 = (java.util.Map$Entry) $r4_3;
+
+        $r4_4 = interfaceinvoke $r10.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r11_2 = (io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType) $r4_4;
+
+        $r4_5 = interfaceinvoke $r10.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r12_2 = (java.lang.String) $r4_5;
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void putNonNullIdInto(java.util.Map,io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType,java.lang.String)>($r1, $r11_2, $r12_2);
+
+(4)     goto label2;
+
+     label3:
+        $r11_3 = <io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType: io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType ANDROID_ID>;
+
+        $r12_3 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getAndroidId()>();
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void putNonNullIdInto(java.util.Map,io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType,java.lang.String)>($r1, $r11_3, $r12_3);
+
+        $r11_4 = <io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType: io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType ANDROID_DEVICE_ID>;
+
+        $r12_4 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getTelephonyId()>();
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void putNonNullIdInto(java.util.Map,io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType,java.lang.String)>($r1, $r11_4, $r12_4);
+
+        $r11_5 = <io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType: io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType ANDROID_SERIAL>;
+
+        $r12_5 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getSerialNumber()>();
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void putNonNullIdInto(java.util.Map,io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType,java.lang.String)>($r1, $r11_5, $r12_5);
+
+        $r11_6 = <io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType: io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType WIFI_MAC_ADDRESS>;
+
+        $r12_6 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getWifiMacAddress()>();
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void putNonNullIdInto(java.util.Map,io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType,java.lang.String)>($r1, $r11_6, $r12_6);
+
+        $r11_7 = <io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType: io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType BLUETOOTH_MAC_ADDRESS>;
+
+        $r12_7 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getBluetoothMacAddress()>();
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void putNonNullIdInto(java.util.Map,io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType,java.lang.String)>($r1, $r11_7, $r12_7);
+
+        $r11_8 = <io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType: io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType ANDROID_ADVERTISING_ID>;
+
+        $r12_8 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getAdvertisingId()>();
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: void putNonNullIdInto(java.util.Map,io.fabric.sdk.android.services.common.IdManager$DeviceIdentifierType,java.lang.String)>($r1, $r11_8, $r12_8);
+
+        $r7_2 = staticinvoke <java.util.Collections: java.util.Map unmodifiableMap(java.util.Map)>($r1);
+
+        return $r7_2;
+    }
+
+    public java.lang.String getDeviceUUID()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        boolean $z0;
+        android.content.Context $r1;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3;
+        android.content.SharedPreferences $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $z0 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectHardwareIds>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getAndroidId()>();
+
+(0)     if $r2 != null goto label2;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.common.IdManager: android.content.Context appContext>;
+
+        $r3 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: android.content.SharedPreferences getSharedPrefs(android.content.Context)>($r1);
+
+        $r2_1 = interfaceinvoke $r3.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("crashlytics.installation.id", null);
+
+(1)     if $r2_1 != null goto label2;
+
+        $r2_2 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String createInstallationUUID(android.content.SharedPreferences)>($r3);
+
+        return $r2_2;
+
+     label1:
+        return "";
+
+     label2:
+        $r2_3 = Phi($r2 #0, $r2_1 #1);
+
+        return $r2_3;
+    }
+
+    public java.lang.String getInstallerPackageName()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        io.fabric.sdk.android.services.common.InstallerPackageNameProvider $r1;
+        android.content.Context $r2;
+        java.lang.String $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.common.IdManager: io.fabric.sdk.android.services.common.InstallerPackageNameProvider installerPackageNameProvider>;
+
+        $r2 = $r0.<io.fabric.sdk.android.services.common.IdManager: android.content.Context appContext>;
+
+        $r3 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.InstallerPackageNameProvider: java.lang.String getInstallerPackageName(android.content.Context)>($r2);
+
+        return $r3;
+    }
+
+    public java.lang.String getModelName()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        java.util.Locale $r1;
+        java.lang.Object[] $r2;
+        java.lang.String $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 = <java.util.Locale: java.util.Locale US>;
+
+        $r2 = newarray (java.lang.Object)[2];
+
+        $r3 = <android.os.Build: java.lang.String MANUFACTURER>;
+
+        $r3_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String removeForwardSlashesIn(java.lang.String)>($r3);
+
+        $r2[0] = $r3_1;
+
+        $r3_2 = <android.os.Build: java.lang.String MODEL>;
+
+        $r3_3 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String removeForwardSlashesIn(java.lang.String)>($r3_2);
+
+        $r2[1] = $r3_3;
+
+        $r3_4 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r1, "%s/%s", $r2);
+
+        return $r3_4;
+    }
+
+    public java.lang.String getOsVersionString()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        java.util.Locale $r1;
+        java.lang.Object[] $r2;
+        java.lang.String $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $r1 = <java.util.Locale: java.util.Locale US>;
+
+        $r2 = newarray (java.lang.Object)[2];
+
+        $r3 = <android.os.Build$VERSION: java.lang.String RELEASE>;
+
+        $r3_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String removeForwardSlashesIn(java.lang.String)>($r3);
+
+        $r2[0] = $r3_1;
+
+        $r3_2 = <android.os.Build$VERSION: java.lang.String INCREMENTAL>;
+
+        $r3_3 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String removeForwardSlashesIn(java.lang.String)>($r3_2);
+
+        $r2[1] = $r3_3;
+
+        $r3_4 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r1, "%s/%s", $r2);
+
+        return $r3_4;
+    }
+
+    public java.lang.String getSerialNumber()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        boolean $z0;
+        int $i0;
+        java.lang.Class $r1;
+        java.lang.Exception $r2;
+        java.lang.reflect.Field $r3;
+        java.lang.Object $r4;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3;
+        io.fabric.sdk.android.Logger $r6;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $z0 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectHardwareIds>;
+
+(0)     if $z0 == 0 goto label4;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+(1)     if $i0 < 9 goto label4;
+
+(2)     $r1 = class "android/os/Build";
+
+     label1:
+        $r3 = virtualinvoke $r1.<java.lang.Class: java.lang.reflect.Field getField(java.lang.String)>("SERIAL");
+
+        $r4 = virtualinvoke $r3.<java.lang.reflect.Field: java.lang.Object get(java.lang.Object)>(null);
+
+        $r5 = (java.lang.String) $r4;
+
+(3)     $r5_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String formatId(java.lang.String)>($r5);
+
+     label2:
+        return $r5_1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r5_2 = Phi($r5 #2, $r5_1 #3);
+
+        $r6 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(4)     interfaceinvoke $r6.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Fabric", "Could not retrieve android.os.Build.SERIAL value", $r2);
+
+     label4:
+        $r5_3 = Phi($r5 #0, $r5 #1, $r5_2 #4);
+
+        return null;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public java.lang.String getTelephonyId()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        android.content.Context $r1;
+        boolean $z0, $z0_1, $z0_2;
+        java.lang.Object $r2;
+        android.telephony.TelephonyManager $r3;
+        java.lang.String $r4, $r4_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $z0 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectHardwareIds>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $z0_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: boolean hasPermission(java.lang.String)>("android.permission.READ_PHONE_STATE");
+
+(1)     if $z0_1 == 0 goto label1;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.common.IdManager: android.content.Context appContext>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+        $r3 = (android.telephony.TelephonyManager) $r2;
+
+(2)     if $r3 == null goto label1;
+
+        $r4 = virtualinvoke $r3.<android.telephony.TelephonyManager: java.lang.String getDeviceId()>();
+
+        $r4_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String formatId(java.lang.String)>($r4);
+
+        return $r4_1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2);
+
+        return null;
+    }
+
+    public java.lang.String getWifiMacAddress()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        android.content.Context $r1;
+        boolean $z0, $z0_1, $z0_2;
+        java.lang.Object $r2;
+        android.net.wifi.WifiManager $r3;
+        android.net.wifi.WifiInfo $r4;
+        java.lang.String $r5, $r5_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $z0 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectHardwareIds>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $z0_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: boolean hasPermission(java.lang.String)>("android.permission.ACCESS_WIFI_STATE");
+
+(1)     if $z0_1 == 0 goto label1;
+
+        $r1 = $r0.<io.fabric.sdk.android.services.common.IdManager: android.content.Context appContext>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("wifi");
+
+        $r3 = (android.net.wifi.WifiManager) $r2;
+
+(2)     if $r3 == null goto label1;
+
+        $r4 = virtualinvoke $r3.<android.net.wifi.WifiManager: android.net.wifi.WifiInfo getConnectionInfo()>();
+
+(3)     if $r4 == null goto label1;
+
+        $r5 = virtualinvoke $r4.<android.net.wifi.WifiInfo: java.lang.String getMacAddress()>();
+
+        $r5_1 = specialinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: java.lang.String formatId(java.lang.String)>($r5);
+
+        return $r5_1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2, $z0_1 #3);
+
+        return null;
+    }
+
+    public java.lang.Boolean isLimitAdTrackingEnabled()
+    {
+        io.fabric.sdk.android.services.common.IdManager $r0;
+        boolean $z0, $z0_1;
+        io.fabric.sdk.android.services.common.AdvertisingInfo $r1;
+        java.lang.Boolean $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.common.IdManager;
+
+        $z0 = $r0.<io.fabric.sdk.android.services.common.IdManager: boolean collectHardwareIds>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = virtualinvoke $r0.<io.fabric.sdk.android.services.common.IdManager: io.fabric.sdk.android.services.common.AdvertisingInfo getAdvertisingInfo()>();
+
+        if $r1 == null goto label1;
+
+        $z0_1 = $r1.<io.fabric.sdk.android.services.common.AdvertisingInfo: boolean limitAdTrackingEnabled>;
+
+        $r2 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>($z0_1);
+
+        return $r2;
+
+     label1:
+        return null;
+    }
+}

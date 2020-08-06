@@ -1,0 +1,3075 @@
+public class com.contextlogic.wish.user.UserStatusManager extends java.lang.Object implements com.contextlogic.wish.api.core.ApiDataChangeNotificationListener
+{
+    public static final java.lang.String EXPERIMENT_BUCKET_CONTROL;
+    public static final java.lang.String EXPERIMENT_BUCKET_HIDE;
+    public static final java.lang.String EXPERIMENT_BUCKET_IGNORE;
+    public static final java.lang.String EXPERIMENT_BUCKET_SHOW;
+    public static final java.lang.String EXPERIMENT_BUCKET_SHOW_V2;
+    public static final java.lang.String EXPERIMENT_BUCKET_SHOW_V3;
+    public static final java.lang.String EXPERIMENT_BUCKET_SHOW_V4;
+    public static final java.lang.String EXPERIMENT_NAME_AUTOCOMPLETE_QUERY_UI;
+    public static final java.lang.String EXPERIMENT_NAME_BOLETO_CHECKOUT;
+    public static final java.lang.String EXPERIMENT_NAME_CART_HEADER;
+    public static final java.lang.String EXPERIMENT_NAME_CATEGORY_MENU;
+    public static final java.lang.String EXPERIMENT_NAME_DEFAULT_ANDROID_PAY;
+    public static final java.lang.String EXPERIMENT_NAME_FEED_TILE_PRICE;
+    public static final java.lang.String EXPERIMENT_NAME_FUTURE_PAYPAL_CHECKOUT;
+    public static final java.lang.String EXPERIMENT_NAME_GOOGLE_CHECKOUT;
+    public static final java.lang.String EXPERIMENT_NAME_GOOGLE_WALLET_DEFAULT;
+    public static final java.lang.String EXPERIMENT_NAME_HIDE_CC_CHECKOUT;
+    public static final java.lang.String EXPERIMENT_NAME_HIDE_PAYPAL;
+    public static final java.lang.String EXPERIMENT_NAME_IDEAL_CHECKOUT;
+    public static final java.lang.String EXPERIMENT_NAME_KLARNA_CHECKOUT;
+    public static final java.lang.String EXPERIMENT_NAME_LOCALIZED_CURRENCY;
+    public static final java.lang.String EXPERIMENT_NAME_NATIVE_PAYPAL;
+    public static final java.lang.String EXPERIMENT_NAME_NEW_LATEST_FEED;
+    public static final java.lang.String EXPERIMENT_NAME_NOTIFICATIONS_V2;
+    public static final java.lang.String EXPERIMENT_NAME_OXXO_BASICS;
+    public static final java.lang.String EXPERIMENT_NAME_OXXO_CHECKOUT;
+    public static final java.lang.String EXPERIMENT_NAME_PAYNEARME_CHECKOUT;
+    public static final java.lang.String EXPERIMENT_NAME_PROFILE_REDESIGN;
+    public static final java.lang.String EXPERIMENT_NAME_PSUEDO_LOCALIZED_CURRENCY;
+    public static final java.lang.String EXPERIMENT_NAME_REDESIGNED_MAIN_MENU;
+    public static final java.lang.String EXPERIMENT_NAME_RENAME_ADD_TO_CART;
+    public static final java.lang.String EXPERIMENT_NAME_REWARDS;
+    public static final java.lang.String EXPERIMENT_NAME_SEARCH_HEADER;
+    public static final java.lang.String EXPERIMENT_NAME_SHIPPING_AUTOCOMPLETE;
+    private static final int REFRESH_DELAY;
+    private static com.contextlogic.wish.user.UserStatusManager _instance;
+    private java.lang.String billingSecurityText;
+    private java.lang.String billingSecurityTitle;
+    private int cartCount;
+    private java.util.HashMap countrySubdivisionNames;
+    private java.util.HashMap experiments;
+    private com.contextlogic.wish.api.service.GetUserStatusService getUserStatusService;
+    private com.contextlogic.wish.api.data.WishGoogleAppIndexingData googleAppIndexingData;
+    private java.lang.String googleWalletOfferText;
+    private android.os.Handler handler;
+    private java.lang.String inviteMessage;
+    private java.lang.String inviteSubject;
+    private java.lang.String klarnaCountryCode;
+    private java.lang.String lemmingsUrl;
+    private com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec localBackgroundNotificationSpec;
+    private com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData;
+    private com.contextlogic.wish.user.UserStatusManager$RefreshRunnable refreshRunnable;
+    private java.util.ArrayList resizeUrls;
+    private int rewardCount;
+    private int rewardLevel;
+    private boolean runnableRunning;
+    private java.util.ArrayList settings;
+    private boolean shippingDataFetched;
+    private java.util.HashMap shippingLocations;
+    private java.util.HashMap shippingWarningMessages;
+    private java.util.HashMap stateMapping;
+    private int unviewedNotificationCount;
+    private int walletCount;
+
+    static void <clinit>()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+
+        $r0 = new com.contextlogic.wish.user.UserStatusManager;
+
+        specialinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void <init>()>();
+
+        <com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager _instance> = $r0;
+
+        return;
+    }
+
+    private void <init>()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        android.os.Handler $r1;
+        com.contextlogic.wish.api.service.GetUserStatusService $r2;
+        java.util.HashMap $r3;
+        android.os.Looper $r4;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r4 = staticinvoke <android.os.Looper: android.os.Looper myLooper()>();
+
+        if $r4 == null goto label1;
+
+        $r1 = new android.os.Handler;
+
+        specialinvoke $r1.<android.os.Handler: void <init>()>();
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: android.os.Handler handler> = $r1;
+
+     label1:
+        $r0.<com.contextlogic.wish.user.UserStatusManager: boolean runnableRunning> = 0;
+
+        $r2 = new com.contextlogic.wish.api.service.GetUserStatusService;
+
+        specialinvoke $r2.<com.contextlogic.wish.api.service.GetUserStatusService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.service.GetUserStatusService getUserStatusService> = $r2;
+
+        $r3 = new java.util.HashMap;
+
+        specialinvoke $r3.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap experiments> = $r3;
+
+        $r5 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $r6 = <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType NotificationCount>;
+
+        virtualinvoke $r5.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void addListener(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType,com.contextlogic.wish.api.core.ApiDataChangeNotificationListener)>($r6, $r0);
+
+        $r5_1 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $r6_1 = <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType CartCount>;
+
+        virtualinvoke $r5_1.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void addListener(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType,com.contextlogic.wish.api.core.ApiDataChangeNotificationListener)>($r6_1, $r0);
+
+        $r5_2 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $r6_2 = <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType Experiment>;
+
+        virtualinvoke $r5_2.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void addListener(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType,com.contextlogic.wish.api.core.ApiDataChangeNotificationListener)>($r6_2, $r0);
+
+        $r5_3 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $r6_3 = <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType WalletCount>;
+
+        virtualinvoke $r5_3.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void addListener(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType,com.contextlogic.wish.api.core.ApiDataChangeNotificationListener)>($r6_3, $r0);
+
+        $r5_4 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $r6_4 = <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType RewardCount>;
+
+        virtualinvoke $r5_4.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void addListener(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType,com.contextlogic.wish.api.core.ApiDataChangeNotificationListener)>($r6_4, $r0);
+
+        $r5_5 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $r6_5 = <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType RewardLevel>;
+
+        virtualinvoke $r5_5.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void addListener(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType,com.contextlogic.wish.api.core.ApiDataChangeNotificationListener)>($r6_5, $r0);
+
+        return;
+    }
+
+    static boolean access$000(com.contextlogic.wish.user.UserStatusManager)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.user.UserStatusManager;
+
+        z0 = $r0.<com.contextlogic.wish.user.UserStatusManager: boolean runnableRunning>;
+
+        return z0;
+    }
+
+    static boolean access$002(com.contextlogic.wish.user.UserStatusManager, boolean)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.contextlogic.wish.user.UserStatusManager;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: boolean runnableRunning> = $z0;
+
+        return $z0;
+    }
+
+    static void access$100(com.contextlogic.wish.user.UserStatusManager, long)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        long $l0;
+
+        $r0 := @parameter0: com.contextlogic.wish.user.UserStatusManager;
+
+        $l0 := @parameter1: long;
+
+        specialinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void repostRunnableWithDelay(long)>($l0);
+
+        return;
+    }
+
+    public static com.contextlogic.wish.user.UserStatusManager getInstance()
+    {
+        com.contextlogic.wish.user.UserStatusManager r0;
+
+        r0 = <com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager _instance>;
+
+        return r0;
+    }
+
+    private void loadDefaultSettingsSpec()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.ArrayList $r1;
+        com.contextlogic.wish.api.data.WishSettingsSpec $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6, $r2_7, $r2_8;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8, $r3_9, $r3_10, $r3_11, $r3_12, $r3_13, $r3_14, $r3_15, $r3_16, $r3_17, $r3_18, $r3_19, $r3_20, $r3_21, $r3_22, $r3_23, $r3_24, $r3_25, $r3_26;
+        com.contextlogic.wish.WishApplication $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8, $r5_9, $r5_10, $r5_11, $r5_12, $r5_13, $r5_14, $r5_15, $r5_16, $r5_17;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $r2 = new com.contextlogic.wish.api.data.WishSettingsSpec;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r5 = virtualinvoke $r4.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100964);
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("://rate-app");
+
+        $r5_1 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<com.contextlogic.wish.api.data.WishSettingsSpec: void <init>(java.lang.String,java.lang.String)>("Rate App", $r5_1);
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r2);
+
+        $r2_1 = new com.contextlogic.wish.api.data.WishSettingsSpec;
+
+        $r3_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3_3.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r5_2 = virtualinvoke $r4_1.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100964);
+
+        $r3_4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_2);
+
+        $r3_5 = virtualinvoke $r3_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("://m/settings");
+
+        $r5_3 = virtualinvoke $r3_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2_1.<com.contextlogic.wish.api.data.WishSettingsSpec: void <init>(java.lang.String,java.lang.String)>("Emails", $r5_3);
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r2_1);
+
+        $r2_2 = new com.contextlogic.wish.api.data.WishSettingsSpec;
+
+        $r3_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r3_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_2 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r5_4 = virtualinvoke $r4_2.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100964);
+
+        $r3_7 = virtualinvoke $r3_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_4);
+
+        $r3_8 = virtualinvoke $r3_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("://push-notifications");
+
+        $r5_5 = virtualinvoke $r3_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2_2.<com.contextlogic.wish.api.data.WishSettingsSpec: void <init>(java.lang.String,java.lang.String)>("Push Notifications", $r5_5);
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r2_2);
+
+        $r2_3 = new com.contextlogic.wish.api.data.WishSettingsSpec;
+
+        $r3_9 = new java.lang.StringBuilder;
+
+        specialinvoke $r3_9.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_3 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r5_6 = virtualinvoke $r4_3.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100964);
+
+        $r3_10 = virtualinvoke $r3_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_6);
+
+        $r3_11 = virtualinvoke $r3_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("://data-control");
+
+        $r5_7 = virtualinvoke $r3_11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2_3.<com.contextlogic.wish.api.data.WishSettingsSpec: void <init>(java.lang.String,java.lang.String)>("Data Control", $r5_7);
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r2_3);
+
+        $r2_4 = new com.contextlogic.wish.api.data.WishSettingsSpec;
+
+        $r3_12 = new java.lang.StringBuilder;
+
+        specialinvoke $r3_12.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_4 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r5_8 = virtualinvoke $r4_4.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100964);
+
+        $r3_13 = virtualinvoke $r3_12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_8);
+
+        $r3_14 = virtualinvoke $r3_13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("://m/terms");
+
+        $r5_9 = virtualinvoke $r3_14.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2_4.<com.contextlogic.wish.api.data.WishSettingsSpec: void <init>(java.lang.String,java.lang.String)>("Terms of Services", $r5_9);
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r2_4);
+
+        $r2_5 = new com.contextlogic.wish.api.data.WishSettingsSpec;
+
+        $r3_15 = new java.lang.StringBuilder;
+
+        specialinvoke $r3_15.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_5 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r5_10 = virtualinvoke $r4_5.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100964);
+
+        $r3_16 = virtualinvoke $r3_15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_10);
+
+        $r3_17 = virtualinvoke $r3_16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("://m/privacy_policy");
+
+        $r5_11 = virtualinvoke $r3_17.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2_5.<com.contextlogic.wish.api.data.WishSettingsSpec: void <init>(java.lang.String,java.lang.String)>("Privacy Policy", $r5_11);
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r2_5);
+
+        $r2_6 = new com.contextlogic.wish.api.data.WishSettingsSpec;
+
+        $r3_18 = new java.lang.StringBuilder;
+
+        specialinvoke $r3_18.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_6 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r5_12 = virtualinvoke $r4_6.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100964);
+
+        $r3_19 = virtualinvoke $r3_18.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_12);
+
+        $r3_20 = virtualinvoke $r3_19.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("://m/return_policy");
+
+        $r5_13 = virtualinvoke $r3_20.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2_6.<com.contextlogic.wish.api.data.WishSettingsSpec: void <init>(java.lang.String,java.lang.String)>("Return Policy", $r5_13);
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r2_6);
+
+        $r2_7 = new com.contextlogic.wish.api.data.WishSettingsSpec;
+
+        $r3_21 = new java.lang.StringBuilder;
+
+        specialinvoke $r3_21.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_7 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r5_14 = virtualinvoke $r4_7.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100964);
+
+        $r3_22 = virtualinvoke $r3_21.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_14);
+
+        $r3_23 = virtualinvoke $r3_22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("://update-profile");
+
+        $r5_15 = virtualinvoke $r3_23.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2_7.<com.contextlogic.wish.api.data.WishSettingsSpec: void <init>(java.lang.String,java.lang.String)>("Update Profile", $r5_15);
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r2_7);
+
+        $r2_8 = new com.contextlogic.wish.api.data.WishSettingsSpec;
+
+        $r3_24 = new java.lang.StringBuilder;
+
+        specialinvoke $r3_24.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_8 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r5_16 = virtualinvoke $r4_8.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100964);
+
+        $r3_25 = virtualinvoke $r3_24.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5_16);
+
+        $r3_26 = virtualinvoke $r3_25.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("://change-password");
+
+        $r5_17 = virtualinvoke $r3_26.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2_8.<com.contextlogic.wish.api.data.WishSettingsSpec: void <init>(java.lang.String,java.lang.String)>("Change Password", $r5_17);
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r2_8);
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.ArrayList settings> = $r1;
+
+        return;
+    }
+
+    private void repostRunnableWithDelay(long)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        long $l0;
+        android.os.Handler $r1;
+        com.contextlogic.wish.user.UserStatusManager$RefreshRunnable $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $l0 := @parameter0: long;
+
+        $r2 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager$RefreshRunnable refreshRunnable>;
+
+(0)     if $r2 == null goto label1;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: android.os.Handler handler>;
+
+        $r2_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager$RefreshRunnable refreshRunnable>;
+
+(1)     virtualinvoke $r1.<android.os.Handler: boolean postDelayed(java.lang.Runnable,long)>($r2_1, $l0);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    public void decrementUnviewedNotifications()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $i0 = $r0.<com.contextlogic.wish.user.UserStatusManager: int unviewedNotificationCount>;
+
+        $i0_1 = $i0 + -1;
+
+        $i0_2 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i0_1);
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int unviewedNotificationCount> = $i0_2;
+
+        $r1 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $i0_3 = $r0.<com.contextlogic.wish.user.UserStatusManager: int unviewedNotificationCount>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void notifyListenersForNotificationCount(int)>($i0_3);
+
+        return;
+    }
+
+    public boolean deserialize()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.io.ObjectInputStream $r1, $r12, $r12_1, $r12_2;
+        java.lang.Throwable $r2, $r3, $r7, $r8, $r9, $r10;
+        com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec $r4;
+        com.contextlogic.wish.api.data.WishPaymentProcessorData $r5;
+        java.util.HashMap $r6, $r23, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11, $z0_12, $z0_13, $z0_14, $z0_15, $z0_16, $z0_17, $z0_18, $z0_19, $z0_20, $z0_21, $z0_22, $z0_23, $z0_24, $z0_25, $z0_26, $z0_27, $z0_28, $z0_29, $z0_30, $z0_31, $z0_32, $z0_33, $z0_34;
+        java.io.FileInputStream $r11, $r14, $r11_1, $r11_2, $r11_3;
+        com.contextlogic.wish.WishApplication $r13;
+        java.lang.Object $r15, $r15_1, $r15_2, $r15_3, $r15_4, $r15_5, $r15_6, $r15_7, $r15_8, $r15_9, $r15_10, $r15_11, $r15_12, $r15_13, $r15_14, $r15_15, $r15_16, $r15_17, $r15_18, $r15_19, $r15_20, $r15_21, $r15_22;
+        java.lang.String $r16, $r20, $r26, $r16_1, $r16_2, $r20_1, $r16_3, $r16_4, $r16_5, $r16_6, $r16_7, $r16_8, $r16_9, $r16_10, $r16_11, $r16_12, $r16_13, $r16_14, $r16_15, $r16_16, $r16_17, $r16_18, $r16_19, $r16_20, $r20_2, $r16_21, $r20_3, $r16_22, $r20_4, $r16_23, $r20_5, $r16_24, $r20_6, $r20_7, $r20_8, $r16_25, $r20_9, $r16_26, $r20_10, $r16_27, $r20_11, $r20_12, $r20_13, $r16_28, $r20_14, $r16_29, $r20_15, $r16_30, $r20_16, $r16_31, $r20_17, $r16_32, $r20_18, $r16_33, $r20_19;
+        org.json.JSONObject $r17, $r18, $r24, $r18_1, $r18_2, $r18_3, $r18_4, $r18_5, $r18_6, $r18_7, $r18_8, $r18_9, $r18_10, $r17_1, $r17_2, $r17_3, $r18_11, $r17_4, $r18_12;
+        java.util.Iterator $r19, $r25, $r19_1, $r19_2, $r19_3, $r19_4, $r19_5, $r19_6, $r19_7, $r19_8, $r19_9, $r19_10;
+        int $i0, $i1, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i1_1, $i0_7, $i1_2, $i0_8, $i1_3, $i0_9, $i0_10, $i1_4, $i0_11, $i1_5, $i0_12, $i1_6, $i0_13, $i1_7, $i0_14, $i1_8, $i0_15, $i1_9, $i0_16;
+        org.json.JSONArray $r21, $r21_1, $r21_2, $r21_3, $r21_4, $r21_5, $r21_6, $r21_7, $r21_8;
+        java.util.ArrayList $r22, $r22_1, $r22_2, $r22_3, $r22_4, $r22_5;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $z0 = staticinvoke <com.contextlogic.wish.user.UserPreferences: boolean getForceRelogin()>();
+
+        if $z0 == 0 goto label001;
+
+        return 0;
+
+     label001:
+        $r11 = null;
+
+(0)     $r12 = null;
+
+     label002:
+        $r13 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r14 = virtualinvoke $r13.<com.contextlogic.wish.WishApplication: java.io.FileInputStream openFileInput(java.lang.String)>("serialized_status");
+
+     label003:
+(1)     $r11_1 = $r14;
+
+     label004:
+        $r1 = new java.io.ObjectInputStream;
+
+(2)     specialinvoke $r1.<java.io.ObjectInputStream: void <init>(java.io.InputStream)>($r14);
+
+     label005:
+        $r15 = virtualinvoke $r1.<java.io.ObjectInputStream: java.lang.Object readObject()>();
+
+        $r16 = (java.lang.String) $r15;
+
+        $r17 = new org.json.JSONObject;
+
+        specialinvoke $r17.<org.json.JSONObject: void <init>(java.lang.String)>($r16);
+
+        $r18 = virtualinvoke $r17.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("experiments");
+
+        $r6 = new java.util.HashMap;
+
+        specialinvoke $r6.<java.util.HashMap: void <init>()>();
+
+(3)     $r19 = virtualinvoke $r18.<org.json.JSONObject: java.util.Iterator keys()>();
+
+     label006:
+        $z0_1 = Phi($z0 #3, $z0_2 #8);
+
+        $r16_1 = Phi($r16 #3, $r16_2 #8);
+
+        $r15_1 = Phi($r15 #3, $r15_2 #8);
+
+        $r20 = Phi($r20 #3, $r20_1 #8);
+
+(4)     $z0_2 = interfaceinvoke $r19.<java.util.Iterator: boolean hasNext()>();
+
+     label007:
+        if $z0_2 == 0 goto label017;
+
+     label008:
+(5)     $r15_2 = interfaceinvoke $r19.<java.util.Iterator: java.lang.Object next()>();
+
+(6)     $r16_2 = (java.lang.String) $r15_2;
+
+(7)     $r20_1 = virtualinvoke $r18.<org.json.JSONObject: java.lang.String getString(java.lang.String)>($r16_2);
+
+        virtualinvoke $r6.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r16_2, $r20_1);
+
+     label009:
+(8)     goto label006;
+
+     label010:
+        $r2 := @caughtexception;
+
+        $i1_8 = Phi($i1 #2, $i1_1 #58, $i1_2 #62, $i1_3 #80, $i1_5 #88, $i1_6 #93, $i1_7 #95);
+
+        $r22_4 = Phi($r22 #2, $r22_1 #80, $r22_2 #85, $r22_3 #95);
+
+        $r17_3 = Phi($r17 #2, $r17_1 #118, $r17_2 #126);
+
+        $i0_15 = Phi($i0 #2, $i0_1 #10, $i0_2 #11, $i0_3 #12, $i0_4 #13, $i0_5 #57, $i0_7 #61, $i0_6 #58, $i0_8 #62, $i0_9 #80, $i0_10 #87, $i0_12 #92, $i0_11 #88, $i0_13 #93, $i0_14 #95);
+
+        $r6_7 = Phi($r6 #2, $r6_1 #63, $r6_2 #75, $r6_3 #100, $r6_4 #104, $r6_5 #114, $r6_6 #115);
+
+        $r19_9 = Phi($r19 #2, $r19_1 #67, $r19_2 #74, $r19_3 #79, $r19_4 #95, $r19_5 #99, $r19_6 #114, $r19_7 #119, $r19_8 #126);
+
+        $r21_7 = Phi($r21 #2, $r21_1 #17, $r21_2 #56, $r21_3 #62, $r21_4 #80, $r21_5 #84, $r21_6 #95);
+
+        $z0_33 = Phi($z0 #2, $z0_2 #4, $z0_3 #14, $z0_4 #17, $z0_5 #21, $z0_6 #25, $z0_7 #29, $z0_8 #33, $z0_9 #37, $z0_10 #41, $z0_11 #45, $z0_12 #49, $z0_13 #54, $z0_14 #64, $z0_16 #68, $z0_17 #74, $z0_18 #76, $z0_20 #80, $z0_21 #95, $z0_22 #96, $z0_24 #100, $z0_26 #107, $z0_27 #112, $z0_28 #114, $z0_29 #116, $z0_31 #120, $z0_32 #126);
+
+        $r16_32 = Phi($r16 #2, $r16_1 #4, $r16_2 #6, $r16_3 #19, $r16_4 #21, $r16_5 #23, $r16_6 #25, $r16_7 #27, $r16_8 #29, $r16_9 #31, $r16_10 #33, $r16_11 #35, $r16_12 #37, $r16_13 #47, $r16_14 #49, $r16_15 #51, $r16_16 #53, $r16_17 #58, $r16_18 #60, $r16_19 #62, $r16_20 #68, $r16_21 #71, $r16_22 #74, $r16_23 #80, $r16_24 #83, $r16_25 #95, $r16_26 #100, $r16_27 #103, $r16_28 #114, $r16_29 #120, $r16_30 #123, $r16_31 #126);
+
+        $r15_21 = Phi($r15 #2, $r15_1 #4, $r15_2 #5, $r15_3 #68, $r15_4 #70, $r15_5 #74, $r15_6 #80, $r15_7 #82, $r15_8 #88, $r15_9 #90, $r15_10 #93, $r15_11 #95, $r15_12 #100, $r15_13 #102, $r15_14 #107, $r15_15 #109, $r15_16 #112, $r15_17 #114, $r15_18 #120, $r15_19 #122, $r15_20 #126);
+
+        $r20_18 = Phi($r20 #2, $r20_1 #7, $r20_2 #68, $r20_3 #72, $r20_4 #74, $r20_5 #80, $r20_6 #88, $r20_7 #91, $r20_8 #93, $r20_9 #95, $r20_10 #100, $r20_11 #107, $r20_12 #110, $r20_13 #112, $r20_14 #114, $r20_15 #120, $r20_16 #124, $r20_17 #126);
+
+        $r18_11 = Phi($r18 #2, $r18_1 #39, $r18_2 #41, $r18_3 #43, $r18_4 #45, $r18_5 #66, $r18_6 #74, $r18_7 #78, $r18_8 #95, $r18_9 #98, $r18_10 #114);
+
+(9)     $r12_1 = $r1;
+
+     label011:
+        $r12_2 = Phi($r12_1 #9, $r12 #127);
+
+        $i1_9 = Phi($i1_8 #9, $i1 #127);
+
+        $r22_5 = Phi($r22_4 #9, $r22 #127);
+
+        $r17_4 = Phi($r17_3 #9, $r17 #127);
+
+        $r11_2 = Phi($r11_1 #9, $r11_3 #127);
+
+        $i0_16 = Phi($i0_15 #9, $i0 #127);
+
+        $r6_8 = Phi($r6_7 #9, $r6 #127);
+
+        $r19_10 = Phi($r19_9 #9, $r19 #127);
+
+        $r21_8 = Phi($r21_7 #9, $r21 #127);
+
+        $z0_34 = Phi($z0_33 #9, $z0 #127);
+
+        $r16_33 = Phi($r16_32 #9, $r16 #127);
+
+        $r15_22 = Phi($r15_21 #9, $r15 #127);
+
+        $r20_19 = Phi($r20_18 #9, $r20 #127);
+
+        $r18_12 = Phi($r18_11 #9, $r18 #127);
+
+        if $r12_2 == null goto label013;
+
+     label012:
+        virtualinvoke $r12_2.<java.io.ObjectInputStream: void close()>();
+
+     label013:
+        if $r11_2 == null goto label107;
+
+     label014:
+        virtualinvoke $r11_2.<java.io.FileInputStream: void close()>();
+
+     label015:
+        return 0;
+
+     label016:
+        $r3 := @caughtexception;
+
+        return 0;
+
+     label017:
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap experiments> = $r6;
+
+        $i0 = virtualinvoke $r17.<org.json.JSONObject: int optInt(java.lang.String)>("unviewedNotificationCount");
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int unviewedNotificationCount> = $i0;
+
+(10)    $i0_1 = virtualinvoke $r17.<org.json.JSONObject: int optInt(java.lang.String)>("walletCount");
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int walletCount> = $i0_1;
+
+(11)    $i0_2 = virtualinvoke $r17.<org.json.JSONObject: int optInt(java.lang.String)>("cartCount");
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int cartCount> = $i0_2;
+
+(12)    $i0_3 = virtualinvoke $r17.<org.json.JSONObject: int optInt(java.lang.String)>("rewardCount");
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int rewardCount> = $i0_3;
+
+(13)    $i0_4 = virtualinvoke $r17.<org.json.JSONObject: int optInt(java.lang.String,int)>("rewardLevel", 1);
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int rewardLevel> = $i0_4;
+
+(14)    $z0_3 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("settings");
+
+     label018:
+(15)    if $z0_3 == 0 goto label020;
+
+     label019:
+        $r21 = virtualinvoke $r17.<org.json.JSONObject: org.json.JSONArray getJSONArray(java.lang.String)>("settings");
+
+(16)    virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void setSettingsSpec(org.json.JSONArray)>($r21);
+
+     label020:
+        $r21_1 = Phi($r21 #15, $r21 #16);
+
+(17)    $z0_4 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("googleWalletOfferText");
+
+     label021:
+(18)    if $z0_4 == 0 goto label023;
+
+     label022:
+(19)    $r16_3 = virtualinvoke $r17.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("googleWalletOfferText");
+
+(20)    $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String googleWalletOfferText> = $r16_3;
+
+     label023:
+        $r16_4 = Phi($r16_1 #18, $r16_3 #20);
+
+(21)    $z0_5 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("inviteSubject");
+
+     label024:
+(22)    if $z0_5 == 0 goto label026;
+
+     label025:
+(23)    $r16_5 = virtualinvoke $r17.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("inviteSubject");
+
+(24)    $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String inviteSubject> = $r16_5;
+
+     label026:
+        $r16_6 = Phi($r16_4 #22, $r16_5 #24);
+
+(25)    $z0_6 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("inviteMessage");
+
+     label027:
+(26)    if $z0_6 == 0 goto label029;
+
+     label028:
+(27)    $r16_7 = virtualinvoke $r17.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("inviteMessage");
+
+(28)    $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String inviteMessage> = $r16_7;
+
+     label029:
+        $r16_8 = Phi($r16_6 #26, $r16_7 #28);
+
+(29)    $z0_7 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("billingSecurityTitle");
+
+     label030:
+(30)    if $z0_7 == 0 goto label032;
+
+     label031:
+(31)    $r16_9 = virtualinvoke $r17.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("billingSecurityTitle");
+
+(32)    $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String billingSecurityTitle> = $r16_9;
+
+     label032:
+        $r16_10 = Phi($r16_8 #30, $r16_9 #32);
+
+(33)    $z0_8 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("billingSecurityText");
+
+     label033:
+(34)    if $z0_8 == 0 goto label035;
+
+     label034:
+(35)    $r16_11 = virtualinvoke $r17.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("billingSecurityText");
+
+(36)    $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String billingSecurityText> = $r16_11;
+
+     label035:
+        $r16_12 = Phi($r16_10 #34, $r16_11 #36);
+
+(37)    $z0_9 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("local_background_notification_spec");
+
+     label036:
+(38)    if $z0_9 == 0 goto label038;
+
+     label037:
+        $r4 = new com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec;
+
+(39)    $r18_1 = virtualinvoke $r17.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("local_background_notification_spec");
+
+        specialinvoke $r4.<com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec: void <init>(org.json.JSONObject)>($r18_1);
+
+(40)    $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec localBackgroundNotificationSpec> = $r4;
+
+     label038:
+        $r18_2 = Phi($r18 #38, $r18_1 #40);
+
+(41)    $z0_10 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("payment_processor_data");
+
+     label039:
+(42)    if $z0_10 == 0 goto label041;
+
+     label040:
+        $r5 = new com.contextlogic.wish.api.data.WishPaymentProcessorData;
+
+(43)    $r18_3 = virtualinvoke $r17.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("payment_processor_data");
+
+        specialinvoke $r5.<com.contextlogic.wish.api.data.WishPaymentProcessorData: void <init>(org.json.JSONObject)>($r18_3);
+
+(44)    $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData> = $r5;
+
+     label041:
+        $r18_4 = Phi($r18_2 #42, $r18_3 #44);
+
+(45)    $z0_11 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("klarnaCountryCode");
+
+     label042:
+(46)    if $z0_11 == 0 goto label044;
+
+     label043:
+(47)    $r16_13 = virtualinvoke $r17.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("klarnaCountryCode");
+
+(48)    $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String klarnaCountryCode> = $r16_13;
+
+     label044:
+        $r16_14 = Phi($r16_12 #46, $r16_13 #48);
+
+(49)    $z0_12 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("lemmingsUrl");
+
+     label045:
+(50)    if $z0_12 == 0 goto label047;
+
+     label046:
+(51)    $r16_15 = virtualinvoke $r17.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("lemmingsUrl");
+
+(52)    $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String lemmingsUrl> = $r16_15;
+
+     label047:
+        $r16_16 = Phi($r16_14 #50, $r16_15 #52);
+
+(53)    $r22 = new java.util.ArrayList;
+
+        specialinvoke $r22.<java.util.ArrayList: void <init>()>();
+
+(54)    $z0_13 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("resizeUrls");
+
+     label048:
+(55)    if $z0_13 == 0 goto label055;
+
+     label049:
+(56)    $r21_2 = virtualinvoke $r17.<org.json.JSONObject: org.json.JSONArray getJSONArray(java.lang.String)>("resizeUrls");
+
+     label050:
+(57)    $i0_5 = 0;
+
+     label051:
+        $i1 = Phi($i1 #57, $i1_1 #61);
+
+        $i0_6 = Phi($i0_5 #57, $i0_7 #61);
+
+        $r16_17 = Phi($r16_16 #57, $r16_18 #61);
+
+(58)    $i1_1 = virtualinvoke $r21_2.<org.json.JSONArray: int length()>();
+
+     label052:
+(59)    if $i0_6 >= $i1_1 goto label055;
+
+     label053:
+(60)    $r16_18 = virtualinvoke $r21_2.<org.json.JSONArray: java.lang.String getString(int)>($i0_6);
+
+        virtualinvoke $r22.<java.util.ArrayList: boolean add(java.lang.Object)>($r16_18);
+
+     label054:
+        $i0_7 = $i0_6 + 1;
+
+(61)    goto label051;
+
+     label055:
+        $i1_2 = Phi($i1 #55, $i1_1 #59);
+
+        $i0_8 = Phi($i0_4 #55, $i0_6 #59);
+
+        $r21_3 = Phi($r21_1 #55, $r21_2 #59);
+
+        $r16_19 = Phi($r16_16 #55, $r16_17 #59);
+
+(62)    $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.ArrayList resizeUrls> = $r22;
+
+(63)    $r6_1 = new java.util.HashMap;
+
+        specialinvoke $r6_1.<java.util.HashMap: void <init>()>();
+
+(64)    $z0_14 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("shippingWarningMessages");
+
+     label056:
+(65)    if $z0_14 == 0 goto label062;
+
+     label057:
+(66)    $r18_5 = virtualinvoke $r17.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("shippingWarningMessages");
+
+(67)    $r19_1 = virtualinvoke $r18_5.<org.json.JSONObject: java.util.Iterator keys()>();
+
+     label058:
+        $z0_15 = Phi($z0_14 #67, $z0_16 #73);
+
+        $r16_20 = Phi($r16_19 #67, $r16_21 #73);
+
+        $r15_3 = Phi($r15_1 #67, $r15_4 #73);
+
+        $r20_2 = Phi($r20 #67, $r20_3 #73);
+
+(68)    $z0_16 = interfaceinvoke $r19_1.<java.util.Iterator: boolean hasNext()>();
+
+     label059:
+(69)    if $z0_16 == 0 goto label062;
+
+     label060:
+(70)    $r15_4 = interfaceinvoke $r19_1.<java.util.Iterator: java.lang.Object next()>();
+
+(71)    $r16_21 = (java.lang.String) $r15_4;
+
+(72)    $r20_3 = virtualinvoke $r18_5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>($r16_21);
+
+        virtualinvoke $r6_1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r16_21, $r20_3);
+
+     label061:
+(73)    goto label058;
+
+     label062:
+        $r19_2 = Phi($r19 #65, $r19_1 #69);
+
+        $z0_17 = Phi($z0_14 #65, $z0_16 #69);
+
+        $r16_22 = Phi($r16_19 #65, $r16_20 #69);
+
+        $r15_5 = Phi($r15_1 #65, $r15_3 #69);
+
+        $r20_4 = Phi($r20 #65, $r20_2 #69);
+
+        $r18_6 = Phi($r18_4 #65, $r18_5 #69);
+
+(74)    $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingWarningMessages> = $r6_1;
+
+(75)    $r6_2 = new java.util.HashMap;
+
+        specialinvoke $r6_2.<java.util.HashMap: void <init>()>();
+
+(76)    $z0_18 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("shippingLocations");
+
+     label063:
+(77)    if $z0_18 == 0 goto label075;
+
+     label064:
+(78)    $r18_7 = virtualinvoke $r17.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("shippingLocations");
+
+(79)    $r19_3 = virtualinvoke $r18_7.<org.json.JSONObject: java.util.Iterator keys()>();
+
+     label065:
+        $i1_3 = Phi($i1_2 #79, $i1_6 #94);
+
+        $r22_1 = Phi($r22 #79, $r22_2 #94);
+
+        $i0_9 = Phi($i0_8 #79, $i0_13 #94);
+
+        $r21_4 = Phi($r21_3 #79, $r21_5 #94);
+
+        $z0_19 = Phi($z0_18 #79, $z0_20 #94);
+
+        $r16_23 = Phi($r16_22 #79, $r16_24 #94);
+
+        $r15_6 = Phi($r15_5 #79, $r15_10 #94);
+
+        $r20_5 = Phi($r20_4 #79, $r20_8 #94);
+
+(80)    $z0_20 = interfaceinvoke $r19_3.<java.util.Iterator: boolean hasNext()>();
+
+     label066:
+(81)    if $z0_20 == 0 goto label075;
+
+     label067:
+(82)    $r15_7 = interfaceinvoke $r19_3.<java.util.Iterator: java.lang.Object next()>();
+
+(83)    $r16_24 = (java.lang.String) $r15_7;
+
+(84)    $r21_5 = virtualinvoke $r18_7.<org.json.JSONObject: org.json.JSONArray getJSONArray(java.lang.String)>($r16_24);
+
+(85)    $r22_2 = new java.util.ArrayList;
+
+        specialinvoke $r22_2.<java.util.ArrayList: void <init>()>();
+
+     label068:
+(86)    if $r21_5 == null goto label073;
+
+(87)    $i0_10 = 0;
+
+     label069:
+        $i1_4 = Phi($i1_3 #87, $i1_5 #92);
+
+        $i0_11 = Phi($i0_10 #87, $i0_12 #92);
+
+        $r15_8 = Phi($r15_7 #87, $r15_9 #92);
+
+        $r20_6 = Phi($r20_5 #87, $r20_7 #92);
+
+(88)    $i1_5 = virtualinvoke $r21_5.<org.json.JSONArray: int length()>();
+
+     label070:
+(89)    if $i0_11 >= $i1_5 goto label073;
+
+     label071:
+(90)    $r15_9 = virtualinvoke $r21_5.<org.json.JSONArray: java.lang.Object get(int)>($i0_11);
+
+(91)    $r20_7 = virtualinvoke $r15_9.<java.lang.Object: java.lang.String toString()>();
+
+        virtualinvoke $r22_2.<java.util.ArrayList: boolean add(java.lang.Object)>($r20_7);
+
+     label072:
+        $i0_12 = $i0_11 + 1;
+
+(92)    goto label069;
+
+     label073:
+        $i1_6 = Phi($i1_3 #86, $i1_5 #89);
+
+        $i0_13 = Phi($i0_9 #86, $i0_11 #89);
+
+        $r15_10 = Phi($r15_7 #86, $r15_8 #89);
+
+        $r20_8 = Phi($r20_5 #86, $r20_6 #89);
+
+(93)    virtualinvoke $r6_2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r16_24, $r22_2);
+
+     label074:
+(94)    goto label065;
+
+     label075:
+        $i1_7 = Phi($i1_2 #77, $i1_3 #81);
+
+        $r22_3 = Phi($r22 #77, $r22_1 #81);
+
+        $i0_14 = Phi($i0_8 #77, $i0_9 #81);
+
+        $r19_4 = Phi($r19_2 #77, $r19_3 #81);
+
+        $r21_6 = Phi($r21_3 #77, $r21_4 #81);
+
+        $z0_21 = Phi($z0_18 #77, $z0_20 #81);
+
+        $r16_25 = Phi($r16_22 #77, $r16_23 #81);
+
+        $r15_11 = Phi($r15_5 #77, $r15_6 #81);
+
+        $r20_9 = Phi($r20_4 #77, $r20_5 #81);
+
+        $r18_8 = Phi($r18_6 #77, $r18_7 #81);
+
+(95)    $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingLocations> = $r6_2;
+
+        $r23 = new java.util.HashMap;
+
+        specialinvoke $r23.<java.util.HashMap: void <init>()>();
+
+(96)    $z0_22 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("stateMapping");
+
+     label076:
+(97)    if $z0_22 == 0 goto label089;
+
+     label077:
+(98)    $r18_9 = virtualinvoke $r17.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("stateMapping");
+
+(99)    $r19_5 = virtualinvoke $r18_9.<org.json.JSONObject: java.util.Iterator keys()>();
+
+     label078:
+        $r6_3 = Phi($r6_2 #99, $r6_4 #113);
+
+        $z0_23 = Phi($z0_22 #99, $z0_27 #113);
+
+        $r16_26 = Phi($r16_25 #99, $r16_27 #113);
+
+        $r15_12 = Phi($r15_11 #99, $r15_16 #113);
+
+        $r20_10 = Phi($r20_9 #99, $r20_13 #113);
+
+(100)   $z0_24 = interfaceinvoke $r19_5.<java.util.Iterator: boolean hasNext()>();
+
+     label079:
+(101)   if $z0_24 == 0 goto label089;
+
+     label080:
+(102)   $r15_13 = interfaceinvoke $r19_5.<java.util.Iterator: java.lang.Object next()>();
+
+(103)   $r16_27 = (java.lang.String) $r15_13;
+
+        $r24 = virtualinvoke $r18_9.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>($r16_27);
+
+(104)   $r6_4 = new java.util.HashMap;
+
+        specialinvoke $r6_4.<java.util.HashMap: void <init>()>();
+
+     label081:
+(105)   if $r24 == null goto label087;
+
+     label082:
+(106)   $r25 = virtualinvoke $r24.<org.json.JSONObject: java.util.Iterator keys()>();
+
+     label083:
+        $z0_25 = Phi($z0_24 #106, $z0_26 #111);
+
+        $r15_14 = Phi($r15_13 #106, $r15_15 #111);
+
+        $r20_11 = Phi($r20_10 #106, $r20_12 #111);
+
+(107)   $z0_26 = interfaceinvoke $r25.<java.util.Iterator: boolean hasNext()>();
+
+     label084:
+(108)   if $z0_26 == 0 goto label087;
+
+     label085:
+(109)   $r15_15 = interfaceinvoke $r25.<java.util.Iterator: java.lang.Object next()>();
+
+(110)   $r20_12 = (java.lang.String) $r15_15;
+
+        $r26 = virtualinvoke $r24.<org.json.JSONObject: java.lang.String getString(java.lang.String)>($r20_12);
+
+        virtualinvoke $r6_4.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r20_12, $r26);
+
+     label086:
+(111)   goto label083;
+
+     label087:
+        $z0_27 = Phi($z0_24 #105, $z0_26 #108);
+
+        $r15_16 = Phi($r15_13 #105, $r15_14 #108);
+
+        $r20_13 = Phi($r20_10 #105, $r20_11 #108);
+
+(112)   virtualinvoke $r23.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r16_27, $r6_4);
+
+     label088:
+(113)   goto label078;
+
+     label089:
+        $r6_5 = Phi($r6_2 #97, $r6_3 #101);
+
+        $r19_6 = Phi($r19_4 #97, $r19_5 #101);
+
+        $z0_28 = Phi($z0_22 #97, $z0_24 #101);
+
+        $r16_28 = Phi($r16_25 #97, $r16_26 #101);
+
+        $r15_17 = Phi($r15_11 #97, $r15_12 #101);
+
+        $r20_14 = Phi($r20_9 #97, $r20_10 #101);
+
+        $r18_10 = Phi($r18_8 #97, $r18_9 #101);
+
+(114)   $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap stateMapping> = $r23;
+
+(115)   $r6_6 = new java.util.HashMap;
+
+        specialinvoke $r6_6.<java.util.HashMap: void <init>()>();
+
+(116)   $z0_29 = virtualinvoke $r17.<org.json.JSONObject: boolean has(java.lang.String)>("countrySubdivNames");
+
+     label090:
+(117)   if $z0_29 == 0 goto label096;
+
+     label091:
+(118)   $r17_1 = virtualinvoke $r17.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("countrySubdivNames");
+
+(119)   $r19_7 = virtualinvoke $r17_1.<org.json.JSONObject: java.util.Iterator keys()>();
+
+     label092:
+        $z0_30 = Phi($z0_29 #119, $z0_31 #125);
+
+        $r16_29 = Phi($r16_28 #119, $r16_30 #125);
+
+        $r15_18 = Phi($r15_17 #119, $r15_19 #125);
+
+        $r20_15 = Phi($r20_14 #119, $r20_16 #125);
+
+(120)   $z0_31 = interfaceinvoke $r19_7.<java.util.Iterator: boolean hasNext()>();
+
+     label093:
+(121)   if $z0_31 == 0 goto label096;
+
+     label094:
+(122)   $r15_19 = interfaceinvoke $r19_7.<java.util.Iterator: java.lang.Object next()>();
+
+(123)   $r16_30 = (java.lang.String) $r15_19;
+
+(124)   $r20_16 = virtualinvoke $r17_1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>($r16_30);
+
+        virtualinvoke $r6_6.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r16_30, $r20_16);
+
+     label095:
+(125)   goto label092;
+
+     label096:
+        $r17_2 = Phi($r17 #117, $r17_1 #121);
+
+        $r19_8 = Phi($r19_6 #117, $r19_7 #121);
+
+        $z0_32 = Phi($z0_29 #117, $z0_31 #121);
+
+        $r16_31 = Phi($r16_28 #117, $r16_29 #121);
+
+        $r15_20 = Phi($r15_17 #117, $r15_18 #121);
+
+        $r20_17 = Phi($r20_14 #117, $r20_15 #121);
+
+(126)   $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap countrySubdivisionNames> = $r6_6;
+
+     label097:
+        if $r1 == null goto label099;
+
+     label098:
+        virtualinvoke $r1.<java.io.ObjectInputStream: void close()>();
+
+     label099:
+        if $r14 == null goto label106;
+
+     label100:
+        virtualinvoke $r14.<java.io.FileInputStream: void close()>();
+
+     label101:
+        return 1;
+
+     label102:
+        $r7 := @caughtexception;
+
+        return 1;
+
+     label103:
+        $r8 := @caughtexception;
+
+        goto label099;
+
+     label104:
+        $r9 := @caughtexception;
+
+        goto label013;
+
+     label105:
+        $r10 := @caughtexception;
+
+        $r11_3 = Phi($r11 #0, $r11_1 #1);
+
+(127)   goto label011;
+
+     label106:
+        return 1;
+
+     label107:
+        return 0;
+
+        catch java.lang.Throwable from label002 to label003 with label105;
+        catch java.lang.Throwable from label004 to label005 with label105;
+        catch java.lang.Throwable from label005 to label007 with label010;
+        catch java.lang.Throwable from label008 to label009 with label010;
+        catch java.lang.Throwable from label012 to label013 with label104;
+        catch java.lang.Throwable from label014 to label015 with label016;
+        catch java.lang.Throwable from label017 to label018 with label010;
+        catch java.lang.Throwable from label019 to label021 with label010;
+        catch java.lang.Throwable from label022 to label024 with label010;
+        catch java.lang.Throwable from label025 to label027 with label010;
+        catch java.lang.Throwable from label028 to label030 with label010;
+        catch java.lang.Throwable from label031 to label033 with label010;
+        catch java.lang.Throwable from label034 to label036 with label010;
+        catch java.lang.Throwable from label037 to label039 with label010;
+        catch java.lang.Throwable from label040 to label042 with label010;
+        catch java.lang.Throwable from label043 to label045 with label010;
+        catch java.lang.Throwable from label046 to label048 with label010;
+        catch java.lang.Throwable from label049 to label050 with label010;
+        catch java.lang.Throwable from label051 to label052 with label010;
+        catch java.lang.Throwable from label053 to label054 with label010;
+        catch java.lang.Throwable from label055 to label056 with label010;
+        catch java.lang.Throwable from label057 to label059 with label010;
+        catch java.lang.Throwable from label060 to label061 with label010;
+        catch java.lang.Throwable from label062 to label063 with label010;
+        catch java.lang.Throwable from label064 to label066 with label010;
+        catch java.lang.Throwable from label067 to label068 with label010;
+        catch java.lang.Throwable from label069 to label070 with label010;
+        catch java.lang.Throwable from label071 to label072 with label010;
+        catch java.lang.Throwable from label073 to label074 with label010;
+        catch java.lang.Throwable from label075 to label076 with label010;
+        catch java.lang.Throwable from label077 to label079 with label010;
+        catch java.lang.Throwable from label080 to label081 with label010;
+        catch java.lang.Throwable from label082 to label084 with label010;
+        catch java.lang.Throwable from label085 to label086 with label010;
+        catch java.lang.Throwable from label087 to label088 with label010;
+        catch java.lang.Throwable from label089 to label090 with label010;
+        catch java.lang.Throwable from label091 to label093 with label010;
+        catch java.lang.Throwable from label094 to label095 with label010;
+        catch java.lang.Throwable from label096 to label097 with label010;
+        catch java.lang.Throwable from label098 to label099 with label103;
+        catch java.lang.Throwable from label100 to label101 with label102;
+    }
+
+    public java.lang.String getAdyenKey()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.WishPaymentProcessorData $r1, $r1_1;
+        java.lang.String $r2, $r2_1;
+        com.contextlogic.wish.WishApplication $r3;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        $r2 = virtualinvoke $r1_1.<com.contextlogic.wish.api.data.WishPaymentProcessorData: java.lang.String getAdyenKey()>();
+
+        return $r2;
+
+     label1:
+        $r3 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r2_1 = virtualinvoke $r3.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100948);
+
+        return $r2_1;
+    }
+
+    public java.lang.String getBillingSecurityText()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String billingSecurityText>;
+
+        return r1;
+    }
+
+    public java.lang.String getBillingSecurityTitle()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String billingSecurityTitle>;
+
+        return r1;
+    }
+
+    public java.lang.String getBraintreeCollectorMerchantId()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.WishPaymentProcessorData $r1, $r1_1;
+        java.lang.String $r2, $r2_1;
+        com.contextlogic.wish.WishApplication $r3;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        $r2 = virtualinvoke $r1_1.<com.contextlogic.wish.api.data.WishPaymentProcessorData: java.lang.String getBraintreeCollectorMerchantId()>();
+
+        return $r2;
+
+     label1:
+        $r3 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r2_1 = virtualinvoke $r3.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100954);
+
+        return $r2_1;
+    }
+
+    public java.lang.String getBraintreeCollectorUrl()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.WishPaymentProcessorData $r1, $r1_1;
+        java.lang.String $r2, $r2_1, $r2_2;
+        boolean $z0;
+        com.contextlogic.wish.WishApplication $r3, $r3_1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        $r2 = virtualinvoke $r1_1.<com.contextlogic.wish.api.data.WishPaymentProcessorData: java.lang.String getBraintreeCollectorUrl()>();
+
+        return $r2;
+
+     label1:
+        $z0 = virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: boolean getUsePaymentTestMode()>();
+
+        if $z0 == 0 goto label2;
+
+        $r3 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r2_1 = virtualinvoke $r3.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100953);
+
+        return $r2_1;
+
+     label2:
+        $r3_1 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r2_2 = virtualinvoke $r3_1.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100955);
+
+        return $r2_2;
+    }
+
+    public java.lang.String getBucketForExperiment(java.lang.String)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.HashMap $r1;
+        java.lang.String $r2, $r4, $r2_1, $r4_1, $r4_2;
+        java.lang.Object $r3;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap experiments>;
+
+        $r3 = virtualinvoke $r1.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r2);
+
+        $r4 = (java.lang.String) $r3;
+
+        $r2_1 = staticinvoke <com.contextlogic.wish.user.UserPreferences: java.lang.String getExperimentOverride(java.lang.String)>($r2);
+
+(0)     if $r2_1 == null goto label1;
+
+(1)     $r4_1 = $r2_1;
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        if $r4_2 == null goto label2;
+
+        return $r4_2;
+
+     label2:
+        return "control";
+    }
+
+    public int getCartCount()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        int i0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        i0 = $r0.<com.contextlogic.wish.user.UserStatusManager: int cartCount>;
+
+        return i0;
+    }
+
+    public java.util.HashMap getCountrySubdivisionNames()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.HashMap r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap countrySubdivisionNames>;
+
+        return r1;
+    }
+
+    public java.lang.String getEbanxApiUrl()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.WishPaymentProcessorData $r1, $r1_1;
+        java.lang.String $r2, $r2_1, $r2_2;
+        boolean $z0;
+        com.contextlogic.wish.WishApplication $r3, $r3_1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        $r2 = virtualinvoke $r1_1.<com.contextlogic.wish.api.data.WishPaymentProcessorData: java.lang.String getEbanxApiUrl()>();
+
+        return $r2;
+
+     label1:
+        $z0 = virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: boolean getUsePaymentTestMode()>();
+
+        if $z0 == 0 goto label2;
+
+        $r3 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r2_1 = virtualinvoke $r3.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100968);
+
+        return $r2_1;
+
+     label2:
+        $r3_1 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r2_2 = virtualinvoke $r3_1.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100970);
+
+        return $r2_2;
+    }
+
+    public java.lang.String getEbanxKey()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.WishPaymentProcessorData $r1, $r1_1;
+        java.lang.String $r2, $r2_1;
+        com.contextlogic.wish.WishApplication $r3;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        $r2 = virtualinvoke $r1_1.<com.contextlogic.wish.api.data.WishPaymentProcessorData: java.lang.String getEbanxKey()>();
+
+        return $r2;
+
+     label1:
+        $r3 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r2_1 = virtualinvoke $r3.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131100969);
+
+        return $r2_1;
+    }
+
+    public java.util.HashMap getExperiments()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.HashMap r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap experiments>;
+
+        return r1;
+    }
+
+    public java.lang.String getGoogleAppIndexingBaseAppUri()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.api.data.WishGoogleAppIndexingData $r2, $r2_1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r2 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishGoogleAppIndexingData googleAppIndexingData>;
+
+        if $r2 == null goto label1;
+
+        $r2_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishGoogleAppIndexingData googleAppIndexingData>;
+
+        $r1 = virtualinvoke $r2_1.<com.contextlogic.wish.api.data.WishGoogleAppIndexingData: java.lang.String getAppUri()>();
+
+        return $r1;
+
+     label1:
+        return "";
+    }
+
+    public java.lang.String getGoogleAppIndexingBaseWebUrl()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.api.data.WishGoogleAppIndexingData $r2, $r2_1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r2 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishGoogleAppIndexingData googleAppIndexingData>;
+
+        if $r2 == null goto label1;
+
+        $r2_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishGoogleAppIndexingData googleAppIndexingData>;
+
+        $r1 = virtualinvoke $r2_1.<com.contextlogic.wish.api.data.WishGoogleAppIndexingData: java.lang.String getWebURL()>();
+
+        return $r1;
+
+     label1:
+        return "";
+    }
+
+    public java.lang.String getGoogleAppIndexingSearchAppUri()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.api.data.WishGoogleAppIndexingData $r2, $r2_1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r2 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishGoogleAppIndexingData googleAppIndexingData>;
+
+        if $r2 == null goto label1;
+
+        $r2_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishGoogleAppIndexingData googleAppIndexingData>;
+
+        $r1 = virtualinvoke $r2_1.<com.contextlogic.wish.api.data.WishGoogleAppIndexingData: java.lang.String getSearchAppUri()>();
+
+        return $r1;
+
+     label1:
+        return "";
+    }
+
+    public java.lang.String getGoogleAppIndexingSearchWebUrl()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.api.data.WishGoogleAppIndexingData $r2, $r2_1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r2 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishGoogleAppIndexingData googleAppIndexingData>;
+
+        if $r2 == null goto label1;
+
+        $r2_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishGoogleAppIndexingData googleAppIndexingData>;
+
+        $r1 = virtualinvoke $r2_1.<com.contextlogic.wish.api.data.WishGoogleAppIndexingData: java.lang.String getSearchWebURL()>();
+
+        return $r1;
+
+     label1:
+        return "";
+    }
+
+    public java.lang.String getGoogleWalletOfferText()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String googleWalletOfferText>;
+
+        return r1;
+    }
+
+    public java.lang.String getInviteMessage()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String inviteMessage>;
+
+        return r1;
+    }
+
+    public java.lang.String getInviteSubject()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String inviteSubject>;
+
+        return r1;
+    }
+
+    public java.lang.String getKlarnaCountryCode()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String klarnaCountryCode>;
+
+        return r1;
+    }
+
+    public java.lang.String getLemmingsUrl()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String lemmingsUrl>;
+
+        return r1;
+    }
+
+    public com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec getLocalBackgroundNotificationSpec()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec localBackgroundNotificationSpec>;
+
+        return r1;
+    }
+
+    public int getRewardLevel()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        int i0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        i0 = $r0.<com.contextlogic.wish.user.UserStatusManager: int rewardLevel>;
+
+        return i0;
+    }
+
+    public int getRewardsCount()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        int i0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        i0 = $r0.<com.contextlogic.wish.user.UserStatusManager: int rewardCount>;
+
+        return i0;
+    }
+
+    public java.util.ArrayList getSettings()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.ArrayList $r1, $r1_1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.ArrayList settings>;
+
+        if $r1 != null goto label1;
+
+        specialinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void loadDefaultSettingsSpec()>();
+
+     label1:
+        $r1_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.ArrayList settings>;
+
+        return $r1_1;
+    }
+
+    public java.util.HashMap getShippingLocations()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.HashMap r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingLocations>;
+
+        return r1;
+    }
+
+    public java.util.HashMap getShippingWarningMessages()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.HashMap r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingWarningMessages>;
+
+        return r1;
+    }
+
+    public java.util.HashMap getStateMapping()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.HashMap r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap stateMapping>;
+
+        return r1;
+    }
+
+    public java.lang.String getStripeKey()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.WishPaymentProcessorData $r1, $r1_1;
+        java.lang.String $r2, $r2_1, $r2_2;
+        boolean $z0;
+        com.contextlogic.wish.WishApplication $r3, $r3_1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        $r2 = virtualinvoke $r1_1.<com.contextlogic.wish.api.data.WishPaymentProcessorData: java.lang.String getStripeKey()>();
+
+        return $r2;
+
+     label1:
+        $z0 = virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: boolean getUsePaymentTestMode()>();
+
+        if $z0 == 0 goto label2;
+
+        $r3 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r2_1 = virtualinvoke $r3.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131101025);
+
+        return $r2_1;
+
+     label2:
+        $r3_1 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $r2_2 = virtualinvoke $r3_1.<com.contextlogic.wish.WishApplication: java.lang.String getString(int)>(2131101026);
+
+        return $r2_2;
+    }
+
+    public int getUnviewedNotificationCount()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        int i0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        i0 = $r0.<com.contextlogic.wish.user.UserStatusManager: int unviewedNotificationCount>;
+
+        return i0;
+    }
+
+    public boolean getUsePaymentTestMode()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.WishPaymentProcessorData $r1, $r1_1;
+        boolean $z0, $z0_1, $z0_2;
+        com.contextlogic.wish.WishApplication $r2;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+        $z0 = virtualinvoke $r1_1.<com.contextlogic.wish.api.data.WishPaymentProcessorData: boolean useTestMode()>();
+
+        return $z0;
+
+     label1:
+        $r2 = staticinvoke <com.contextlogic.wish.WishApplication: com.contextlogic.wish.WishApplication getAppInstance()>();
+
+        $z0_1 = virtualinvoke $r2.<com.contextlogic.wish.WishApplication: boolean isVisaBuild()>();
+
+        if $z0_1 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        $z0_2 = staticinvoke <com.contextlogic.wish.user.UserPreferences: boolean getUseFbDevMode()>();
+
+        return $z0_2;
+    }
+
+    public int getWalletCount()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        int i0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        i0 = $r0.<com.contextlogic.wish.user.UserStatusManager: int walletCount>;
+
+        return i0;
+    }
+
+    public void handleCartCountUpdated(android.os.Bundle)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        android.os.Bundle $r1;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $i0 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String)>("CartCount");
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int cartCount> = $i0;
+
+        return;
+    }
+
+    public void handleExperimentUpdated(android.os.Bundle)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        android.os.Bundle $r1;
+        java.io.Serializable $r2;
+        java.util.HashMap $r3;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $r2 = virtualinvoke $r1.<android.os.Bundle: java.io.Serializable getSerializable(java.lang.String)>("Experiment");
+
+        $r3 = (java.util.HashMap) $r2;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap experiments> = $r3;
+
+        return;
+    }
+
+    public void handleNotificationCountUpdated(android.os.Bundle)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        android.os.Bundle $r1;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $i0 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String)>("NotificationCount");
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int unviewedNotificationCount> = $i0;
+
+        return;
+    }
+
+    public void handleRewardCount(android.os.Bundle)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        android.os.Bundle $r1;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $i0 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String)>("RewardCount");
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int rewardCount> = $i0;
+
+        return;
+    }
+
+    public void handleRewardLevel(android.os.Bundle)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        android.os.Bundle $r1;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $i0 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String)>("RewardLevel");
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int rewardLevel> = $i0;
+
+        return;
+    }
+
+    public void handleWalletCount(android.os.Bundle)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        android.os.Bundle $r1;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $i0 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String)>("WalletCount");
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int walletCount> = $i0;
+
+        return;
+    }
+
+    public boolean inResizeUrls(java.lang.String)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1, $r5;
+        java.util.ArrayList $r2;
+        int $i0;
+        java.util.Iterator $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.Object $r4;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.ArrayList resizeUrls>;
+
+(0)     if $r1 == null goto label2;
+
+(1)     if $r2 == null goto label2;
+
+        $i0 = virtualinvoke $r2.<java.util.ArrayList: int size()>();
+
+(2)     if $i0 <= 0 goto label2;
+
+(3)     $r3 = virtualinvoke $r2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = Phi($z0 #3, $z0_2 #5);
+
+        $z0_1 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+(4)     if $z0_1 == 0 goto label2;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.lang.String) $r4;
+
+        $z0_2 = virtualinvoke $r1.<java.lang.String: boolean contains(java.lang.CharSequence)>($r5);
+
+(5)     if $z0_2 == 0 goto label1;
+
+        return 1;
+
+     label2:
+        $z0_3 = Phi($z0 #0, $z0 #1, $z0 #2, $z0_1 #4);
+
+        return 0;
+    }
+
+    public boolean isShippingDataFetched()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        boolean z0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        z0 = $r0.<com.contextlogic.wish.user.UserStatusManager: boolean shippingDataFetched>;
+
+        return z0;
+    }
+
+    public void onNotificationReceived(com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType, android.os.Bundle)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType $r1;
+        android.os.Bundle $r2;
+        int[] $r3;
+        int $i0, $i0_1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $r3 = <com.contextlogic.wish.user.UserStatusManager$2: int[] $SwitchMap$com$contextlogic$wish$api$core$ApiDataChangeNotificationManager$NotificationType>;
+
+        $i0 = virtualinvoke $r1.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager$NotificationType: int ordinal()>();
+
+        $i0_1 = $r3[$i0];
+
+        lookupswitch($i0_1)
+        {
+            case 1: goto label3;
+            case 2: goto label4;
+            case 3: goto label5;
+            case 4: goto label6;
+            case 5: goto label7;
+            case 6: goto label8;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void serialize()>();
+
+        return;
+
+     label3:
+        virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void handleNotificationCountUpdated(android.os.Bundle)>($r2);
+
+        goto label2;
+
+     label4:
+        virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void handleCartCountUpdated(android.os.Bundle)>($r2);
+
+        goto label2;
+
+     label5:
+        virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void handleExperimentUpdated(android.os.Bundle)>($r2);
+
+        goto label2;
+
+     label6:
+        virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void handleWalletCount(android.os.Bundle)>($r2);
+
+        goto label2;
+
+     label7:
+        virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void handleRewardCount(android.os.Bundle)>($r2);
+
+        goto label2;
+
+     label8:
+        virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void handleRewardLevel(android.os.Bundle)>($r2);
+
+        goto label2;
+    }
+
+    public void refreshStatus()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        boolean $z0;
+        com.contextlogic.wish.api.service.GetUserStatusService $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.service.GetUserStatusService getUserStatusService>;
+
+        $z0 = virtualinvoke $r1.<com.contextlogic.wish.api.service.GetUserStatusService: boolean isPending()>();
+
+(0)     if $z0 != 0 goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.service.GetUserStatusService getUserStatusService>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.api.service.GetUserStatusService: void requestService(boolean,com.contextlogic.wish.api.service.GetUserStatusService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>(1, null, null);
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void resetCartCount()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        int $i0;
+        com.contextlogic.wish.api.core.ApiDataChangeNotificationManager $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int cartCount> = 0;
+
+        $r1 = staticinvoke <com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: com.contextlogic.wish.api.core.ApiDataChangeNotificationManager getInstance()>();
+
+        $i0 = $r0.<com.contextlogic.wish.user.UserStatusManager: int cartCount>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.core.ApiDataChangeNotificationManager: void notifyListenersForCartCount(int)>($i0);
+
+        virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void serialize()>();
+
+        return;
+    }
+
+    public void resetCounts(boolean)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int unviewedNotificationCount> = 0;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int cartCount> = 0;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int walletCount> = 0;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int rewardCount> = 0;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: int rewardLevel> = 1;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String googleWalletOfferText> = null;
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r0.<com.contextlogic.wish.user.UserStatusManager: void serialize()>();
+
+     label1:
+        return;
+    }
+
+    public void serialize()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        org.json.JSONObject $r1, $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8, $r5_9, $r5_10, $r5_11, $r5_12, $r5_13, $r5_14, $r5_15;
+        java.lang.Throwable $r2;
+        com.contextlogic.wish.util.StateSerializer$SerializationType $r3;
+        com.contextlogic.wish.user.UserStatusManager$1 $r4;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5;
+        java.util.HashMap $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7, $r6_8, $r6_9, $r6_10, $r6_11, $r6_12, $r6_13, $r6_14, $r6_15, $r6_16;
+        java.util.Set $r7, $r7_1, $r7_2, $r7_3;
+        java.util.Iterator $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10;
+        java.lang.Object $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r9_7, $r9_8, $r9_9, $r9_10, $r9_11, $r9_12, $r9_13;
+        java.lang.String $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r10_7, $r10_8, $r10_9, $r10_10, $r10_11, $r10_12, $r10_13, $r10_14, $r10_15, $r10_16, $r10_17, $r10_18, $r10_19, $r10_20, $r10_21, $r10_22, $r10_23, $r10_24, $r10_25, $r10_26, $r10_27, $r10_28, $r10_29, $r10_30, $r10_31, $r10_32;
+        org.json.JSONArray $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6;
+        java.util.ArrayList $r12, $r12_1, $r12_2, $r12_3, $r12_4;
+        com.contextlogic.wish.api.data.WishSettingsSpec $r13;
+        com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec $r14, $r14_1, $r14_2, $r14_3;
+        com.contextlogic.wish.api.data.WishPaymentProcessorData $r15, $r15_1, $r15_2, $r15_3;
+        java.util.Map$Entry $r16;
+        java.util.Collection $r17;
+        com.contextlogic.wish.util.StateSerializer $r18;
+        java.util.concurrent.ExecutorService $r19;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 = new org.json.JSONObject;
+
+(0)     specialinvoke $r1.<org.json.JSONObject: void <init>()>();
+
+     label01:
+        $i0 = $r0.<com.contextlogic.wish.user.UserStatusManager: int unviewedNotificationCount>;
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("unviewedNotificationCount", $i0);
+
+(1)     $i0_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: int cartCount>;
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("cartCount", $i0_1);
+
+(2)     $i0_2 = $r0.<com.contextlogic.wish.user.UserStatusManager: int walletCount>;
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("walletCount", $i0_2);
+
+(3)     $i0_3 = $r0.<com.contextlogic.wish.user.UserStatusManager: int rewardCount>;
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("rewardCount", $i0_3);
+
+(4)     $i0_4 = $r0.<com.contextlogic.wish.user.UserStatusManager: int rewardLevel>;
+
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("rewardLevel", $i0_4);
+
+        $r5 = new org.json.JSONObject;
+
+        specialinvoke $r5.<org.json.JSONObject: void <init>()>();
+
+        $r6 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap experiments>;
+
+        $r7 = virtualinvoke $r6.<java.util.HashMap: java.util.Set keySet()>();
+
+(5)     $r8 = interfaceinvoke $r7.<java.util.Set: java.util.Iterator iterator()>();
+
+     label02:
+        $r6_1 = Phi($r6 #5, $r6_2 #11);
+
+        $r10 = Phi($r10 #5, $r10_1 #11);
+
+        $z0 = Phi($z0 #5, $z0_1 #11);
+
+        $r9 = Phi($r9 #5, $r9_2 #11);
+
+(6)     $z0_1 = interfaceinvoke $r8.<java.util.Iterator: boolean hasNext()>();
+
+     label03:
+        if $z0_1 == 0 goto label07;
+
+     label04:
+(7)     $r9_1 = interfaceinvoke $r8.<java.util.Iterator: java.lang.Object next()>();
+
+(8)     $r10_1 = (java.lang.String) $r9_1;
+
+(9)     $r6_2 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap experiments>;
+
+(10)    $r9_2 = virtualinvoke $r6_2.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r10_1);
+
+        virtualinvoke $r5.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>($r10_1, $r9_2);
+
+     label05:
+(11)    goto label02;
+
+     label06:
+        $r2 := @caughtexception;
+
+        $i0_5 = Phi($i0 #0, $i0_1 #1, $i0_2 #2, $i0_3 #3, $i0_4 #4);
+
+        $r11_6 = Phi($r11 #0, $r11_1 #42, $r11_2 #44, $r11_3 #50, $r11_4 #90);
+
+        $r6_16 = Phi($r6 #0, $r6_1 #6, $r6_2 #9, $r6_3 #30, $r6_4 #33, $r6_6 #35, $r6_7 #38, $r6_8 #39, $r6_10 #50, $r6_11 #53, $r6_13 #55, $r6_14 #58, $r6_15 #60);
+
+        $r12_4 = Phi($r12 #0, $r12_1 #88, $r12_2 #91);
+
+        $r7_3 = Phi($r7 #0, $r7_1 #40, $r7_2 #50);
+
+        $r8_6 = Phi($r8 #0, $r8_1 #12, $r8_2 #41, $r8_3 #50, $r8_4 #92);
+
+        $r15_3 = Phi($r15 #0, $r15_1 #26, $r15_2 #30);
+
+        $r10_32 = Phi($r10 #0, $r10_1 #8, $r10_2 #13, $r10_3 #16, $r10_4 #17, $r10_5 #42, $r10_6 #47, $r10_7 #50, $r10_8 #60, $r10_9 #62, $r10_11 #64, $r10_12 #66, $r10_14 #68, $r10_15 #70, $r10_17 #72, $r10_18 #74, $r10_20 #76, $r10_21 #78, $r10_23 #80, $r10_24 #82, $r10_26 #84, $r10_27 #86, $r10_28 #88, $r10_29 #93, $r10_30 #95);
+
+        $r5_15 = Phi($r5 #0, $r5_1 #13, $r5_2 #15, $r5_3 #21, $r5_4 #24, $r5_5 #27, $r5_6 #30, $r5_7 #32, $r5_8 #35, $r5_9 #37, $r5_10 #50, $r5_11 #52, $r5_12 #55, $r5_13 #57, $r5_14 #60);
+
+        $z0_10 = Phi($z0 #0, $z0_1 #6, $z0_3 #13, $z0_5 #42, $z0_6 #50, $z0_8 #93);
+
+        $r14_3 = Phi($r14 #0, $r14_1 #20, $r14_2 #24);
+
+        $r9_13 = Phi($r9 #0, $r9_1 #7, $r9_2 #10, $r9_3 #13, $r9_4 #14, $r9_5 #42, $r9_6 #43, $r9_7 #45, $r9_8 #46, $r9_9 #50, $r9_10 #93, $r9_11 #94);
+
+        return;
+
+     label07:
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("experiments", $r5);
+
+        $r11 = new org.json.JSONArray;
+
+        specialinvoke $r11.<org.json.JSONArray: void <init>()>();
+
+        $r12 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.ArrayList settings>;
+
+(12)    $r8_1 = virtualinvoke $r12.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label08:
+        $r10_2 = Phi($r10 #12, $r10_4 #18);
+
+        $r5_1 = Phi($r5 #12, $r5_2 #18);
+
+        $z0_2 = Phi($z0_1 #12, $z0_3 #18);
+
+        $r9_3 = Phi($r9 #12, $r9_4 #18);
+
+(13)    $z0_3 = interfaceinvoke $r8_1.<java.util.Iterator: boolean hasNext()>();
+
+     label09:
+        if $z0_3 == 0 goto label12;
+
+     label10:
+(14)    $r9_4 = interfaceinvoke $r8_1.<java.util.Iterator: java.lang.Object next()>();
+
+        $r13 = (com.contextlogic.wish.api.data.WishSettingsSpec) $r9_4;
+
+(15)    $r5_2 = new org.json.JSONObject;
+
+        specialinvoke $r5_2.<org.json.JSONObject: void <init>()>();
+
+(16)    $r10_3 = virtualinvoke $r13.<com.contextlogic.wish.api.data.WishSettingsSpec: java.lang.String getName()>();
+
+        virtualinvoke $r5_2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("name", $r10_3);
+
+(17)    $r10_4 = virtualinvoke $r13.<com.contextlogic.wish.api.data.WishSettingsSpec: java.lang.String action()>();
+
+        virtualinvoke $r5_2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("action", $r10_4);
+
+        virtualinvoke $r11.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r5_2);
+
+     label11:
+(18)    goto label08;
+
+     label12:
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("settings", $r11);
+
+        $r14 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec localBackgroundNotificationSpec>;
+
+     label13:
+(19)    if $r14 == null goto label17;
+
+     label14:
+(20)    $r14_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec localBackgroundNotificationSpec>;
+
+(21)    $r5_3 = virtualinvoke $r14_1.<com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec: org.json.JSONObject getJSONObject()>();
+
+     label15:
+(22)    if $r5_3 == null goto label17;
+
+     label16:
+(23)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("local_background_notification_spec", $r5_3);
+
+     label17:
+        $r5_4 = Phi($r5_1 #19, $r5_3 #22, $r5_3 #23);
+
+        $r14_2 = Phi($r14 #19, $r14_1 #22, $r14_1 #23);
+
+(24)    $r15 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+     label18:
+(25)    if $r15 == null goto label22;
+
+     label19:
+(26)    $r15_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData>;
+
+(27)    $r5_5 = virtualinvoke $r15_1.<com.contextlogic.wish.api.data.WishPaymentProcessorData: org.json.JSONObject getJSONObject()>();
+
+     label20:
+(28)    if $r5_5 == null goto label22;
+
+     label21:
+(29)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("payment_processor_data", $r5_5);
+
+     label22:
+        $r15_2 = Phi($r15 #25, $r15_1 #28, $r15_1 #29);
+
+        $r5_6 = Phi($r5_4 #25, $r5_5 #28, $r5_5 #29);
+
+(30)    $r6_3 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingWarningMessages>;
+
+     label23:
+(31)    if $r6_3 == null goto label25;
+
+     label24:
+(32)    $r5_7 = new org.json.JSONObject;
+
+(33)    $r6_4 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingWarningMessages>;
+
+        specialinvoke $r5_7.<org.json.JSONObject: void <init>(java.util.Map)>($r6_4);
+
+(34)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("shippingWarningMessages", $r5_7);
+
+     label25:
+        $r6_5 = Phi($r6_3 #31, $r6_4 #34);
+
+        $r5_8 = Phi($r5_6 #31, $r5_7 #34);
+
+(35)    $r6_6 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingLocations>;
+
+     label26:
+(36)    if $r6_6 == null goto label33;
+
+     label27:
+(37)    $r5_9 = new org.json.JSONObject;
+
+(38)    $r6_7 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingLocations>;
+
+        specialinvoke $r5_9.<org.json.JSONObject: void <init>(java.util.Map)>($r6_7);
+
+(39)    $r6_8 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingLocations>;
+
+(40)    $r7_1 = virtualinvoke $r6_8.<java.util.HashMap: java.util.Set entrySet()>();
+
+(41)    $r8_2 = interfaceinvoke $r7_1.<java.util.Set: java.util.Iterator iterator()>();
+
+     label28:
+        $r11_1 = Phi($r11 #41, $r11_2 #48);
+
+        $r10_5 = Phi($r10_2 #41, $r10_6 #48);
+
+        $z0_4 = Phi($z0_3 #41, $z0_5 #48);
+
+        $r9_5 = Phi($r9_3 #41, $r9_8 #48);
+
+(42)    $z0_5 = interfaceinvoke $r8_2.<java.util.Iterator: boolean hasNext()>();
+
+     label29:
+        if $z0_5 == 0 goto label32;
+
+     label30:
+(43)    $r9_6 = interfaceinvoke $r8_2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r16 = (java.util.Map$Entry) $r9_6;
+
+(44)    $r11_2 = new org.json.JSONArray;
+
+(45)    $r9_7 = interfaceinvoke $r16.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r17 = (java.util.Collection) $r9_7;
+
+        specialinvoke $r11_2.<org.json.JSONArray: void <init>(java.util.Collection)>($r17);
+
+(46)    $r9_8 = interfaceinvoke $r16.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+(47)    $r10_6 = (java.lang.String) $r9_8;
+
+        virtualinvoke $r5_9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>($r10_6, $r11_2);
+
+     label31:
+(48)    goto label28;
+
+     label32:
+(49)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("shippingLocations", $r5_9);
+
+     label33:
+        $r11_3 = Phi($r11 #36, $r11_1 #49);
+
+        $r6_9 = Phi($r6_6 #36, $r6_8 #49);
+
+        $r7_2 = Phi($r7 #36, $r7_1 #49);
+
+        $r8_3 = Phi($r8_1 #36, $r8_2 #49);
+
+        $r10_7 = Phi($r10_2 #36, $r10_5 #49);
+
+        $r5_10 = Phi($r5_8 #36, $r5_9 #49);
+
+        $z0_6 = Phi($z0_3 #36, $z0_5 #49);
+
+        $r9_9 = Phi($r9_3 #36, $r9_5 #49);
+
+(50)    $r6_10 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap stateMapping>;
+
+     label34:
+(51)    if $r6_10 == null goto label36;
+
+     label35:
+(52)    $r5_11 = new org.json.JSONObject;
+
+(53)    $r6_11 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap stateMapping>;
+
+        specialinvoke $r5_11.<org.json.JSONObject: void <init>(java.util.Map)>($r6_11);
+
+(54)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("stateMapping", $r5_11);
+
+     label36:
+        $r6_12 = Phi($r6_10 #51, $r6_11 #54);
+
+        $r5_12 = Phi($r5_10 #51, $r5_11 #54);
+
+(55)    $r6_13 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap countrySubdivisionNames>;
+
+     label37:
+(56)    if $r6_13 == null goto label39;
+
+     label38:
+(57)    $r5_13 = new org.json.JSONObject;
+
+(58)    $r6_14 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap countrySubdivisionNames>;
+
+        specialinvoke $r5_13.<org.json.JSONObject: void <init>(java.util.Map)>($r6_14);
+
+(59)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("countrySubdivNames", $r5_13);
+
+     label39:
+        $r6_15 = Phi($r6_13 #56, $r6_14 #59);
+
+        $r5_14 = Phi($r5_12 #56, $r5_13 #59);
+
+(60)    $r10_8 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String googleWalletOfferText>;
+
+     label40:
+(61)    if $r10_8 == null goto label42;
+
+     label41:
+(62)    $r10_9 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String googleWalletOfferText>;
+
+(63)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("googleWalletOfferText", $r10_9);
+
+     label42:
+        $r10_10 = Phi($r10_8 #61, $r10_9 #63);
+
+(64)    $r10_11 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String inviteMessage>;
+
+     label43:
+(65)    if $r10_11 == null goto label45;
+
+     label44:
+(66)    $r10_12 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String inviteMessage>;
+
+(67)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("inviteMessage", $r10_12);
+
+     label45:
+        $r10_13 = Phi($r10_11 #65, $r10_12 #67);
+
+(68)    $r10_14 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String inviteSubject>;
+
+     label46:
+(69)    if $r10_14 == null goto label48;
+
+     label47:
+(70)    $r10_15 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String inviteSubject>;
+
+(71)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("inviteSubject", $r10_15);
+
+     label48:
+        $r10_16 = Phi($r10_14 #69, $r10_15 #71);
+
+(72)    $r10_17 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String billingSecurityTitle>;
+
+     label49:
+(73)    if $r10_17 == null goto label51;
+
+     label50:
+(74)    $r10_18 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String billingSecurityTitle>;
+
+(75)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("billingSecurityTitle", $r10_18);
+
+     label51:
+        $r10_19 = Phi($r10_17 #73, $r10_18 #75);
+
+(76)    $r10_20 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String billingSecurityText>;
+
+     label52:
+(77)    if $r10_20 == null goto label54;
+
+     label53:
+(78)    $r10_21 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String billingSecurityText>;
+
+(79)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("billingSecurityText", $r10_21);
+
+     label54:
+        $r10_22 = Phi($r10_20 #77, $r10_21 #79);
+
+(80)    $r10_23 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String klarnaCountryCode>;
+
+     label55:
+(81)    if $r10_23 == null goto label57;
+
+     label56:
+(82)    $r10_24 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String klarnaCountryCode>;
+
+(83)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("klarnaCountryCode", $r10_24);
+
+     label57:
+        $r10_25 = Phi($r10_23 #81, $r10_24 #83);
+
+(84)    $r10_26 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String lemmingsUrl>;
+
+     label58:
+(85)    if $r10_26 == null goto label60;
+
+     label59:
+(86)    $r10_27 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String lemmingsUrl>;
+
+(87)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("lemmingsUrl", $r10_27);
+
+     label60:
+        $r10_28 = Phi($r10_26 #85, $r10_27 #87);
+
+(88)    $r12_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.ArrayList resizeUrls>;
+
+     label61:
+(89)    if $r12_1 == null goto label68;
+
+     label62:
+(90)    $r11_4 = new org.json.JSONArray;
+
+        specialinvoke $r11_4.<org.json.JSONArray: void <init>()>();
+
+(91)    $r12_2 = $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.ArrayList resizeUrls>;
+
+(92)    $r8_4 = virtualinvoke $r12_2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label63:
+        $r10_29 = Phi($r10_28 #92, $r10_30 #96);
+
+        $z0_7 = Phi($z0_6 #92, $z0_8 #96);
+
+        $r9_10 = Phi($r9_9 #92, $r9_11 #96);
+
+(93)    $z0_8 = interfaceinvoke $r8_4.<java.util.Iterator: boolean hasNext()>();
+
+     label64:
+        if $z0_8 == 0 goto label67;
+
+     label65:
+(94)    $r9_11 = interfaceinvoke $r8_4.<java.util.Iterator: java.lang.Object next()>();
+
+(95)    $r10_30 = (java.lang.String) $r9_11;
+
+        virtualinvoke $r11_4.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r10_30);
+
+     label66:
+(96)    goto label63;
+
+     label67:
+(97)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("resizeUrls", $r11_4);
+
+     label68:
+        $r11_5 = Phi($r11_3 #89, $r11_4 #97);
+
+        $r12_3 = Phi($r12_1 #89, $r12_2 #97);
+
+        $r8_5 = Phi($r8_3 #89, $r8_4 #97);
+
+        $r10_31 = Phi($r10_28 #89, $r10_29 #97);
+
+        $z0_9 = Phi($z0_6 #89, $z0_8 #97);
+
+        $r9_12 = Phi($r9_9 #89, $r9_10 #97);
+
+        $r18 = staticinvoke <com.contextlogic.wish.util.StateSerializer: com.contextlogic.wish.util.StateSerializer getInstance()>();
+
+        $r3 = <com.contextlogic.wish.util.StateSerializer$SerializationType: com.contextlogic.wish.util.StateSerializer$SerializationType Status>;
+
+        $r19 = virtualinvoke $r18.<com.contextlogic.wish.util.StateSerializer: java.util.concurrent.ExecutorService getThreadPool(com.contextlogic.wish.util.StateSerializer$SerializationType)>($r3);
+
+        $r4 = new com.contextlogic.wish.user.UserStatusManager$1;
+
+        specialinvoke $r4.<com.contextlogic.wish.user.UserStatusManager$1: void <init>(com.contextlogic.wish.user.UserStatusManager,org.json.JSONObject)>($r0, $r1);
+
+        interfaceinvoke $r19.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r4);
+
+        return;
+
+        catch java.lang.Throwable from label01 to label03 with label06;
+        catch java.lang.Throwable from label04 to label05 with label06;
+        catch java.lang.Throwable from label07 to label09 with label06;
+        catch java.lang.Throwable from label10 to label11 with label06;
+        catch java.lang.Throwable from label12 to label13 with label06;
+        catch java.lang.Throwable from label14 to label15 with label06;
+        catch java.lang.Throwable from label16 to label18 with label06;
+        catch java.lang.Throwable from label19 to label20 with label06;
+        catch java.lang.Throwable from label21 to label23 with label06;
+        catch java.lang.Throwable from label24 to label26 with label06;
+        catch java.lang.Throwable from label27 to label29 with label06;
+        catch java.lang.Throwable from label30 to label31 with label06;
+        catch java.lang.Throwable from label32 to label34 with label06;
+        catch java.lang.Throwable from label35 to label37 with label06;
+        catch java.lang.Throwable from label38 to label40 with label06;
+        catch java.lang.Throwable from label41 to label43 with label06;
+        catch java.lang.Throwable from label44 to label46 with label06;
+        catch java.lang.Throwable from label47 to label49 with label06;
+        catch java.lang.Throwable from label50 to label52 with label06;
+        catch java.lang.Throwable from label53 to label55 with label06;
+        catch java.lang.Throwable from label56 to label58 with label06;
+        catch java.lang.Throwable from label59 to label61 with label06;
+        catch java.lang.Throwable from label62 to label64 with label06;
+        catch java.lang.Throwable from label65 to label66 with label06;
+        catch java.lang.Throwable from label67 to label68 with label06;
+    }
+
+    public void setBillingSecurityText(java.lang.String)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String billingSecurityText> = $r1;
+
+        return;
+    }
+
+    public void setBillingSecurityTitle(java.lang.String)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String billingSecurityTitle> = $r1;
+
+        return;
+    }
+
+    public void setCountrySubdivisionNames(java.util.HashMap)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.HashMap $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.util.HashMap;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap countrySubdivisionNames> = $r1;
+
+        return;
+    }
+
+    public void setGoogleAppIndexingData(com.contextlogic.wish.api.data.WishGoogleAppIndexingData)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.WishGoogleAppIndexingData $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.WishGoogleAppIndexingData;
+
+        if $r1 == null goto label1;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishGoogleAppIndexingData googleAppIndexingData> = $r1;
+
+     label1:
+        return;
+    }
+
+    public void setGoogleWalletOfferText(java.lang.String)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String googleWalletOfferText> = $r1;
+
+        return;
+    }
+
+    public void setInviteText(java.lang.String, java.lang.String)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1, $r2;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String inviteSubject> = $r1;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String inviteMessage> = $r2;
+
+        return;
+    }
+
+    public void setKlarnaCountryCode(java.lang.String)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String klarnaCountryCode> = $r1;
+
+        return;
+    }
+
+    public void setLemmingsUrl(java.lang.String)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.lang.String lemmingsUrl> = $r1;
+
+        return;
+    }
+
+    public void setLocalBackgroundNotificationSpec(com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.LocalBackgroundNotificationSpec localBackgroundNotificationSpec> = $r1;
+
+        return;
+    }
+
+    public void setPaymentProcessorData(com.contextlogic.wish.api.data.WishPaymentProcessorData)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        com.contextlogic.wish.api.data.WishPaymentProcessorData $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: com.contextlogic.wish.api.data.WishPaymentProcessorData;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.api.data.WishPaymentProcessorData paymentProcessorData> = $r1;
+
+        return;
+    }
+
+    public void setResizeUrls(java.util.ArrayList)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.ArrayList $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.util.ArrayList;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.ArrayList resizeUrls> = $r1;
+
+        return;
+    }
+
+    public void setSettingsSpec(org.json.JSONArray) throws org.json.JSONException
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        org.json.JSONArray $r1;
+        java.util.ArrayList $r2;
+        com.contextlogic.wish.api.data.WishSettingsSpec $r3;
+        int $i0, $i1, $i0_1, $i0_2;
+        org.json.JSONObject $r4;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: org.json.JSONArray;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+(0)     $i0 = 0;
+
+     label1:
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        $i1 = virtualinvoke $r1.<org.json.JSONArray: int length()>();
+
+        if $i0_1 >= $i1 goto label2;
+
+        $r4 = virtualinvoke $r1.<org.json.JSONArray: org.json.JSONObject getJSONObject(int)>($i0_1);
+
+        $r3 = new com.contextlogic.wish.api.data.WishSettingsSpec;
+
+        specialinvoke $r3.<com.contextlogic.wish.api.data.WishSettingsSpec: void <init>(org.json.JSONObject)>($r4);
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r3);
+
+        $i0_2 = $i0_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.ArrayList settings> = $r2;
+
+        return;
+    }
+
+    public void setShippingDataFetched(boolean)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: boolean shippingDataFetched> = $z0;
+
+        return;
+    }
+
+    public void setShippingLocations(java.util.HashMap)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.HashMap $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.util.HashMap;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingLocations> = $r1;
+
+        return;
+    }
+
+    public void setShippingWarningMessages(java.util.HashMap)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.HashMap $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.util.HashMap;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap shippingWarningMessages> = $r1;
+
+        return;
+    }
+
+    public void setStateMapping(java.util.HashMap)
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.util.HashMap $r1;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+        $r1 := @parameter0: java.util.HashMap;
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: java.util.HashMap stateMapping> = $r1;
+
+        return;
+    }
+
+    public void startStatusRefresh()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.Throwable $r1;
+        android.os.Looper $r2;
+        com.contextlogic.wish.user.UserStatusManager$RefreshRunnable $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        android.os.Handler $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r3 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager$RefreshRunnable refreshRunnable>;
+
+(1)     if $r3 != null goto label3;
+
+(2)     $r3_1 = new com.contextlogic.wish.user.UserStatusManager$RefreshRunnable;
+
+        specialinvoke $r3_1.<com.contextlogic.wish.user.UserStatusManager$RefreshRunnable: void <init>(com.contextlogic.wish.user.UserStatusManager)>($r0);
+
+        $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager$RefreshRunnable refreshRunnable> = $r3_1;
+
+        $r4 = $r0.<com.contextlogic.wish.user.UserStatusManager: android.os.Handler handler>;
+
+(3)     if $r4 != null goto label2;
+
+        $r2 = staticinvoke <android.os.Looper: android.os.Looper myLooper()>();
+
+(4)     if $r2 == null goto label2;
+
+(5)     $r4_1 = new android.os.Handler;
+
+        specialinvoke $r4_1.<android.os.Handler: void <init>()>();
+
+(6)     $r0.<com.contextlogic.wish.user.UserStatusManager: android.os.Handler handler> = $r4_1;
+
+     label2:
+        $r4_2 = Phi($r4 #3, $r4 #4, $r4_1 #6);
+
+(7)     $r4_3 = $r0.<com.contextlogic.wish.user.UserStatusManager: android.os.Handler handler>;
+
+(8)     if $r4_3 == null goto label3;
+
+(9)     $r4_4 = $r0.<com.contextlogic.wish.user.UserStatusManager: android.os.Handler handler>;
+
+(10)    $r3_2 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager$RefreshRunnable refreshRunnable>;
+
+(11)    virtualinvoke $r4_4.<android.os.Handler: boolean post(java.lang.Runnable)>($r3_2);
+
+     label3:
+        $r4_5 = Phi($r4 #1, $r4_3 #8, $r4_4 #11);
+
+        $r3_3 = Phi($r3 #1, $r3_1 #8, $r3_2 #11);
+
+        exitmonitor $r0;
+
+        return;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r4_6 = Phi($r4 #0, $r4_1 #5, $r4_3 #7, $r4_4 #9);
+
+        $r3_4 = Phi($r3 #0, $r3_1 #2, $r3_2 #10);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public void stopStatusRefresh()
+    {
+        com.contextlogic.wish.user.UserStatusManager $r0;
+        java.lang.Throwable $r1;
+        android.os.Looper $r2;
+        com.contextlogic.wish.user.UserStatusManager$RefreshRunnable $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        android.os.Handler $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7;
+
+        $r0 := @this: com.contextlogic.wish.user.UserStatusManager;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r3 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager$RefreshRunnable refreshRunnable>;
+
+(1)     if $r3 == null goto label4;
+
+        $r4 = $r0.<com.contextlogic.wish.user.UserStatusManager: android.os.Handler handler>;
+
+(2)     if $r4 != null goto label2;
+
+        $r2 = staticinvoke <android.os.Looper: android.os.Looper myLooper()>();
+
+(3)     if $r2 == null goto label2;
+
+(4)     $r4_1 = new android.os.Handler;
+
+        specialinvoke $r4_1.<android.os.Handler: void <init>()>();
+
+(5)     $r0.<com.contextlogic.wish.user.UserStatusManager: android.os.Handler handler> = $r4_1;
+
+     label2:
+        $r4_2 = Phi($r4 #2, $r4 #3, $r4_1 #5);
+
+(6)     $r4_3 = $r0.<com.contextlogic.wish.user.UserStatusManager: android.os.Handler handler>;
+
+(7)     if $r4_3 == null goto label3;
+
+(8)     $r4_4 = $r0.<com.contextlogic.wish.user.UserStatusManager: android.os.Handler handler>;
+
+(9)     $r3_1 = $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager$RefreshRunnable refreshRunnable>;
+
+(10)    virtualinvoke $r4_4.<android.os.Handler: void removeCallbacks(java.lang.Runnable)>($r3_1);
+
+     label3:
+        $r3_2 = Phi($r3 #7, $r3_1 #10);
+
+        $r4_5 = Phi($r4_3 #7, $r4_4 #10);
+
+(11)    $r0.<com.contextlogic.wish.user.UserStatusManager: com.contextlogic.wish.user.UserStatusManager$RefreshRunnable refreshRunnable> = null;
+
+     label4:
+        $r3_3 = Phi($r3 #1, $r3_2 #11);
+
+        $r4_6 = Phi($r4 #1, $r4_5 #11);
+
+        exitmonitor $r0;
+
+        return;
+
+     label5:
+        $r1 := @caughtexception;
+
+        $r3_4 = Phi($r3 #0, $r3_1 #9, $r3_2 #11);
+
+        $r4_7 = Phi($r4 #0, $r4_1 #4, $r4_3 #6, $r4_4 #8, $r4_5 #11);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label4 with label5;
+    }
+}

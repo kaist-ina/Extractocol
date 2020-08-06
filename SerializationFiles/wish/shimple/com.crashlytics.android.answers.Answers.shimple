@@ -1,0 +1,1007 @@
+public class com.crashlytics.android.answers.Answers extends io.fabric.sdk.android.Kit
+{
+    static final java.lang.String CRASHLYTICS_API_ENDPOINT;
+    static final long FIRST_LAUNCH_INTERVAL_IN_MS;
+    static final java.lang.String PREF_STORE_NAME;
+    public static final java.lang.String TAG;
+    com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager;
+    private long installedAt;
+    io.fabric.sdk.android.ActivityLifecycleManager lifecycleManager;
+    com.crashlytics.android.answers.AnswersPreferenceManager preferenceManager;
+    private java.lang.String versionCode;
+    private java.lang.String versionName;
+
+    public void <init>()
+    {
+        com.crashlytics.android.answers.Answers $r0;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        specialinvoke $r0.<io.fabric.sdk.android.Kit: void <init>()>();
+
+        return;
+    }
+
+    public static com.crashlytics.android.answers.Answers getInstance()
+    {
+        io.fabric.sdk.android.Kit $r0;
+        com.crashlytics.android.answers.Answers $r1;
+
+        $r0 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Kit getKit(java.lang.Class)>(class "com/crashlytics/android/answers/Answers");
+
+        $r1 = (com.crashlytics.android.answers.Answers) $r0;
+
+        return $r1;
+    }
+
+    private void initializeSessionAnalytics(android.content.Context)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        android.content.Context $r1;
+        com.crashlytics.android.answers.SessionMetadataCollector $r2;
+        java.lang.String $r3, $r4;
+        com.crashlytics.android.answers.AnswersFilesManagerProvider $r5;
+        io.fabric.sdk.android.services.persistence.FileStoreImpl $r6;
+        com.crashlytics.android.answers.AnswersEventsHandler $r7;
+        io.fabric.sdk.android.services.network.DefaultHttpRequestFactory $r8;
+        com.crashlytics.android.answers.AnswersLifecycleCallbacks $r9;
+        java.lang.Exception $r10;
+        io.fabric.sdk.android.services.common.IdManager $r11;
+        io.fabric.sdk.android.Logger $r12, $r12_1, $r12_2, $r12_3, $r12_4;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r13, $r13_1, $r13_2, $r13_3, $r13_4;
+        io.fabric.sdk.android.ActivityLifecycleManager $r14;
+        long $l0;
+        boolean $z0;
+        com.crashlytics.android.answers.AnswersPreferenceManager $r15;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: android.content.Context;
+
+(0)     $r2 = new com.crashlytics.android.answers.SessionMetadataCollector;
+
+     label01:
+        $r11 = virtualinvoke $r0.<com.crashlytics.android.answers.Answers: io.fabric.sdk.android.services.common.IdManager getIdManager()>();
+
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: java.lang.String versionCode>;
+
+        $r4 = $r0.<com.crashlytics.android.answers.Answers: java.lang.String versionName>;
+
+        specialinvoke $r2.<com.crashlytics.android.answers.SessionMetadataCollector: void <init>(android.content.Context,io.fabric.sdk.android.services.common.IdManager,java.lang.String,java.lang.String)>($r1, $r11, $r3, $r4);
+
+     label02:
+        $r5 = new com.crashlytics.android.answers.AnswersFilesManagerProvider;
+
+        $r6 = new io.fabric.sdk.android.services.persistence.FileStoreImpl;
+
+     label03:
+        specialinvoke $r6.<io.fabric.sdk.android.services.persistence.FileStoreImpl: void <init>(io.fabric.sdk.android.Kit)>($r0);
+
+        specialinvoke $r5.<com.crashlytics.android.answers.AnswersFilesManagerProvider: void <init>(android.content.Context,io.fabric.sdk.android.services.persistence.FileStore)>($r1, $r6);
+
+     label04:
+        $r7 = new com.crashlytics.android.answers.AnswersEventsHandler;
+
+        $r8 = new io.fabric.sdk.android.services.network.DefaultHttpRequestFactory;
+
+     label05:
+        $r12 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        specialinvoke $r8.<io.fabric.sdk.android.services.network.DefaultHttpRequestFactory: void <init>(io.fabric.sdk.android.Logger)>($r12);
+
+        specialinvoke $r7.<com.crashlytics.android.answers.AnswersEventsHandler: void <init>(io.fabric.sdk.android.Kit,android.content.Context,com.crashlytics.android.answers.AnswersFilesManagerProvider,com.crashlytics.android.answers.SessionMetadataCollector,io.fabric.sdk.android.services.network.HttpRequestFactory)>($r0, $r1, $r5, $r2, $r8);
+
+        virtualinvoke $r7.<com.crashlytics.android.answers.AnswersEventsHandler: void enable()>();
+
+     label06:
+        $r13 = new com.crashlytics.android.answers.SessionAnalyticsManager;
+
+     label07:
+        specialinvoke $r13.<com.crashlytics.android.answers.SessionAnalyticsManager: void <init>(com.crashlytics.android.answers.AnswersEventsHandler)>($r7);
+
+        $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager> = $r13;
+
+        $r14 = $r0.<com.crashlytics.android.answers.Answers: io.fabric.sdk.android.ActivityLifecycleManager lifecycleManager>;
+
+     label08:
+        $r9 = new com.crashlytics.android.answers.AnswersLifecycleCallbacks;
+
+     label09:
+(1)     $r13_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+        specialinvoke $r9.<com.crashlytics.android.answers.AnswersLifecycleCallbacks: void <init>(com.crashlytics.android.answers.SessionAnalyticsManager)>($r13_1);
+
+        virtualinvoke $r14.<io.fabric.sdk.android.ActivityLifecycleManager: boolean registerCallbacks(io.fabric.sdk.android.ActivityLifecycleManager$Callbacks)>($r9);
+
+        $l0 = $r0.<com.crashlytics.android.answers.Answers: long installedAt>;
+
+        $z0 = virtualinvoke $r0.<com.crashlytics.android.answers.Answers: boolean isFirstLaunch(long)>($l0);
+
+     label10:
+(2)     if $z0 == 0 goto label14;
+
+     label11:
+(3)     $r12_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r12_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Answers", "New app install detected");
+
+(4)     $r13_2 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+        virtualinvoke $r13_2.<com.crashlytics.android.answers.SessionAnalyticsManager: void onInstall()>();
+
+        $r15 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.AnswersPreferenceManager preferenceManager>;
+
+        virtualinvoke $r15.<com.crashlytics.android.answers.AnswersPreferenceManager: void setAnalyticsLaunched()>();
+
+     label12:
+        return;
+
+     label13:
+        $r10 := @caughtexception;
+
+        $r13_3 = Phi($r13 #0, $r13_1 #1, $r13_2 #4);
+
+        $r12_2 = Phi($r12 #0, $r12_1 #3);
+
+        $r12_3 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+(5)     interfaceinvoke $r12_3.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Answers", "Failed to initialize", $r10);
+
+     label14:
+        $r13_4 = Phi($r13_1 #2, $r13_3 #5);
+
+        $r12_4 = Phi($r12 #2, $r12_3 #5);
+
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label13;
+        catch java.lang.Exception from label03 to label04 with label13;
+        catch java.lang.Exception from label05 to label06 with label13;
+        catch java.lang.Exception from label07 to label08 with label13;
+        catch java.lang.Exception from label09 to label10 with label13;
+        catch java.lang.Exception from label11 to label12 with label13;
+    }
+
+    protected java.lang.Boolean doInBackground()
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        io.fabric.sdk.android.services.settings.FeaturesSettingsData $r1;
+        boolean $z0;
+        io.fabric.sdk.android.services.settings.AnalyticsSettingsData $r2;
+        io.fabric.sdk.android.ActivityLifecycleManager $r3;
+        java.lang.Exception $r4;
+        io.fabric.sdk.android.services.settings.Settings $r5;
+        io.fabric.sdk.android.services.settings.SettingsData $r6;
+        io.fabric.sdk.android.Logger $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+        java.lang.Boolean $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r9, $r9_1, $r9_2;
+        java.lang.String $r10;
+
+(0)     $r0 := @this: com.crashlytics.android.answers.Answers;
+
+     label01:
+        $r5 = staticinvoke <io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.Settings getInstance()>();
+
+        $r6 = virtualinvoke $r5.<io.fabric.sdk.android.services.settings.Settings: io.fabric.sdk.android.services.settings.SettingsData awaitSettingsData()>();
+
+     label02:
+        if $r6 != null goto label05;
+
+     label03:
+        $r7 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r7.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String)>("Answers", "Failed to retrieve settings");
+
+        $r8 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+     label04:
+        return $r8;
+
+     label05:
+        $r1 = $r6.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.FeaturesSettingsData featuresData>;
+
+        $z0 = $r1.<io.fabric.sdk.android.services.settings.FeaturesSettingsData: boolean collectAnalytics>;
+
+     label06:
+        if $z0 == 0 goto label09;
+
+     label07:
+(1)     $r7_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r7_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Answers", "Analytics collection enabled");
+
+        $r9 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+        $r2 = $r6.<io.fabric.sdk.android.services.settings.SettingsData: io.fabric.sdk.android.services.settings.AnalyticsSettingsData analyticsSettingsData>;
+
+        $r10 = virtualinvoke $r0.<com.crashlytics.android.answers.Answers: java.lang.String getOverridenSpiEndpoint()>();
+
+        virtualinvoke $r9.<com.crashlytics.android.answers.SessionAnalyticsManager: void setAnalyticsSettingsData(io.fabric.sdk.android.services.settings.AnalyticsSettingsData,java.lang.String)>($r2, $r10);
+
+(2)     $r8_1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+     label08:
+        return $r8_1;
+
+     label09:
+(3)     $r7_2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r7_2.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Answers", "Analytics collection disabled");
+
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: io.fabric.sdk.android.ActivityLifecycleManager lifecycleManager>;
+
+        virtualinvoke $r3.<io.fabric.sdk.android.ActivityLifecycleManager: void resetCallbacks()>();
+
+(4)     $r9_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+        virtualinvoke $r9_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void disable()>();
+
+(5)     $r8_2 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+     label10:
+        return $r8_2;
+
+     label11:
+        $r4 := @caughtexception;
+
+        $r9_2 = Phi($r9 #0, $r9_1 #4);
+
+        $r8_3 = Phi($r8 #0, $r8_1 #2, $r8_2 #5);
+
+        $r7_3 = Phi($r7 #0, $r7_1 #1, $r7_2 #3);
+
+        $r7_4 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r7_4.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Answers", "Error dealing with settings", $r4);
+
+        $r8_4 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        return $r8_4;
+
+        catch java.lang.Exception from label01 to label02 with label11;
+        catch java.lang.Exception from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label06 with label11;
+        catch java.lang.Exception from label07 to label08 with label11;
+        catch java.lang.Exception from label09 to label10 with label11;
+    }
+
+    protected volatile java.lang.Object doInBackground()
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        java.lang.Boolean $r1;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 = virtualinvoke $r0.<com.crashlytics.android.answers.Answers: java.lang.Boolean doInBackground()>();
+
+        return $r1;
+    }
+
+    public java.lang.String getIdentifier()
+    {
+        com.crashlytics.android.answers.Answers $r0;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        return "com.crashlytics.sdk.android:answers";
+    }
+
+    java.lang.String getOverridenSpiEndpoint()
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        android.content.Context $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 = virtualinvoke $r0.<com.crashlytics.android.answers.Answers: android.content.Context getContext()>();
+
+        $r2 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String getStringsFileValue(android.content.Context,java.lang.String)>($r1, "com.crashlytics.ApiEndpoint");
+
+        return $r2;
+    }
+
+    public java.lang.String getVersion()
+    {
+        com.crashlytics.android.answers.Answers $r0;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        return "1.3.2.79";
+    }
+
+    boolean installedRecently(long)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        byte $b0;
+        long $l1, $l2, $l2_1;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $l2 := @parameter0: long;
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l2_1 = $l1 - $l2;
+
+        $b0 = $l2_1 cmp 3600000L;
+
+        if $b0 >= 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    boolean isFirstLaunch(long)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        long $l0;
+        com.crashlytics.android.answers.AnswersPreferenceManager $r1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $l0 := @parameter0: long;
+
+        $r1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.AnswersPreferenceManager preferenceManager>;
+
+        $z0 = virtualinvoke $r1.<com.crashlytics.android.answers.AnswersPreferenceManager: boolean hasAnalyticsLaunched()>();
+
+(0)     if $z0 != 0 goto label1;
+
+        $z0_1 = virtualinvoke $r0.<com.crashlytics.android.answers.Answers: boolean installedRecently(long)>($l0);
+
+(1)     if $z0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 0;
+    }
+
+    public void logAddToCart(com.crashlytics.android.answers.AddToCartEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.AddToCartEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.AddToCartEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logContentView(com.crashlytics.android.answers.ContentViewEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.ContentViewEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.ContentViewEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logCustom(com.crashlytics.android.answers.CustomEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.CustomEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.CustomEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onCustom(com.crashlytics.android.answers.CustomEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logInvite(com.crashlytics.android.answers.InviteEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.InviteEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.InviteEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logLevelEnd(com.crashlytics.android.answers.LevelEndEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.LevelEndEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.LevelEndEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logLevelStart(com.crashlytics.android.answers.LevelStartEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.LevelStartEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.LevelStartEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logLogin(com.crashlytics.android.answers.LoginEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.LoginEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.LoginEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logPurchase(com.crashlytics.android.answers.PurchaseEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.PurchaseEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.PurchaseEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logRating(com.crashlytics.android.answers.RatingEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.RatingEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.RatingEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logSearch(com.crashlytics.android.answers.SearchEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.SearchEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.SearchEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logShare(com.crashlytics.android.answers.ShareEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.ShareEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.ShareEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logSignUp(com.crashlytics.android.answers.SignUpEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.SignUpEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.SignUpEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void logStartCheckout(com.crashlytics.android.answers.StartCheckoutEvent)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        com.crashlytics.android.answers.StartCheckoutEvent $r1;
+        java.lang.NullPointerException $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: com.crashlytics.android.answers.StartCheckoutEvent;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("event must not be null");
+
+        throw $r2;
+
+     label1:
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label2;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onPredefined(com.crashlytics.android.answers.PredefinedEvent)>($r1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void onException(io.fabric.sdk.android.services.common.Crash$FatalException)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        io.fabric.sdk.android.services.common.Crash$FatalException $r1;
+        java.lang.String $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.common.Crash$FatalException;
+
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label1;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+        $r2 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.Crash$FatalException: java.lang.String getSessionId()>();
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onCrash(java.lang.String)>($r2);
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    public void onException(io.fabric.sdk.android.services.common.Crash$LoggedException)
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        io.fabric.sdk.android.services.common.Crash$LoggedException $r1;
+        java.lang.String $r2;
+        com.crashlytics.android.answers.SessionAnalyticsManager $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.crashlytics.android.answers.Answers;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.common.Crash$LoggedException;
+
+        $r3 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+(0)     if $r3 == null goto label1;
+
+        $r3_1 = $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.SessionAnalyticsManager analyticsManager>;
+
+        $r2 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.Crash$LoggedException: java.lang.String getSessionId()>();
+
+(1)     virtualinvoke $r3_1.<com.crashlytics.android.answers.SessionAnalyticsManager: void onError(java.lang.String)>($r2);
+
+     label1:
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    protected boolean onPreExecute()
+    {
+        com.crashlytics.android.answers.Answers $r0;
+        io.fabric.sdk.android.services.persistence.PreferenceStoreImpl $r1;
+        com.crashlytics.android.answers.AnswersPreferenceManager $r2;
+        io.fabric.sdk.android.ActivityLifecycleManager $r3;
+        java.io.File $r4;
+        java.lang.Exception $r5;
+        android.content.Context $r6;
+        android.content.pm.PackageManager $r7, $r7_1, $r7_2, $r7_3;
+        java.lang.String $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8, $r8_9;
+        android.content.pm.PackageInfo $r9;
+        int $i0, $i0_1, $i0_2;
+        long $l1, $l1_1, $l1_2, $l1_3;
+        android.content.pm.ApplicationInfo $r10;
+        io.fabric.sdk.android.Logger $r11;
+
+(0)     $r0 := @this: com.crashlytics.android.answers.Answers;
+
+     label01:
+        $r6 = virtualinvoke $r0.<com.crashlytics.android.answers.Answers: android.content.Context getContext()>();
+
+     label02:
+        $r1 = new io.fabric.sdk.android.services.persistence.PreferenceStoreImpl;
+
+     label03:
+        specialinvoke $r1.<io.fabric.sdk.android.services.persistence.PreferenceStoreImpl: void <init>(android.content.Context,java.lang.String)>($r6, "settings");
+
+     label04:
+        $r2 = new com.crashlytics.android.answers.AnswersPreferenceManager;
+
+     label05:
+        specialinvoke $r2.<com.crashlytics.android.answers.AnswersPreferenceManager: void <init>(io.fabric.sdk.android.services.persistence.PreferenceStore)>($r1);
+
+        $r0.<com.crashlytics.android.answers.Answers: com.crashlytics.android.answers.AnswersPreferenceManager preferenceManager> = $r2;
+
+     label06:
+        $r3 = new io.fabric.sdk.android.ActivityLifecycleManager;
+
+     label07:
+        specialinvoke $r3.<io.fabric.sdk.android.ActivityLifecycleManager: void <init>(android.content.Context)>($r6);
+
+        $r0.<com.crashlytics.android.answers.Answers: io.fabric.sdk.android.ActivityLifecycleManager lifecycleManager> = $r3;
+
+        $r7 = virtualinvoke $r6.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r8 = virtualinvoke $r6.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r9 = virtualinvoke $r7.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>($r8, 0);
+
+        $i0 = $r9.<android.content.pm.PackageInfo: int versionCode>;
+
+(1)     $r8_1 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r0.<com.crashlytics.android.answers.Answers: java.lang.String versionCode> = $r8_1;
+
+(2)     $r8_2 = $r9.<android.content.pm.PackageInfo: java.lang.String versionName>;
+
+     label08:
+        if $r8_2 != null goto label14;
+
+(3)     $r8_3 = "0.0";
+
+     label09:
+        $r8_4 = Phi($r8_3 #3, $r8_8 #9);
+
+(4)     $r0.<com.crashlytics.android.answers.Answers: java.lang.String versionName> = $r8_4;
+
+     label10:
+        $i0_1 = <android.os.Build$VERSION: int SDK_INT>;
+
+(5)     if $i0_1 < 9 goto label16;
+
+     label11:
+        $l1 = $r9.<android.content.pm.PackageInfo: long firstInstallTime>;
+
+(6)     $r0.<com.crashlytics.android.answers.Answers: long installedAt> = $l1;
+
+     label12:
+        $r7_1 = Phi($r7 #6, $r7_2 #14);
+
+        $l1_1 = Phi($l1 #6, $l1_2 #14);
+
+        $r8_5 = Phi($r8_4 #6, $r8_7 #14);
+
+(7)     specialinvoke $r0.<com.crashlytics.android.answers.Answers: void initializeSessionAnalytics(android.content.Context)>($r6);
+
+     label13:
+        return 1;
+
+     label14:
+(8)     $r8_8 = $r9.<android.content.pm.PackageInfo: java.lang.String versionName>;
+
+     label15:
+(9)     goto label09;
+
+     label16:
+(10)    $r7_2 = virtualinvoke $r6.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+(11)    $r8_6 = virtualinvoke $r6.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r10 = virtualinvoke $r7_2.<android.content.pm.PackageManager: android.content.pm.ApplicationInfo getApplicationInfo(java.lang.String,int)>($r8_6, 0);
+
+     label17:
+        $r4 = new java.io.File;
+
+     label18:
+(12)    $r8_7 = $r10.<android.content.pm.ApplicationInfo: java.lang.String sourceDir>;
+
+        specialinvoke $r4.<java.io.File: void <init>(java.lang.String)>($r8_7);
+
+(13)    $l1_2 = virtualinvoke $r4.<java.io.File: long lastModified()>();
+
+        $r0.<com.crashlytics.android.answers.Answers: long installedAt> = $l1_2;
+
+     label19:
+(14)    goto label12;
+
+     label20:
+        $r5 := @caughtexception;
+
+        $r7_3 = Phi($r7 #0, $r7_1 #7, $r7_2 #10);
+
+        $l1_3 = Phi($l1 #0, $l1_1 #7, $l1_2 #13);
+
+        $i0_2 = Phi($i0 #0, $i0_1 #5);
+
+        $r8_9 = Phi($r8 #0, $r8_1 #1, $r8_2 #2, $r8_3 #3, $r8_4 #4, $r8_5 #7, $r8_8 #8, $r8_6 #11, $r8_7 #12);
+
+        $r11 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r11.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("Answers", "Error retrieving app properties", $r5);
+
+        return 0;
+
+        catch java.lang.Exception from label01 to label02 with label20;
+        catch java.lang.Exception from label03 to label04 with label20;
+        catch java.lang.Exception from label05 to label06 with label20;
+        catch java.lang.Exception from label07 to label08 with label20;
+        catch java.lang.Exception from label09 to label10 with label20;
+        catch java.lang.Exception from label11 to label13 with label20;
+        catch java.lang.Exception from label14 to label15 with label20;
+        catch java.lang.Exception from label16 to label17 with label20;
+        catch java.lang.Exception from label18 to label19 with label20;
+    }
+}

@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 import soot.jimple.infoflow.taintWrappers.EasyTaintWrapper;
 /**
  * tests functionality of TaintWrapper. Additionally all tests can be executed with TaintWrapper by setting the debug flag in {@link soot.jimple.infoflow.test.junit.JUnitTests} to true
@@ -32,7 +32,7 @@ public class EasyWrapperListTests extends JUnitTests {
 
 	@Test(timeout=300000)
     public void concreteArrayListPos0Test(){
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void concreteWriteReadPos0Test()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -42,7 +42,7 @@ public class EasyWrapperListTests extends JUnitTests {
 	
 	@Test(timeout=300000)
     public void concreteArrayListPos1Test(){
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void concreteWriteReadPos1Test()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -52,7 +52,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void concreteArrayListNegativeTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void concreteWriteReadNegativeTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -62,7 +62,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void listTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void writeReadTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -72,7 +72,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void listIteratorTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void iteratorTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -82,7 +82,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void listsubListTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void subListTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -92,7 +92,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void concreteLinkedListNegativeTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void linkedListConcreteWriteReadNegativeTest()>");
 		infoflow.setTaintWrapper(easyWrapper);
@@ -102,7 +102,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void concreteLinkedListTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void linkedListConcreteWriteReadTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -112,7 +112,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void writeReadLinkedListTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void linkedListWriteReadTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -123,7 +123,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void concreteLinkedListIteratorTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void linkedListIteratorTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -133,7 +133,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void subLinkedListTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void linkedListSubListTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -143,7 +143,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void stackGetTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void concreteWriteReadStackGetTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -153,7 +153,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void stackPeekTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void concreteWriteReadStackPeekTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -163,7 +163,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void stackPopTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void concreteWriteReadStackPopTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -173,7 +173,7 @@ public class EasyWrapperListTests extends JUnitTests {
     
     @Test(timeout=300000)
     public void stackNegativeTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void concreteWriteReadStackNegativeTest()>");
     	infoflow.setTaintWrapper(easyWrapper);
@@ -183,7 +183,7 @@ public class EasyWrapperListTests extends JUnitTests {
 
     @Test(timeout=300000)
     public void listToStringTest(){
-    	Infoflow infoflow = initInfoflow();
+    	IInfoflow infoflow = initInfoflow();
     	List<String> epoints = new ArrayList<String>();
     	epoints.add("<soot.jimple.infoflow.test.ListTestCode: void listToStringTest()>");
     	infoflow.setTaintWrapper(easyWrapper);

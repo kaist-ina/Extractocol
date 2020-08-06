@@ -1,0 +1,481 @@
+public abstract class ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection extends java.lang.Object implements ch.boye.httpclientandroidlib.HttpServerConnection
+{
+    private final ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer entitydeserializer;
+    private final ch.boye.httpclientandroidlib.impl.entity.EntitySerializer entityserializer;
+    private ch.boye.httpclientandroidlib.io.EofSensor eofSensor;
+    private ch.boye.httpclientandroidlib.io.SessionInputBuffer inbuffer;
+    private ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl metrics;
+    private ch.boye.httpclientandroidlib.io.SessionOutputBuffer outbuffer;
+    private ch.boye.httpclientandroidlib.io.HttpMessageParser requestParser;
+    private ch.boye.httpclientandroidlib.io.HttpMessageWriter responseWriter;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.impl.entity.EntitySerializer $r1;
+        ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.SessionInputBuffer inbuffer> = null;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.SessionOutputBuffer outbuffer> = null;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.EofSensor eofSensor> = null;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.HttpMessageParser requestParser> = null;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.HttpMessageWriter responseWriter> = null;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl metrics> = null;
+
+        $r1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.entity.EntitySerializer createEntitySerializer()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.entity.EntitySerializer entityserializer> = $r1;
+
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer createEntityDeserializer()>();
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer entitydeserializer> = $r2;
+
+        return;
+    }
+
+    protected abstract void assertOpen() throws java.lang.IllegalStateException;
+
+    protected ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl createConnectionMetrics(ch.boye.httpclientandroidlib.io.HttpTransportMetrics, ch.boye.httpclientandroidlib.io.HttpTransportMetrics)
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.io.HttpTransportMetrics $r1, $r2;
+        ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.HttpTransportMetrics;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.io.HttpTransportMetrics;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl: void <init>(ch.boye.httpclientandroidlib.io.HttpTransportMetrics,ch.boye.httpclientandroidlib.io.HttpTransportMetrics)>($r1, $r2);
+
+        return $r3;
+    }
+
+    protected ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer createEntityDeserializer()
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer $r1;
+        ch.boye.httpclientandroidlib.impl.entity.DisallowIdentityContentLengthStrategy $r2;
+        ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer;
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.entity.DisallowIdentityContentLengthStrategy;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.entity.LaxContentLengthStrategy: void <init>(int)>(0);
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.entity.DisallowIdentityContentLengthStrategy: void <init>(ch.boye.httpclientandroidlib.entity.ContentLengthStrategy)>($r3);
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer: void <init>(ch.boye.httpclientandroidlib.entity.ContentLengthStrategy)>($r2);
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.impl.entity.EntitySerializer createEntitySerializer()
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.impl.entity.EntitySerializer $r1;
+        ch.boye.httpclientandroidlib.impl.entity.StrictContentLengthStrategy $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.entity.EntitySerializer;
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.entity.StrictContentLengthStrategy;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.entity.StrictContentLengthStrategy: void <init>()>();
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.entity.EntitySerializer: void <init>(ch.boye.httpclientandroidlib.entity.ContentLengthStrategy)>($r2);
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.HttpRequestFactory createHttpRequestFactory()
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.impl.DefaultHttpRequestFactory $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 = new ch.boye.httpclientandroidlib.impl.DefaultHttpRequestFactory;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.impl.DefaultHttpRequestFactory: void <init>()>();
+
+        return $r1;
+    }
+
+    protected ch.boye.httpclientandroidlib.io.HttpMessageParser createRequestParser(ch.boye.httpclientandroidlib.io.SessionInputBuffer, ch.boye.httpclientandroidlib.HttpRequestFactory, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        ch.boye.httpclientandroidlib.HttpRequestFactory $r2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r3;
+        ch.boye.httpclientandroidlib.impl.io.DefaultHttpRequestParser $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequestFactory;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r4 = new ch.boye.httpclientandroidlib.impl.io.DefaultHttpRequestParser;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.impl.io.DefaultHttpRequestParser: void <init>(ch.boye.httpclientandroidlib.io.SessionInputBuffer,ch.boye.httpclientandroidlib.message.LineParser,ch.boye.httpclientandroidlib.HttpRequestFactory,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, null, $r2, $r3);
+
+        return $r4;
+    }
+
+    protected ch.boye.httpclientandroidlib.io.HttpMessageWriter createResponseWriter(ch.boye.httpclientandroidlib.io.SessionOutputBuffer, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.io.SessionOutputBuffer $r1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        ch.boye.httpclientandroidlib.impl.io.HttpResponseWriter $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.SessionOutputBuffer;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r3 = new ch.boye.httpclientandroidlib.impl.io.HttpResponseWriter;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.impl.io.HttpResponseWriter: void <init>(ch.boye.httpclientandroidlib.io.SessionOutputBuffer,ch.boye.httpclientandroidlib.message.LineFormatter,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, null, $r2);
+
+        return $r3;
+    }
+
+    protected void doFlush() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.io.SessionOutputBuffer $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.SessionOutputBuffer outbuffer>;
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.io.SessionOutputBuffer: void flush()>();
+
+        return;
+    }
+
+    public void flush() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: void assertOpen()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: void doFlush()>();
+
+        return;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpConnectionMetrics getMetrics()
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl metrics>;
+
+        return r1;
+    }
+
+    protected void init(ch.boye.httpclientandroidlib.io.SessionInputBuffer, ch.boye.httpclientandroidlib.io.SessionOutputBuffer, ch.boye.httpclientandroidlib.params.HttpParams)
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        ch.boye.httpclientandroidlib.io.SessionOutputBuffer $r2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r3;
+        boolean $z0;
+        java.lang.IllegalArgumentException $r4, $r4_1;
+        ch.boye.httpclientandroidlib.io.EofSensor $r5;
+        ch.boye.httpclientandroidlib.HttpRequestFactory $r6;
+        ch.boye.httpclientandroidlib.io.HttpMessageParser $r7;
+        ch.boye.httpclientandroidlib.io.HttpMessageWriter $r8;
+        ch.boye.httpclientandroidlib.io.HttpTransportMetrics $r9, $r10;
+        ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl $r11;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.io.SessionInputBuffer;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.io.SessionOutputBuffer;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        if $r1 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Input session buffer may not be null");
+
+        throw $r4;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r4_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Output session buffer may not be null");
+
+        throw $r4_1;
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.SessionInputBuffer inbuffer> = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.SessionOutputBuffer outbuffer> = $r2;
+
+        $z0 = $r1 instanceof ch.boye.httpclientandroidlib.io.EofSensor;
+
+        if $z0 == 0 goto label3;
+
+        $r5 = (ch.boye.httpclientandroidlib.io.EofSensor) $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.EofSensor eofSensor> = $r5;
+
+     label3:
+        $r6 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.HttpRequestFactory createHttpRequestFactory()>();
+
+        $r7 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.HttpMessageParser createRequestParser(ch.boye.httpclientandroidlib.io.SessionInputBuffer,ch.boye.httpclientandroidlib.HttpRequestFactory,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $r6, $r3);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.HttpMessageParser requestParser> = $r7;
+
+        $r8 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.HttpMessageWriter createResponseWriter(ch.boye.httpclientandroidlib.io.SessionOutputBuffer,ch.boye.httpclientandroidlib.params.HttpParams)>($r2, $r3);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.HttpMessageWriter responseWriter> = $r8;
+
+        $r9 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.io.SessionInputBuffer: ch.boye.httpclientandroidlib.io.HttpTransportMetrics getMetrics()>();
+
+        $r10 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.io.SessionOutputBuffer: ch.boye.httpclientandroidlib.io.HttpTransportMetrics getMetrics()>();
+
+        $r11 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl createConnectionMetrics(ch.boye.httpclientandroidlib.io.HttpTransportMetrics,ch.boye.httpclientandroidlib.io.HttpTransportMetrics)>($r9, $r10);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl metrics> = $r11;
+
+        return;
+    }
+
+    protected boolean isEof()
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.io.EofSensor $r1, $r1_1, $r1_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.EofSensor eofSensor>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.EofSensor eofSensor>;
+
+        $z0 = interfaceinvoke $r1_1.<ch.boye.httpclientandroidlib.io.EofSensor: boolean isEof()>();
+
+(1)     if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return 0;
+    }
+
+    public boolean isStale()
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r1;
+        java.io.IOException $r2;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: boolean isOpen()>();
+
+        if $z0 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: boolean isEof()>();
+
+(0)     if $z0_1 != 0 goto label5;
+
+(1)     $r1 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.SessionInputBuffer inbuffer>;
+
+     label2:
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.io.SessionInputBuffer: boolean isDataAvailable(int)>(1);
+
+(2)     $z0_2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: boolean isEof()>();
+
+     label3:
+        return $z0_2;
+
+     label4:
+        $r2 := @caughtexception;
+
+(3)     $z0_3 = Phi($z0_1 #1, $z0_2 #2);
+
+     label5:
+        $z0_4 = Phi($z0_1 #0, $z0_3 #3);
+
+        return 1;
+
+        catch java.io.IOException from label2 to label3 with label4;
+    }
+
+    public void receiveRequestEntity(ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest $r1;
+        java.lang.IllegalArgumentException $r2;
+        ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer $r3;
+        ch.boye.httpclientandroidlib.io.SessionInputBuffer $r4;
+        ch.boye.httpclientandroidlib.HttpEntity $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request may not be null");
+
+        throw $r2;
+
+     label1:
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: void assertOpen()>();
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer entitydeserializer>;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.SessionInputBuffer inbuffer>;
+
+        $r5 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.entity.EntityDeserializer: ch.boye.httpclientandroidlib.HttpEntity deserialize(ch.boye.httpclientandroidlib.io.SessionInputBuffer,ch.boye.httpclientandroidlib.HttpMessage)>($r4, $r1);
+
+        interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpEntityEnclosingRequest: void setEntity(ch.boye.httpclientandroidlib.HttpEntity)>($r5);
+
+        return;
+    }
+
+    public ch.boye.httpclientandroidlib.HttpRequest receiveRequestHeader() throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.io.HttpMessageParser $r1;
+        ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl $r2;
+        ch.boye.httpclientandroidlib.HttpMessage $r3;
+        ch.boye.httpclientandroidlib.HttpRequest $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: void assertOpen()>();
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.HttpMessageParser requestParser>;
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.io.HttpMessageParser: ch.boye.httpclientandroidlib.HttpMessage parse()>();
+
+        $r4 = (ch.boye.httpclientandroidlib.HttpRequest) $r3;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl metrics>;
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl: void incrementRequestCount()>();
+
+        return $r4;
+    }
+
+    public void sendResponseEntity(ch.boye.httpclientandroidlib.HttpResponse) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        ch.boye.httpclientandroidlib.impl.entity.EntitySerializer $r2;
+        ch.boye.httpclientandroidlib.io.SessionOutputBuffer $r3;
+        ch.boye.httpclientandroidlib.HttpEntity $r4, $r4_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+        if $r4 != null goto label1;
+
+        return;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.entity.EntitySerializer entityserializer>;
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.SessionOutputBuffer outbuffer>;
+
+        $r4_1 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.HttpEntity getEntity()>();
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.entity.EntitySerializer: void serialize(ch.boye.httpclientandroidlib.io.SessionOutputBuffer,ch.boye.httpclientandroidlib.HttpMessage,ch.boye.httpclientandroidlib.HttpEntity)>($r3, $r1, $r4_1);
+
+        return;
+    }
+
+    public void sendResponseHeader(ch.boye.httpclientandroidlib.HttpResponse) throws ch.boye.httpclientandroidlib.HttpException, java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        java.lang.IllegalArgumentException $r2;
+        ch.boye.httpclientandroidlib.io.HttpMessageWriter $r3;
+        ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl $r4;
+        ch.boye.httpclientandroidlib.StatusLine $r5;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP response may not be null");
+
+        throw $r2;
+
+     label1:
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: void assertOpen()>();
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.io.HttpMessageWriter responseWriter>;
+
+        interfaceinvoke $r3.<ch.boye.httpclientandroidlib.io.HttpMessageWriter: void write(ch.boye.httpclientandroidlib.HttpMessage)>($r1);
+
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+        if $i0 < 200 goto label2;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.AbstractHttpServerConnection: ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl metrics>;
+
+        virtualinvoke $r4.<ch.boye.httpclientandroidlib.impl.HttpConnectionMetricsImpl: void incrementResponseCount()>();
+
+     label2:
+        return;
+    }
+}

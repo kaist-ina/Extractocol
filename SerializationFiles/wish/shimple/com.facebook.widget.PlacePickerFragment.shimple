@@ -1,0 +1,905 @@
+public class com.facebook.widget.PlacePickerFragment extends com.facebook.widget.PickerFragment
+{
+    private static final java.lang.String CATEGORY;
+    public static final int DEFAULT_RADIUS_IN_METERS;
+    public static final int DEFAULT_RESULTS_LIMIT;
+    private static final java.lang.String ID;
+    private static final java.lang.String LOCATION;
+    public static final java.lang.String LOCATION_BUNDLE_KEY;
+    private static final java.lang.String NAME;
+    public static final java.lang.String RADIUS_IN_METERS_BUNDLE_KEY;
+    public static final java.lang.String RESULTS_LIMIT_BUNDLE_KEY;
+    public static final java.lang.String SEARCH_TEXT_BUNDLE_KEY;
+    public static final java.lang.String SHOW_SEARCH_BOX_BUNDLE_KEY;
+    private static final java.lang.String TAG;
+    private static final java.lang.String WERE_HERE_COUNT;
+    private static final int searchTextTimerDelayInMilliseconds;
+    private boolean hasSearchTextChangedSinceLastQuery;
+    private android.location.Location location;
+    private int radiusInMeters;
+    private int resultsLimit;
+    private android.widget.EditText searchBox;
+    private java.lang.String searchText;
+    private java.util.Timer searchTextTimer;
+    private boolean showSearchBox;
+
+    public void <init>()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        specialinvoke $r0.<com.facebook.widget.PlacePickerFragment: void <init>(android.os.Bundle)>(null);
+
+        return;
+    }
+
+    public void <init>(android.os.Bundle)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.os.Bundle $r1;
+        int $i0;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $i0 = <com.facebook.android.R$layout: int com_facebook_placepickerfragment>;
+
+        specialinvoke $r0.<com.facebook.widget.PickerFragment: void <init>(java.lang.Class,int,android.os.Bundle)>(class "com/facebook/model/GraphPlace", $i0, $r1);
+
+        $r0.<com.facebook.widget.PlacePickerFragment: int radiusInMeters> = 1000;
+
+        $r0.<com.facebook.widget.PlacePickerFragment: int resultsLimit> = 100;
+
+        $r0.<com.facebook.widget.PlacePickerFragment: boolean showSearchBox> = 1;
+
+        specialinvoke $r0.<com.facebook.widget.PlacePickerFragment: void setPlacePickerSettingsFromBundle(android.os.Bundle)>($r1);
+
+        return;
+    }
+
+    static void access$200(com.facebook.widget.PlacePickerFragment)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+
+        $r0 := @parameter0: com.facebook.widget.PlacePickerFragment;
+
+        specialinvoke $r0.<com.facebook.widget.PlacePickerFragment: void onSearchTextTimerTriggered()>();
+
+        return;
+    }
+
+    private com.facebook.Request createRequest(android.location.Location, int, int, java.lang.String, java.util.Set, com.facebook.Session)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.location.Location $r1;
+        int $i0, $i1;
+        java.util.Set $r2;
+        com.facebook.Session $r3;
+        java.util.HashSet $r4;
+        java.lang.String[] $r5;
+        com.facebook.widget.GraphObjectAdapter $r6;
+        java.lang.String $r7, $r7_1, $r7_2;
+        com.facebook.Request $r8;
+        java.util.List $r9;
+        android.os.Bundle $r10;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: android.location.Location;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r7 := @parameter3: java.lang.String;
+
+        $r2 := @parameter4: java.util.Set;
+
+        $r3 := @parameter5: com.facebook.Session;
+
+        $r8 = staticinvoke <com.facebook.Request: com.facebook.Request newPlacesSearchRequest(com.facebook.Session,android.location.Location,int,int,java.lang.String,com.facebook.Request$GraphPlaceListCallback)>($r3, $r1, $i0, $i1, $r7, null);
+
+        $r4 = new java.util.HashSet;
+
+        specialinvoke $r4.<java.util.HashSet: void <init>(java.util.Collection)>($r2);
+
+        $r5 = newarray (java.lang.String)[5];
+
+        $r5[0] = "id";
+
+        $r5[1] = "name";
+
+        $r5[2] = "location";
+
+        $r5[3] = "category";
+
+        $r5[4] = "were_here_count";
+
+        $r9 = staticinvoke <java.util.Arrays: java.util.List asList(java.lang.Object[])>($r5);
+
+        interfaceinvoke $r4.<java.util.Set: boolean addAll(java.util.Collection)>($r9);
+
+        $r6 = $r0.<com.facebook.widget.PickerFragment: com.facebook.widget.GraphObjectAdapter adapter>;
+
+        $r7_1 = virtualinvoke $r6.<com.facebook.widget.GraphObjectAdapter: java.lang.String getPictureFieldSpecifier()>();
+
+        if $r7_1 == null goto label1;
+
+        interfaceinvoke $r4.<java.util.Set: boolean add(java.lang.Object)>($r7_1);
+
+     label1:
+        $r10 = virtualinvoke $r8.<com.facebook.Request: android.os.Bundle getParameters()>();
+
+        $r7_2 = staticinvoke <android.text.TextUtils: java.lang.String join(java.lang.CharSequence,java.lang.Iterable)>(",", $r4);
+
+        virtualinvoke $r10.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("fields", $r7_2);
+
+        virtualinvoke $r8.<com.facebook.Request: void setParameters(android.os.Bundle)>($r10);
+
+        return $r8;
+    }
+
+    private java.util.Timer createSearchTextTimer()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        java.util.Timer $r1;
+        com.facebook.widget.PlacePickerFragment$2 $r2;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 = new java.util.Timer;
+
+        specialinvoke $r1.<java.util.Timer: void <init>()>();
+
+        $r2 = new com.facebook.widget.PlacePickerFragment$2;
+
+        specialinvoke $r2.<com.facebook.widget.PlacePickerFragment$2: void <init>(com.facebook.widget.PlacePickerFragment)>($r0);
+
+        virtualinvoke $r1.<java.util.Timer: void schedule(java.util.TimerTask,long,long)>($r2, 0L, 2000L);
+
+        return $r1;
+    }
+
+    private void onSearchTextTimerTriggered()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        boolean $z0;
+        android.os.Handler $r1;
+        com.facebook.widget.PlacePickerFragment$3 $r2;
+        java.util.Timer $r3;
+        android.os.Looper $r4;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $z0 = $r0.<com.facebook.widget.PlacePickerFragment: boolean hasSearchTextChangedSinceLastQuery>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new android.os.Handler;
+
+        $r4 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r1.<android.os.Handler: void <init>(android.os.Looper)>($r4);
+
+        $r2 = new com.facebook.widget.PlacePickerFragment$3;
+
+        specialinvoke $r2.<com.facebook.widget.PlacePickerFragment$3: void <init>(com.facebook.widget.PlacePickerFragment)>($r0);
+
+        virtualinvoke $r1.<android.os.Handler: boolean post(java.lang.Runnable)>($r2);
+
+        return;
+
+     label1:
+        $r3 = $r0.<com.facebook.widget.PlacePickerFragment: java.util.Timer searchTextTimer>;
+
+        virtualinvoke $r3.<java.util.Timer: void cancel()>();
+
+        $r0.<com.facebook.widget.PlacePickerFragment: java.util.Timer searchTextTimer> = null;
+
+        return;
+    }
+
+    private void setPlacePickerSettingsFromBundle(android.os.Bundle)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.os.Bundle $r1;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.lang.String $r2;
+        android.os.Parcelable $r3;
+        android.location.Location $r4;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+(0)     if $r1 == null goto label3;
+
+        $i0 = $r0.<com.facebook.widget.PlacePickerFragment: int radiusInMeters>;
+
+        $i0_1 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String,int)>("com.facebook.widget.PlacePickerFragment.RadiusInMeters", $i0);
+
+        virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: void setRadiusInMeters(int)>($i0_1);
+
+        $i0_2 = $r0.<com.facebook.widget.PlacePickerFragment: int resultsLimit>;
+
+        $i0_3 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String,int)>("com.facebook.widget.PlacePickerFragment.ResultsLimit", $i0_2);
+
+        virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: void setResultsLimit(int)>($i0_3);
+
+        $z0 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("com.facebook.widget.PlacePickerFragment.SearchText");
+
+        if $z0 == 0 goto label1;
+
+        $r2 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("com.facebook.widget.PlacePickerFragment.SearchText");
+
+        virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: void setSearchText(java.lang.String)>($r2);
+
+     label1:
+        $z0_1 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("com.facebook.widget.PlacePickerFragment.Location");
+
+        if $z0_1 == 0 goto label2;
+
+        $r3 = virtualinvoke $r1.<android.os.Bundle: android.os.Parcelable getParcelable(java.lang.String)>("com.facebook.widget.PlacePickerFragment.Location");
+
+        $r4 = (android.location.Location) $r3;
+
+        virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: void setLocation(android.location.Location)>($r4);
+
+     label2:
+        $z0_2 = $r0.<com.facebook.widget.PlacePickerFragment: boolean showSearchBox>;
+
+        $z0_3 = virtualinvoke $r1.<android.os.Bundle: boolean getBoolean(java.lang.String,boolean)>("com.facebook.widget.PlacePickerFragment.ShowSearchBox", $z0_2);
+
+(1)     $r0.<com.facebook.widget.PlacePickerFragment: boolean showSearchBox> = $z0_3;
+
+     label3:
+        $i0_4 = Phi($i0 #0, $i0_3 #1);
+
+        $z0_4 = Phi($z0 #0, $z0_3 #1);
+
+        return;
+    }
+
+    com.facebook.widget.PickerFragment$PickerFragmentAdapter createAdapter()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        com.facebook.widget.PlacePickerFragment$1 $r1;
+        android.support.v4.app.FragmentActivity $r2;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 = new com.facebook.widget.PlacePickerFragment$1;
+
+        $r2 = virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        specialinvoke $r1.<com.facebook.widget.PlacePickerFragment$1: void <init>(com.facebook.widget.PlacePickerFragment,android.content.Context)>($r0, $r2);
+
+        virtualinvoke $r1.<com.facebook.widget.PickerFragment$PickerFragmentAdapter: void setShowCheckbox(boolean)>(0);
+
+        $z0 = virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: boolean getShowPictures()>();
+
+        virtualinvoke $r1.<com.facebook.widget.PickerFragment$PickerFragmentAdapter: void setShowPicture(boolean)>($z0);
+
+        return $r1;
+    }
+
+    com.facebook.widget.PickerFragment$LoadingStrategy createLoadingStrategy()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        com.facebook.widget.PlacePickerFragment$AsNeededLoadingStrategy $r1;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 = new com.facebook.widget.PlacePickerFragment$AsNeededLoadingStrategy;
+
+        specialinvoke $r1.<com.facebook.widget.PlacePickerFragment$AsNeededLoadingStrategy: void <init>(com.facebook.widget.PlacePickerFragment,com.facebook.widget.PlacePickerFragment$1)>($r0, null);
+
+        return $r1;
+    }
+
+    com.facebook.widget.PickerFragment$SelectionStrategy createSelectionStrategy()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        com.facebook.widget.PickerFragment$SingleSelectionStrategy $r1;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 = new com.facebook.widget.PickerFragment$SingleSelectionStrategy;
+
+        specialinvoke $r1.<com.facebook.widget.PickerFragment$SingleSelectionStrategy: void <init>(com.facebook.widget.PickerFragment)>($r0);
+
+        return $r1;
+    }
+
+    java.lang.String getDefaultTitleText()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        int $i0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $i0 = <com.facebook.android.R$string: int com_facebook_nearby>;
+
+        $r1 = virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: java.lang.String getString(int)>($i0);
+
+        return $r1;
+    }
+
+    public android.location.Location getLocation()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.location.Location r1;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        r1 = $r0.<com.facebook.widget.PlacePickerFragment: android.location.Location location>;
+
+        return r1;
+    }
+
+    public int getRadiusInMeters()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        int i0;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        i0 = $r0.<com.facebook.widget.PlacePickerFragment: int radiusInMeters>;
+
+        return i0;
+    }
+
+    com.facebook.Request getRequestForLoadData(com.facebook.Session)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        com.facebook.Session $r1;
+        android.location.Location $r2;
+        int $i0, $i1;
+        java.lang.String $r3;
+        java.util.HashSet $r4;
+        com.facebook.Request $r5;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: com.facebook.Session;
+
+        $r2 = $r0.<com.facebook.widget.PlacePickerFragment: android.location.Location location>;
+
+        $i0 = $r0.<com.facebook.widget.PlacePickerFragment: int radiusInMeters>;
+
+        $i1 = $r0.<com.facebook.widget.PlacePickerFragment: int resultsLimit>;
+
+        $r3 = $r0.<com.facebook.widget.PlacePickerFragment: java.lang.String searchText>;
+
+        $r4 = $r0.<com.facebook.widget.PickerFragment: java.util.HashSet extraFields>;
+
+        $r5 = specialinvoke $r0.<com.facebook.widget.PlacePickerFragment: com.facebook.Request createRequest(android.location.Location,int,int,java.lang.String,java.util.Set,com.facebook.Session)>($r2, $i0, $i1, $r3, $r4, $r1);
+
+        return $r5;
+    }
+
+    public int getResultsLimit()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        int i0;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        i0 = $r0.<com.facebook.widget.PlacePickerFragment: int resultsLimit>;
+
+        return i0;
+    }
+
+    public java.lang.String getSearchText()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        r1 = $r0.<com.facebook.widget.PlacePickerFragment: java.lang.String searchText>;
+
+        return r1;
+    }
+
+    public com.facebook.model.GraphPlace getSelection()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        java.util.List $r1;
+        boolean $z0;
+        java.util.Iterator $r2;
+        java.lang.Object $r3;
+        com.facebook.model.GraphPlace $r4;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 = virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: java.util.List getSelectedGraphObjects()>();
+
+        if $r1 == null goto label1;
+
+        $z0 = interfaceinvoke $r1.<java.util.Collection: boolean isEmpty()>();
+
+        if $z0 != 0 goto label1;
+
+        $r2 = interfaceinvoke $r1.<java.util.Collection: java.util.Iterator iterator()>();
+
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r4 = (com.facebook.model.GraphPlace) $r3;
+
+        return $r4;
+
+     label1:
+        return null;
+    }
+
+    void logAppEvents(boolean)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        boolean $z0;
+        android.os.Bundle $r1;
+        android.support.v4.app.FragmentActivity $r2;
+        com.facebook.Session $r3;
+        com.facebook.AppEventsLogger $r4;
+        java.lang.String $r5, $r5_1, $r5_2;
+        com.facebook.model.GraphPlace $r6;
+        byte $b0, $b0_1, $b0_2;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $z0 := @parameter0: boolean;
+
+        $r2 = virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r3 = virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: com.facebook.Session getSession()>();
+
+        $r4 = staticinvoke <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger newLogger(android.content.Context,com.facebook.Session)>($r2, $r3);
+
+        $r1 = new android.os.Bundle;
+
+        specialinvoke $r1.<android.os.Bundle: void <init>()>();
+
+        if $z0 == 0 goto label3;
+
+(0)     $r5 = "Completed";
+
+     label1:
+        $r5_1 = Phi($r5 #0, $r5_2 #2);
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("fb_dialog_outcome", $r5_1);
+
+        $r6 = virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: com.facebook.model.GraphPlace getSelection()>();
+
+        if $r6 == null goto label4;
+
+(1)     $b0 = 1;
+
+     label2:
+        $b0_1 = Phi($b0 #1, $b0_2 #3);
+
+        virtualinvoke $r1.<android.os.Bundle: void putInt(java.lang.String,int)>("num_places_picked", $b0_1);
+
+        virtualinvoke $r4.<com.facebook.AppEventsLogger: void logSdkEvent(java.lang.String,java.lang.Double,android.os.Bundle)>("fb_place_picker_usage", null, $r1);
+
+        return;
+
+     label3:
+        $r5_2 = "Unknown";
+
+(2)     goto label1;
+
+     label4:
+        $b0_2 = 0;
+
+(3)     goto label2;
+    }
+
+    public void onAttach(android.app.Activity)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.app.Activity $r1;
+        android.widget.EditText $r2, $r2_1, $r2_2;
+        android.support.v4.app.FragmentActivity $r3;
+        java.lang.Object $r4;
+        android.view.inputmethod.InputMethodManager $r5;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        specialinvoke $r0.<com.facebook.widget.PickerFragment: void onAttach(android.app.Activity)>($r1);
+
+        $r2 = $r0.<com.facebook.widget.PlacePickerFragment: android.widget.EditText searchBox>;
+
+(0)     if $r2 == null goto label1;
+
+        $r3 = virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r4 = virtualinvoke $r3.<android.support.v4.app.FragmentActivity: java.lang.Object getSystemService(java.lang.String)>("input_method");
+
+        $r5 = (android.view.inputmethod.InputMethodManager) $r4;
+
+        $r2_1 = $r0.<com.facebook.widget.PlacePickerFragment: android.widget.EditText searchBox>;
+
+(1)     virtualinvoke $r5.<android.view.inputmethod.InputMethodManager: boolean showSoftInput(android.view.View,int)>($r2_1, 1);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    public void onDetach()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.widget.EditText $r1, $r1_1, $r1_2;
+        android.support.v4.app.FragmentActivity $r2;
+        java.lang.Object $r3;
+        android.view.inputmethod.InputMethodManager $r4;
+        android.os.IBinder $r5;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        specialinvoke $r0.<com.facebook.widget.PickerFragment: void onDetach()>();
+
+        $r1 = $r0.<com.facebook.widget.PlacePickerFragment: android.widget.EditText searchBox>;
+
+(0)     if $r1 == null goto label1;
+
+        $r2 = virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r3 = virtualinvoke $r2.<android.support.v4.app.FragmentActivity: java.lang.Object getSystemService(java.lang.String)>("input_method");
+
+        $r4 = (android.view.inputmethod.InputMethodManager) $r3;
+
+        $r1_1 = $r0.<com.facebook.widget.PlacePickerFragment: android.widget.EditText searchBox>;
+
+        $r5 = virtualinvoke $r1_1.<android.widget.EditText: android.os.IBinder getWindowToken()>();
+
+(1)     virtualinvoke $r4.<android.view.inputmethod.InputMethodManager: boolean hideSoftInputFromWindow(android.os.IBinder,int)>($r5, 0);
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void onInflate(android.app.Activity, android.util.AttributeSet, android.os.Bundle)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.app.Activity $r1;
+        android.util.AttributeSet $r2;
+        android.os.Bundle $r3;
+        int[] $r4;
+        android.content.res.TypedArray $r5;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        boolean $z0, $z0_1, $z0_2;
+        java.lang.String $r6;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $r3 := @parameter2: android.os.Bundle;
+
+        specialinvoke $r0.<com.facebook.widget.PickerFragment: void onInflate(android.app.Activity,android.util.AttributeSet,android.os.Bundle)>($r1, $r2, $r3);
+
+        $r4 = <com.facebook.android.R$styleable: int[] com_facebook_place_picker_fragment>;
+
+        $r5 = virtualinvoke $r1.<android.app.Activity: android.content.res.TypedArray obtainStyledAttributes(android.util.AttributeSet,int[])>($r2, $r4);
+
+        $i0 = $r0.<com.facebook.widget.PlacePickerFragment: int radiusInMeters>;
+
+        $i0_1 = virtualinvoke $r5.<android.content.res.TypedArray: int getInt(int,int)>(0, $i0);
+
+        virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: void setRadiusInMeters(int)>($i0_1);
+
+        $i0_2 = $r0.<com.facebook.widget.PlacePickerFragment: int resultsLimit>;
+
+        $i0_3 = virtualinvoke $r5.<android.content.res.TypedArray: int getInt(int,int)>(1, $i0_2);
+
+        virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: void setResultsLimit(int)>($i0_3);
+
+        $z0 = virtualinvoke $r5.<android.content.res.TypedArray: boolean hasValue(int)>(1);
+
+        if $z0 == 0 goto label1;
+
+        $r6 = virtualinvoke $r5.<android.content.res.TypedArray: java.lang.String getString(int)>(2);
+
+        virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: void setSearchText(java.lang.String)>($r6);
+
+     label1:
+        $z0_1 = $r0.<com.facebook.widget.PlacePickerFragment: boolean showSearchBox>;
+
+        $z0_2 = virtualinvoke $r5.<android.content.res.TypedArray: boolean getBoolean(int,boolean)>(3, $z0_1);
+
+        $r0.<com.facebook.widget.PlacePickerFragment: boolean showSearchBox> = $z0_2;
+
+        virtualinvoke $r5.<android.content.res.TypedArray: void recycle()>();
+
+        return;
+    }
+
+    void onLoadingData()
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r0.<com.facebook.widget.PlacePickerFragment: boolean hasSearchTextChangedSinceLastQuery> = 0;
+
+        return;
+    }
+
+    public void onSearchBoxTextChanged(java.lang.String, boolean)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        java.lang.String $r1, $r2, $r2_1, $r2_2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.util.Timer $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $z0 := @parameter1: boolean;
+
+(0)     if $z0 != 0 goto label1;
+
+        $r1 = $r0.<com.facebook.widget.PlacePickerFragment: java.lang.String searchText>;
+
+        $z0_1 = staticinvoke <com.facebook.internal.Utility: boolean stringsEqualOrEmpty(java.lang.String,java.lang.String)>($r1, $r2);
+
+(1)     if $z0_1 == 0 goto label1;
+
+        return;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $z0_3 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r2);
+
+(2)     if $z0_3 == 0 goto label2;
+
+(3)     $r2_1 = null;
+
+     label2:
+        $r2_2 = Phi($r2 #2, $r2_1 #3);
+
+        $r0.<com.facebook.widget.PlacePickerFragment: java.lang.String searchText> = $r2_2;
+
+        $r0.<com.facebook.widget.PlacePickerFragment: boolean hasSearchTextChangedSinceLastQuery> = 1;
+
+        $r3 = $r0.<com.facebook.widget.PlacePickerFragment: java.util.Timer searchTextTimer>;
+
+(4)     if $r3 != null goto label3;
+
+        $r3_1 = specialinvoke $r0.<com.facebook.widget.PlacePickerFragment: java.util.Timer createSearchTextTimer()>();
+
+(5)     $r0.<com.facebook.widget.PlacePickerFragment: java.util.Timer searchTextTimer> = $r3_1;
+
+     label3:
+        $r3_2 = Phi($r3 #4, $r3_1 #5);
+
+        return;
+    }
+
+    void saveSettingsToBundle(android.os.Bundle)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.os.Bundle $r1;
+        java.lang.String $r2;
+        android.location.Location $r3;
+        boolean $z0;
+        int $i0, $i0_1;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.facebook.widget.PickerFragment: void saveSettingsToBundle(android.os.Bundle)>($r1);
+
+        $i0 = $r0.<com.facebook.widget.PlacePickerFragment: int radiusInMeters>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putInt(java.lang.String,int)>("com.facebook.widget.PlacePickerFragment.RadiusInMeters", $i0);
+
+        $i0_1 = $r0.<com.facebook.widget.PlacePickerFragment: int resultsLimit>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putInt(java.lang.String,int)>("com.facebook.widget.PlacePickerFragment.ResultsLimit", $i0_1);
+
+        $r2 = $r0.<com.facebook.widget.PlacePickerFragment: java.lang.String searchText>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("com.facebook.widget.PlacePickerFragment.SearchText", $r2);
+
+        $r3 = $r0.<com.facebook.widget.PlacePickerFragment: android.location.Location location>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putParcelable(java.lang.String,android.os.Parcelable)>("com.facebook.widget.PlacePickerFragment.Location", $r3);
+
+        $z0 = $r0.<com.facebook.widget.PlacePickerFragment: boolean showSearchBox>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putBoolean(java.lang.String,boolean)>("com.facebook.widget.PlacePickerFragment.ShowSearchBox", $z0);
+
+        return;
+    }
+
+    public void setLocation(android.location.Location)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.location.Location $r1;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: android.location.Location;
+
+        $r0.<com.facebook.widget.PlacePickerFragment: android.location.Location location> = $r1;
+
+        return;
+    }
+
+    public void setRadiusInMeters(int)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        int $i0;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $i0 := @parameter0: int;
+
+        $r0.<com.facebook.widget.PlacePickerFragment: int radiusInMeters> = $i0;
+
+        return;
+    }
+
+    public void setResultsLimit(int)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        int $i0;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $i0 := @parameter0: int;
+
+        $r0.<com.facebook.widget.PlacePickerFragment: int resultsLimit> = $i0;
+
+        return;
+    }
+
+    public void setSearchText(java.lang.String)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        boolean $z0;
+        java.lang.String $r1, $r1_1, $r1_2;
+        android.widget.EditText $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r1);
+
+(0)     if $z0 == 0 goto label1;
+
+(1)     $r1_1 = null;
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        $r0.<com.facebook.widget.PlacePickerFragment: java.lang.String searchText> = $r1_2;
+
+        $r2 = $r0.<com.facebook.widget.PlacePickerFragment: android.widget.EditText searchBox>;
+
+(2)     if $r2 == null goto label2;
+
+        $r2_1 = $r0.<com.facebook.widget.PlacePickerFragment: android.widget.EditText searchBox>;
+
+(3)     virtualinvoke $r2_1.<android.widget.EditText: void setText(java.lang.CharSequence)>($r1_2);
+
+     label2:
+        $r2_2 = Phi($r2 #2, $r2_1 #3);
+
+        return;
+    }
+
+    public void setSettingsFromBundle(android.os.Bundle)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.os.Bundle $r1;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.facebook.widget.PickerFragment: void setSettingsFromBundle(android.os.Bundle)>($r1);
+
+        specialinvoke $r0.<com.facebook.widget.PlacePickerFragment: void setPlacePickerSettingsFromBundle(android.os.Bundle)>($r1);
+
+        return;
+    }
+
+    void setupViews(android.view.ViewGroup)
+    {
+        com.facebook.widget.PlacePickerFragment $r0;
+        android.view.ViewGroup $r1;
+        com.facebook.widget.PlacePickerFragment$SearchTextWatcher $r2;
+        boolean $z0, $z0_1, $z0_2;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        android.view.View $r3, $r3_1, $r3_2, $r3_3;
+        android.widget.ListView $r4;
+        android.support.v4.app.FragmentActivity $r5;
+        android.view.LayoutInflater $r6;
+        android.widget.EditText $r7, $r7_1, $r7_2, $r7_3;
+        java.lang.String $r8, $r8_1, $r8_2;
+
+        $r0 := @this: com.facebook.widget.PlacePickerFragment;
+
+        $r1 := @parameter0: android.view.ViewGroup;
+
+        $z0 = $r0.<com.facebook.widget.PlacePickerFragment: boolean showSearchBox>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $i0 = <com.facebook.android.R$id: int com_facebook_picker_list_view>;
+
+        $r3 = virtualinvoke $r1.<android.view.ViewGroup: android.view.View findViewById(int)>($i0);
+
+        $r4 = (android.widget.ListView) $r3;
+
+        $r5 = virtualinvoke $r0.<com.facebook.widget.PlacePickerFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r6 = virtualinvoke $r5.<android.support.v4.app.FragmentActivity: android.view.LayoutInflater getLayoutInflater()>();
+
+        $i0_1 = <com.facebook.android.R$layout: int com_facebook_picker_search_box>;
+
+        $r3_1 = virtualinvoke $r6.<android.view.LayoutInflater: android.view.View inflate(int,android.view.ViewGroup,boolean)>($i0_1, $r4, 0);
+
+        virtualinvoke $r4.<android.widget.ListView: void addHeaderView(android.view.View,java.lang.Object,boolean)>($r3_1, null, 0);
+
+        $i0_2 = <com.facebook.android.R$id: int com_facebook_picker_search_text>;
+
+        $r3_2 = virtualinvoke $r1.<android.view.ViewGroup: android.view.View findViewById(int)>($i0_2);
+
+        $r7 = (android.widget.EditText) $r3_2;
+
+        $r0.<com.facebook.widget.PlacePickerFragment: android.widget.EditText searchBox> = $r7;
+
+        $r7_1 = $r0.<com.facebook.widget.PlacePickerFragment: android.widget.EditText searchBox>;
+
+        $r2 = new com.facebook.widget.PlacePickerFragment$SearchTextWatcher;
+
+        specialinvoke $r2.<com.facebook.widget.PlacePickerFragment$SearchTextWatcher: void <init>(com.facebook.widget.PlacePickerFragment,com.facebook.widget.PlacePickerFragment$1)>($r0, null);
+
+        virtualinvoke $r7_1.<android.widget.EditText: void addTextChangedListener(android.text.TextWatcher)>($r2);
+
+        $r8 = $r0.<com.facebook.widget.PlacePickerFragment: java.lang.String searchText>;
+
+        $z0_1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r8);
+
+(1)     if $z0_1 != 0 goto label1;
+
+        $r7_2 = $r0.<com.facebook.widget.PlacePickerFragment: android.widget.EditText searchBox>;
+
+        $r8_1 = $r0.<com.facebook.widget.PlacePickerFragment: java.lang.String searchText>;
+
+(2)     virtualinvoke $r7_2.<android.widget.EditText: void setText(java.lang.CharSequence)>($r8_1);
+
+     label1:
+        $r7_3 = Phi($r7 #0, $r7_1 #1, $r7_2 #2);
+
+        $r3_3 = Phi($r3 #0, $r3_2 #1, $r3_2 #2);
+
+        $r8_2 = Phi($r8 #0, $r8 #1, $r8_1 #2);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2);
+
+        $i0_3 = Phi($i0 #0, $i0_2 #1, $i0_2 #2);
+
+        return;
+    }
+}

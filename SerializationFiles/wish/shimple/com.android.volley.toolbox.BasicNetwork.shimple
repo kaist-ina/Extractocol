@@ -1,0 +1,910 @@
+public class com.android.volley.toolbox.BasicNetwork extends java.lang.Object implements com.android.volley.Network
+{
+    protected static final boolean DEBUG;
+    private static int DEFAULT_POOL_SIZE;
+    private static int SLOW_REQUEST_THRESHOLD_MS;
+    protected final com.android.volley.toolbox.HttpStack mHttpStack;
+    protected final com.android.volley.toolbox.ByteArrayPool mPool;
+
+    static void <clinit>()
+    {
+        boolean $z0;
+
+        $z0 = <com.android.volley.VolleyLog: boolean DEBUG>;
+
+        <com.android.volley.toolbox.BasicNetwork: boolean DEBUG> = $z0;
+
+        <com.android.volley.toolbox.BasicNetwork: int SLOW_REQUEST_THRESHOLD_MS> = 3000;
+
+        <com.android.volley.toolbox.BasicNetwork: int DEFAULT_POOL_SIZE> = 4096;
+
+        return;
+    }
+
+    public void <init>(com.android.volley.toolbox.HttpStack)
+    {
+        com.android.volley.toolbox.BasicNetwork $r0;
+        com.android.volley.toolbox.HttpStack $r1;
+        com.android.volley.toolbox.ByteArrayPool $r2;
+        int $i0;
+
+        $r0 := @this: com.android.volley.toolbox.BasicNetwork;
+
+        $r1 := @parameter0: com.android.volley.toolbox.HttpStack;
+
+        $r2 = new com.android.volley.toolbox.ByteArrayPool;
+
+        $i0 = <com.android.volley.toolbox.BasicNetwork: int DEFAULT_POOL_SIZE>;
+
+        specialinvoke $r2.<com.android.volley.toolbox.ByteArrayPool: void <init>(int)>($i0);
+
+        specialinvoke $r0.<com.android.volley.toolbox.BasicNetwork: void <init>(com.android.volley.toolbox.HttpStack,com.android.volley.toolbox.ByteArrayPool)>($r1, $r2);
+
+        return;
+    }
+
+    public void <init>(com.android.volley.toolbox.HttpStack, com.android.volley.toolbox.ByteArrayPool)
+    {
+        com.android.volley.toolbox.BasicNetwork $r0;
+        com.android.volley.toolbox.HttpStack $r1;
+        com.android.volley.toolbox.ByteArrayPool $r2;
+
+        $r0 := @this: com.android.volley.toolbox.BasicNetwork;
+
+        $r1 := @parameter0: com.android.volley.toolbox.HttpStack;
+
+        $r2 := @parameter1: com.android.volley.toolbox.ByteArrayPool;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.android.volley.toolbox.BasicNetwork: com.android.volley.toolbox.HttpStack mHttpStack> = $r1;
+
+        $r0.<com.android.volley.toolbox.BasicNetwork: com.android.volley.toolbox.ByteArrayPool mPool> = $r2;
+
+        return;
+    }
+
+    private void addCacheHeaders(java.util.Map, com.android.volley.Cache$Entry)
+    {
+        com.android.volley.toolbox.BasicNetwork $r0;
+        java.util.Map $r1;
+        com.android.volley.Cache$Entry $r2;
+        byte $b0;
+        java.util.Date $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        long $l1, $l1_1, $l1_2;
+
+        $r0 := @this: com.android.volley.toolbox.BasicNetwork;
+
+        $r1 := @parameter0: java.util.Map;
+
+        $r2 := @parameter1: com.android.volley.Cache$Entry;
+
+        if $r2 != null goto label1;
+
+        return;
+
+     label1:
+        $r4 = $r2.<com.android.volley.Cache$Entry: java.lang.String etag>;
+
+(0)     if $r4 == null goto label2;
+
+        $r4_1 = $r2.<com.android.volley.Cache$Entry: java.lang.String etag>;
+
+(1)     interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("If-None-Match", $r4_1);
+
+     label2:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $l1 = $r2.<com.android.volley.Cache$Entry: long serverDate>;
+
+        $b0 = $l1 cmp 0L;
+
+(2)     if $b0 <= 0 goto label3;
+
+        $r3 = new java.util.Date;
+
+        $l1_1 = $r2.<com.android.volley.Cache$Entry: long serverDate>;
+
+        specialinvoke $r3.<java.util.Date: void <init>(long)>($l1_1);
+
+        $r4_3 = staticinvoke <org.apache.http.impl.cookie.DateUtils: java.lang.String formatDate(java.util.Date)>($r3);
+
+(3)     interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("If-Modified-Since", $r4_3);
+
+     label3:
+        $r4_4 = Phi($r4_2 #2, $r4_3 #3);
+
+        $l1_2 = Phi($l1 #2, $l1_1 #3);
+
+        return;
+    }
+
+    private static void attemptRetryOnException(java.lang.String, com.android.volley.Request, com.android.volley.VolleyError) throws com.android.volley.VolleyError
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.VolleyError $r1, $r2;
+        java.lang.String $r3, $r3_1, $r3_2;
+        com.android.volley.RetryPolicy $r4;
+        int $i0;
+        java.lang.Object[] $r5, $r5_1;
+        java.lang.Integer $r6, $r6_1;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r0 := @parameter1: com.android.volley.Request;
+
+        $r1 := @parameter2: com.android.volley.VolleyError;
+
+        $r4 = virtualinvoke $r0.<com.android.volley.Request: com.android.volley.RetryPolicy getRetryPolicy()>();
+
+        $i0 = virtualinvoke $r0.<com.android.volley.Request: int getTimeoutMs()>();
+
+     label1:
+        interfaceinvoke $r4.<com.android.volley.RetryPolicy: void retry(com.android.volley.VolleyError)>($r1);
+
+     label2:
+        $r5 = newarray (java.lang.Object)[2];
+
+        $r5[0] = $r3;
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r5[1] = $r6;
+
+        $r3_1 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s-retry [timeout=%s]", $r5);
+
+        virtualinvoke $r0.<com.android.volley.Request: void addMarker(java.lang.String)>($r3_1);
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r5_1 = newarray (java.lang.Object)[2];
+
+        $r5_1[0] = $r3;
+
+        $r6_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r5_1[1] = $r6_1;
+
+        $r3_2 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s-timeout-giveup [timeout=%s]", $r5_1);
+
+        virtualinvoke $r0.<com.android.volley.Request: void addMarker(java.lang.String)>($r3_2);
+
+        throw $r2;
+
+        catch com.android.volley.VolleyError from label1 to label2 with label3;
+    }
+
+    private static java.util.Map convertHeaders(org.apache.http.Header[])
+    {
+        org.apache.http.Header[] $r0;
+        java.util.HashMap $r1;
+        int $i0, $i1, $i1_1, $i1_2;
+        org.apache.http.Header $r2, $r2_1, $r2_2;
+        java.lang.String $r3, $r4;
+
+        $r0 := @parameter0: org.apache.http.Header[];
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        $r2 = Phi($r2 #0, $r2_2 #1);
+
+        $i0 = lengthof $r0;
+
+        if $i1_1 >= $i0 goto label2;
+
+        $r2_1 = $r0[$i1_1];
+
+        $r3 = interfaceinvoke $r2_1.<org.apache.http.Header: java.lang.String getName()>();
+
+        $r2_2 = $r0[$i1_1];
+
+        $r4 = interfaceinvoke $r2_2.<org.apache.http.Header: java.lang.String getValue()>();
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r3, $r4);
+
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        return $r1;
+    }
+
+    private byte[] entityToBytes(org.apache.http.HttpEntity) throws java.io.IOException, com.android.volley.ServerError
+    {
+        com.android.volley.toolbox.BasicNetwork $r0;
+        org.apache.http.HttpEntity $r1;
+        com.android.volley.toolbox.PoolingByteArrayOutputStream $r2;
+        com.android.volley.ServerError $r3;
+        java.lang.Throwable $r4;
+        java.io.IOException $r5, $r6;
+        com.android.volley.toolbox.ByteArrayPool $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+        long $l0;
+        int $i1, $i1_1, $i1_2, $i1_3;
+        byte[] $r8, $r10, $r8_1, $r8_2, $r8_3;
+        java.io.InputStream $r9;
+        java.lang.Object[] $r11, $r11_1, $r11_2, $r11_3;
+
+        $r0 := @this: com.android.volley.toolbox.BasicNetwork;
+
+        $r1 := @parameter0: org.apache.http.HttpEntity;
+
+        $r2 = new com.android.volley.toolbox.PoolingByteArrayOutputStream;
+
+        $r7 = $r0.<com.android.volley.toolbox.BasicNetwork: com.android.volley.toolbox.ByteArrayPool mPool>;
+
+        $l0 = interfaceinvoke $r1.<org.apache.http.HttpEntity: long getContentLength()>();
+
+        $i1 = (int) $l0;
+
+        specialinvoke $r2.<com.android.volley.toolbox.PoolingByteArrayOutputStream: void <init>(com.android.volley.toolbox.ByteArrayPool,int)>($r7, $i1);
+
+(0)     $r8 = null;
+
+     label01:
+        $r9 = interfaceinvoke $r1.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+     label02:
+        if $r9 != null goto label07;
+
+     label03:
+        $r3 = new com.android.volley.ServerError;
+
+        specialinvoke $r3.<com.android.volley.ServerError: void <init>()>();
+
+        throw $r3;
+
+     label04:
+        $r4 := @caughtexception;
+
+        $i1_3 = Phi($i1 #0, $i1_2 #4);
+
+        $r8_3 = Phi($r8 #0, $r8_1 #3, $r8_2 #6);
+
+        $r7_3 = Phi($r7 #0, $r7_1 #2);
+
+     label05:
+(1)     interfaceinvoke $r1.<org.apache.http.HttpEntity: void consumeContent()>();
+
+     label06:
+        $r11_2 = Phi($r11 #1, $r11_3 #9);
+
+        $r7_4 = $r0.<com.android.volley.toolbox.BasicNetwork: com.android.volley.toolbox.ByteArrayPool mPool>;
+
+        virtualinvoke $r7_4.<com.android.volley.toolbox.ByteArrayPool: void returnBuf(byte[])>($r8_3);
+
+        virtualinvoke $r2.<com.android.volley.toolbox.PoolingByteArrayOutputStream: void close()>();
+
+        throw $r4;
+
+     label07:
+(2)     $r7_1 = $r0.<com.android.volley.toolbox.BasicNetwork: com.android.volley.toolbox.ByteArrayPool mPool>;
+
+        $r10 = virtualinvoke $r7_1.<com.android.volley.toolbox.ByteArrayPool: byte[] getBuf(int)>(1024);
+
+     label08:
+(3)     $r8_1 = $r10;
+
+     label09:
+        $i1_1 = Phi($i1 #3, $i1_2 #5);
+
+(4)     $i1_2 = virtualinvoke $r9.<java.io.InputStream: int read(byte[])>($r10);
+
+     label10:
+        if $i1_2 == -1 goto label13;
+
+     label11:
+        virtualinvoke $r2.<com.android.volley.toolbox.PoolingByteArrayOutputStream: void write(byte[],int,int)>($r10, 0, $i1_2);
+
+     label12:
+(5)     goto label09;
+
+     label13:
+(6)     $r8_2 = virtualinvoke $r2.<com.android.volley.toolbox.PoolingByteArrayOutputStream: byte[] toByteArray()>();
+
+     label14:
+(7)     interfaceinvoke $r1.<org.apache.http.HttpEntity: void consumeContent()>();
+
+     label15:
+        $r11 = Phi($r11 #7, $r11_1 #8);
+
+        $r7_2 = $r0.<com.android.volley.toolbox.BasicNetwork: com.android.volley.toolbox.ByteArrayPool mPool>;
+
+        virtualinvoke $r7_2.<com.android.volley.toolbox.ByteArrayPool: void returnBuf(byte[])>($r10);
+
+        virtualinvoke $r2.<com.android.volley.toolbox.PoolingByteArrayOutputStream: void close()>();
+
+        return $r8_2;
+
+     label16:
+        $r5 := @caughtexception;
+
+        $r11_1 = newarray (java.lang.Object)[0];
+
+        staticinvoke <com.android.volley.VolleyLog: void v(java.lang.String,java.lang.Object[])>("Error occured when calling consumingContent", $r11_1);
+
+(8)     goto label15;
+
+     label17:
+        $r6 := @caughtexception;
+
+        $r11_3 = newarray (java.lang.Object)[0];
+
+        staticinvoke <com.android.volley.VolleyLog: void v(java.lang.String,java.lang.Object[])>("Error occured when calling consumingContent", $r11_3);
+
+(9)     goto label06;
+
+        catch java.lang.Throwable from label01 to label02 with label04;
+        catch java.lang.Throwable from label03 to label04 with label04;
+        catch java.io.IOException from label05 to label06 with label17;
+        catch java.lang.Throwable from label07 to label08 with label04;
+        catch java.lang.Throwable from label09 to label10 with label04;
+        catch java.lang.Throwable from label11 to label12 with label04;
+        catch java.lang.Throwable from label13 to label14 with label04;
+        catch java.io.IOException from label14 to label15 with label16;
+    }
+
+    private void logSlowRequests(long, com.android.volley.Request, byte[], org.apache.http.StatusLine)
+    {
+        com.android.volley.toolbox.BasicNetwork $r0;
+        long $l0, $l1;
+        com.android.volley.Request $r1;
+        byte[] $r2;
+        org.apache.http.StatusLine $r3;
+        boolean $z0;
+        byte $b2;
+        java.lang.Object[] $r4;
+        int $i3, $i3_1, $i3_2, $i3_3, $i3_4, $i3_5;
+        java.lang.Long $r5;
+        java.lang.Integer $r6, $r6_1;
+        java.lang.Comparable $r7, $r7_1, $r7_2;
+        com.android.volley.RetryPolicy $r8;
+
+        $r0 := @this: com.android.volley.toolbox.BasicNetwork;
+
+        $l0 := @parameter0: long;
+
+        $r1 := @parameter1: com.android.volley.Request;
+
+        $r2 := @parameter2: byte[];
+
+        $r3 := @parameter3: org.apache.http.StatusLine;
+
+        $z0 = <com.android.volley.toolbox.BasicNetwork: boolean DEBUG>;
+
+(0)     if $z0 != 0 goto label1;
+
+        $i3 = <com.android.volley.toolbox.BasicNetwork: int SLOW_REQUEST_THRESHOLD_MS>;
+
+        $l1 = (long) $i3;
+
+        $b2 = $l0 cmp $l1;
+
+(1)     if $b2 <= 0 goto label4;
+
+     label1:
+        $i3_1 = Phi($i3 #0, $i3 #1);
+
+        $r4 = newarray (java.lang.Object)[5];
+
+        $r4[0] = $r1;
+
+        $r5 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r4[1] = $r5;
+
+        if $r2 == null goto label3;
+
+        $i3_2 = lengthof $r2;
+
+(2)     $r7 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i3_2);
+
+     label2:
+        $i3_3 = Phi($i3_2 #2, $i3_1 #3);
+
+        $r7_1 = Phi($r7 #2, $r7_2 #3);
+
+        $r4[2] = $r7_1;
+
+        $i3_4 = interfaceinvoke $r3.<org.apache.http.StatusLine: int getStatusCode()>();
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i3_4);
+
+        $r4[3] = $r6;
+
+        $r8 = virtualinvoke $r1.<com.android.volley.Request: com.android.volley.RetryPolicy getRetryPolicy()>();
+
+        $i3_5 = interfaceinvoke $r8.<com.android.volley.RetryPolicy: int getCurrentRetryCount()>();
+
+        $r6_1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i3_5);
+
+        $r4[4] = $r6_1;
+
+        staticinvoke <com.android.volley.VolleyLog: void d(java.lang.String,java.lang.Object[])>("HTTP response for request=<%s> [lifetime=%d], [size=%s], [rc=%d], [retryCount=%s]", $r4);
+
+        return;
+
+     label3:
+        $r7_2 = "null";
+
+(3)     goto label2;
+
+     label4:
+        return;
+    }
+
+    protected void logError(java.lang.String, java.lang.String, long)
+    {
+        com.android.volley.toolbox.BasicNetwork $r0;
+        java.lang.String $r1, $r2;
+        java.lang.Object[] $r3;
+        long $l0, $l1, $l0_1;
+        java.lang.Long $r4;
+
+        $r0 := @this: com.android.volley.toolbox.BasicNetwork;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $l0 := @parameter2: long;
+
+        $l1 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+        $r3 = newarray (java.lang.Object)[3];
+
+        $r3[0] = $r1;
+
+        $l0_1 = $l1 - $l0;
+
+        $r4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0_1);
+
+        $r3[1] = $r4;
+
+        $r3[2] = $r2;
+
+        staticinvoke <com.android.volley.VolleyLog: void v(java.lang.String,java.lang.Object[])>("HTTP ERROR(%s) %d ms to fetch %s", $r3);
+
+        return;
+    }
+
+    public com.android.volley.NetworkResponse performRequest(com.android.volley.Request) throws com.android.volley.VolleyError
+    {
+        com.android.volley.toolbox.BasicNetwork $r0;
+        com.android.volley.Request $r1;
+        java.util.HashMap $r2, $r2_1, $r2_2;
+        com.android.volley.toolbox.HttpStack $r3;
+        java.io.IOException $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6;
+        java.net.SocketTimeoutException $r5;
+        org.apache.http.conn.ConnectTimeoutException $r6;
+        java.net.MalformedURLException $r7;
+        java.lang.RuntimeException $r8;
+        java.lang.StringBuilder $r9, $r9_1, $r9_2;
+        com.android.volley.AuthFailureError $r10;
+        com.android.volley.NoConnectionError $r11;
+        com.android.volley.ServerError $r12;
+        com.android.volley.NetworkError $r13;
+        long $l0, $l2, $l2_1, $l2_2, $l2_3, $l2_4, $l2_5, $l2_6;
+        org.apache.http.HttpResponse $r14, $r18, $r14_1, $r14_2, $r14_3, $r14_4, $r14_5, $r14_6;
+        byte[] $r15, $r23, $r15_1, $r23_1, $r23_2, $r23_3, $r15_2, $r15_3, $r15_4, $r15_5, $r23_4, $r15_6, $r23_5, $r15_7, $r23_6, $r15_8, $r23_7;
+        java.util.Map $r16, $r21, $r16_1, $r16_2, $r16_3, $r16_4, $r16_5, $r16_6;
+        com.android.volley.Cache$Entry $r17, $r17_1, $r17_2, $r17_3, $r17_4, $r17_5, $r17_6, $r17_7, $r17_8;
+        org.apache.http.StatusLine $r19, $r19_1, $r19_2, $r19_3, $r19_4, $r19_5, $r19_6;
+        int $i1, $i1_1, $i1_2, $i1_3, $i1_4, $i1_5, $i1_6;
+        org.apache.http.Header[] $r20;
+        com.android.volley.NetworkResponse $r22, $r22_1, $r22_2, $r22_3, $r22_4, $r22_5, $r22_6, $r22_7;
+        org.apache.http.HttpEntity $r24, $r24_1, $r24_2, $r24_3, $r24_4, $r24_5, $r24_6, $r24_7;
+        com.android.volley.TimeoutError $r25, $r25_1, $r25_2;
+        java.lang.String $r26, $r26_1, $r26_2, $r26_3;
+        java.lang.Object[] $r27;
+        java.lang.Integer $r28;
+
+        $r0 := @this: com.android.volley.toolbox.BasicNetwork;
+
+        $r1 := @parameter0: com.android.volley.Request;
+
+(0)     $l0 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+     label01:
+        $r14 = Phi($r14 #0, $r14_3 #19, $r14_4 #22, $r14_6 #23);
+
+        $r2 = Phi($r2 #0, $r2_2 #19, $r2_2 #22, $r2_2 #23);
+
+        $r15 = Phi($r15 #0, $r15_5 #19, $r15_6 #22, $r15_8 #23);
+
+        $r22 = Phi($r22 #0, $r22_3 #19, $r22_4 #22, $r22_7 #23);
+
+        $r25 = Phi($r25 #0, $r25_1 #19, $r25_2 #22, $r25 #23);
+
+        $r16 = Phi($r16 #0, $r16_3 #19, $r16_4 #22, $r16_6 #23);
+
+        $i1 = Phi($i1 #0, $i1_2 #19, $i1_3 #22, $i1_6 #23);
+
+        $r23 = Phi($r23 #0, $r23_4 #19, $r23_5 #22, $r23_7 #23);
+
+        $r17 = Phi($r17 #0, $r17_5 #19, $r17_6 #22, $r17_8 #23);
+
+        $r4 = Phi($r4 #0, $r4_2 #19, $r4_3 #22, $r4_6 #23);
+
+        $r24 = Phi($r24 #0, $r24_4 #19, $r24_5 #22, $r24_7 #23);
+
+        $r19 = Phi($r19 #0, $r19_2 #19, $r19_3 #22, $r19_6 #23);
+
+        $r26 = Phi($r26 #0, $r26 #19, $r26 #22, $r26_3 #23);
+
+        $l2 = Phi($l2 #0, $l2_3 #19, $l2_4 #22, $l2_6 #23);
+
+        $r14_1 = null;
+
+        $r15_1 = null;
+
+        $r2_1 = new java.util.HashMap;
+
+        $r16_1 = $r2_1;
+
+        specialinvoke $r2_1.<java.util.HashMap: void <init>()>();
+
+(1)     $r2_2 = new java.util.HashMap;
+
+     label02:
+        specialinvoke $r2_2.<java.util.HashMap: void <init>()>();
+
+(2)     $r17_1 = virtualinvoke $r1.<com.android.volley.Request: com.android.volley.Cache$Entry getCacheEntry()>();
+
+        specialinvoke $r0.<com.android.volley.toolbox.BasicNetwork: void addCacheHeaders(java.util.Map,com.android.volley.Cache$Entry)>($r2_2, $r17_1);
+
+     label03:
+        $r3 = $r0.<com.android.volley.toolbox.BasicNetwork: com.android.volley.toolbox.HttpStack mHttpStack>;
+
+     label04:
+        $r18 = interfaceinvoke $r3.<com.android.volley.toolbox.HttpStack: org.apache.http.HttpResponse performRequest(com.android.volley.Request,java.util.Map)>($r1, $r2_2);
+
+     label05:
+(3)     $r14_2 = $r18;
+
+     label06:
+(4)     $r19_1 = interfaceinvoke $r18.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+(5)     $i1_1 = interfaceinvoke $r19_1.<org.apache.http.StatusLine: int getStatusCode()>();
+
+        $r20 = interfaceinvoke $r18.<org.apache.http.HttpResponse: org.apache.http.Header[] getAllHeaders()>();
+
+        $r21 = staticinvoke <com.android.volley.toolbox.BasicNetwork: java.util.Map convertHeaders(org.apache.http.Header[])>($r20);
+
+     label07:
+        $r16_2 = $r21;
+
+(6)     if $i1_1 != 304 goto label14;
+
+(7)     $r22_1 = new com.android.volley.NetworkResponse;
+
+     label08:
+(8)     $r17_2 = virtualinvoke $r1.<com.android.volley.Request: com.android.volley.Cache$Entry getCacheEntry()>();
+
+     label09:
+        if $r17_2 != null goto label12;
+
+(9)     $r23_1 = null;
+
+     label10:
+        $r23_2 = Phi($r23_1 #9, $r23_3 #12);
+
+        $r17_3 = Phi($r17_2 #9, $r17_4 #12);
+
+(10)    specialinvoke $r22_1.<com.android.volley.NetworkResponse: void <init>(int,byte[],java.util.Map,boolean)>(304, $r23_2, $r21, 1);
+
+     label11:
+        return $r22_1;
+
+     label12:
+(11)    $r17_4 = virtualinvoke $r1.<com.android.volley.Request: com.android.volley.Cache$Entry getCacheEntry()>();
+
+     label13:
+        $r23_3 = $r17_4.<com.android.volley.Cache$Entry: byte[] data>;
+
+(12)    goto label10;
+
+     label14:
+(13)    $r24_1 = interfaceinvoke $r18.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+     label15:
+        if $r24_1 == null goto label24;
+
+     label16:
+(14)    $r24_2 = interfaceinvoke $r18.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+(15)    $r15_2 = specialinvoke $r0.<com.android.volley.toolbox.BasicNetwork: byte[] entityToBytes(org.apache.http.HttpEntity)>($r24_2);
+
+     label17:
+        $r15_3 = Phi($r15_2 #15, $r15_4 #20);
+
+        $r24_3 = Phi($r24_2 #15, $r24_1 #20);
+
+(16)    $l2_1 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+     label18:
+(17)    $l2_2 = $l2_1 - $l0;
+
+     label19:
+        specialinvoke $r0.<com.android.volley.toolbox.BasicNetwork: void logSlowRequests(long,com.android.volley.Request,byte[],org.apache.http.StatusLine)>($l2_2, $r1, $r15_3, $r19_1);
+
+     label20:
+        if $i1_1 < 200 goto label21;
+
+        if $i1_1 <= 299 goto label25;
+
+     label21:
+(18)    $r4_1 = new java.io.IOException;
+
+     label22:
+        specialinvoke $r4_1.<java.io.IOException: void <init>()>();
+
+        throw $r4_1;
+
+     label23:
+        $r5 := @caughtexception;
+
+        $r14_3 = Phi($r14_1 #1, $r14_2 #3);
+
+        $r15_5 = Phi($r15_1 #1, $r15_2 #15, $r15_4 #20, $r15_3 #16);
+
+        $r22_3 = Phi($r22 #1, $r22_1 #7, $r22_2 #21);
+
+        $r16_3 = Phi($r16_1 #1, $r16_2 #6);
+
+        $i1_2 = Phi($i1 #1, $i1_1 #5);
+
+        $r23_4 = Phi($r23 #1, $r23_1 #9, $r23_3 #12, $r23_2 #10);
+
+        $r17_5 = Phi($r17 #1, $r17_1 #2, $r17_2 #8, $r17_3 #10, $r17_4 #11);
+
+        $r4_2 = Phi($r4 #1, $r4_1 #18);
+
+        $r24_4 = Phi($r24 #1, $r24_1 #13, $r24_2 #14, $r24_3 #16);
+
+        $r19_2 = Phi($r19 #1, $r19_1 #4);
+
+        $l2_3 = Phi($l2 #1, $l2_1 #16, $l2_2 #17);
+
+        $r25_1 = new com.android.volley.TimeoutError;
+
+        specialinvoke $r25_1.<com.android.volley.TimeoutError: void <init>()>();
+
+        staticinvoke <com.android.volley.toolbox.BasicNetwork: void attemptRetryOnException(java.lang.String,com.android.volley.Request,com.android.volley.VolleyError)>("socket", $r1, $r25_1);
+
+(19)    goto label01;
+
+     label24:
+        $r15_4 = newarray (byte)[0];
+
+(20)    goto label17;
+
+     label25:
+(21)    $r22_2 = new com.android.volley.NetworkResponse;
+
+     label26:
+        specialinvoke $r22_2.<com.android.volley.NetworkResponse: void <init>(int,byte[],java.util.Map,boolean)>($i1_1, $r15_3, $r21, 0);
+
+     label27:
+        return $r22_2;
+
+     label28:
+        $r6 := @caughtexception;
+
+        $r14_4 = Phi($r14_1 #1, $r14_2 #3);
+
+        $r15_6 = Phi($r15_1 #1, $r15_2 #15, $r15_4 #20, $r15_3 #16);
+
+        $r22_4 = Phi($r22 #1, $r22_1 #7, $r22_2 #21);
+
+        $r16_4 = Phi($r16_1 #1, $r16_2 #6);
+
+        $i1_3 = Phi($i1 #1, $i1_1 #5);
+
+        $r23_5 = Phi($r23 #1, $r23_1 #9, $r23_3 #12, $r23_2 #10);
+
+        $r17_6 = Phi($r17 #1, $r17_1 #2, $r17_2 #8, $r17_3 #10, $r17_4 #11);
+
+        $r4_3 = Phi($r4 #1, $r4_1 #18);
+
+        $r24_5 = Phi($r24 #1, $r24_1 #13, $r24_2 #14, $r24_3 #16);
+
+        $r19_3 = Phi($r19 #1, $r19_1 #4);
+
+        $l2_4 = Phi($l2 #1, $l2_1 #16, $l2_2 #17);
+
+        $r25_2 = new com.android.volley.TimeoutError;
+
+        specialinvoke $r25_2.<com.android.volley.TimeoutError: void <init>()>();
+
+        staticinvoke <com.android.volley.toolbox.BasicNetwork: void attemptRetryOnException(java.lang.String,com.android.volley.Request,com.android.volley.VolleyError)>("connection", $r1, $r25_2);
+
+(22)    goto label01;
+
+     label29:
+        $r7 := @caughtexception;
+
+        $r14_5 = Phi($r14_1 #1, $r14_2 #3);
+
+        $r15_7 = Phi($r15_1 #1, $r15_2 #15, $r15_4 #20, $r15_3 #16);
+
+        $r22_5 = Phi($r22 #1, $r22_1 #7, $r22_2 #21);
+
+        $r16_5 = Phi($r16_1 #1, $r16_2 #6);
+
+        $i1_4 = Phi($i1 #1, $i1_1 #5);
+
+        $r23_6 = Phi($r23 #1, $r23_1 #9, $r23_3 #12, $r23_2 #10);
+
+        $r17_7 = Phi($r17 #1, $r17_1 #2, $r17_2 #8, $r17_3 #10, $r17_4 #11);
+
+        $r4_4 = Phi($r4 #1, $r4_1 #18);
+
+        $r24_6 = Phi($r24 #1, $r24_1 #13, $r24_2 #14, $r24_3 #16);
+
+        $r19_4 = Phi($r19 #1, $r19_1 #4);
+
+        $l2_5 = Phi($l2 #1, $l2_1 #16, $l2_2 #17);
+
+        $r8 = new java.lang.RuntimeException;
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>()>();
+
+        $r9_1 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Bad URL ");
+
+        $r26_1 = virtualinvoke $r1.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        $r9_2 = virtualinvoke $r9_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r26_1);
+
+        $r26_2 = virtualinvoke $r9_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r8.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>($r26_2, $r7);
+
+        throw $r8;
+
+     label30:
+        $r4_5 := @caughtexception;
+
+        $r14_6 = Phi($r14_1 #1, $r14_2 #3);
+
+        $r15_8 = Phi($r15_1 #1, $r15_2 #15, $r15_4 #20, $r15_3 #16);
+
+        $r22_6 = Phi($r22 #1, $r22_1 #7, $r22_2 #21);
+
+        $r16_6 = Phi($r16_1 #1, $r16_2 #6);
+
+        $i1_5 = Phi($i1 #1, $i1_1 #5);
+
+        $r23_7 = Phi($r23 #1, $r23_1 #9, $r23_3 #12, $r23_2 #10);
+
+        $r17_8 = Phi($r17 #1, $r17_1 #2, $r17_2 #8, $r17_3 #10, $r17_4 #11);
+
+        $r4_6 = Phi($r4 #1, $r4_1 #18);
+
+        $r24_7 = Phi($r24 #1, $r24_1 #13, $r24_2 #14, $r24_3 #16);
+
+        $r19_5 = Phi($r19 #1, $r19_1 #4);
+
+        $l2_6 = Phi($l2 #1, $l2_1 #16, $l2_2 #17);
+
+        if $r14_6 == null goto label32;
+
+        $r19_6 = interfaceinvoke $r14_6.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i1_6 = interfaceinvoke $r19_6.<org.apache.http.StatusLine: int getStatusCode()>();
+
+        $r27 = newarray (java.lang.Object)[2];
+
+        $r28 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1_6);
+
+        $r27[0] = $r28;
+
+        $r26_3 = virtualinvoke $r1.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        $r27[1] = $r26_3;
+
+        staticinvoke <com.android.volley.VolleyLog: void e(java.lang.String,java.lang.Object[])>("Unexpected response code %d for %s", $r27);
+
+        if $r15_8 == null goto label34;
+
+        $r22_7 = new com.android.volley.NetworkResponse;
+
+        specialinvoke $r22_7.<com.android.volley.NetworkResponse: void <init>(int,byte[],java.util.Map,boolean)>($i1_6, $r15_8, $r16_6, 0);
+
+        if $i1_6 == 401 goto label31;
+
+        if $i1_6 != 403 goto label33;
+
+     label31:
+        $r10 = new com.android.volley.AuthFailureError;
+
+        specialinvoke $r10.<com.android.volley.AuthFailureError: void <init>(com.android.volley.NetworkResponse)>($r22_7);
+
+        staticinvoke <com.android.volley.toolbox.BasicNetwork: void attemptRetryOnException(java.lang.String,com.android.volley.Request,com.android.volley.VolleyError)>("auth", $r1, $r10);
+
+(23)    goto label01;
+
+     label32:
+        $r11 = new com.android.volley.NoConnectionError;
+
+        specialinvoke $r11.<com.android.volley.NoConnectionError: void <init>(java.lang.Throwable)>($r4_6);
+
+        throw $r11;
+
+     label33:
+        $r12 = new com.android.volley.ServerError;
+
+        specialinvoke $r12.<com.android.volley.ServerError: void <init>(com.android.volley.NetworkResponse)>($r22_7);
+
+        throw $r12;
+
+     label34:
+        $r13 = new com.android.volley.NetworkError;
+
+        specialinvoke $r13.<com.android.volley.NetworkError: void <init>(com.android.volley.NetworkResponse)>(null);
+
+        throw $r13;
+
+        catch java.net.SocketTimeoutException from label02 to label03 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label02 to label03 with label28;
+        catch java.net.MalformedURLException from label02 to label03 with label29;
+        catch java.io.IOException from label02 to label03 with label30;
+        catch java.net.SocketTimeoutException from label04 to label05 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label04 to label05 with label28;
+        catch java.net.MalformedURLException from label04 to label05 with label29;
+        catch java.io.IOException from label04 to label05 with label30;
+        catch java.net.SocketTimeoutException from label06 to label07 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label06 to label07 with label28;
+        catch java.net.MalformedURLException from label06 to label07 with label29;
+        catch java.io.IOException from label06 to label07 with label30;
+        catch java.net.SocketTimeoutException from label08 to label09 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label08 to label09 with label28;
+        catch java.net.MalformedURLException from label08 to label09 with label29;
+        catch java.io.IOException from label08 to label09 with label30;
+        catch java.net.SocketTimeoutException from label10 to label11 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label10 to label11 with label28;
+        catch java.net.MalformedURLException from label10 to label11 with label29;
+        catch java.io.IOException from label10 to label11 with label30;
+        catch java.net.SocketTimeoutException from label12 to label13 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label12 to label13 with label28;
+        catch java.net.MalformedURLException from label12 to label13 with label29;
+        catch java.io.IOException from label12 to label13 with label30;
+        catch java.net.SocketTimeoutException from label14 to label15 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label14 to label15 with label28;
+        catch java.net.MalformedURLException from label14 to label15 with label29;
+        catch java.io.IOException from label14 to label15 with label30;
+        catch java.net.SocketTimeoutException from label16 to label17 with label23;
+        catch java.net.SocketTimeoutException from label17 to label18 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label16 to label17 with label28;
+        catch org.apache.http.conn.ConnectTimeoutException from label17 to label18 with label28;
+        catch java.net.MalformedURLException from label16 to label17 with label29;
+        catch java.net.MalformedURLException from label17 to label18 with label29;
+        catch java.io.IOException from label16 to label17 with label30;
+        catch java.io.IOException from label17 to label18 with label30;
+        catch java.net.SocketTimeoutException from label19 to label20 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label19 to label20 with label28;
+        catch java.net.MalformedURLException from label19 to label20 with label29;
+        catch java.io.IOException from label19 to label20 with label30;
+        catch java.net.SocketTimeoutException from label22 to label23 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label22 to label23 with label28;
+        catch java.net.MalformedURLException from label22 to label23 with label29;
+        catch java.io.IOException from label22 to label23 with label30;
+        catch java.net.SocketTimeoutException from label26 to label27 with label23;
+        catch org.apache.http.conn.ConnectTimeoutException from label26 to label27 with label28;
+        catch java.net.MalformedURLException from label26 to label27 with label29;
+        catch java.io.IOException from label26 to label27 with label30;
+    }
+}

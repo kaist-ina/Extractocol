@@ -1,0 +1,1017 @@
+public class io.fabric.sdk.android.Fabric extends java.lang.Object
+{
+    static final boolean DEFAULT_DEBUGGABLE;
+    static final io.fabric.sdk.android.Logger DEFAULT_LOGGER;
+    static final java.lang.String ROOT_DIR;
+    public static final java.lang.String TAG;
+    static volatile io.fabric.sdk.android.Fabric singleton;
+    private java.lang.ref.WeakReference activity;
+    private io.fabric.sdk.android.ActivityLifecycleManager activityLifecycleManager;
+    private final android.content.Context context;
+    final boolean debuggable;
+    private final java.util.concurrent.ExecutorService executorService;
+    private final io.fabric.sdk.android.services.common.IdManager idManager;
+    private final io.fabric.sdk.android.InitializationCallback initializationCallback;
+    private java.util.concurrent.atomic.AtomicBoolean initialized;
+    private final io.fabric.sdk.android.InitializationCallback kitInitializationCallback;
+    private final java.util.Map kits;
+    final io.fabric.sdk.android.Logger logger;
+    private final android.os.Handler mainHandler;
+
+    static void <clinit>()
+    {
+        io.fabric.sdk.android.DefaultLogger $r0;
+
+        $r0 = new io.fabric.sdk.android.DefaultLogger;
+
+        specialinvoke $r0.<io.fabric.sdk.android.DefaultLogger: void <init>()>();
+
+        <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger DEFAULT_LOGGER> = $r0;
+
+        return;
+    }
+
+    void <init>(android.content.Context, java.util.Map, io.fabric.sdk.android.services.concurrency.PriorityThreadPoolExecutor, android.os.Handler, io.fabric.sdk.android.Logger, boolean, io.fabric.sdk.android.InitializationCallback, io.fabric.sdk.android.services.common.IdManager)
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        android.content.Context $r1;
+        java.util.Map $r2;
+        io.fabric.sdk.android.services.concurrency.PriorityThreadPoolExecutor $r3;
+        android.os.Handler $r4;
+        io.fabric.sdk.android.Logger $r5;
+        boolean $z0;
+        io.fabric.sdk.android.services.common.IdManager $r6;
+        java.util.concurrent.atomic.AtomicBoolean $r7;
+        io.fabric.sdk.android.InitializationCallback $r8, $r8_1;
+        int $i0;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.util.Map;
+
+        $r3 := @parameter2: io.fabric.sdk.android.services.concurrency.PriorityThreadPoolExecutor;
+
+        $r4 := @parameter3: android.os.Handler;
+
+        $r5 := @parameter4: io.fabric.sdk.android.Logger;
+
+        $z0 := @parameter5: boolean;
+
+        $r8 := @parameter6: io.fabric.sdk.android.InitializationCallback;
+
+        $r6 := @parameter7: io.fabric.sdk.android.services.common.IdManager;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.Fabric: android.content.Context context> = $r1;
+
+        $r0.<io.fabric.sdk.android.Fabric: java.util.Map kits> = $r2;
+
+        $r0.<io.fabric.sdk.android.Fabric: java.util.concurrent.ExecutorService executorService> = $r3;
+
+        $r0.<io.fabric.sdk.android.Fabric: android.os.Handler mainHandler> = $r4;
+
+        $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger logger> = $r5;
+
+        $r0.<io.fabric.sdk.android.Fabric: boolean debuggable> = $z0;
+
+        $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.InitializationCallback initializationCallback> = $r8;
+
+        $r7 = new java.util.concurrent.atomic.AtomicBoolean;
+
+        specialinvoke $r7.<java.util.concurrent.atomic.AtomicBoolean: void <init>(boolean)>(0);
+
+        $r0.<io.fabric.sdk.android.Fabric: java.util.concurrent.atomic.AtomicBoolean initialized> = $r7;
+
+        $i0 = interfaceinvoke $r2.<java.util.Map: int size()>();
+
+        $r8_1 = virtualinvoke $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.InitializationCallback createKitInitializationCallback(int)>($i0);
+
+        $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.InitializationCallback kitInitializationCallback> = $r8_1;
+
+        $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.services.common.IdManager idManager> = $r6;
+
+        return;
+    }
+
+    static java.util.Map access$000(java.util.Collection)
+    {
+        java.util.Collection $r0;
+        java.util.Map $r1;
+
+        $r0 := @parameter0: java.util.Collection;
+
+        $r1 = staticinvoke <io.fabric.sdk.android.Fabric: java.util.Map getKitMap(java.util.Collection)>($r0);
+
+        return $r1;
+    }
+
+    static java.util.concurrent.atomic.AtomicBoolean access$100(io.fabric.sdk.android.Fabric)
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        java.util.concurrent.atomic.AtomicBoolean r1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.Fabric;
+
+        r1 = $r0.<io.fabric.sdk.android.Fabric: java.util.concurrent.atomic.AtomicBoolean initialized>;
+
+        return r1;
+    }
+
+    static io.fabric.sdk.android.InitializationCallback access$200(io.fabric.sdk.android.Fabric)
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        io.fabric.sdk.android.InitializationCallback r1;
+
+        $r0 := @parameter0: io.fabric.sdk.android.Fabric;
+
+        r1 = $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.InitializationCallback initializationCallback>;
+
+        return r1;
+    }
+
+    private static void addToKitMap(java.util.Map, java.util.Collection)
+    {
+        java.util.Map $r0;
+        java.util.Collection $r1, $r1_1, $r1_2;
+        java.util.Iterator $r2;
+        boolean $z0, $z0_1, $z0_2;
+        java.lang.Object $r3;
+        io.fabric.sdk.android.Kit $r4;
+        java.lang.Class $r5;
+        io.fabric.sdk.android.KitGroup $r6;
+
+        $r0 := @parameter0: java.util.Map;
+
+        $r1 := @parameter1: java.util.Collection;
+
+(0)     $r2 = interfaceinvoke $r1.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = Phi($z0 #0, $z0_2 #1, $z0_2 #2);
+
+        $r1_1 = Phi($r1 #0, $r1_1 #1, $r1_2 #2);
+
+        $z0_1 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label2;
+
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        $r4 = (io.fabric.sdk.android.Kit) $r3;
+
+        $r5 = virtualinvoke $r4.<java.lang.Object: java.lang.Class getClass()>();
+
+        interfaceinvoke $r0.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r5, $r4);
+
+        $z0_2 = $r4 instanceof io.fabric.sdk.android.KitGroup;
+
+(1)     if $z0_2 == 0 goto label1;
+
+        $r6 = (io.fabric.sdk.android.KitGroup) $r4;
+
+        $r1_2 = interfaceinvoke $r6.<io.fabric.sdk.android.KitGroup: java.util.Collection getKits()>();
+
+        staticinvoke <io.fabric.sdk.android.Fabric: void addToKitMap(java.util.Map,java.util.Collection)>($r0, $r1_2);
+
+(2)     goto label1;
+
+     label2:
+        return;
+    }
+
+    private android.app.Activity extractActivity(android.content.Context)
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        android.content.Context $r1;
+        boolean $z0;
+        android.app.Activity $r2;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $z0 = $r1 instanceof android.app.Activity;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = (android.app.Activity) $r1;
+
+        return $r2;
+
+     label1:
+        return null;
+    }
+
+    public static io.fabric.sdk.android.Kit getKit(java.lang.Class)
+    {
+        java.lang.Class $r0;
+        java.util.Map $r1;
+        io.fabric.sdk.android.Fabric $r2;
+        java.lang.Object $r3;
+        io.fabric.sdk.android.Kit $r4;
+
+        $r0 := @parameter0: java.lang.Class;
+
+        $r2 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton()>();
+
+        $r1 = $r2.<io.fabric.sdk.android.Fabric: java.util.Map kits>;
+
+        $r3 = interfaceinvoke $r1.<java.util.Map: java.lang.Object get(java.lang.Object)>($r0);
+
+        $r4 = (io.fabric.sdk.android.Kit) $r3;
+
+        return $r4;
+    }
+
+    private static java.util.Map getKitMap(java.util.Collection)
+    {
+        java.util.Collection $r0;
+        java.util.HashMap $r1;
+        int $i0;
+
+        $r0 := @parameter0: java.util.Collection;
+
+        $r1 = new java.util.HashMap;
+
+        $i0 = interfaceinvoke $r0.<java.util.Collection: int size()>();
+
+        specialinvoke $r1.<java.util.HashMap: void <init>(int)>($i0);
+
+        staticinvoke <io.fabric.sdk.android.Fabric: void addToKitMap(java.util.Map,java.util.Collection)>($r1, $r0);
+
+        return $r1;
+    }
+
+    public static io.fabric.sdk.android.Logger getLogger()
+    {
+        io.fabric.sdk.android.Fabric $r0, $r0_1;
+        io.fabric.sdk.android.Logger r1, r1_1;
+
+        $r0 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+        if $r0 != null goto label1;
+
+        r1 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger DEFAULT_LOGGER>;
+
+        return r1;
+
+     label1:
+        $r0_1 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+        r1_1 = $r0_1.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger logger>;
+
+        return r1_1;
+    }
+
+    private void init()
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        io.fabric.sdk.android.Fabric$1 $r1;
+        android.app.Activity $r2;
+        android.content.Context $r3, $r3_1, $r3_2;
+        io.fabric.sdk.android.ActivityLifecycleManager $r4, $r4_1;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r3 = $r0.<io.fabric.sdk.android.Fabric: android.content.Context context>;
+
+        $r2 = specialinvoke $r0.<io.fabric.sdk.android.Fabric: android.app.Activity extractActivity(android.content.Context)>($r3);
+
+        virtualinvoke $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric setCurrentActivity(android.app.Activity)>($r2);
+
+        $r4 = new io.fabric.sdk.android.ActivityLifecycleManager;
+
+        $r3_1 = $r0.<io.fabric.sdk.android.Fabric: android.content.Context context>;
+
+        specialinvoke $r4.<io.fabric.sdk.android.ActivityLifecycleManager: void <init>(android.content.Context)>($r3_1);
+
+        $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.ActivityLifecycleManager activityLifecycleManager> = $r4;
+
+        $r4_1 = $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.ActivityLifecycleManager activityLifecycleManager>;
+
+        $r1 = new io.fabric.sdk.android.Fabric$1;
+
+        specialinvoke $r1.<io.fabric.sdk.android.Fabric$1: void <init>(io.fabric.sdk.android.Fabric)>($r0);
+
+        virtualinvoke $r4_1.<io.fabric.sdk.android.ActivityLifecycleManager: boolean registerCallbacks(io.fabric.sdk.android.ActivityLifecycleManager$Callbacks)>($r1);
+
+        $r3_2 = $r0.<io.fabric.sdk.android.Fabric: android.content.Context context>;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.Fabric: void initializeKits(android.content.Context)>($r3_2);
+
+        return;
+    }
+
+    public static boolean isDebuggable()
+    {
+        io.fabric.sdk.android.Fabric $r0, $r0_1;
+        boolean z0;
+
+        $r0 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+        if $r0 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r0_1 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+        z0 = $r0_1.<io.fabric.sdk.android.Fabric: boolean debuggable>;
+
+        return z0;
+    }
+
+    public static boolean isInitialized()
+    {
+        java.util.concurrent.atomic.AtomicBoolean $r0;
+        boolean $z0;
+        io.fabric.sdk.android.Fabric $r1, $r1_1, $r1_2;
+
+        $r1 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+        $r0 = $r1_1.<io.fabric.sdk.android.Fabric: java.util.concurrent.atomic.AtomicBoolean initialized>;
+
+        $z0 = virtualinvoke $r0.<java.util.concurrent.atomic.AtomicBoolean: boolean get()>();
+
+(1)     if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return 0;
+    }
+
+    private static void setFabric(io.fabric.sdk.android.Fabric)
+    {
+        io.fabric.sdk.android.Fabric $r0;
+
+        $r0 := @parameter0: io.fabric.sdk.android.Fabric;
+
+        <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton> = $r0;
+
+        specialinvoke $r0.<io.fabric.sdk.android.Fabric: void init()>();
+
+        return;
+    }
+
+    static io.fabric.sdk.android.Fabric singleton()
+    {
+        java.lang.IllegalStateException $r0;
+        io.fabric.sdk.android.Fabric $r1, $r1_1;
+
+        $r1 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+        if $r1 != null goto label1;
+
+        $r0 = new java.lang.IllegalStateException;
+
+        specialinvoke $r0.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Must Initialize Fabric before using singleton()");
+
+        throw $r0;
+
+     label1:
+        $r1_1 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+        return $r1_1;
+    }
+
+    public static transient io.fabric.sdk.android.Fabric 'with'(android.content.Context, io.fabric.sdk.android.Kit[])
+    {
+        android.content.Context $r0;
+        io.fabric.sdk.android.Kit[] $r1;
+        java.lang.Throwable $r2;
+        io.fabric.sdk.android.Fabric $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6;
+        io.fabric.sdk.android.Fabric$Builder $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: io.fabric.sdk.android.Kit[];
+
+        $r3 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+(0)     if $r3 != null goto label5;
+
+(1)     entermonitor class "io/fabric/sdk/android/Fabric";
+
+     label1:
+(2)     $r3_1 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+     label2:
+(3)     if $r3_1 != null goto label4;
+
+     label3:
+        $r4 = new io.fabric.sdk.android.Fabric$Builder;
+
+        specialinvoke $r4.<io.fabric.sdk.android.Fabric$Builder: void <init>(android.content.Context)>($r0);
+
+(4)     $r4_1 = virtualinvoke $r4.<io.fabric.sdk.android.Fabric$Builder: io.fabric.sdk.android.Fabric$Builder kits(io.fabric.sdk.android.Kit[])>($r1);
+
+(5)     $r3_2 = virtualinvoke $r4_1.<io.fabric.sdk.android.Fabric$Builder: io.fabric.sdk.android.Fabric build()>();
+
+(6)     staticinvoke <io.fabric.sdk.android.Fabric: void setFabric(io.fabric.sdk.android.Fabric)>($r3_2);
+
+     label4:
+        $r3_3 = Phi($r3_1 #3, $r3_2 #6);
+
+        $r4_2 = Phi($r4 #3, $r4_1 #6);
+
+(7)     exitmonitor class "io/fabric/sdk/android/Fabric";
+
+     label5:
+        $r3_5 = Phi($r3 #0, $r3_3 #7);
+
+        $r4_4 = Phi($r4 #0, $r4_2 #7);
+
+        $r3_6 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+        return $r3_6;
+
+     label6:
+        $r2 := @caughtexception;
+
+        $r3_4 = Phi($r3 #1, $r3_1 #2, $r3_2 #5, $r3_3 #7, $r3_4 #8);
+
+(8)     $r4_3 = Phi($r4 #1, $r4_1 #4, $r4_2 #7, $r4_3 #8);
+
+     label7:
+        exitmonitor class "io/fabric/sdk/android/Fabric";
+
+     label8:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label3 to label5 with label6;
+        catch java.lang.Throwable from label7 to label8 with label6;
+    }
+
+    public static io.fabric.sdk.android.Fabric 'with'(io.fabric.sdk.android.Fabric)
+    {
+        java.lang.Throwable $r0;
+        io.fabric.sdk.android.Fabric $r1, $r2, $r2_1, $r2_2, $r2_3, $r1_1;
+
+        $r1 := @parameter0: io.fabric.sdk.android.Fabric;
+
+        $r2 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+(0)     if $r2 != null goto label5;
+
+(1)     entermonitor class "io/fabric/sdk/android/Fabric";
+
+     label1:
+(2)     $r2_1 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+     label2:
+        if $r2_1 != null goto label4;
+
+     label3:
+        staticinvoke <io.fabric.sdk.android.Fabric: void setFabric(io.fabric.sdk.android.Fabric)>($r1);
+
+     label4:
+(3)     exitmonitor class "io/fabric/sdk/android/Fabric";
+
+     label5:
+        $r2_3 = Phi($r2 #0, $r2_1 #3);
+
+        $r1_1 = <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Fabric singleton>;
+
+        return $r1_1;
+
+     label6:
+        $r0 := @caughtexception;
+
+(4)     $r2_2 = Phi($r2 #1, $r2_1 #2, $r2_2 #4);
+
+     label7:
+        exitmonitor class "io/fabric/sdk/android/Fabric";
+
+     label8:
+        throw $r0;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label3 to label5 with label6;
+        catch java.lang.Throwable from label7 to label8 with label6;
+    }
+
+    void addAnnotatedDependencies(java.util.Map, io.fabric.sdk.android.Kit)
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        java.util.Map $r1;
+        io.fabric.sdk.android.Kit $r2, $r11, $r11_1, $r11_2, $r11_3, $r11_4, $r11_5, $r11_6;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3;
+        io.fabric.sdk.android.services.concurrency.UnmetDependencyException $r3;
+        java.lang.Class $r4, $r12, $r4_1, $r4_2, $r4_3;
+        java.lang.'annotation'.Annotation $r5;
+        io.fabric.sdk.android.services.concurrency.DependsOn $r6;
+        java.lang.Class[] $r7;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        java.util.Collection $r8;
+        java.util.Iterator $r9;
+        java.lang.Object $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6;
+        io.fabric.sdk.android.InitializationTask $r13, $r14, $r13_1, $r14_1, $r13_2, $r14_2, $r13_3, $r14_3, $r13_4, $r14_4, $r13_5, $r14_5;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r1 := @parameter0: java.util.Map;
+
+        $r2 := @parameter1: io.fabric.sdk.android.Kit;
+
+        $r4 = virtualinvoke $r2.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r5 = virtualinvoke $r4.<java.lang.Class: java.lang.'annotation'.Annotation getAnnotation(java.lang.Class)>(class "io/fabric/sdk/android/services/concurrency/DependsOn");
+
+        $r6 = (io.fabric.sdk.android.services.concurrency.DependsOn) $r5;
+
+(0)     if $r6 == null goto label6;
+
+        $r7 = interfaceinvoke $r6.<io.fabric.sdk.android.services.concurrency.DependsOn: java.lang.Class[] value()>();
+
+        $i0 = lengthof $r7;
+
+(1)     $i1 = 0;
+
+     label1:
+        $r13 = Phi($r13 #1, $r13_4 #8);
+
+        $r4_1 = Phi($r4 #1, $r4_2 #8);
+
+        $r14 = Phi($r14 #1, $r14_4 #8);
+
+        $r11 = Phi($r11 #1, $r11_5 #8);
+
+        $i1_1 = Phi($i1 #1, $i1_2 #8);
+
+        $z0 = Phi($z0 #1, $z0_5 #8);
+
+        $r10 = Phi($r10 #1, $r10_5 #8);
+
+(2)     if $i1_1 >= $i0 goto label6;
+
+        $r4_2 = $r7[$i1_1];
+
+        $z0_1 = virtualinvoke $r4_2.<java.lang.Class: boolean isInterface()>();
+
+        if $z0_1 == 0 goto label3;
+
+        $r8 = interfaceinvoke $r1.<java.util.Map: java.util.Collection values()>();
+
+(3)     $r9 = interfaceinvoke $r8.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label2:
+        $r13_1 = Phi($r13 #3, $r13_1 #5, $r13_2 #6);
+
+        $r14_1 = Phi($r14 #3, $r14_1 #5, $r14_2 #6);
+
+        $r11_1 = Phi($r11 #3, $r11_2 #5, $r11_2 #6);
+
+        $z0_2 = Phi($z0_1 #3, $z0_4 #5, $z0_4 #6);
+
+        $r10_1 = Phi($r10 #3, $r10_2 #5, $r10_2 #6);
+
+        $z0_3 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+(4)     if $z0_3 == 0 goto label5;
+
+        $r10_2 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        $r11_2 = (io.fabric.sdk.android.Kit) $r10_2;
+
+        $r12 = virtualinvoke $r11_2.<java.lang.Object: java.lang.Class getClass()>();
+
+        $z0_4 = virtualinvoke $r4_2.<java.lang.Class: boolean isAssignableFrom(java.lang.Class)>($r12);
+
+(5)     if $z0_4 == 0 goto label2;
+
+        $r13_2 = $r2.<io.fabric.sdk.android.Kit: io.fabric.sdk.android.InitializationTask initializationTask>;
+
+        $r14_2 = $r11_2.<io.fabric.sdk.android.Kit: io.fabric.sdk.android.InitializationTask initializationTask>;
+
+        virtualinvoke $r13_2.<io.fabric.sdk.android.InitializationTask: void addDependency(io.fabric.sdk.android.services.concurrency.Task)>($r14_2);
+
+(6)     goto label2;
+
+     label3:
+        $r10_3 = interfaceinvoke $r1.<java.util.Map: java.lang.Object get(java.lang.Object)>($r4_2);
+
+        $r11_3 = (io.fabric.sdk.android.Kit) $r10_3;
+
+        if $r11_3 != null goto label4;
+
+        $r3 = new io.fabric.sdk.android.services.concurrency.UnmetDependencyException;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.concurrency.UnmetDependencyException: void <init>(java.lang.String)>("Referenced Kit was null, does the kit exist?");
+
+        throw $r3;
+
+     label4:
+        $r13_3 = $r2.<io.fabric.sdk.android.Kit: io.fabric.sdk.android.InitializationTask initializationTask>;
+
+        $r10_4 = interfaceinvoke $r1.<java.util.Map: java.lang.Object get(java.lang.Object)>($r4_2);
+
+        $r11_4 = (io.fabric.sdk.android.Kit) $r10_4;
+
+        $r14_3 = $r11_4.<io.fabric.sdk.android.Kit: io.fabric.sdk.android.InitializationTask initializationTask>;
+
+(7)     virtualinvoke $r13_3.<io.fabric.sdk.android.InitializationTask: void addDependency(io.fabric.sdk.android.services.concurrency.Task)>($r14_3);
+
+     label5:
+        $r13_4 = Phi($r13_1 #4, $r13_3 #7);
+
+        $r14_4 = Phi($r14_1 #4, $r14_3 #7);
+
+        $r11_5 = Phi($r11_1 #4, $r11_4 #7);
+
+        $z0_5 = Phi($z0_3 #4, $z0_1 #7);
+
+        $r10_5 = Phi($r10_1 #4, $r10_4 #7);
+
+        $i1_2 = $i1_1 + 1;
+
+(8)     goto label1;
+
+     label6:
+        $r13_5 = Phi($r13 #0, $r13 #2);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #2);
+
+        $r14_5 = Phi($r14 #0, $r14 #2);
+
+        $r11_6 = Phi($r11 #0, $r11 #2);
+
+        $i1_3 = Phi($i1 #0, $i1_1 #2);
+
+        $z0_6 = Phi($z0 #0, $z0 #2);
+
+        $r10_6 = Phi($r10 #0, $r10 #2);
+
+        return;
+    }
+
+    io.fabric.sdk.android.InitializationCallback createKitInitializationCallback(int)
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        int $i0;
+        io.fabric.sdk.android.Fabric$2 $r1;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $i0 := @parameter0: int;
+
+        $r1 = new io.fabric.sdk.android.Fabric$2;
+
+        specialinvoke $r1.<io.fabric.sdk.android.Fabric$2: void <init>(io.fabric.sdk.android.Fabric,int)>($r0, $i0);
+
+        return $r1;
+    }
+
+    public io.fabric.sdk.android.ActivityLifecycleManager getActivityLifecycleManager()
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        io.fabric.sdk.android.ActivityLifecycleManager r1;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        r1 = $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.ActivityLifecycleManager activityLifecycleManager>;
+
+        return r1;
+    }
+
+    public java.lang.String getAppIdentifier()
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        io.fabric.sdk.android.services.common.IdManager $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r1 = $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.services.common.IdManager idManager>;
+
+        $r2 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getAppIdentifier()>();
+
+        return $r2;
+    }
+
+    public java.lang.String getAppInstallIdentifier()
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        io.fabric.sdk.android.services.common.IdManager $r1;
+        java.lang.String $r2;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r1 = $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.services.common.IdManager idManager>;
+
+        $r2 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getAppInstallIdentifier()>();
+
+        return $r2;
+    }
+
+    public android.app.Activity getCurrentActivity()
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        java.lang.Object $r1;
+        java.lang.ref.WeakReference $r2, $r2_1;
+        android.app.Activity $r3;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r2 = $r0.<io.fabric.sdk.android.Fabric: java.lang.ref.WeakReference activity>;
+
+        if $r2 == null goto label1;
+
+        $r2_1 = $r0.<io.fabric.sdk.android.Fabric: java.lang.ref.WeakReference activity>;
+
+        $r1 = virtualinvoke $r2_1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r3 = (android.app.Activity) $r1;
+
+        return $r3;
+
+     label1:
+        return null;
+    }
+
+    public java.util.concurrent.ExecutorService getExecutorService()
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        java.util.concurrent.ExecutorService r1;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        r1 = $r0.<io.fabric.sdk.android.Fabric: java.util.concurrent.ExecutorService executorService>;
+
+        return r1;
+    }
+
+    public java.lang.String getIdentifier()
+    {
+        io.fabric.sdk.android.Fabric $r0;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        return "io.fabric.sdk.android:fabric";
+    }
+
+    public java.util.Collection getKits()
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        java.util.Map $r1;
+        java.util.Collection $r2;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r1 = $r0.<io.fabric.sdk.android.Fabric: java.util.Map kits>;
+
+        $r2 = interfaceinvoke $r1.<java.util.Map: java.util.Collection values()>();
+
+        return $r2;
+    }
+
+    java.util.concurrent.Future getKitsFinderFuture(android.content.Context)
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        android.content.Context $r1;
+        io.fabric.sdk.android.FabricKitsFinder $r2;
+        java.lang.String $r3;
+        java.util.concurrent.ExecutorService $r4;
+        java.util.concurrent.Future $r5;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = new io.fabric.sdk.android.FabricKitsFinder;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageCodePath()>();
+
+        specialinvoke $r2.<io.fabric.sdk.android.FabricKitsFinder: void <init>(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r0.<io.fabric.sdk.android.Fabric: java.util.concurrent.ExecutorService getExecutorService()>();
+
+        $r5 = interfaceinvoke $r4.<java.util.concurrent.ExecutorService: java.util.concurrent.Future submit(java.util.concurrent.Callable)>($r2);
+
+        return $r5;
+    }
+
+    public android.os.Handler getMainHandler()
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        android.os.Handler r1;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        r1 = $r0.<io.fabric.sdk.android.Fabric: android.os.Handler mainHandler>;
+
+        return r1;
+    }
+
+    public java.lang.String getVersion()
+    {
+        io.fabric.sdk.android.Fabric $r0;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        return "1.3.6.79";
+    }
+
+    void initializeKits(android.content.Context)
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        android.content.Context $r1;
+        io.fabric.sdk.android.Onboarding $r2;
+        java.util.ArrayList $r3;
+        java.util.concurrent.Future $r4;
+        java.util.Collection $r5;
+        io.fabric.sdk.android.InitializationCallback $r6, $r6_1, $r6_2;
+        io.fabric.sdk.android.services.common.IdManager $r7, $r7_1, $r7_2;
+        java.util.Iterator $r8, $r8_1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        java.lang.Object $r9, $r9_1, $r9_2, $r9_3;
+        io.fabric.sdk.android.Kit $r10, $r10_1, $r10_2, $r10_3;
+        io.fabric.sdk.android.Logger $r11, $r11_1, $r11_2;
+        java.lang.StringBuilder $r12, $r17, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r17_1, $r17_2, $r17_3, $r12_6;
+        java.lang.String $r13, $r13_1, $r13_2, $r13_3, $r13_4, $r13_5, $r13_6, $r13_7;
+        io.fabric.sdk.android.InitializationTask $r14, $r15;
+        java.util.Map $r16;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r4 = virtualinvoke $r0.<io.fabric.sdk.android.Fabric: java.util.concurrent.Future getKitsFinderFuture(android.content.Context)>($r1);
+
+        $r5 = virtualinvoke $r0.<io.fabric.sdk.android.Fabric: java.util.Collection getKits()>();
+
+        $r2 = new io.fabric.sdk.android.Onboarding;
+
+        specialinvoke $r2.<io.fabric.sdk.android.Onboarding: void <init>(java.util.concurrent.Future,java.util.Collection)>($r4, $r5);
+
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>(java.util.Collection)>($r5);
+
+        staticinvoke <java.util.Collections: void sort(java.util.List)>($r3);
+
+        $r6 = <io.fabric.sdk.android.InitializationCallback: io.fabric.sdk.android.InitializationCallback EMPTY>;
+
+        $r7 = $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.services.common.IdManager idManager>;
+
+        virtualinvoke $r2.<io.fabric.sdk.android.Onboarding: void injectParameters(android.content.Context,io.fabric.sdk.android.Fabric,io.fabric.sdk.android.InitializationCallback,io.fabric.sdk.android.services.common.IdManager)>($r1, $r0, $r6, $r7);
+
+(0)     $r8 = interfaceinvoke $r3.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $r6_1 = Phi($r6 #0, $r6_2 #1);
+
+        $r10 = Phi($r10 #0, $r10_1 #1);
+
+        $z0 = Phi($z0 #0, $z0_1 #1);
+
+        $r9 = Phi($r9 #0, $r9_1 #1);
+
+        $r7_1 = Phi($r7 #0, $r7_2 #1);
+
+        $z0_1 = interfaceinvoke $r8.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label2;
+
+        $r9_1 = interfaceinvoke $r8.<java.util.Iterator: java.lang.Object next()>();
+
+        $r10_1 = (io.fabric.sdk.android.Kit) $r9_1;
+
+        $r6_2 = $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.InitializationCallback kitInitializationCallback>;
+
+        $r7_2 = $r0.<io.fabric.sdk.android.Fabric: io.fabric.sdk.android.services.common.IdManager idManager>;
+
+        virtualinvoke $r10_1.<io.fabric.sdk.android.Kit: void injectParameters(android.content.Context,io.fabric.sdk.android.Fabric,io.fabric.sdk.android.InitializationCallback,io.fabric.sdk.android.services.common.IdManager)>($r1, $r0, $r6_2, $r7_2);
+
+(1)     goto label1;
+
+     label2:
+        virtualinvoke $r2.<io.fabric.sdk.android.Onboarding: void initialize()>();
+
+        $r11 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $z0_2 = interfaceinvoke $r11.<io.fabric.sdk.android.Logger: boolean isLoggable(java.lang.String,int)>("Fabric", 3);
+
+        if $z0_2 == 0 goto label5;
+
+        $r12 = new java.lang.StringBuilder;
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>(java.lang.String)>("Initializing ");
+
+        $r13 = virtualinvoke $r0.<io.fabric.sdk.android.Fabric: java.lang.String getIdentifier()>();
+
+        $r12_1 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13);
+
+        $r12_2 = virtualinvoke $r12_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" [Version: ");
+
+        $r13_1 = virtualinvoke $r0.<io.fabric.sdk.android.Fabric: java.lang.String getVersion()>();
+
+        $r12_3 = virtualinvoke $r12_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13_1);
+
+(2)     $r12_4 = virtualinvoke $r12_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("], with the following kits:\n");
+
+     label3:
+        $r12_5 = Phi($r12_4 #2, $r12_6 #6);
+
+        $r13_2 = Phi($r13_1 #2, $r13 #6);
+
+(3)     $r8_1 = interfaceinvoke $r3.<java.util.List: java.util.Iterator iterator()>();
+
+     label4:
+        $r10_2 = Phi($r10 #3, $r10_3 #4, $r10_3 #5);
+
+        $r13_3 = Phi($r13_2 #3, $r13_3 #4, $r13_5 #5);
+
+        $z0_3 = Phi($z0_2 #3, $z0_4 #4, $z0_4 #5);
+
+        $r9_2 = Phi($r9 #3, $r9_3 #4, $r9_3 #5);
+
+        $r17 = Phi($r17 #3, $r17 #4, $r17_3 #5);
+
+        $z0_4 = interfaceinvoke $r8_1.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_4 == 0 goto label6;
+
+        $r9_3 = interfaceinvoke $r8_1.<java.util.Iterator: java.lang.Object next()>();
+
+        $r10_3 = (io.fabric.sdk.android.Kit) $r9_3;
+
+        $r14 = $r10_3.<io.fabric.sdk.android.Kit: io.fabric.sdk.android.InitializationTask initializationTask>;
+
+        $r15 = $r2.<io.fabric.sdk.android.Kit: io.fabric.sdk.android.InitializationTask initializationTask>;
+
+        virtualinvoke $r14.<io.fabric.sdk.android.InitializationTask: void addDependency(io.fabric.sdk.android.services.concurrency.Task)>($r15);
+
+        $r16 = $r0.<io.fabric.sdk.android.Fabric: java.util.Map kits>;
+
+        virtualinvoke $r0.<io.fabric.sdk.android.Fabric: void addAnnotatedDependencies(java.util.Map,io.fabric.sdk.android.Kit)>($r16, $r10_3);
+
+        virtualinvoke $r10_3.<io.fabric.sdk.android.Kit: void initialize()>();
+
+(4)     if $r12_5 == null goto label4;
+
+        $r13_4 = virtualinvoke $r10_3.<io.fabric.sdk.android.Kit: java.lang.String getIdentifier()>();
+
+        $r17_1 = virtualinvoke $r12_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13_4);
+
+        $r17_2 = virtualinvoke $r17_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" [Version: ");
+
+        $r13_5 = virtualinvoke $r10_3.<io.fabric.sdk.android.Kit: java.lang.String getVersion()>();
+
+        $r17_3 = virtualinvoke $r17_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r13_5);
+
+        virtualinvoke $r17_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]\n");
+
+(5)     goto label4;
+
+     label5:
+        $r12_6 = null;
+
+(6)     goto label3;
+
+     label6:
+(7)     if $r12_5 == null goto label7;
+
+        $r11_1 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r13_6 = virtualinvoke $r12_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(8)     interfaceinvoke $r11_1.<io.fabric.sdk.android.Logger: void d(java.lang.String,java.lang.String)>("Fabric", $r13_6);
+
+     label7:
+        $r13_7 = Phi($r13_3 #7, $r13_6 #8);
+
+        $r11_2 = Phi($r11 #7, $r11_1 #8);
+
+        return;
+    }
+
+    public io.fabric.sdk.android.Fabric setCurrentActivity(android.app.Activity)
+    {
+        io.fabric.sdk.android.Fabric $r0;
+        android.app.Activity $r1;
+        java.lang.ref.WeakReference $r2;
+
+        $r0 := @this: io.fabric.sdk.android.Fabric;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 = new java.lang.ref.WeakReference;
+
+        specialinvoke $r2.<java.lang.ref.WeakReference: void <init>(java.lang.Object)>($r1);
+
+        $r0.<io.fabric.sdk.android.Fabric: java.lang.ref.WeakReference activity> = $r2;
+
+        return $r0;
+    }
+}

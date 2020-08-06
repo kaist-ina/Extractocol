@@ -490,5 +490,60 @@ public class TypeTestCode {
 		ConnectionManager cm = new ConnectionManager();
 		cm.publish((int) longitude);
 	}
+	
+	private abstract class D extends A {
+		
+		public void doTaint() {
+			transform(TelephonyManager.getDeviceId());
+		}
+		
+		protected abstract void transform(String str);
+		
+	}
+	
+	private class E extends D {
+		
+		@Override
+		protected void transform(String str) {
+			this.data = str;
+		}
+		
+	}
+	
+	private class F extends D {
+		
+		String str;
+		
+		@Override
+		protected void transform(String str) {
+			this.str = str;
+		}
+		
+	}
+	
+	public void followReturnsPastSeedsTest1() {
+		E e = new E();
+		doTaintX(e);
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(e.data);
+		B b = new B();
+		doTaintX(b);
+		cm.publish(b.data);
+	}
 
+	private void doTaintX(A a) {
+		((D) a).doTaint();
+	}
+	
+	public void followReturnsPastSeedsTest2() {
+		E e = new E();
+		doTaintX(e);
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(e.data);
+		F f = new F();
+		doTaintX(f);
+		cm.publish(f.data);
+		cm.publish(f.str);
+	}
+	
 }

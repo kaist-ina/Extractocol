@@ -170,7 +170,7 @@ public abstract class JUnitTests {
     	Infoflow result = new Infoflow();
 
     	result.setSootConfig(new ConfigSecuriBench());
-    	result.setInspectSinks(false);
+    	result.getConfig().setInspectSinks(false);
     	if(taintWrapper){
     		EasyTaintWrapper easyWrapper;
 			try {

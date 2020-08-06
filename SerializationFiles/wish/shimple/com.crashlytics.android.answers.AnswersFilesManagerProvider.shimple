@@ -1,0 +1,83 @@
+class com.crashlytics.android.answers.AnswersFilesManagerProvider extends java.lang.Object
+{
+    static final java.lang.String SESSION_ANALYTICS_FILE_NAME;
+    static final java.lang.String SESSION_ANALYTICS_TO_SEND_DIR;
+    final android.content.Context context;
+    final io.fabric.sdk.android.services.persistence.FileStore fileStore;
+
+    public void <init>(android.content.Context, io.fabric.sdk.android.services.persistence.FileStore)
+    {
+        com.crashlytics.android.answers.AnswersFilesManagerProvider $r0;
+        android.content.Context $r1;
+        io.fabric.sdk.android.services.persistence.FileStore $r2;
+
+        $r0 := @this: com.crashlytics.android.answers.AnswersFilesManagerProvider;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: io.fabric.sdk.android.services.persistence.FileStore;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.crashlytics.android.answers.AnswersFilesManagerProvider: android.content.Context context> = $r1;
+
+        $r0.<com.crashlytics.android.answers.AnswersFilesManagerProvider: io.fabric.sdk.android.services.persistence.FileStore fileStore> = $r2;
+
+        return;
+    }
+
+    public com.crashlytics.android.answers.SessionAnalyticsFilesManager getAnalyticsFilesManager() throws java.io.IOException
+    {
+        com.crashlytics.android.answers.AnswersFilesManagerProvider $r0;
+        java.lang.IllegalStateException $r1;
+        com.crashlytics.android.answers.SessionEventTransform $r2;
+        io.fabric.sdk.android.services.common.SystemCurrentTimeProvider $r3;
+        io.fabric.sdk.android.services.persistence.FileStore $r4;
+        io.fabric.sdk.android.services.events.GZIPQueueFileEventStorage $r5;
+        com.crashlytics.android.answers.SessionAnalyticsFilesManager $r6;
+        android.os.Looper $r7, $r8;
+        java.io.File $r9;
+        android.content.Context $r10, $r10_1;
+
+        $r0 := @this: com.crashlytics.android.answers.AnswersFilesManagerProvider;
+
+        $r7 = staticinvoke <android.os.Looper: android.os.Looper myLooper()>();
+
+        $r8 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        if $r7 != $r8 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("AnswersFilesManagerProvider cannot be called on the main thread");
+
+        throw $r1;
+
+     label1:
+        $r2 = new com.crashlytics.android.answers.SessionEventTransform;
+
+        specialinvoke $r2.<com.crashlytics.android.answers.SessionEventTransform: void <init>()>();
+
+        $r3 = new io.fabric.sdk.android.services.common.SystemCurrentTimeProvider;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.common.SystemCurrentTimeProvider: void <init>()>();
+
+        $r4 = $r0.<com.crashlytics.android.answers.AnswersFilesManagerProvider: io.fabric.sdk.android.services.persistence.FileStore fileStore>;
+
+        $r9 = interfaceinvoke $r4.<io.fabric.sdk.android.services.persistence.FileStore: java.io.File getFilesDir()>();
+
+        $r5 = new io.fabric.sdk.android.services.events.GZIPQueueFileEventStorage;
+
+        $r10 = $r0.<com.crashlytics.android.answers.AnswersFilesManagerProvider: android.content.Context context>;
+
+        specialinvoke $r5.<io.fabric.sdk.android.services.events.GZIPQueueFileEventStorage: void <init>(android.content.Context,java.io.File,java.lang.String,java.lang.String)>($r10, $r9, "session_analytics.tap", "session_analytics_to_send");
+
+        $r6 = new com.crashlytics.android.answers.SessionAnalyticsFilesManager;
+
+        $r10_1 = $r0.<com.crashlytics.android.answers.AnswersFilesManagerProvider: android.content.Context context>;
+
+        specialinvoke $r6.<com.crashlytics.android.answers.SessionAnalyticsFilesManager: void <init>(android.content.Context,com.crashlytics.android.answers.SessionEventTransform,io.fabric.sdk.android.services.common.CurrentTimeProvider,io.fabric.sdk.android.services.events.EventsStorage)>($r10_1, $r2, $r3, $r5);
+
+        return $r6;
+    }
+}

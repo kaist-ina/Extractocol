@@ -1,0 +1,491 @@
+class io.fabric.sdk.android.services.network.PinningTrustManager extends java.lang.Object implements javax.net.ssl.X509TrustManager
+{
+    private static final long PIN_FRESHNESS_DURATION_MILLIS;
+    private final java.util.Set cache;
+    private final long pinCreationTimeMillis;
+    private final java.util.List pins;
+    private final io.fabric.sdk.android.services.network.SystemKeyStore systemKeyStore;
+    private final javax.net.ssl.TrustManager[] systemTrustManagers;
+
+    public void <init>(io.fabric.sdk.android.services.network.SystemKeyStore, io.fabric.sdk.android.services.network.PinningInfoProvider)
+    {
+        io.fabric.sdk.android.services.network.PinningTrustManager $r0;
+        io.fabric.sdk.android.services.network.SystemKeyStore $r1;
+        io.fabric.sdk.android.services.network.PinningInfoProvider $r2;
+        java.util.LinkedList $r3;
+        java.util.HashSet $r4;
+        int $i0, $i2, $i2_1, $i2_2;
+        java.lang.String $r5;
+        java.util.List $r6;
+        java.util.Set $r7;
+        javax.net.ssl.TrustManager[] $r8;
+        long $l1;
+        java.lang.String[] $r9;
+        byte[] $r10;
+
+        $r0 := @this: io.fabric.sdk.android.services.network.PinningTrustManager;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.network.SystemKeyStore;
+
+        $r2 := @parameter1: io.fabric.sdk.android.services.network.PinningInfoProvider;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r3 = new java.util.LinkedList;
+
+        specialinvoke $r3.<java.util.LinkedList: void <init>()>();
+
+        $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: java.util.List pins> = $r3;
+
+        $r4 = new java.util.HashSet;
+
+        specialinvoke $r4.<java.util.HashSet: void <init>()>();
+
+        $r7 = staticinvoke <java.util.Collections: java.util.Set synchronizedSet(java.util.Set)>($r4);
+
+        $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: java.util.Set cache> = $r7;
+
+        $r8 = specialinvoke $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: javax.net.ssl.TrustManager[] initializeSystemTrustManagers(io.fabric.sdk.android.services.network.SystemKeyStore)>($r1);
+
+        $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: javax.net.ssl.TrustManager[] systemTrustManagers> = $r8;
+
+        $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: io.fabric.sdk.android.services.network.SystemKeyStore systemKeyStore> = $r1;
+
+        $l1 = interfaceinvoke $r2.<io.fabric.sdk.android.services.network.PinningInfoProvider: long getPinCreationTimeInMillis()>();
+
+        $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: long pinCreationTimeMillis> = $l1;
+
+        $r9 = interfaceinvoke $r2.<io.fabric.sdk.android.services.network.PinningInfoProvider: java.lang.String[] getPins()>();
+
+        $i0 = lengthof $r9;
+
+(0)     $i2 = 0;
+
+     label1:
+        $i2_1 = Phi($i2 #0, $i2_2 #1);
+
+        if $i2_1 >= $i0 goto label2;
+
+        $r5 = $r9[$i2_1];
+
+        $r6 = $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: java.util.List pins>;
+
+        $r10 = specialinvoke $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: byte[] hexStringToByteArray(java.lang.String)>($r5);
+
+        interfaceinvoke $r6.<java.util.List: boolean add(java.lang.Object)>($r10);
+
+        $i2_2 = $i2_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    private void checkPinTrust(java.security.cert.X509Certificate[]) throws java.security.cert.CertificateException
+    {
+        io.fabric.sdk.android.services.network.SystemKeyStore $r0;
+        int $i0, $i4, $i4_1, $i4_2;
+        java.security.cert.X509Certificate $r1;
+        java.security.cert.CertificateException $r2;
+        io.fabric.sdk.android.services.network.PinningTrustManager $r3;
+        java.security.cert.X509Certificate[] $r4, $r4_1;
+        long $l1, $l3, $l1_1, $l1_2, $l1_3, $l3_1, $l1_4, $l1_5, $l3_2;
+        byte $b2, $b2_1, $b2_2;
+        io.fabric.sdk.android.Logger $r5;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6;
+        java.lang.String $r7;
+        boolean $z0;
+
+        $r3 := @this: io.fabric.sdk.android.services.network.PinningTrustManager;
+
+        $r4 := @parameter0: java.security.cert.X509Certificate[];
+
+        $l1 = $r3.<io.fabric.sdk.android.services.network.PinningTrustManager: long pinCreationTimeMillis>;
+
+        $b2 = $l1 cmp -1L;
+
+(0)     if $b2 == 0 goto label1;
+
+        $l1_1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l3 = $r3.<io.fabric.sdk.android.services.network.PinningTrustManager: long pinCreationTimeMillis>;
+
+        $l1_2 = $l1_1 - $l3;
+
+        $b2_1 = $l1_2 cmp 15552000000L;
+
+(1)     if $b2_1 <= 0 goto label1;
+
+        $r5 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Certificate pins are stale, (");
+
+        $l1_3 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l3_1 = $r3.<io.fabric.sdk.android.services.network.PinningTrustManager: long pinCreationTimeMillis>;
+
+        $l1_4 = $l1_3 - $l3_1;
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l1_4);
+
+        $r6_3 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" millis vs ");
+
+        $r6_4 = virtualinvoke $r6_3.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>(15552000000L);
+
+        $r6_5 = virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" millis) ");
+
+        $r6_6 = virtualinvoke $r6_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("falling back to system trust.");
+
+        $r7 = virtualinvoke $r6_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r5.<io.fabric.sdk.android.Logger: void w(java.lang.String,java.lang.String)>("Fabric", $r7);
+
+        return;
+
+     label1:
+        $l1_5 = Phi($l1 #0, $l1_2 #1);
+
+        $b2_2 = Phi($b2 #0, $b2_1 #1);
+
+        $l3_2 = Phi($l3 #0, $l3 #1);
+
+        $r0 = $r3.<io.fabric.sdk.android.services.network.PinningTrustManager: io.fabric.sdk.android.services.network.SystemKeyStore systemKeyStore>;
+
+        $r4_1 = staticinvoke <io.fabric.sdk.android.services.network.CertificateChainCleaner: java.security.cert.X509Certificate[] getCleanChain(java.security.cert.X509Certificate[],io.fabric.sdk.android.services.network.SystemKeyStore)>($r4, $r0);
+
+        $i0 = lengthof $r4_1;
+
+(2)     $i4 = 0;
+
+     label2:
+        $i4_1 = Phi($i4 #2, $i4_2 #3);
+
+        if $i4_1 >= $i0 goto label3;
+
+        $r1 = $r4_1[$i4_1];
+
+        $z0 = specialinvoke $r3.<io.fabric.sdk.android.services.network.PinningTrustManager: boolean isValidPin(java.security.cert.X509Certificate)>($r1);
+
+        if $z0 != 0 goto label4;
+
+        $i4_2 = $i4_1 + 1;
+
+(3)     goto label2;
+
+     label3:
+        $r2 = new java.security.cert.CertificateException;
+
+        specialinvoke $r2.<java.security.cert.CertificateException: void <init>(java.lang.String)>("No valid pins found in chain!");
+
+        throw $r2;
+
+     label4:
+        return;
+    }
+
+    private void checkSystemTrust(java.security.cert.X509Certificate[], java.lang.String) throws java.security.cert.CertificateException
+    {
+        io.fabric.sdk.android.services.network.PinningTrustManager $r0;
+        java.security.cert.X509Certificate[] $r1;
+        java.lang.String $r2;
+        javax.net.ssl.TrustManager[] $r3;
+        int $i0, $i1, $i1_1, $i1_2;
+        javax.net.ssl.TrustManager $r4;
+        javax.net.ssl.X509TrustManager $r5;
+
+        $r0 := @this: io.fabric.sdk.android.services.network.PinningTrustManager;
+
+        $r1 := @parameter0: java.security.cert.X509Certificate[];
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: javax.net.ssl.TrustManager[] systemTrustManagers>;
+
+        $i0 = lengthof $r3;
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #1);
+
+        if $i1_1 >= $i0 goto label2;
+
+        $r4 = $r3[$i1_1];
+
+        $r5 = (javax.net.ssl.X509TrustManager) $r4;
+
+        interfaceinvoke $r5.<javax.net.ssl.X509TrustManager: void checkServerTrusted(java.security.cert.X509Certificate[],java.lang.String)>($r1, $r2);
+
+        $i1_2 = $i1_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    private byte[] hexStringToByteArray(java.lang.String)
+    {
+        io.fabric.sdk.android.services.network.PinningTrustManager $r0;
+        java.lang.String $r1;
+        byte[] $r2;
+        int $i0, $i2, $i3, $i5, $i6, $i0_1, $i3_1, $i0_2, $i5_1, $i5_2, $i6_1, $i6_2, $i5_3, $i3_2;
+        byte $b1;
+        char $c4, $c4_1, $c4_2;
+
+        $r0 := @this: io.fabric.sdk.android.services.network.PinningTrustManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i2 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        $i0 = $i2 / 2;
+
+        $r2 = newarray (byte)[$i0];
+
+(0)     $i3 = 0;
+
+     label1:
+        $i6 = Phi($i6 #0, $i6_2 #1);
+
+        $c4 = Phi($c4 #0, $c4_2 #1);
+
+        $i5 = Phi($i5 #0, $i5_3 #1);
+
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        $i3_1 = Phi($i3 #0, $i3_2 #1);
+
+        if $i3_1 >= $i2 goto label2;
+
+        $i0_2 = $i3_1 / 2;
+
+        $c4_1 = virtualinvoke $r1.<java.lang.String: char charAt(int)>($i3_1);
+
+        $i5_1 = staticinvoke <java.lang.Character: int digit(char,int)>($c4_1, 16);
+
+        $i5_2 = $i5_1 << 4;
+
+        $i6_1 = $i3_1 + 1;
+
+        $c4_2 = virtualinvoke $r1.<java.lang.String: char charAt(int)>($i6_1);
+
+        $i6_2 = staticinvoke <java.lang.Character: int digit(char,int)>($c4_2, 16);
+
+        $i5_3 = $i5_2 + $i6_2;
+
+        $b1 = (byte) $i5_3;
+
+        $r2[$i0_2] = $b1;
+
+        $i3_2 = $i3_1 + 2;
+
+(1)     goto label1;
+
+     label2:
+        return $r2;
+    }
+
+    private javax.net.ssl.TrustManager[] initializeSystemTrustManagers(io.fabric.sdk.android.services.network.SystemKeyStore)
+    {
+        io.fabric.sdk.android.services.network.PinningTrustManager $r0;
+        io.fabric.sdk.android.services.network.SystemKeyStore $r1;
+        java.security.KeyStore $r2;
+        java.security.NoSuchAlgorithmException $r3;
+        java.security.KeyStoreException $r4;
+        javax.net.ssl.TrustManagerFactory $r5;
+        javax.net.ssl.TrustManager[] $r6;
+        java.lang.AssertionError $r7, $r7_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.network.PinningTrustManager;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.network.SystemKeyStore;
+
+     label1:
+        $r5 = staticinvoke <javax.net.ssl.TrustManagerFactory: javax.net.ssl.TrustManagerFactory getInstance(java.lang.String)>("X509");
+
+     label2:
+        $r2 = $r1.<io.fabric.sdk.android.services.network.SystemKeyStore: java.security.KeyStore trustStore>;
+
+     label3:
+        virtualinvoke $r5.<javax.net.ssl.TrustManagerFactory: void init(java.security.KeyStore)>($r2);
+
+        $r6 = virtualinvoke $r5.<javax.net.ssl.TrustManagerFactory: javax.net.ssl.TrustManager[] getTrustManagers()>();
+
+     label4:
+        return $r6;
+
+     label5:
+        $r3 := @caughtexception;
+
+        $r7 = new java.lang.AssertionError;
+
+        specialinvoke $r7.<java.lang.AssertionError: void <init>(java.lang.Object)>($r3);
+
+        throw $r7;
+
+     label6:
+        $r4 := @caughtexception;
+
+        $r7_1 = new java.lang.AssertionError;
+
+        specialinvoke $r7_1.<java.lang.AssertionError: void <init>(java.lang.Object)>($r4);
+
+        throw $r7_1;
+
+        catch java.security.NoSuchAlgorithmException from label1 to label2 with label5;
+        catch java.security.KeyStoreException from label1 to label2 with label6;
+        catch java.security.NoSuchAlgorithmException from label3 to label4 with label5;
+        catch java.security.KeyStoreException from label3 to label4 with label6;
+    }
+
+    private boolean isValidPin(java.security.cert.X509Certificate) throws java.security.cert.CertificateException
+    {
+        io.fabric.sdk.android.services.network.PinningTrustManager $r0;
+        java.security.cert.X509Certificate $r1;
+        java.util.List $r2;
+        java.security.NoSuchAlgorithmException $r3;
+        java.security.cert.CertificateException $r4;
+        java.security.MessageDigest $r5;
+        java.security.PublicKey $r6;
+        byte[] $r7, $r10, $r7_1, $r7_2;
+        java.util.Iterator $r8;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.Object $r9;
+
+        $r0 := @this: io.fabric.sdk.android.services.network.PinningTrustManager;
+
+(0)     $r1 := @parameter0: java.security.cert.X509Certificate;
+
+     label01:
+        $r5 = staticinvoke <java.security.MessageDigest: java.security.MessageDigest getInstance(java.lang.String)>("SHA1");
+
+        $r6 = virtualinvoke $r1.<java.security.cert.X509Certificate: java.security.PublicKey getPublicKey()>();
+
+        $r7 = interfaceinvoke $r6.<java.security.PublicKey: byte[] getEncoded()>();
+
+(1)     $r7_1 = virtualinvoke $r5.<java.security.MessageDigest: byte[] digest(byte[])>($r7);
+
+     label02:
+        $r2 = $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: java.util.List pins>;
+
+     label03:
+(2)     $r8 = interfaceinvoke $r2.<java.util.List: java.util.Iterator iterator()>();
+
+     label04:
+        $z0 = Phi($z0 #2, $z0_2 #5);
+
+(3)     $z0_1 = interfaceinvoke $r8.<java.util.Iterator: boolean hasNext()>();
+
+     label05:
+        if $z0_1 == 0 goto label10;
+
+     label06:
+        $r9 = interfaceinvoke $r8.<java.util.Iterator: java.lang.Object next()>();
+
+     label07:
+        $r10 = (byte[]) $r9;
+
+     label08:
+(4)     $z0_2 = staticinvoke <java.util.Arrays: boolean equals(byte[],byte[])>($r10, $r7_1);
+
+     label09:
+(5)     if $z0_2 == 0 goto label04;
+
+        return 1;
+
+     label10:
+        return 0;
+
+     label11:
+        $r3 := @caughtexception;
+
+        $r7_2 = Phi($r7 #0, $r7_1 #1);
+
+        $z0_3 = Phi($z0 #0, $z0_1 #3, $z0_2 #4);
+
+        $r4 = new java.security.cert.CertificateException;
+
+        specialinvoke $r4.<java.security.cert.CertificateException: void <init>(java.lang.Throwable)>($r3);
+
+        throw $r4;
+
+        catch java.security.NoSuchAlgorithmException from label01 to label02 with label11;
+        catch java.security.NoSuchAlgorithmException from label03 to label05 with label11;
+        catch java.security.NoSuchAlgorithmException from label06 to label07 with label11;
+        catch java.security.NoSuchAlgorithmException from label08 to label09 with label11;
+    }
+
+    public void checkClientTrusted(java.security.cert.X509Certificate[], java.lang.String) throws java.security.cert.CertificateException
+    {
+        io.fabric.sdk.android.services.network.PinningTrustManager $r0;
+        java.security.cert.X509Certificate[] $r1;
+        java.lang.String $r2;
+        java.security.cert.CertificateException $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.network.PinningTrustManager;
+
+        $r1 := @parameter0: java.security.cert.X509Certificate[];
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = new java.security.cert.CertificateException;
+
+        specialinvoke $r3.<java.security.cert.CertificateException: void <init>(java.lang.String)>("Client certificates not supported!");
+
+        throw $r3;
+    }
+
+    public void checkServerTrusted(java.security.cert.X509Certificate[], java.lang.String) throws java.security.cert.CertificateException
+    {
+        io.fabric.sdk.android.services.network.PinningTrustManager $r0;
+        java.security.cert.X509Certificate[] $r1;
+        java.lang.String $r2;
+        boolean $z0;
+        java.util.Set $r3, $r3_1;
+        java.security.cert.X509Certificate $r4, $r4_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.network.PinningTrustManager;
+
+        $r1 := @parameter0: java.security.cert.X509Certificate[];
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: java.util.Set cache>;
+
+        $r4 = $r1[0];
+
+        $z0 = interfaceinvoke $r3.<java.util.Set: boolean contains(java.lang.Object)>($r4);
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        specialinvoke $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: void checkSystemTrust(java.security.cert.X509Certificate[],java.lang.String)>($r1, $r2);
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: void checkPinTrust(java.security.cert.X509Certificate[])>($r1);
+
+        $r3_1 = $r0.<io.fabric.sdk.android.services.network.PinningTrustManager: java.util.Set cache>;
+
+        $r4_1 = $r1[0];
+
+        interfaceinvoke $r3_1.<java.util.Set: boolean add(java.lang.Object)>($r4_1);
+
+        return;
+    }
+
+    public java.security.cert.X509Certificate[] getAcceptedIssuers()
+    {
+        io.fabric.sdk.android.services.network.PinningTrustManager $r0;
+
+        $r0 := @this: io.fabric.sdk.android.services.network.PinningTrustManager;
+
+        return null;
+    }
+}

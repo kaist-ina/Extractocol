@@ -1,0 +1,645 @@
+class ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator extends java.lang.Object
+{
+    private final ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator cacheKeyGenerator;
+    public ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log;
+    private final ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage storage;
+
+    public void <init>(ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator, ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator $r1;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage $r2;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r3;
+        java.lang.Class $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r3 = new ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog;
+
+        $r4 = virtualinvoke $r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void <init>(java.lang.Object)>($r4);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log> = $r3;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator cacheKeyGenerator> = $r1;
+
+        $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage storage> = $r2;
+
+        return;
+    }
+
+    private void flushEntry(java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        java.lang.String $r1;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage $r2;
+        java.io.IOException $r3;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage storage>;
+
+     label1:
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage: void removeEntry(java.lang.String)>($r1);
+
+     label2:
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void warn(java.lang.Object,java.lang.Throwable)>("unable to flush cache entry", $r3);
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    private java.net.URL getAbsoluteURL(java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        java.lang.String $r1;
+        java.net.URL $r2;
+        java.net.MalformedURLException $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.net.URL;
+
+     label1:
+        specialinvoke $r2.<java.net.URL: void <init>(java.lang.String)>($r1);
+
+     label2:
+        return $r2;
+
+     label3:
+        $r3 := @caughtexception;
+
+        return null;
+
+        catch java.net.MalformedURLException from label1 to label2 with label3;
+    }
+
+    private java.net.URL getContentLocationURL(java.net.URL, ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        java.net.URL $r2, $r5, $r2_1;
+        ch.boye.httpclientandroidlib.Header $r3;
+        java.lang.String $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r2 := @parameter0: java.net.URL;
+
+        $r1 := @parameter1: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r3 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Content-Location");
+
+        if $r3 != null goto label1;
+
+        return null;
+
+     label1:
+        $r4 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $r5 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: java.net.URL getAbsoluteURL(java.lang.String)>($r4);
+
+        if $r5 != null goto label2;
+
+        $r2_1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: java.net.URL getRelativeURL(java.net.URL,java.lang.String)>($r2, $r4);
+
+        return $r2_1;
+
+     label2:
+        return $r5;
+    }
+
+    private ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry getEntry(java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        java.lang.String $r1;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage $r2;
+        java.io.IOException $r3;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r4;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r5;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage storage>;
+
+     label1:
+        $r5 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.client.cache.HttpCacheStorage: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry getEntry(java.lang.String)>($r1);
+
+     label2:
+        return $r5;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void warn(java.lang.Object,java.lang.Throwable)>("could not retrieve entry from storage", $r3);
+
+        return null;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    private java.net.URL getRelativeURL(java.net.URL, java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        java.net.URL $r1, $r3;
+        java.lang.String $r2;
+        java.net.MalformedURLException $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: java.net.URL;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = new java.net.URL;
+
+     label1:
+        specialinvoke $r3.<java.net.URL: void <init>(java.net.URL,java.lang.String)>($r1, $r2);
+
+     label2:
+        return $r3;
+
+     label3:
+        $r4 := @caughtexception;
+
+        return null;
+
+        catch java.net.MalformedURLException from label1 to label2 with label3;
+    }
+
+    private boolean notGetOrHeadRequest(java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        java.lang.String $r1, $r2, $r2_1, $r2_2;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = "GET";
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+(0)     if $z0 != 0 goto label1;
+
+        $r2_1 = "HEAD";
+
+        $z0_1 = virtualinvoke $r2_1.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+(1)     if $z0_1 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return 0;
+    }
+
+    private boolean responseAndEntryEtagsDiffer(ch.boye.httpclientandroidlib.HttpResponse, ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r2;
+        ch.boye.httpclientandroidlib.Header $r3, $r4;
+        java.lang.String $r5, $r6;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry;
+
+        $r3 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("ETag");
+
+        $r4 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("ETag");
+
+        if $r3 == null goto label2;
+
+        if $r4 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r5 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $r6 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 != 0 goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    private boolean responseDateNewerThanEntryDate(ch.boye.httpclientandroidlib.HttpResponse, ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        ch.boye.httpclientandroidlib.HttpResponse $r1;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r2;
+        ch.boye.httpclientandroidlib.impl.cookie.DateParseException $r3;
+        ch.boye.httpclientandroidlib.Header $r4, $r5;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3;
+        java.util.Date $r7, $r8;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry;
+
+        $r4 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Date");
+
+        $r5 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Date");
+
+(0)     if $r4 == null goto label4;
+
+(1)     if $r5 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r6 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $r7 = staticinvoke <ch.boye.httpclientandroidlib.impl.cookie.DateUtils: java.util.Date parseDate(java.lang.String)>($r6);
+
+(2)     $r6_1 = interfaceinvoke $r5.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $r8 = staticinvoke <ch.boye.httpclientandroidlib.impl.cookie.DateUtils: java.util.Date parseDate(java.lang.String)>($r6_1);
+
+        $z0 = virtualinvoke $r8.<java.util.Date: boolean after(java.util.Date)>($r7);
+
+     label2:
+        return $z0;
+
+     label3:
+        $r3 := @caughtexception;
+
+(3)     $r6_2 = Phi($r6 #1, $r6_1 #2);
+
+     label4:
+        $r6_3 = Phi($r6 #0, $r6_2 #3);
+
+        return 0;
+
+        catch ch.boye.httpclientandroidlib.impl.cookie.DateParseException from label1 to label2 with label3;
+    }
+
+    protected boolean flushAbsoluteUriFromSameHost(java.net.URL, java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        java.net.URL $r1, $r3;
+        java.lang.String $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: java.net.URL;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: java.net.URL getAbsoluteURL(java.lang.String)>($r2);
+
+        if $r3 != null goto label1;
+
+        return 0;
+
+     label1:
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: void flushUriIfSameHost(java.net.URL,java.net.URL)>($r1, $r3);
+
+        return 1;
+    }
+
+    public void flushInvalidatedCacheEntries(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog $r4, $r4_1, $r4_2, $r4_3;
+        java.lang.String $r5, $r8, $r8_1, $r8_2, $r8_3, $r5_1, $r5_2, $r5_3, $r5_4, $r8_4;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r6;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2, $r7_3;
+        java.util.Map $r9;
+        java.util.Collection $r10;
+        java.util.Iterator $r11;
+        java.lang.Object $r12;
+        java.net.URL $r13;
+        ch.boye.httpclientandroidlib.Header $r14, $r14_1, $r14_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: boolean requestShouldNotBeCached(ch.boye.httpclientandroidlib.HttpRequest)>($r2);
+
+(0)     if $z0 == 0 goto label6;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r4.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>("Request should not be cached");
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator cacheKeyGenerator>;
+
+        $r5 = virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator: java.lang.String getURI(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest)>($r1, $r2);
+
+        $r6 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry getEntry(java.lang.String)>($r5);
+
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("parent entry: ");
+
+        $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6);
+
+        $r8 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r4_1.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void debug(java.lang.Object)>($r8);
+
+(1)     if $r6 == null goto label3;
+
+        $r9 = virtualinvoke $r6.<ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry: java.util.Map getVariantMap()>();
+
+        $r10 = interfaceinvoke $r9.<java.util.Map: java.util.Collection values()>();
+
+(2)     $r11 = interfaceinvoke $r10.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label1:
+        $r8_1 = Phi($r8 #2, $r8_2 #3);
+
+        $z0_1 = Phi($z0 #2, $z0_2 #3);
+
+        $z0_2 = interfaceinvoke $r11.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_2 == 0 goto label2;
+
+        $r12 = interfaceinvoke $r11.<java.util.Iterator: java.lang.Object next()>();
+
+        $r8_2 = (java.lang.String) $r12;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: void flushEntry(java.lang.String)>($r8_2);
+
+(3)     goto label1;
+
+     label2:
+(4)     specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: void flushEntry(java.lang.String)>($r5);
+
+     label3:
+        $r8_3 = Phi($r8 #1, $r8_1 #4);
+
+        $z0_3 = Phi($z0 #1, $z0_2 #4);
+
+        $r13 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: java.net.URL getAbsoluteURL(java.lang.String)>($r5);
+
+        if $r13 != null goto label4;
+
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog log>;
+
+        virtualinvoke $r4_2.<ch.boye.httpclientandroidlib.androidextra.HttpClientAndroidLog: void error(java.lang.Object)>("Couldn\'t transform request into valid URL");
+
+        return;
+
+     label4:
+        $r14 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Content-Location");
+
+(5)     if $r14 == null goto label5;
+
+        $r5_1 = interfaceinvoke $r14.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+        $z0_4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: boolean flushAbsoluteUriFromSameHost(java.net.URL,java.lang.String)>($r13, $r5_1);
+
+(6)     if $z0_4 != 0 goto label5;
+
+(7)     virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: void flushRelativeUriFromSameHost(java.net.URL,java.lang.String)>($r13, $r5_1);
+
+     label5:
+        $r5_2 = Phi($r5 #5, $r5_1 #6, $r5_1 #7);
+
+        $z0_5 = Phi($z0_3 #5, $z0_4 #6, $z0_4 #7);
+
+        $r14_1 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.Header getFirstHeader(java.lang.String)>("Location");
+
+(8)     if $r14_1 == null goto label6;
+
+        $r5_3 = interfaceinvoke $r14_1.<ch.boye.httpclientandroidlib.Header: java.lang.String getValue()>();
+
+(9)     virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: boolean flushAbsoluteUriFromSameHost(java.net.URL,java.lang.String)>($r13, $r5_3);
+
+     label6:
+        $r5_4 = Phi($r5 #0, $r5_2 #8, $r5_3 #9);
+
+        $r8_4 = Phi($r8 #0, $r8_3 #8, $r8_3 #9);
+
+        $r14_2 = Phi($r14 #0, $r14_1 #8, $r14_1 #9);
+
+        $r4_3 = Phi($r4 #0, $r4_1 #8, $r4_1 #9);
+
+        $r7_3 = Phi($r7 #0, $r7_2 #8, $r7_2 #9);
+
+        $z0_6 = Phi($z0 #0, $z0_5 #8, $z0_5 #9);
+
+        return;
+    }
+
+    public void flushInvalidatedCacheEntries(ch.boye.httpclientandroidlib.HttpHost, ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.HttpResponse)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.HttpResponse $r3;
+        ch.boye.httpclientandroidlib.StatusLine $r4;
+        int $i0;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator $r5, $r5_1, $r5_2;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3;
+        java.net.URL $r7, $r8;
+        ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry $r9;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.HttpResponse;
+
+        $r4 = interfaceinvoke $r3.<ch.boye.httpclientandroidlib.HttpResponse: ch.boye.httpclientandroidlib.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r4.<ch.boye.httpclientandroidlib.StatusLine: int getStatusCode()>();
+
+(0)     if $i0 < 200 goto label2;
+
+        if $i0 <= 299 goto label1;
+
+        return;
+
+     label1:
+        $r5 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator cacheKeyGenerator>;
+
+        $r6 = virtualinvoke $r5.<ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator: java.lang.String getURI(ch.boye.httpclientandroidlib.HttpHost,ch.boye.httpclientandroidlib.HttpRequest)>($r1, $r2);
+
+        $r7 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: java.net.URL getAbsoluteURL(java.lang.String)>($r6);
+
+(1)     if $r7 == null goto label2;
+
+        $r8 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: java.net.URL getContentLocationURL(java.net.URL,ch.boye.httpclientandroidlib.HttpResponse)>($r7, $r3);
+
+(2)     if $r8 == null goto label2;
+
+        $r5_1 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator cacheKeyGenerator>;
+
+        $r6_1 = virtualinvoke $r8.<java.net.URL: java.lang.String toString()>();
+
+        $r6_2 = virtualinvoke $r5_1.<ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator: java.lang.String canonicalizeUri(java.lang.String)>($r6_1);
+
+        $r9 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry getEntry(java.lang.String)>($r6_2);
+
+(3)     if $r9 == null goto label2;
+
+        $z0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: boolean responseDateNewerThanEntryDate(ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)>($r3, $r9);
+
+(4)     if $z0 == 0 goto label2;
+
+        $z0_1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: boolean responseAndEntryEtagsDiffer(ch.boye.httpclientandroidlib.HttpResponse,ch.boye.httpclientandroidlib.client.cache.HttpCacheEntry)>($r3, $r9);
+
+(5)     if $z0_1 == 0 goto label2;
+
+(6)     virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: void flushUriIfSameHost(java.net.URL,java.net.URL)>($r7, $r8);
+
+     label2:
+        $z0_2 = Phi($z0 #0, $z0 #1, $z0 #2, $z0 #3, $z0 #4, $z0_1 #5, $z0_1 #6);
+
+        $r5_2 = Phi($r5 #0, $r5 #1, $r5 #2, $r5_1 #3, $r5_1 #4, $r5_1 #5, $r5_1 #6);
+
+        $r6_3 = Phi($r6 #0, $r6 #1, $r6 #2, $r6_2 #3, $r6_2 #4, $r6_2 #5, $r6_2 #6);
+
+        return;
+    }
+
+    protected void flushRelativeUriFromSameHost(java.net.URL, java.lang.String)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        java.net.URL $r1, $r3;
+        java.lang.String $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: java.net.URL;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: java.net.URL getRelativeURL(java.net.URL,java.lang.String)>($r1, $r2);
+
+        if $r3 != null goto label1;
+
+        return;
+
+     label1:
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: void flushUriIfSameHost(java.net.URL,java.net.URL)>($r1, $r3);
+
+        return;
+    }
+
+    protected void flushUriIfSameHost(java.net.URL, java.net.URL)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        java.net.URL $r1, $r3, $r3_1;
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator $r2;
+        java.lang.String $r4, $r5, $r4_1, $r4_2, $r4_3, $r4_4;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: java.net.URL;
+
+        $r3 := @parameter1: java.net.URL;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator cacheKeyGenerator>;
+
+        $r4 = virtualinvoke $r3.<java.net.URL: java.lang.String toString()>();
+
+        $r4_1 = virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.client.cache.CacheKeyGenerator: java.lang.String canonicalizeUri(java.lang.String)>($r4);
+
+        $r3_1 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: java.net.URL getAbsoluteURL(java.lang.String)>($r4_1);
+
+        if $r3_1 != null goto label1;
+
+        return;
+
+     label1:
+        $r4_2 = virtualinvoke $r3_1.<java.net.URL: java.lang.String getAuthority()>();
+
+        $r5 = virtualinvoke $r1.<java.net.URL: java.lang.String getAuthority()>();
+
+        $z0 = virtualinvoke $r4_2.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r5);
+
+(0)     if $z0 == 0 goto label2;
+
+        $r4_3 = virtualinvoke $r3_1.<java.net.URL: java.lang.String toString()>();
+
+(1)     specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: void flushEntry(java.lang.String)>($r4_3);
+
+     label2:
+        $r4_4 = Phi($r4_2 #0, $r4_3 #1);
+
+        return;
+    }
+
+    protected boolean requestShouldNotBeCached(ch.boye.httpclientandroidlib.HttpRequest)
+    {
+        ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator $r0;
+        ch.boye.httpclientandroidlib.HttpRequest $r1;
+        ch.boye.httpclientandroidlib.RequestLine $r2;
+        java.lang.String $r3;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r2 = interfaceinvoke $r1.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.RequestLine getRequestLine()>();
+
+        $r3 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.RequestLine: java.lang.String getMethod()>();
+
+        $z0 = specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.client.cache.CacheInvalidator: boolean notGetOrHeadRequest(java.lang.String)>($r3);
+
+        return $z0;
+    }
+}

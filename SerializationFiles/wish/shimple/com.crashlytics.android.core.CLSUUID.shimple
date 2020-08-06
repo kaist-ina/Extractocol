@@ -1,0 +1,265 @@
+class com.crashlytics.android.core.CLSUUID extends java.lang.Object
+{
+    private static java.lang.String _clsId;
+    private static final java.util.concurrent.atomic.AtomicLong _sequenceNumber;
+
+    static void <clinit>()
+    {
+        java.util.concurrent.atomic.AtomicLong $r0;
+
+        $r0 = new java.util.concurrent.atomic.AtomicLong;
+
+        specialinvoke $r0.<java.util.concurrent.atomic.AtomicLong: void <init>(long)>(0L);
+
+        <com.crashlytics.android.core.CLSUUID: java.util.concurrent.atomic.AtomicLong _sequenceNumber> = $r0;
+
+        return;
+    }
+
+    public void <init>(io.fabric.sdk.android.services.common.IdManager)
+    {
+        com.crashlytics.android.core.CLSUUID $r0;
+        io.fabric.sdk.android.services.common.IdManager $r1;
+        byte[] $r2;
+        java.lang.Object[] $r3;
+        java.lang.String $r4, $r5, $r7, $r4_1, $r7_1, $r4_2, $r4_3, $r4_4;
+        java.util.Locale $r6, $r6_1;
+        java.lang.CharSequence $r8;
+
+        $r0 := @this: com.crashlytics.android.core.CLSUUID;
+
+        $r1 := @parameter0: io.fabric.sdk.android.services.common.IdManager;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r2 = newarray (byte)[10];
+
+        specialinvoke $r0.<com.crashlytics.android.core.CLSUUID: void populateTime(byte[])>($r2);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CLSUUID: void populateSequenceNumber(byte[])>($r2);
+
+        specialinvoke $r0.<com.crashlytics.android.core.CLSUUID: void populatePID(byte[])>($r2);
+
+        $r4 = virtualinvoke $r1.<io.fabric.sdk.android.services.common.IdManager: java.lang.String getAppInstallIdentifier()>();
+
+        $r4_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String sha1(java.lang.String)>($r4);
+
+        $r5 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String hexify(byte[])>($r2);
+
+        $r6 = <java.util.Locale: java.util.Locale US>;
+
+        $r3 = newarray (java.lang.Object)[4];
+
+        $r7 = virtualinvoke $r5.<java.lang.String: java.lang.String substring(int,int)>(0, 12);
+
+        $r3[0] = $r7;
+
+        $r7_1 = virtualinvoke $r5.<java.lang.String: java.lang.String substring(int,int)>(12, 16);
+
+        $r3[1] = $r7_1;
+
+        $r8 = virtualinvoke $r5.<java.lang.String: java.lang.CharSequence subSequence(int,int)>(16, 20);
+
+        $r3[2] = $r8;
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.String: java.lang.String substring(int,int)>(0, 12);
+
+        $r3[3] = $r4_2;
+
+        $r4_3 = staticinvoke <java.lang.String: java.lang.String format(java.util.Locale,java.lang.String,java.lang.Object[])>($r6, "%s-%s-%s-%s", $r3);
+
+        $r6_1 = <java.util.Locale: java.util.Locale US>;
+
+        $r4_4 = virtualinvoke $r4_3.<java.lang.String: java.lang.String toUpperCase(java.util.Locale)>($r6_1);
+
+        <com.crashlytics.android.core.CLSUUID: java.lang.String _clsId> = $r4_4;
+
+        return;
+    }
+
+    private static byte[] convertLongToFourByteBuffer(long)
+    {
+        long $l0;
+        int $i1;
+        java.nio.ByteOrder $r0;
+        java.nio.ByteBuffer $r1;
+        byte[] $r2;
+
+        $l0 := @parameter0: long;
+
+        $r1 = staticinvoke <java.nio.ByteBuffer: java.nio.ByteBuffer allocate(int)>(4);
+
+        $i1 = (int) $l0;
+
+        virtualinvoke $r1.<java.nio.ByteBuffer: java.nio.ByteBuffer putInt(int)>($i1);
+
+        $r0 = <java.nio.ByteOrder: java.nio.ByteOrder BIG_ENDIAN>;
+
+        virtualinvoke $r1.<java.nio.ByteBuffer: java.nio.ByteBuffer order(java.nio.ByteOrder)>($r0);
+
+        virtualinvoke $r1.<java.nio.ByteBuffer: java.nio.Buffer position(int)>(0);
+
+        $r2 = virtualinvoke $r1.<java.nio.ByteBuffer: byte[] array()>();
+
+        return $r2;
+    }
+
+    private static byte[] convertLongToTwoByteBuffer(long)
+    {
+        long $l0;
+        int $i1;
+        short $s2;
+        java.nio.ByteOrder $r0;
+        java.nio.ByteBuffer $r1;
+        byte[] $r2;
+
+        $l0 := @parameter0: long;
+
+        $r1 = staticinvoke <java.nio.ByteBuffer: java.nio.ByteBuffer allocate(int)>(2);
+
+        $i1 = (int) $l0;
+
+        $s2 = (short) $i1;
+
+        virtualinvoke $r1.<java.nio.ByteBuffer: java.nio.ByteBuffer putShort(short)>($s2);
+
+        $r0 = <java.nio.ByteOrder: java.nio.ByteOrder BIG_ENDIAN>;
+
+        virtualinvoke $r1.<java.nio.ByteBuffer: java.nio.ByteBuffer order(java.nio.ByteOrder)>($r0);
+
+        virtualinvoke $r1.<java.nio.ByteBuffer: java.nio.Buffer position(int)>(0);
+
+        $r2 = virtualinvoke $r1.<java.nio.ByteBuffer: byte[] array()>();
+
+        return $r2;
+    }
+
+    private void populatePID(byte[])
+    {
+        com.crashlytics.android.core.CLSUUID $r0;
+        byte[] $r1, $r3;
+        long $l0;
+        int $i1;
+        java.lang.Integer $r2;
+        short $s2;
+        byte $b3, $b3_1;
+
+        $r0 := @this: com.crashlytics.android.core.CLSUUID;
+
+        $r1 := @parameter0: byte[];
+
+        $i1 = staticinvoke <android.os.Process: int myPid()>();
+
+        $r2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1);
+
+        $s2 = virtualinvoke $r2.<java.lang.Integer: short shortValue()>();
+
+        $l0 = (long) $s2;
+
+        $r3 = staticinvoke <com.crashlytics.android.core.CLSUUID: byte[] convertLongToTwoByteBuffer(long)>($l0);
+
+        $b3 = $r3[0];
+
+        $r1[8] = $b3;
+
+        $b3_1 = $r3[1];
+
+        $r1[9] = $b3_1;
+
+        return;
+    }
+
+    private void populateSequenceNumber(byte[])
+    {
+        com.crashlytics.android.core.CLSUUID $r0;
+        byte[] $r1, $r3;
+        java.util.concurrent.atomic.AtomicLong $r2;
+        long $l0;
+        byte $b1, $b1_1;
+
+        $r0 := @this: com.crashlytics.android.core.CLSUUID;
+
+        $r1 := @parameter0: byte[];
+
+        $r2 = <com.crashlytics.android.core.CLSUUID: java.util.concurrent.atomic.AtomicLong _sequenceNumber>;
+
+        $l0 = virtualinvoke $r2.<java.util.concurrent.atomic.AtomicLong: long incrementAndGet()>();
+
+        $r3 = staticinvoke <com.crashlytics.android.core.CLSUUID: byte[] convertLongToTwoByteBuffer(long)>($l0);
+
+        $b1 = $r3[0];
+
+        $r1[6] = $b1;
+
+        $b1_1 = $r3[1];
+
+        $r1[7] = $b1_1;
+
+        return;
+    }
+
+    private void populateTime(byte[])
+    {
+        com.crashlytics.android.core.CLSUUID $r0;
+        byte[] $r1, $r3, $r3_1;
+        java.util.Date $r2;
+        long $l0, $l1, $l1_1;
+        byte $b2, $b2_1, $b2_2, $b2_3, $b2_4, $b2_5;
+
+        $r0 := @this: com.crashlytics.android.core.CLSUUID;
+
+        $r1 := @parameter0: byte[];
+
+        $r2 = new java.util.Date;
+
+        specialinvoke $r2.<java.util.Date: void <init>()>();
+
+        $l1 = virtualinvoke $r2.<java.util.Date: long getTime()>();
+
+        $l0 = $l1 / 1000L;
+
+        $l1_1 = $l1 % 1000L;
+
+        $r3 = staticinvoke <com.crashlytics.android.core.CLSUUID: byte[] convertLongToFourByteBuffer(long)>($l0);
+
+        $b2 = $r3[0];
+
+        $r1[0] = $b2;
+
+        $b2_1 = $r3[1];
+
+        $r1[1] = $b2_1;
+
+        $b2_2 = $r3[2];
+
+        $r1[2] = $b2_2;
+
+        $b2_3 = $r3[3];
+
+        $r1[3] = $b2_3;
+
+        $r3_1 = staticinvoke <com.crashlytics.android.core.CLSUUID: byte[] convertLongToTwoByteBuffer(long)>($l1_1);
+
+        $b2_4 = $r3_1[0];
+
+        $r1[4] = $b2_4;
+
+        $b2_5 = $r3_1[1];
+
+        $r1[5] = $b2_5;
+
+        return;
+    }
+
+    public java.lang.String toString()
+    {
+        com.crashlytics.android.core.CLSUUID $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.crashlytics.android.core.CLSUUID;
+
+        r1 = <com.crashlytics.android.core.CLSUUID: java.lang.String _clsId>;
+
+        return r1;
+    }
+}

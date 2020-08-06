@@ -1,0 +1,247 @@
+public class ch.boye.httpclientandroidlib.impl.auth.BasicScheme extends ch.boye.httpclientandroidlib.impl.auth.RFC2617Scheme
+{
+    private boolean complete;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.BasicScheme $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.BasicScheme;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.BasicScheme: void <init>(ch.boye.httpclientandroidlib.auth.ChallengeState)>(null);
+
+        return;
+    }
+
+    public void <init>(ch.boye.httpclientandroidlib.auth.ChallengeState)
+    {
+        ch.boye.httpclientandroidlib.impl.auth.BasicScheme $r0;
+        ch.boye.httpclientandroidlib.auth.ChallengeState $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.BasicScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.auth.ChallengeState;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.RFC2617Scheme: void <init>(ch.boye.httpclientandroidlib.auth.ChallengeState)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.BasicScheme: boolean complete> = 0;
+
+        return;
+    }
+
+    public static ch.boye.httpclientandroidlib.Header authenticate(ch.boye.httpclientandroidlib.auth.Credentials, java.lang.String, boolean)
+    {
+        ch.boye.httpclientandroidlib.auth.Credentials $r0;
+        java.lang.String $r1, $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5;
+        boolean $z0;
+        java.lang.StringBuilder $r2;
+        ch.boye.httpclientandroidlib.util.CharArrayBuffer $r3;
+        int $i0;
+        ch.boye.httpclientandroidlib.message.BufferedHeader $r4;
+        java.lang.IllegalArgumentException $r5, $r5_1;
+        java.security.Principal $r6;
+        byte[] $r8, $r8_1;
+
+        $r0 := @parameter0: ch.boye.httpclientandroidlib.auth.Credentials;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $z0 := @parameter2: boolean;
+
+        if $r0 != null goto label1;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Credentials may not be null");
+
+        throw $r5;
+
+     label1:
+        if $r1 != null goto label2;
+
+        $r5_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("charset may not be null");
+
+        throw $r5_1;
+
+     label2:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = interfaceinvoke $r0.<ch.boye.httpclientandroidlib.auth.Credentials: java.security.Principal getUserPrincipal()>();
+
+        $r7 = interfaceinvoke $r6.<java.security.Principal: java.lang.String getName()>();
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(":");
+
+        $r7_1 = interfaceinvoke $r0.<ch.boye.httpclientandroidlib.auth.Credentials: java.lang.String getPassword()>();
+
+        if $r7_1 != null goto label5;
+
+(0)     $r7_2 = "null";
+
+     label3:
+        $r7_3 = Phi($r7_2 #0, $r7_5 #1);
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7_3);
+
+        $r7_4 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r8 = staticinvoke <ch.boye.httpclientandroidlib.util.EncodingUtils: byte[] getBytes(java.lang.String,java.lang.String)>($r7_4, $r1);
+
+        $r8_1 = staticinvoke <ch.boye.httpclientandroidlib.androidextra.Base64: byte[] encode(byte[],int)>($r8, 2);
+
+        $r3 = new ch.boye.httpclientandroidlib.util.CharArrayBuffer;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void <init>(int)>(32);
+
+        if $z0 == 0 goto label6;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>("Proxy-Authorization");
+
+     label4:
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>(": Basic ");
+
+        $i0 = lengthof $r8_1;
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(byte[],int,int)>($r8_1, 0, $i0);
+
+        $r4 = new ch.boye.httpclientandroidlib.message.BufferedHeader;
+
+        specialinvoke $r4.<ch.boye.httpclientandroidlib.message.BufferedHeader: void <init>(ch.boye.httpclientandroidlib.util.CharArrayBuffer)>($r3);
+
+        return $r4;
+
+     label5:
+        $r7_5 = interfaceinvoke $r0.<ch.boye.httpclientandroidlib.auth.Credentials: java.lang.String getPassword()>();
+
+(1)     goto label3;
+
+     label6:
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.util.CharArrayBuffer: void append(java.lang.String)>("Authorization");
+
+        goto label4;
+    }
+
+    public ch.boye.httpclientandroidlib.Header authenticate(ch.boye.httpclientandroidlib.auth.Credentials, ch.boye.httpclientandroidlib.HttpRequest) throws ch.boye.httpclientandroidlib.auth.AuthenticationException
+    {
+        ch.boye.httpclientandroidlib.impl.auth.BasicScheme $r0;
+        ch.boye.httpclientandroidlib.auth.Credentials $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.protocol.BasicHttpContext $r3;
+        ch.boye.httpclientandroidlib.Header $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.BasicScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.auth.Credentials;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 = new ch.boye.httpclientandroidlib.protocol.BasicHttpContext;
+
+        specialinvoke $r3.<ch.boye.httpclientandroidlib.protocol.BasicHttpContext: void <init>()>();
+
+        $r4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.BasicScheme: ch.boye.httpclientandroidlib.Header authenticate(ch.boye.httpclientandroidlib.auth.Credentials,ch.boye.httpclientandroidlib.HttpRequest,ch.boye.httpclientandroidlib.protocol.HttpContext)>($r1, $r2, $r3);
+
+        return $r4;
+    }
+
+    public ch.boye.httpclientandroidlib.Header authenticate(ch.boye.httpclientandroidlib.auth.Credentials, ch.boye.httpclientandroidlib.HttpRequest, ch.boye.httpclientandroidlib.protocol.HttpContext) throws ch.boye.httpclientandroidlib.auth.AuthenticationException
+    {
+        ch.boye.httpclientandroidlib.impl.auth.BasicScheme $r0;
+        ch.boye.httpclientandroidlib.auth.Credentials $r1;
+        ch.boye.httpclientandroidlib.HttpRequest $r2;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r3;
+        java.lang.IllegalArgumentException $r4, $r4_1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r5;
+        java.lang.String $r6;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.Header $r7;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.BasicScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.auth.Credentials;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.HttpRequest;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        if $r1 != null goto label1;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Credentials may not be null");
+
+        throw $r4;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r4_1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4_1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("HTTP request may not be null");
+
+        throw $r4_1;
+
+     label2:
+        $r5 = interfaceinvoke $r2.<ch.boye.httpclientandroidlib.HttpRequest: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        $r6 = staticinvoke <ch.boye.httpclientandroidlib.auth.params.AuthParams: java.lang.String getCredentialCharset(ch.boye.httpclientandroidlib.params.HttpParams)>($r5);
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.BasicScheme: boolean isProxy()>();
+
+        $r7 = staticinvoke <ch.boye.httpclientandroidlib.impl.auth.BasicScheme: ch.boye.httpclientandroidlib.Header authenticate(ch.boye.httpclientandroidlib.auth.Credentials,java.lang.String,boolean)>($r1, $r6, $z0);
+
+        return $r7;
+    }
+
+    public java.lang.String getSchemeName()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.BasicScheme $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.BasicScheme;
+
+        return "basic";
+    }
+
+    public boolean isComplete()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.BasicScheme $r0;
+        boolean z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.BasicScheme;
+
+        z0 = $r0.<ch.boye.httpclientandroidlib.impl.auth.BasicScheme: boolean complete>;
+
+        return z0;
+    }
+
+    public boolean isConnectionBased()
+    {
+        ch.boye.httpclientandroidlib.impl.auth.BasicScheme $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.BasicScheme;
+
+        return 0;
+    }
+
+    public void processChallenge(ch.boye.httpclientandroidlib.Header) throws ch.boye.httpclientandroidlib.auth.MalformedChallengeException
+    {
+        ch.boye.httpclientandroidlib.impl.auth.BasicScheme $r0;
+        ch.boye.httpclientandroidlib.Header $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.auth.BasicScheme;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.Header;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.auth.RFC2617Scheme: void processChallenge(ch.boye.httpclientandroidlib.Header)>($r1);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.auth.BasicScheme: boolean complete> = 1;
+
+        return;
+    }
+}

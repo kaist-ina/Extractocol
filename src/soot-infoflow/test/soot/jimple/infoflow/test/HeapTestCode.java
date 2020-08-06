@@ -11,6 +11,7 @@
 package soot.jimple.infoflow.test;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import soot.jimple.infoflow.test.android.AccountManager;
 import soot.jimple.infoflow.test.android.ConnectionManager;
@@ -114,6 +115,7 @@ public class HeapTestCode {
 	class A{
 		public String b = "Y";
 		public String c = "X";
+		public int i = 0;
 	}
 	
 	class X{
@@ -321,6 +323,19 @@ public class HeapTestCode {
 		String[] c = b;
 		ConnectionManager cm = new ConnectionManager();
 		cm.publish(c[0]);		
+	}
+	
+	public void arrayAliasTest2() {
+		String tainted = TelephonyManager.getDeviceId();
+		String[] arr = new String[] { "foo", "bar" };
+		String[] arr2 = arr;
+		int size = arr.length;
+		arr[1] = tainted;
+		String x = arr2[1];
+		
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(x);
+		System.out.println(size);
 	}
 
 	public void functionAliasTest() {
@@ -857,9 +872,14 @@ public class HeapTestCode {
 			public String get() {
 				return obj.data;
 			}
+			
+			public String getParent() {
+				return parentData;
+			}
 		}
 		
 		public Inner2b obj;
+		public String parentData;
 		
 		public String get() {
 			return obj.data;
@@ -876,7 +896,7 @@ public class HeapTestCode {
 		a.obj.set();
 		String untainted = b.get();
 		ConnectionManager cm = new ConnectionManager();
-		cm.publish(untainted);		
+		cm.publish(untainted);
 	}
 
 	public void innerClassTest3() {
@@ -903,6 +923,53 @@ public class HeapTestCode {
 		String untainted = b.obj.get();
 		ConnectionManager cm = new ConnectionManager();
 		cm.publish(untainted);		
+	}
+	
+	private class Inner3 {
+		
+		private class Inner2b {
+			
+			private Inner2 foo;
+			
+		}
+
+		private String data;
+		
+		private class Inner2 {
+			
+			public void set() {
+				data = TelephonyManager.getDeviceId();
+			}
+		}
+		
+		private Inner2b obj2;
+		
+		public String get() {
+			return data;
+		}
+	}
+	
+	public void innerClassTest5() {
+		Inner3 a = new Inner3();
+		Inner3 b = new Inner3();
+		
+		a.obj2 = b.new Inner2b();
+		a.obj2.foo = b.new Inner2();
+		
+		a.obj2.foo.set();
+		String untainted = a.get();
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(untainted);
+	}
+	
+	public void innerClassTest6() {
+		Inner1b a = new Inner1b();
+		a.obj = a.new Inner2b();
+		a.parentData = TelephonyManager.getDeviceId();
+		
+		Inner1b.Inner2b inner = a.obj;
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(inner.getParent());
 	}
 	
 	private class SimpleTree {
@@ -1113,4 +1180,214 @@ public class HeapTestCode {
 		leakData(y.next);
 	}
 	
+	public void arrayLengthAliasTest1() {
+		String tainted = TelephonyManager.getDeviceId();
+		String[] arr = new String[] { "foo", "xx", "bar" };
+		int size = arr.length;
+		arr[1] = tainted;
+		
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(size);
+	}
+	
+	public void arrayLengthAliasTest2() {
+		String tainted = TelephonyManager.getDeviceId();
+		String[] arr = new String[] { "foo", "xx", "bar" };
+		String[] arr2 = arr;
+		int size = arr.length;
+		arr[1] = tainted;
+		int size2 = arr2.length;
+		
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(size2);
+		System.out.println(size);
+	}
+	
+	public void arrayLengthAliasTest3() {
+		String tainted = TelephonyManager.getDeviceId();
+		String[] arr = new String[tainted.length()];
+		int size = arr.length;
+		arr[1] = tainted;
+		
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(size);
+	}
+	
+	public void arrayLengthAliasTest4() {
+		String tainted = TelephonyManager.getDeviceId();
+		String[] arr = new String[tainted.length()];
+		String[] arr2 = arr;
+		int size = arr.length;
+		arr[1] = tainted;
+		int size2 = arr2.length;
+		
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(size2);
+		System.out.println(size);
+	}
+	
+	public void taintPrimitiveFieldTest1() {
+		A a = new A();
+		A b = a;
+		a.i = TelephonyManager.getIMEI();
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(b.i);		
+	}
+	
+	public void taintPrimitiveFieldTest2() {
+		B b = new B();
+		A a = new A();
+		b.attr = a;
+		a.i = TelephonyManager.getIMEI();
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(b.attr.i);
+	}
+	
+	public void multiContextTest1() {
+		A a = new A();
+		a.b = TelephonyManager.getDeviceId();
+		a.c = TelephonyManager.getDeviceId();
+		String data = id(a.b);
+		String data2 = id(a.c);
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(data);
+		cm.publish(data2);
+	}
+	
+	private String id(String val) {
+		return val;
+	}
+	
+	public void recursiveFollowReturnsPastSeedsTest1() {
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(doTaintRecursively(new A()));
+	}
+	
+	private String doTaintRecursively(A a) {
+		if (new Random().nextBoolean()) {
+			a.b = TelephonyManager.getDeviceId();
+			return "";
+		}
+		else {
+			A a2 = new A();
+			doTaintRecursively(a2);
+			return a2.b;
+		}
+	}
+	
+	public void doubleAliasTest1() {
+		A a1 = new A();
+		a1.b = TelephonyManager.getDeviceId();
+		A a2 = new A();
+		a2.b = new AccountManager().getPassword();
+		
+		B b = new B();
+		if (new Random().nextBoolean())
+			b.attr = a1;
+		else
+			b.attr = a2;
+		
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(b.attr.b);
+	}
+	
+	private class C {
+		private B b;
+	}
+	
+	public void longAPAliasTest1() {
+		C c = new C();
+		c.b = new B();
+		c.b.attr = new A();
+		
+		A a = c.b.attr;
+		a.b = TelephonyManager.getDeviceId();
+		
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(c.b.attr.b);
+	}
+	
+	public void simpleFieldTest1() {
+		A a = new A();
+		B b = new B();
+		b.attr = a;
+		a.b = TelephonyManager.getDeviceId();
+		
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(b.attr.b);
+	}
+	
+	public void contextTest1() {
+		A a = new A();
+		A b = new A();
+		String data = TelephonyManager.getDeviceId();
+		copy(a, data);
+		copy(b, "Hello World");
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(b.b);
+	}
+
+	private void copy(A b, String string) {
+		A c = b;
+		c.b = string;
+	}
+	
+	public void contextTest2() {
+		String data = TelephonyManager.getDeviceId();
+		A a = copy(data);
+		A b = copy("Hello World");
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(b.b);
+		System.out.println(a);
+	}
+
+	private A copy(String data) {
+		A a = new A();
+		A b = a;
+		b.b = data;
+		return a;
+	}
+	
+	public void contextTest3() {
+		String data = TelephonyManager.getDeviceId();
+		A a = copy(data, new AccountManager().getPassword());
+		A b = copy("Hello World", "Foobar");
+		ConnectionManager cm = new ConnectionManager();
+		cm.publish(b.b);
+		System.out.println(a);
+	}
+	
+	private A copy(String context, String data) {
+		System.out.println(context);
+		A a = new A();
+		A b = a;
+		b.b = data;
+		return a;
+	}
+	
+    public static class Container1 {
+        String g;
+    }
+    
+    public static class Container2 {
+        Container1 f;
+    }
+	
+    private void doWrite(final Container2 base, final String string) {
+        base.f.g = string;
+    }
+    
+	public void summaryTest1() {
+        final Container2 base1 = new Container2();
+        final Container2 base2 = new Container2();
+        final String tainted = TelephonyManager.getDeviceId();
+        doWrite(base1, tainted);
+        
+        final Container1 z = base2.f;
+        doWrite(base2, tainted);
+
+        ConnectionManager cm = new ConnectionManager();
+		cm.publish(z.g);
+	}
+
 }

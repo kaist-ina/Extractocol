@@ -1,0 +1,444 @@
+public abstract class ch.boye.httpclientandroidlib.client.methods.HttpRequestBase extends ch.boye.httpclientandroidlib.message.AbstractHttpMessage implements ch.boye.httpclientandroidlib.client.methods.AbortableHttpRequest, ch.boye.httpclientandroidlib.client.methods.HttpUriRequest, java.lang.Cloneable
+{
+    private java.util.concurrent.locks.Lock abortLock;
+    private volatile boolean aborted;
+    private ch.boye.httpclientandroidlib.conn.ClientConnectionRequest connRequest;
+    private ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger releaseTrigger;
+    private java.net.URI uri;
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        java.util.concurrent.locks.ReentrantLock $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.message.AbstractHttpMessage: void <init>()>();
+
+        $r1 = new java.util.concurrent.locks.ReentrantLock;
+
+        specialinvoke $r1.<java.util.concurrent.locks.ReentrantLock: void <init>()>();
+
+        $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock> = $r1;
+
+        return;
+    }
+
+    private void cleanup()
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        java.io.IOException $r1;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionRequest $r2, $r2_1, $r2_2;
+        ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger $r3, $r3_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.conn.ClientConnectionRequest connRequest>;
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.conn.ClientConnectionRequest connRequest>;
+
+        interfaceinvoke $r2_1.<ch.boye.httpclientandroidlib.conn.ClientConnectionRequest: void abortRequest()>();
+
+(1)     $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.conn.ClientConnectionRequest connRequest> = null;
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        $r3 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger releaseTrigger>;
+
+        if $r3 == null goto label5;
+
+        $r3_1 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger releaseTrigger>;
+
+     label2:
+        interfaceinvoke $r3_1.<ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger: void abortConnection()>();
+
+     label3:
+        $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger releaseTrigger> = null;
+
+        return;
+
+     label4:
+        $r1 := @caughtexception;
+
+        goto label3;
+
+     label5:
+        return;
+
+        catch java.io.IOException from label2 to label3 with label4;
+    }
+
+    public void abort()
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        boolean $z0;
+        java.lang.Throwable $r1;
+        java.util.concurrent.locks.Lock $r2, $r2_1, $r2_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: boolean aborted>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r2 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r2.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: boolean aborted> = 1;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: void cleanup()>();
+
+     label3:
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r2_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_2 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r2_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r1;
+
+        catch java.lang.Throwable from label2 to label3 with label4;
+    }
+
+    public java.lang.Object clone() throws java.lang.CloneNotSupportedException
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0, $r3;
+        java.util.concurrent.locks.ReentrantLock $r1;
+        java.lang.Object $r2, $r2_1, $r2_2;
+        ch.boye.httpclientandroidlib.message.HeaderGroup $r4, $r4_1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r5, $r5_1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        $r2 = specialinvoke $r0.<java.lang.Object: java.lang.Object clone()>();
+
+        $r3 = (ch.boye.httpclientandroidlib.client.methods.HttpRequestBase) $r2;
+
+        $r1 = new java.util.concurrent.locks.ReentrantLock;
+
+        specialinvoke $r1.<java.util.concurrent.locks.ReentrantLock: void <init>()>();
+
+        $r3.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock> = $r1;
+
+        $r3.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: boolean aborted> = 0;
+
+        $r3.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger releaseTrigger> = null;
+
+        $r3.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.conn.ClientConnectionRequest connRequest> = null;
+
+        $r4 = $r0.<ch.boye.httpclientandroidlib.message.AbstractHttpMessage: ch.boye.httpclientandroidlib.message.HeaderGroup headergroup>;
+
+        $r2_1 = staticinvoke <ch.boye.httpclientandroidlib.client.utils.CloneUtils: java.lang.Object clone(java.lang.Object)>($r4);
+
+        $r4_1 = (ch.boye.httpclientandroidlib.message.HeaderGroup) $r2_1;
+
+        $r3.<ch.boye.httpclientandroidlib.message.AbstractHttpMessage: ch.boye.httpclientandroidlib.message.HeaderGroup headergroup> = $r4_1;
+
+        $r5 = $r0.<ch.boye.httpclientandroidlib.message.AbstractHttpMessage: ch.boye.httpclientandroidlib.params.HttpParams params>;
+
+        $r2_2 = staticinvoke <ch.boye.httpclientandroidlib.client.utils.CloneUtils: java.lang.Object clone(java.lang.Object)>($r5);
+
+        $r5_1 = (ch.boye.httpclientandroidlib.params.HttpParams) $r2_2;
+
+        $r3.<ch.boye.httpclientandroidlib.message.AbstractHttpMessage: ch.boye.httpclientandroidlib.params.HttpParams params> = $r5_1;
+
+        return $r3;
+    }
+
+    public abstract java.lang.String getMethod();
+
+    public ch.boye.httpclientandroidlib.ProtocolVersion getProtocolVersion()
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r1;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        $r1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.params.HttpParams getParams()>();
+
+        $r2 = staticinvoke <ch.boye.httpclientandroidlib.params.HttpProtocolParams: ch.boye.httpclientandroidlib.ProtocolVersion getVersion(ch.boye.httpclientandroidlib.params.HttpParams)>($r1);
+
+        return $r2;
+    }
+
+    public ch.boye.httpclientandroidlib.RequestLine getRequestLine()
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        ch.boye.httpclientandroidlib.message.BasicRequestLine $r1;
+        java.lang.String $r2, $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r3;
+        java.net.URI $r4;
+        int $i0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.lang.String getMethod()>();
+
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.ProtocolVersion getProtocolVersion()>();
+
+        $r4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI getURI()>();
+
+        $r5 = null;
+
+(0)     if $r4 == null goto label1;
+
+(1)     $r5_1 = virtualinvoke $r4.<java.net.URI: java.lang.String toASCIIString()>();
+
+     label1:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        if $r5_2 == null goto label2;
+
+        $i0 = virtualinvoke $r5_2.<java.lang.String: int length()>();
+
+(2)     if $i0 != 0 goto label3;
+
+     label2:
+(3)     $r5_3 = "/";
+
+     label3:
+        $r5_4 = Phi($r5_2 #2, $r5_3 #3);
+
+        $r1 = new ch.boye.httpclientandroidlib.message.BasicRequestLine;
+
+        specialinvoke $r1.<ch.boye.httpclientandroidlib.message.BasicRequestLine: void <init>(java.lang.String,java.lang.String,ch.boye.httpclientandroidlib.ProtocolVersion)>($r2, $r5_4, $r3);
+
+        return $r1;
+    }
+
+    public java.net.URI getURI()
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        java.net.URI r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI uri>;
+
+        return r1;
+    }
+
+    public boolean isAborted()
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        boolean z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        z0 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: boolean aborted>;
+
+        return z0;
+    }
+
+    public void releaseConnection()
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: void reset()>();
+
+        return;
+    }
+
+    public void reset()
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        java.lang.Throwable $r1;
+        java.util.concurrent.locks.Lock $r2, $r2_1, $r2_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        $r2 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r2.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label1:
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: void cleanup()>();
+
+        $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: boolean aborted> = 0;
+
+     label2:
+        $r2_1 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r2_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        $r2_2 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r2_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setConnectionRequest(ch.boye.httpclientandroidlib.conn.ClientConnectionRequest) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionRequest $r1;
+        boolean $z0;
+        java.io.IOException $r2;
+        java.lang.Throwable $r3;
+        java.util.concurrent.locks.Lock $r4, $r4_1, $r4_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.ClientConnectionRequest;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: boolean aborted>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new java.io.IOException;
+
+        specialinvoke $r2.<java.io.IOException: void <init>(java.lang.String)>("Request already aborted");
+
+        throw $r2;
+
+     label1:
+        $r4 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r4.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.conn.ClientConnectionRequest connRequest> = $r1;
+
+     label3:
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r4_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label4:
+        $r3 := @caughtexception;
+
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r4_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r3;
+
+        catch java.lang.Throwable from label2 to label3 with label4;
+    }
+
+    public void setReleaseTrigger(ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger $r1;
+        boolean $z0;
+        java.io.IOException $r2;
+        java.lang.Throwable $r3;
+        java.util.concurrent.locks.Lock $r4, $r4_1, $r4_2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger;
+
+        $z0 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: boolean aborted>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new java.io.IOException;
+
+        specialinvoke $r2.<java.io.IOException: void <init>(java.lang.String)>("Request already aborted");
+
+        throw $r2;
+
+     label1:
+        $r4 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r4.<java.util.concurrent.locks.Lock: void lock()>();
+
+     label2:
+        $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.conn.ConnectionReleaseTrigger releaseTrigger> = $r1;
+
+     label3:
+        $r4_1 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r4_1.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        return;
+
+     label4:
+        $r3 := @caughtexception;
+
+        $r4_2 = $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.util.concurrent.locks.Lock abortLock>;
+
+        interfaceinvoke $r4_2.<java.util.concurrent.locks.Lock: void unlock()>();
+
+        throw $r3;
+
+        catch java.lang.Throwable from label2 to label3 with label4;
+    }
+
+    public void setURI(java.net.URI)
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        java.net.URI $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        $r1 := @parameter0: java.net.URI;
+
+        $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI uri> = $r1;
+
+        return;
+    }
+
+    public java.lang.String toString()
+    {
+        ch.boye.httpclientandroidlib.client.methods.HttpRequestBase $r0;
+        java.lang.StringBuilder $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5;
+        java.lang.String $r2, $r2_1;
+        java.net.URI $r3;
+        ch.boye.httpclientandroidlib.ProtocolVersion $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.lang.String getMethod()>();
+
+        $r1_1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1_2 = virtualinvoke $r1_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: java.net.URI getURI()>();
+
+        $r1_3 = virtualinvoke $r1_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+        $r1_4 = virtualinvoke $r1_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.client.methods.HttpRequestBase: ch.boye.httpclientandroidlib.ProtocolVersion getProtocolVersion()>();
+
+        $r1_5 = virtualinvoke $r1_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r4);
+
+        $r2_1 = virtualinvoke $r1_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r2_1;
+    }
+}

@@ -1,0 +1,717 @@
+class com.crashlytics.android.core.MetaDataStore extends java.lang.Object
+{
+    private static final java.lang.String KEYDATA_SUFFIX;
+    private static final java.lang.String KEY_USER_EMAIL;
+    private static final java.lang.String KEY_USER_ID;
+    private static final java.lang.String KEY_USER_NAME;
+    private static final java.lang.String METADATA_EXT;
+    private static final java.lang.String USERDATA_SUFFIX;
+    private static final java.nio.charset.Charset UTF_8;
+    private final java.io.File filesDir;
+
+    static void <clinit>()
+    {
+        java.nio.charset.Charset $r0;
+
+        $r0 = staticinvoke <java.nio.charset.Charset: java.nio.charset.Charset forName(java.lang.String)>("UTF-8");
+
+        <com.crashlytics.android.core.MetaDataStore: java.nio.charset.Charset UTF_8> = $r0;
+
+        return;
+    }
+
+    public void <init>(java.io.File)
+    {
+        com.crashlytics.android.core.MetaDataStore $r0;
+        java.io.File $r1;
+
+        $r0 := @this: com.crashlytics.android.core.MetaDataStore;
+
+        $r1 := @parameter0: java.io.File;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.crashlytics.android.core.MetaDataStore: java.io.File filesDir> = $r1;
+
+        return;
+    }
+
+    private java.io.File getKeysFileForSession(java.lang.String)
+    {
+        com.crashlytics.android.core.MetaDataStore $r0;
+        java.io.File $r1, $r2;
+        java.lang.String $r3, $r3_1;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.crashlytics.android.core.MetaDataStore;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r1 = new java.io.File;
+
+        $r2 = $r0.<com.crashlytics.android.core.MetaDataStore: java.io.File filesDir>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("keys");
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".meta");
+
+        $r3_1 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, $r3_1);
+
+        return $r1;
+    }
+
+    private java.io.File getUserDataFileForSession(java.lang.String)
+    {
+        com.crashlytics.android.core.MetaDataStore $r0;
+        java.io.File $r1, $r2;
+        java.lang.String $r3, $r3_1;
+        java.lang.StringBuilder $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.crashlytics.android.core.MetaDataStore;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r1 = new java.io.File;
+
+        $r2 = $r0.<com.crashlytics.android.core.MetaDataStore: java.io.File filesDir>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4_1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4_2 = virtualinvoke $r4_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("user");
+
+        $r4_3 = virtualinvoke $r4_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".meta");
+
+        $r3_1 = virtualinvoke $r4_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, $r3_1);
+
+        return $r1;
+    }
+
+    private static java.util.Map jsonToKeysData(java.lang.String) throws org.json.JSONException
+    {
+        org.json.JSONObject $r0;
+        java.util.HashMap $r1;
+        java.lang.String $r2, $r5, $r2_1, $r2_2;
+        java.util.Iterator $r3;
+        boolean $z0;
+        java.lang.Object $r4;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $r0 = new org.json.JSONObject;
+
+        specialinvoke $r0.<org.json.JSONObject: void <init>(java.lang.String)>($r2);
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+(0)     $r3 = virtualinvoke $r0.<org.json.JSONObject: java.util.Iterator keys()>();
+
+     label1:
+        $r2_1 = Phi($r2 #0, $r2_2 #1);
+
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r2_2 = (java.lang.String) $r4;
+
+        $r5 = staticinvoke <com.crashlytics.android.core.MetaDataStore: java.lang.String valueOrNull(org.json.JSONObject,java.lang.String)>($r0, $r2_2);
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2_2, $r5);
+
+(1)     goto label1;
+
+     label2:
+        return $r1;
+    }
+
+    private static com.crashlytics.android.core.UserMetaData jsonToUserData(java.lang.String) throws org.json.JSONException
+    {
+        org.json.JSONObject $r0;
+        com.crashlytics.android.core.UserMetaData $r1;
+        java.lang.String $r2, $r3, $r4, $r2_1;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $r0 = new org.json.JSONObject;
+
+        specialinvoke $r0.<org.json.JSONObject: void <init>(java.lang.String)>($r2);
+
+        $r2_1 = staticinvoke <com.crashlytics.android.core.MetaDataStore: java.lang.String valueOrNull(org.json.JSONObject,java.lang.String)>($r0, "userId");
+
+        $r3 = staticinvoke <com.crashlytics.android.core.MetaDataStore: java.lang.String valueOrNull(org.json.JSONObject,java.lang.String)>($r0, "userName");
+
+        $r4 = staticinvoke <com.crashlytics.android.core.MetaDataStore: java.lang.String valueOrNull(org.json.JSONObject,java.lang.String)>($r0, "userEmail");
+
+        $r1 = new com.crashlytics.android.core.UserMetaData;
+
+        specialinvoke $r1.<com.crashlytics.android.core.UserMetaData: void <init>(java.lang.String,java.lang.String,java.lang.String)>($r2_1, $r3, $r4);
+
+        return $r1;
+    }
+
+    private static java.lang.String keysDataToJson(java.util.Map) throws org.json.JSONException
+    {
+        java.util.Map $r0;
+        org.json.JSONObject $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: java.util.Map;
+
+        $r1 = new org.json.JSONObject;
+
+        specialinvoke $r1.<org.json.JSONObject: void <init>(java.util.Map)>($r0);
+
+        $r2 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String toString()>();
+
+        return $r2;
+    }
+
+    private static java.lang.String userDataToJson(com.crashlytics.android.core.UserMetaData) throws org.json.JSONException
+    {
+        com.crashlytics.android.core.UserMetaData $r0;
+        com.crashlytics.android.core.MetaDataStore$1 $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: com.crashlytics.android.core.UserMetaData;
+
+        $r1 = new com.crashlytics.android.core.MetaDataStore$1;
+
+        specialinvoke $r1.<com.crashlytics.android.core.MetaDataStore$1: void <init>(com.crashlytics.android.core.UserMetaData)>($r0);
+
+        $r2 = virtualinvoke $r1.<com.crashlytics.android.core.MetaDataStore$1: java.lang.String toString()>();
+
+        return $r2;
+    }
+
+    private static java.lang.String valueOrNull(org.json.JSONObject, java.lang.String)
+    {
+        org.json.JSONObject $r0;
+        java.lang.String $r1, $r1_1;
+        boolean $z0;
+
+        $r0 := @parameter0: org.json.JSONObject;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean isNull(java.lang.String)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        $r1_1 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>($r1, null);
+
+        return $r1_1;
+
+     label1:
+        return null;
+    }
+
+    public java.util.Map readKeyData(java.lang.String)
+    {
+        com.crashlytics.android.core.MetaDataStore $r0;
+        java.io.FileInputStream $r1, $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+        java.io.File $r3;
+        boolean $z0;
+        java.util.Map $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7;
+        java.lang.Exception $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        io.fabric.sdk.android.Logger $r7;
+        java.lang.Throwable $r8, $r8_1, $r8_2;
+
+        $r0 := @this: com.crashlytics.android.core.MetaDataStore;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $r3 = specialinvoke $r0.<com.crashlytics.android.core.MetaDataStore: java.io.File getKeysFileForSession(java.lang.String)>($r2);
+
+        $z0 = virtualinvoke $r3.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label01;
+
+        $r4 = staticinvoke <java.util.Collections: java.util.Map emptyMap()>();
+
+        return $r4;
+
+     label01:
+        $r5 = null;
+
+(0)     $r1 = new java.io.FileInputStream;
+
+     label02:
+(1)     specialinvoke $r1.<java.io.FileInputStream: void <init>(java.io.File)>($r3);
+
+     label03:
+(2)     $r2_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String streamToString(java.io.InputStream)>($r1);
+
+(3)     $r4_1 = staticinvoke <com.crashlytics.android.core.MetaDataStore: java.util.Map jsonToKeysData(java.lang.String)>($r2_1);
+
+     label04:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r1, "Failed to close user metadata file.");
+
+        return $r4_1;
+
+     label05:
+(4)     $r6_1 := @caughtexception;
+
+     label06:
+        $r5_3 = Phi($r5 #4, $r5_2 #8);
+
+        $r2_4 = Phi($r2 #4, $r2_3 #8);
+
+        $r4_4 = Phi($r4 #4, $r4_3 #8);
+
+        $r6_2 = Phi($r6_1 #4, $r6 #8);
+
+(5)     $r7 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r7.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Error deserializing user metadata.", $r6_2);
+
+     label07:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r5_3, "Failed to close user metadata file.");
+
+        $r4_5 = staticinvoke <java.util.Collections: java.util.Map emptyMap()>();
+
+        return $r4_5;
+
+     label08:
+        $r8_1 := @caughtexception;
+
+        $r5_4 = Phi($r5 #0, $r5_2 #8, $r5_3 #5);
+
+        $r2_5 = Phi($r2 #0, $r2_3 #8, $r2_4 #5);
+
+        $r4_6 = Phi($r4 #0, $r4_3 #8, $r4_4 #5);
+
+(6)     $r6_3 = Phi($r6 #0, $r6_1 #4, $r6_2 #5);
+
+     label09:
+        $r5_5 = Phi($r5_4 #6, $r5_1 #7);
+
+        $r2_6 = Phi($r2_5 #6, $r2_2 #7);
+
+        $r8_2 = Phi($r8_1 #6, $r8 #7);
+
+        $r4_7 = Phi($r4_6 #6, $r4_2 #7);
+
+        $r6_4 = Phi($r6_3 #6, $r6 #7);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r5_5, "Failed to close user metadata file.");
+
+        throw $r8_2;
+
+     label10:
+        $r8 := @caughtexception;
+
+        $r2_2 = Phi($r2 #1, $r2_1 #2);
+
+        $r4_2 = Phi($r4 #1, $r4_1 #3);
+
+        $r5_1 = $r1;
+
+(7)     goto label09;
+
+     label11:
+        $r6 := @caughtexception;
+
+        $r2_3 = Phi($r2 #1, $r2_1 #2);
+
+        $r4_3 = Phi($r4 #1, $r4_1 #3);
+
+        $r5_2 = $r1;
+
+(8)     goto label06;
+
+        catch java.lang.Exception from label02 to label03 with label05;
+        catch java.lang.Throwable from label02 to label03 with label08;
+        catch java.lang.Exception from label03 to label04 with label11;
+        catch java.lang.Throwable from label03 to label04 with label10;
+        catch java.lang.Throwable from label06 to label07 with label08;
+    }
+
+    public com.crashlytics.android.core.UserMetaData readUserData(java.lang.String)
+    {
+        com.crashlytics.android.core.MetaDataStore $r0;
+        java.io.FileInputStream $r1, $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+        java.io.File $r3;
+        boolean $z0;
+        com.crashlytics.android.core.UserMetaData $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7;
+        java.lang.Exception $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        io.fabric.sdk.android.Logger $r7;
+        java.lang.Throwable $r8, $r8_1, $r8_2;
+
+        $r0 := @this: com.crashlytics.android.core.MetaDataStore;
+
+        $r2 := @parameter0: java.lang.String;
+
+        $r3 = specialinvoke $r0.<com.crashlytics.android.core.MetaDataStore: java.io.File getUserDataFileForSession(java.lang.String)>($r2);
+
+        $z0 = virtualinvoke $r3.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label01;
+
+        $r5 = <com.crashlytics.android.core.UserMetaData: com.crashlytics.android.core.UserMetaData EMPTY>;
+
+        return $r5;
+
+     label01:
+        $r4 = null;
+
+(0)     $r1 = new java.io.FileInputStream;
+
+     label02:
+(1)     specialinvoke $r1.<java.io.FileInputStream: void <init>(java.io.File)>($r3);
+
+     label03:
+(2)     $r2_1 = staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: java.lang.String streamToString(java.io.InputStream)>($r1);
+
+(3)     $r5_1 = staticinvoke <com.crashlytics.android.core.MetaDataStore: com.crashlytics.android.core.UserMetaData jsonToUserData(java.lang.String)>($r2_1);
+
+     label04:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r1, "Failed to close user metadata file.");
+
+        return $r5_1;
+
+     label05:
+(4)     $r6_1 := @caughtexception;
+
+     label06:
+        $r2_4 = Phi($r2 #4, $r2_3 #8);
+
+        $r4_3 = Phi($r4 #4, $r4_2 #8);
+
+        $r6_2 = Phi($r6_1 #4, $r6 #8);
+
+        $r5_4 = Phi($r5 #4, $r5_3 #8);
+
+(5)     $r7 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r7.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Error deserializing user metadata.", $r6_2);
+
+     label07:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r4_3, "Failed to close user metadata file.");
+
+        $r5_5 = <com.crashlytics.android.core.UserMetaData: com.crashlytics.android.core.UserMetaData EMPTY>;
+
+        return $r5_5;
+
+     label08:
+        $r8_1 := @caughtexception;
+
+        $r2_5 = Phi($r2 #0, $r2_3 #8, $r2_4 #5);
+
+        $r4_4 = Phi($r4 #0, $r4_2 #8, $r4_3 #5);
+
+        $r6_3 = Phi($r6 #0, $r6_1 #4, $r6_2 #5);
+
+(6)     $r5_6 = Phi($r5 #0, $r5_3 #8, $r5_4 #5);
+
+     label09:
+        $r2_6 = Phi($r2_5 #6, $r2_2 #7);
+
+        $r4_5 = Phi($r4_4 #6, $r4_1 #7);
+
+        $r6_4 = Phi($r6_3 #6, $r6 #7);
+
+        $r8_2 = Phi($r8_1 #6, $r8 #7);
+
+        $r5_7 = Phi($r5_6 #6, $r5_2 #7);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r4_5, "Failed to close user metadata file.");
+
+        throw $r8_2;
+
+     label10:
+        $r8 := @caughtexception;
+
+        $r2_2 = Phi($r2 #1, $r2_1 #2);
+
+        $r5_2 = Phi($r5 #1, $r5_1 #3);
+
+        $r4_1 = $r1;
+
+(7)     goto label09;
+
+     label11:
+        $r6 := @caughtexception;
+
+        $r2_3 = Phi($r2 #1, $r2_1 #2);
+
+        $r5_3 = Phi($r5 #1, $r5_1 #3);
+
+        $r4_2 = $r1;
+
+(8)     goto label06;
+
+        catch java.lang.Exception from label02 to label03 with label05;
+        catch java.lang.Throwable from label02 to label03 with label08;
+        catch java.lang.Exception from label03 to label04 with label11;
+        catch java.lang.Throwable from label03 to label04 with label10;
+        catch java.lang.Throwable from label06 to label07 with label08;
+    }
+
+    public void writeKeyData(java.lang.String, java.util.Map)
+    {
+        com.crashlytics.android.core.MetaDataStore $r0;
+        java.util.Map $r1;
+        java.io.BufferedWriter $r2, $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        java.io.OutputStreamWriter $r3;
+        java.io.FileOutputStream $r4;
+        java.nio.charset.Charset $r5;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        java.io.File $r7;
+        java.lang.Exception $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+        io.fabric.sdk.android.Logger $r10;
+        java.lang.Throwable $r11, $r11_1, $r11_2;
+
+        $r0 := @this: com.crashlytics.android.core.MetaDataStore;
+
+        $r6 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.util.Map;
+
+        $r7 = specialinvoke $r0.<com.crashlytics.android.core.MetaDataStore: java.io.File getKeysFileForSession(java.lang.String)>($r6);
+
+(0)     $r8 = null;
+
+     label01:
+(1)     $r6_1 = staticinvoke <com.crashlytics.android.core.MetaDataStore: java.lang.String keysDataToJson(java.util.Map)>($r1);
+
+     label02:
+        $r2 = new java.io.BufferedWriter;
+
+        $r3 = new java.io.OutputStreamWriter;
+
+        $r4 = new java.io.FileOutputStream;
+
+     label03:
+        specialinvoke $r4.<java.io.FileOutputStream: void <init>(java.io.File)>($r7);
+
+     label04:
+        $r5 = <com.crashlytics.android.core.MetaDataStore: java.nio.charset.Charset UTF_8>;
+
+     label05:
+        specialinvoke $r3.<java.io.OutputStreamWriter: void <init>(java.io.OutputStream,java.nio.charset.Charset)>($r4, $r5);
+
+        specialinvoke $r2.<java.io.BufferedWriter: void <init>(java.io.Writer)>($r3);
+
+     label06:
+        virtualinvoke $r2.<java.io.Writer: void write(java.lang.String)>($r6_1);
+
+        virtualinvoke $r2.<java.io.Writer: void flush()>();
+
+     label07:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r2, "Failed to close key/value metadata file.");
+
+        return;
+
+     label08:
+        $r9_1 := @caughtexception;
+
+(2)     $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+     label09:
+        $r6_3 = Phi($r6_2 #2, $r6_1 #6);
+
+        $r8_3 = Phi($r8 #2, $r8_2 #6);
+
+        $r9_2 = Phi($r9_1 #2, $r9 #6);
+
+(3)     $r10 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Error serializing key/value metadata.", $r9_2);
+
+     label10:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r8_3, "Failed to close key/value metadata file.");
+
+        return;
+
+     label11:
+        $r11_1 := @caughtexception;
+
+        $r6_4 = Phi($r6 #0, $r6_1 #1, $r6_2 #2, $r6_3 #3);
+
+        $r8_4 = Phi($r8 #0, $r8_2 #6, $r8_3 #3);
+
+(4)     $r9_3 = Phi($r9 #0, $r9_1 #2, $r9_2 #3);
+
+     label12:
+        $r6_5 = Phi($r6_4 #4, $r6_1 #5);
+
+        $r8_5 = Phi($r8_4 #4, $r8_1 #5);
+
+        $r9_4 = Phi($r9_3 #4, $r9 #5);
+
+        $r11_2 = Phi($r11_1 #4, $r11 #5);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r8_5, "Failed to close key/value metadata file.");
+
+        throw $r11_2;
+
+     label13:
+        $r11 := @caughtexception;
+
+        $r8_1 = $r2;
+
+(5)     goto label12;
+
+     label14:
+        $r9 := @caughtexception;
+
+        $r8_2 = $r2;
+
+(6)     goto label09;
+
+        catch java.lang.Exception from label01 to label02 with label08;
+        catch java.lang.Throwable from label01 to label02 with label11;
+        catch java.lang.Throwable from label02 to label03 with label11;
+        catch java.lang.Exception from label03 to label04 with label08;
+        catch java.lang.Throwable from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label06 with label08;
+        catch java.lang.Throwable from label05 to label06 with label11;
+        catch java.lang.Exception from label06 to label07 with label14;
+        catch java.lang.Throwable from label06 to label07 with label13;
+        catch java.lang.Throwable from label09 to label10 with label11;
+    }
+
+    public void writeUserData(java.lang.String, com.crashlytics.android.core.UserMetaData)
+    {
+        com.crashlytics.android.core.MetaDataStore $r0;
+        com.crashlytics.android.core.UserMetaData $r1;
+        java.io.BufferedWriter $r2, $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        java.io.OutputStreamWriter $r3;
+        java.io.FileOutputStream $r4;
+        java.nio.charset.Charset $r5;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5;
+        java.io.File $r7;
+        java.lang.Exception $r9, $r9_1, $r9_2, $r9_3, $r9_4;
+        io.fabric.sdk.android.Logger $r10;
+        java.lang.Throwable $r11, $r11_1, $r11_2;
+
+        $r0 := @this: com.crashlytics.android.core.MetaDataStore;
+
+        $r6 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: com.crashlytics.android.core.UserMetaData;
+
+        $r7 = specialinvoke $r0.<com.crashlytics.android.core.MetaDataStore: java.io.File getUserDataFileForSession(java.lang.String)>($r6);
+
+(0)     $r8 = null;
+
+     label01:
+(1)     $r6_1 = staticinvoke <com.crashlytics.android.core.MetaDataStore: java.lang.String userDataToJson(com.crashlytics.android.core.UserMetaData)>($r1);
+
+     label02:
+        $r2 = new java.io.BufferedWriter;
+
+        $r3 = new java.io.OutputStreamWriter;
+
+        $r4 = new java.io.FileOutputStream;
+
+     label03:
+        specialinvoke $r4.<java.io.FileOutputStream: void <init>(java.io.File)>($r7);
+
+     label04:
+        $r5 = <com.crashlytics.android.core.MetaDataStore: java.nio.charset.Charset UTF_8>;
+
+     label05:
+        specialinvoke $r3.<java.io.OutputStreamWriter: void <init>(java.io.OutputStream,java.nio.charset.Charset)>($r4, $r5);
+
+        specialinvoke $r2.<java.io.BufferedWriter: void <init>(java.io.Writer)>($r3);
+
+     label06:
+        virtualinvoke $r2.<java.io.Writer: void write(java.lang.String)>($r6_1);
+
+        virtualinvoke $r2.<java.io.Writer: void flush()>();
+
+     label07:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r2, "Failed to close user metadata file.");
+
+        return;
+
+     label08:
+        $r9_1 := @caughtexception;
+
+(2)     $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+     label09:
+        $r9_2 = Phi($r9_1 #2, $r9 #6);
+
+        $r6_3 = Phi($r6_2 #2, $r6_1 #6);
+
+        $r8_3 = Phi($r8 #2, $r8_2 #6);
+
+(3)     $r10 = staticinvoke <io.fabric.sdk.android.Fabric: io.fabric.sdk.android.Logger getLogger()>();
+
+        interfaceinvoke $r10.<io.fabric.sdk.android.Logger: void e(java.lang.String,java.lang.String,java.lang.Throwable)>("CrashlyticsCore", "Error serializing user metadata.", $r9_2);
+
+     label10:
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r8_3, "Failed to close user metadata file.");
+
+        return;
+
+     label11:
+        $r11_1 := @caughtexception;
+
+        $r9_3 = Phi($r9 #0, $r9_1 #2, $r9_2 #3);
+
+        $r6_4 = Phi($r6 #0, $r6_1 #1, $r6_2 #2, $r6_3 #3);
+
+(4)     $r8_4 = Phi($r8 #0, $r8_2 #6, $r8_3 #3);
+
+     label12:
+        $r9_4 = Phi($r9_3 #4, $r9 #5);
+
+        $r6_5 = Phi($r6_4 #4, $r6_1 #5);
+
+        $r8_5 = Phi($r8_4 #4, $r8_1 #5);
+
+        $r11_2 = Phi($r11_1 #4, $r11 #5);
+
+        staticinvoke <io.fabric.sdk.android.services.common.CommonUtils: void closeOrLog(java.io.Closeable,java.lang.String)>($r8_5, "Failed to close user metadata file.");
+
+        throw $r11_2;
+
+     label13:
+        $r11 := @caughtexception;
+
+        $r8_1 = $r2;
+
+(5)     goto label12;
+
+     label14:
+        $r9 := @caughtexception;
+
+        $r8_2 = $r2;
+
+(6)     goto label09;
+
+        catch java.lang.Exception from label01 to label02 with label08;
+        catch java.lang.Throwable from label01 to label02 with label11;
+        catch java.lang.Throwable from label02 to label03 with label11;
+        catch java.lang.Exception from label03 to label04 with label08;
+        catch java.lang.Throwable from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label06 with label08;
+        catch java.lang.Throwable from label05 to label06 with label11;
+        catch java.lang.Exception from label06 to label07 with label14;
+        catch java.lang.Throwable from label06 to label07 with label13;
+        catch java.lang.Throwable from label09 to label10 with label11;
+    }
+}

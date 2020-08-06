@@ -1,0 +1,1617 @@
+class android.support.v4.app.LoaderManagerImpl extends android.support.v4.app.LoaderManager
+{
+    static boolean DEBUG;
+    static final java.lang.String TAG;
+    android.support.v4.app.FragmentActivity mActivity;
+    boolean mCreatingLoader;
+    final android.support.v4.util.SparseArrayCompat mInactiveLoaders;
+    final android.support.v4.util.SparseArrayCompat mLoaders;
+    boolean mRetaining;
+    boolean mRetainingStarted;
+    boolean mStarted;
+    final java.lang.String mWho;
+
+    static void <clinit>()
+    {
+        <android.support.v4.app.LoaderManagerImpl: boolean DEBUG> = 0;
+
+        return;
+    }
+
+    void <init>(java.lang.String, android.support.v4.app.FragmentActivity, boolean)
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        java.lang.String $r1;
+        android.support.v4.app.FragmentActivity $r2;
+        boolean $z0;
+        android.support.v4.util.SparseArrayCompat $r3, $r3_1;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.support.v4.app.FragmentActivity;
+
+        $z0 := @parameter2: boolean;
+
+        specialinvoke $r0.<android.support.v4.app.LoaderManager: void <init>()>();
+
+        $r3 = new android.support.v4.util.SparseArrayCompat;
+
+        specialinvoke $r3.<android.support.v4.util.SparseArrayCompat: void <init>()>();
+
+        $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders> = $r3;
+
+        $r3_1 = new android.support.v4.util.SparseArrayCompat;
+
+        specialinvoke $r3_1.<android.support.v4.util.SparseArrayCompat: void <init>()>();
+
+        $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders> = $r3_1;
+
+        $r0.<android.support.v4.app.LoaderManagerImpl: java.lang.String mWho> = $r1;
+
+        $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.app.FragmentActivity mActivity> = $r2;
+
+        $r0.<android.support.v4.app.LoaderManagerImpl: boolean mStarted> = $z0;
+
+        return;
+    }
+
+    private android.support.v4.app.LoaderManagerImpl$LoaderInfo createAndInstallLoader(int, android.os.Bundle, android.support.v4.app.LoaderManager$LoaderCallbacks)
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        int $i0;
+        android.os.Bundle $r1;
+        android.support.v4.app.LoaderManager$LoaderCallbacks $r2;
+        java.lang.Throwable $r3;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r4;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.os.Bundle;
+
+        $r2 := @parameter2: android.support.v4.app.LoaderManager$LoaderCallbacks;
+
+     label1:
+        $r0.<android.support.v4.app.LoaderManagerImpl: boolean mCreatingLoader> = 1;
+
+        $r4 = specialinvoke $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.app.LoaderManagerImpl$LoaderInfo createLoader(int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)>($i0, $r1, $r2);
+
+        virtualinvoke $r0.<android.support.v4.app.LoaderManagerImpl: void installLoader(android.support.v4.app.LoaderManagerImpl$LoaderInfo)>($r4);
+
+     label2:
+        $r0.<android.support.v4.app.LoaderManagerImpl: boolean mCreatingLoader> = 0;
+
+        return $r4;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r0.<android.support.v4.app.LoaderManagerImpl: boolean mCreatingLoader> = 0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private android.support.v4.app.LoaderManagerImpl$LoaderInfo createLoader(int, android.os.Bundle, android.support.v4.app.LoaderManager$LoaderCallbacks)
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        int $i0;
+        android.os.Bundle $r1;
+        android.support.v4.app.LoaderManager$LoaderCallbacks $r2;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r3;
+        android.support.v4.content.Loader $r4;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.os.Bundle;
+
+        $r2 := @parameter2: android.support.v4.app.LoaderManager$LoaderCallbacks;
+
+        $r3 = new android.support.v4.app.LoaderManagerImpl$LoaderInfo;
+
+        specialinvoke $r3.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void <init>(android.support.v4.app.LoaderManagerImpl,int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)>($r0, $i0, $r1, $r2);
+
+        $r4 = interfaceinvoke $r2.<android.support.v4.app.LoaderManager$LoaderCallbacks: android.support.v4.content.Loader onCreateLoader(int,android.os.Bundle)>($i0, $r1);
+
+        $r3.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.content.Loader mLoader> = $r4;
+
+        return $r3;
+    }
+
+    public void destroyLoader(int)
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        java.lang.IllegalStateException $r1;
+        android.support.v4.app.FragmentManagerImpl $r2;
+        int $i0, $i1, $i0_1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.StringBuilder $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        java.lang.String $r4;
+        android.support.v4.util.SparseArrayCompat $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7;
+        java.lang.Object $r6, $r6_1, $r6_2, $r6_3;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r7, $r7_1, $r7_2, $r7_3;
+        android.support.v4.app.FragmentActivity $r8, $r8_1, $r8_2;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $i0 := @parameter0: int;
+
+        $z0 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mCreatingLoader>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Called while creating a loader");
+
+        throw $r1;
+
+     label1:
+        $z0_1 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(0)     if $z0_1 == 0 goto label2;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3_1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("destroyLoader in ");
+
+        $r3_2 = virtualinvoke $r3_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r3_3 = virtualinvoke $r3_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" of ");
+
+        $r3_4 = virtualinvoke $r3_3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r3_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r4);
+
+     label2:
+        $r3_5 = Phi($r3 #0, $r3_4 #1);
+
+        $r5 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i1 = virtualinvoke $r5.<android.support.v4.util.SparseArrayCompat: int indexOfKey(int)>($i0);
+
+(2)     if $i1 < 0 goto label3;
+
+        $r5_1 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r6 = virtualinvoke $r5_1.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i1);
+
+        $r7 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r6;
+
+        $r5_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        virtualinvoke $r5_2.<android.support.v4.util.SparseArrayCompat: void removeAt(int)>($i1);
+
+(3)     virtualinvoke $r7.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void destroy()>();
+
+     label3:
+        $r7_1 = Phi($r7 #2, $r7 #3);
+
+        $r6_1 = Phi($r6 #2, $r6 #3);
+
+        $r5_3 = Phi($r5 #2, $r5_2 #3);
+
+        $r5_4 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        $i0_1 = virtualinvoke $r5_4.<android.support.v4.util.SparseArrayCompat: int indexOfKey(int)>($i0);
+
+(4)     if $i0_1 < 0 goto label4;
+
+        $r5_5 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        $r6_2 = virtualinvoke $r5_5.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_1);
+
+        $r7_2 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r6_2;
+
+        $r5_6 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        virtualinvoke $r5_6.<android.support.v4.util.SparseArrayCompat: void removeAt(int)>($i0_1);
+
+(5)     virtualinvoke $r7_2.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void destroy()>();
+
+     label4:
+        $r7_3 = Phi($r7_1 #4, $r7_2 #5);
+
+        $r6_3 = Phi($r6_1 #4, $r6_2 #5);
+
+        $r5_7 = Phi($r5_4 #4, $r5_6 #5);
+
+        $r8 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.app.FragmentActivity mActivity>;
+
+(6)     if $r8 == null goto label5;
+
+        $z0_2 = virtualinvoke $r0.<android.support.v4.app.LoaderManagerImpl: boolean hasRunningLoaders()>();
+
+(7)     if $z0_2 != 0 goto label5;
+
+        $r8_1 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.app.FragmentActivity mActivity>;
+
+        $r2 = $r8_1.<android.support.v4.app.FragmentActivity: android.support.v4.app.FragmentManagerImpl mFragments>;
+
+(8)     virtualinvoke $r2.<android.support.v4.app.FragmentManagerImpl: void startPendingDeferredFragments()>();
+
+     label5:
+        $r8_2 = Phi($r8 #6, $r8 #7, $r8_1 #8);
+
+        $z0_3 = Phi($z0_1 #6, $z0_2 #7, $z0_2 #8);
+
+        return;
+    }
+
+    void doDestroy()
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        java.lang.StringBuilder $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5, $r1_6, $r1_7, $r1_8;
+        java.lang.String $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        android.support.v4.util.SparseArrayCompat $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7, $i0_8;
+        java.lang.Object $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $z0 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mRetaining>;
+
+(0)     if $z0 != 0 goto label4;
+
+        $z0_1 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(1)     if $z0_1 == 0 goto label1;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1_1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Destroying Active in ");
+
+        $r1_2 = virtualinvoke $r1_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r2 = virtualinvoke $r1_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(2)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r2);
+
+     label1:
+        $r2_1 = Phi($r2 #1, $r2 #2);
+
+        $r1_3 = Phi($r1 #1, $r1_2 #2);
+
+        $r3 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i0 = virtualinvoke $r3.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(3)     $i0_1 = $i0 + -1;
+
+     label2:
+        $r3_1 = Phi($r3 #3, $r3_2 #4);
+
+        $r5 = Phi($r5 #3, $r5_1 #4);
+
+        $r4 = Phi($r4 #3, $r4_1 #4);
+
+        $i0_2 = Phi($i0_1 #3, $i0_3 #4);
+
+        if $i0_2 < 0 goto label3;
+
+        $r3_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r4_1 = virtualinvoke $r3_2.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_2);
+
+        $r5_1 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r4_1;
+
+        virtualinvoke $r5_1.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void destroy()>();
+
+        $i0_3 = $i0_2 + -1;
+
+(4)     goto label2;
+
+     label3:
+        $r3_3 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+(5)     virtualinvoke $r3_3.<android.support.v4.util.SparseArrayCompat: void clear()>();
+
+     label4:
+        $r2_2 = Phi($r2 #0, $r2_1 #5);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #5);
+
+        $r1_4 = Phi($r1 #0, $r1_3 #5);
+
+        $r3_4 = Phi($r3 #0, $r3_3 #5);
+
+        $r5_2 = Phi($r5 #0, $r5 #5);
+
+        $r4_2 = Phi($r4 #0, $r4 #5);
+
+        $i0_4 = Phi($i0 #0, $i0_2 #5);
+
+        $z0_3 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(6)     if $z0_3 == 0 goto label5;
+
+        $r1_5 = new java.lang.StringBuilder;
+
+        specialinvoke $r1_5.<java.lang.StringBuilder: void <init>()>();
+
+        $r1_6 = virtualinvoke $r1_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Destroying Inactive in ");
+
+        $r1_7 = virtualinvoke $r1_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r2_3 = virtualinvoke $r1_7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(7)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r2_3);
+
+     label5:
+        $r2_4 = Phi($r2_2 #6, $r2_3 #7);
+
+        $r1_8 = Phi($r1_4 #6, $r1_7 #7);
+
+        $r3_5 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        $i0_5 = virtualinvoke $r3_5.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(8)     $i0_6 = $i0_5 + -1;
+
+     label6:
+        $r3_6 = Phi($r3_5 #8, $r3_7 #9);
+
+        $r5_3 = Phi($r5_2 #8, $r5_4 #9);
+
+        $r4_3 = Phi($r4_2 #8, $r4_4 #9);
+
+        $i0_7 = Phi($i0_6 #8, $i0_8 #9);
+
+        if $i0_7 < 0 goto label7;
+
+        $r3_7 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        $r4_4 = virtualinvoke $r3_7.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_7);
+
+        $r5_4 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r4_4;
+
+        virtualinvoke $r5_4.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void destroy()>();
+
+        $i0_8 = $i0_7 + -1;
+
+(9)     goto label6;
+
+     label7:
+        $r3_8 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        virtualinvoke $r3_8.<android.support.v4.util.SparseArrayCompat: void clear()>();
+
+        return;
+    }
+
+    void doReportNextStart()
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        android.support.v4.util.SparseArrayCompat $r1, $r1_1, $r1_2;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        java.lang.Object $r2;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r3;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $r1 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i0 = virtualinvoke $r1.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(0)     $i0_1 = $i0 + -1;
+
+     label1:
+        $r1_1 = Phi($r1 #0, $r1_2 #1);
+
+        $i0_2 = Phi($i0_1 #0, $i0_3 #1);
+
+        if $i0_2 < 0 goto label2;
+
+        $r1_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r2 = virtualinvoke $r1_2.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_2);
+
+        $r3 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r2;
+
+        $r3.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: boolean mReportNextStart> = 1;
+
+        $i0_3 = $i0_2 + -1;
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    void doReportStart()
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        android.support.v4.util.SparseArrayCompat $r1, $r1_1, $r1_2;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        java.lang.Object $r2;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r3;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $r1 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i0 = virtualinvoke $r1.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(0)     $i0_1 = $i0 + -1;
+
+     label1:
+        $r1_1 = Phi($r1 #0, $r1_2 #1);
+
+        $i0_2 = Phi($i0_1 #0, $i0_3 #1);
+
+        if $i0_2 < 0 goto label2;
+
+        $r1_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r2 = virtualinvoke $r1_2.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_2);
+
+        $r3 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r2;
+
+        virtualinvoke $r3.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void reportStart()>();
+
+        $i0_3 = $i0_2 + -1;
+
+(1)     goto label1;
+
+     label2:
+        return;
+    }
+
+    void doRetain()
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        java.lang.RuntimeException $r1;
+        boolean $z0, $z0_1;
+        java.lang.StringBuilder $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+        java.lang.String $r3, $r3_1, $r3_2;
+        android.support.v4.util.SparseArrayCompat $r4, $r4_1, $r4_2;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        java.lang.Object $r5;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r6;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $z0 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2_1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Retaining in ");
+
+        $r2_2 = virtualinvoke $r2_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r3 = virtualinvoke $r2_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r3);
+
+     label1:
+        $r3_1 = Phi($r3 #0, $r3 #1);
+
+        $r2_3 = Phi($r2 #0, $r2_2 #1);
+
+        $z0_1 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mStarted>;
+
+        if $z0_1 != 0 goto label2;
+
+        $r1 = new java.lang.RuntimeException;
+
+        specialinvoke $r1.<java.lang.RuntimeException: void <init>(java.lang.String)>("here");
+
+        virtualinvoke $r1.<java.lang.RuntimeException: java.lang.Throwable fillInStackTrace()>();
+
+        $r2_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r2_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r2_5 = virtualinvoke $r2_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Called doRetain when not started: ");
+
+        $r2_6 = virtualinvoke $r2_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r3_2 = virtualinvoke $r2_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>("LoaderManager", $r3_2, $r1);
+
+        return;
+
+     label2:
+        $r0.<android.support.v4.app.LoaderManagerImpl: boolean mRetaining> = 1;
+
+        $r0.<android.support.v4.app.LoaderManagerImpl: boolean mStarted> = 0;
+
+        $r4 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i0 = virtualinvoke $r4.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(2)     $i0_1 = $i0 + -1;
+
+     label3:
+        $r4_1 = Phi($r4 #2, $r4_2 #3);
+
+        $i0_2 = Phi($i0_1 #2, $i0_3 #3);
+
+        if $i0_2 < 0 goto label4;
+
+        $r4_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r5 = virtualinvoke $r4_2.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_2);
+
+        $r6 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r5;
+
+        virtualinvoke $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void retain()>();
+
+        $i0_3 = $i0_2 + -1;
+
+(3)     goto label3;
+
+     label4:
+        return;
+    }
+
+    void doStart()
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        java.lang.RuntimeException $r1;
+        boolean $z0, $z0_1;
+        java.lang.StringBuilder $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+        java.lang.String $r3, $r3_1, $r3_2;
+        android.support.v4.util.SparseArrayCompat $r4, $r4_1, $r4_2;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        java.lang.Object $r5;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r6;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $z0 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2_1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Starting in ");
+
+        $r2_2 = virtualinvoke $r2_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r3 = virtualinvoke $r2_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r3);
+
+     label1:
+        $r3_1 = Phi($r3 #0, $r3 #1);
+
+        $r2_3 = Phi($r2 #0, $r2_2 #1);
+
+        $z0_1 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mStarted>;
+
+        if $z0_1 == 0 goto label2;
+
+        $r1 = new java.lang.RuntimeException;
+
+        specialinvoke $r1.<java.lang.RuntimeException: void <init>(java.lang.String)>("here");
+
+        virtualinvoke $r1.<java.lang.RuntimeException: java.lang.Throwable fillInStackTrace()>();
+
+        $r2_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r2_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r2_5 = virtualinvoke $r2_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Called doStart when already started: ");
+
+        $r2_6 = virtualinvoke $r2_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r3_2 = virtualinvoke $r2_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>("LoaderManager", $r3_2, $r1);
+
+        return;
+
+     label2:
+        $r0.<android.support.v4.app.LoaderManagerImpl: boolean mStarted> = 1;
+
+        $r4 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i0 = virtualinvoke $r4.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(2)     $i0_1 = $i0 + -1;
+
+     label3:
+        $i0_2 = Phi($i0_1 #2, $i0_3 #3);
+
+        $r4_1 = Phi($r4 #2, $r4_2 #3);
+
+        if $i0_2 < 0 goto label4;
+
+        $r4_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r5 = virtualinvoke $r4_2.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_2);
+
+        $r6 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r5;
+
+        virtualinvoke $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void start()>();
+
+        $i0_3 = $i0_2 + -1;
+
+(3)     goto label3;
+
+     label4:
+        return;
+    }
+
+    void doStop()
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        java.lang.RuntimeException $r1;
+        boolean $z0, $z0_1;
+        java.lang.StringBuilder $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6;
+        java.lang.String $r3, $r3_1, $r3_2;
+        android.support.v4.util.SparseArrayCompat $r4, $r4_1, $r4_2;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        java.lang.Object $r5;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r6;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $z0 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2_1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Stopping in ");
+
+        $r2_2 = virtualinvoke $r2_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r3 = virtualinvoke $r2_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r3);
+
+     label1:
+        $r3_1 = Phi($r3 #0, $r3 #1);
+
+        $r2_3 = Phi($r2 #0, $r2_2 #1);
+
+        $z0_1 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mStarted>;
+
+        if $z0_1 != 0 goto label2;
+
+        $r1 = new java.lang.RuntimeException;
+
+        specialinvoke $r1.<java.lang.RuntimeException: void <init>(java.lang.String)>("here");
+
+        virtualinvoke $r1.<java.lang.RuntimeException: java.lang.Throwable fillInStackTrace()>();
+
+        $r2_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r2_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r2_5 = virtualinvoke $r2_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Called doStop when not started: ");
+
+        $r2_6 = virtualinvoke $r2_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r3_2 = virtualinvoke $r2_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>("LoaderManager", $r3_2, $r1);
+
+        return;
+
+     label2:
+        $r4 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i0 = virtualinvoke $r4.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(2)     $i0_1 = $i0 + -1;
+
+     label3:
+        $r4_1 = Phi($r4 #2, $r4_2 #3);
+
+        $i0_2 = Phi($i0_1 #2, $i0_3 #3);
+
+        if $i0_2 < 0 goto label4;
+
+        $r4_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r5 = virtualinvoke $r4_2.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_2);
+
+        $r6 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r5;
+
+        virtualinvoke $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void stop()>();
+
+        $i0_3 = $i0_2 + -1;
+
+(3)     goto label3;
+
+     label4:
+        $r0.<android.support.v4.app.LoaderManagerImpl: boolean mStarted> = 0;
+
+        return;
+    }
+
+    public void dump(java.lang.String, java.io.FileDescriptor, java.io.PrintWriter, java.lang.String[])
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        java.lang.String $r1, $r7, $r10, $r10_1, $r7_1, $r10_2, $r7_2, $r10_3, $r10_4, $r7_3, $r10_5;
+        java.io.FileDescriptor $r2;
+        java.io.PrintWriter $r3;
+        java.lang.String[] $r4;
+        android.support.v4.util.SparseArrayCompat $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r5_7, $r5_8, $r5_9, $r5_10, $r5_11;
+        int $i0, $i1, $i0_1, $i0_2, $i1_1, $i1_2, $i0_3, $i0_4, $i1_3, $i0_5, $i0_6, $i0_7, $i1_4, $i1_5, $i1_6, $i0_8, $i0_9, $i1_7;
+        java.lang.StringBuilder $r6, $r6_1, $r6_2, $r6_3, $r6_4, $r6_5, $r6_6, $r6_7;
+        java.lang.Object $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.io.FileDescriptor;
+
+        $r3 := @parameter2: java.io.PrintWriter;
+
+        $r4 := @parameter3: java.lang.String[];
+
+        $r5 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i0 = virtualinvoke $r5.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(0)     if $i0 <= 0 goto label2;
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>($r1);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void println(java.lang.String)>("Active Loaders:");
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("    ");
+
+        $r7 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     $i0_1 = 0;
+
+     label1:
+        $r9 = Phi($r9 #1, $r9_1 #3);
+
+        $r10 = Phi($r10 #1, $r10_1 #3);
+
+        $r5_1 = Phi($r5 #1, $r5_4 #3);
+
+        $r8 = Phi($r8 #1, $r8_1 #3);
+
+        $i0_2 = Phi($i0_1 #1, $i0_3 #3);
+
+        $i1 = Phi($i1 #1, $i1_2 #3);
+
+        $r5_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i1_1 = virtualinvoke $r5_2.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(2)     if $i0_2 >= $i1_1 goto label2;
+
+        $r5_3 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r8_1 = virtualinvoke $r5_3.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_2);
+
+        $r9_1 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r8_1;
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>($r1);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>("  #");
+
+        $r5_4 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i1_2 = virtualinvoke $r5_4.<android.support.v4.util.SparseArrayCompat: int keyAt(int)>($i0_2);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(int)>($i1_2);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>(": ");
+
+        $r10_1 = virtualinvoke $r9_1.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: java.lang.String toString()>();
+
+        virtualinvoke $r3.<java.io.PrintWriter: void println(java.lang.String)>($r10_1);
+
+        virtualinvoke $r9_1.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void dump(java.lang.String,java.io.FileDescriptor,java.io.PrintWriter,java.lang.String[])>($r7, $r2, $r3, $r4);
+
+        $i0_3 = $i0_2 + 1;
+
+(3)     goto label1;
+
+     label2:
+        $r7_1 = Phi($r7 #0, $r7 #2);
+
+        $r9_2 = Phi($r9 #0, $r9 #2);
+
+        $r10_2 = Phi($r10 #0, $r10 #2);
+
+        $r5_5 = Phi($r5 #0, $r5_2 #2);
+
+        $r8_2 = Phi($r8 #0, $r8 #2);
+
+        $r6_3 = Phi($r6 #0, $r6_2 #2);
+
+        $i0_4 = Phi($i0 #0, $i0_2 #2);
+
+        $i1_3 = Phi($i1 #0, $i1_1 #2);
+
+        $r5_6 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        $i0_5 = virtualinvoke $r5_6.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(4)     if $i0_5 <= 0 goto label4;
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>($r1);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void println(java.lang.String)>("Inactive Loaders:");
+
+        $r6_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_5 = virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r6_6 = virtualinvoke $r6_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("    ");
+
+        $r7_2 = virtualinvoke $r6_6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(5)     $i0_6 = 0;
+
+     label3:
+        $r9_3 = Phi($r9_2 #5, $r9_4 #7);
+
+        $r10_3 = Phi($r10_2 #5, $r10_4 #7);
+
+        $r5_7 = Phi($r5_6 #5, $r5_10 #7);
+
+        $r8_3 = Phi($r8_2 #5, $r8_4 #7);
+
+        $i0_7 = Phi($i0_6 #5, $i0_8 #7);
+
+        $i1_4 = Phi($i1_3 #5, $i1_6 #7);
+
+        $r5_8 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        $i1_5 = virtualinvoke $r5_8.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(6)     if $i0_7 >= $i1_5 goto label4;
+
+        $r5_9 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        $r8_4 = virtualinvoke $r5_9.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_7);
+
+        $r9_4 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r8_4;
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>($r1);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>("  #");
+
+        $r5_10 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        $i1_6 = virtualinvoke $r5_10.<android.support.v4.util.SparseArrayCompat: int keyAt(int)>($i0_7);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(int)>($i1_6);
+
+        virtualinvoke $r3.<java.io.PrintWriter: void print(java.lang.String)>(": ");
+
+        $r10_4 = virtualinvoke $r9_4.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: java.lang.String toString()>();
+
+        virtualinvoke $r3.<java.io.PrintWriter: void println(java.lang.String)>($r10_4);
+
+        virtualinvoke $r9_4.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void dump(java.lang.String,java.io.FileDescriptor,java.io.PrintWriter,java.lang.String[])>($r7_2, $r2, $r3, $r4);
+
+        $i0_8 = $i0_7 + 1;
+
+(7)     goto label3;
+
+     label4:
+        $r7_3 = Phi($r7_1 #4, $r7_2 #6);
+
+        $r9_5 = Phi($r9_2 #4, $r9_3 #6);
+
+        $r10_5 = Phi($r10_2 #4, $r10_3 #6);
+
+        $r5_11 = Phi($r5_6 #4, $r5_8 #6);
+
+        $r8_5 = Phi($r8_2 #4, $r8_3 #6);
+
+        $r6_7 = Phi($r6_3 #4, $r6_6 #6);
+
+        $i0_9 = Phi($i0_5 #4, $i0_7 #6);
+
+        $i1_7 = Phi($i1_3 #4, $i1_5 #6);
+
+        return;
+    }
+
+    void finishRetain()
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        boolean $z0, $z0_1, $z0_2;
+        java.lang.StringBuilder $r1, $r1_1, $r1_2, $r1_3, $r1_4;
+        java.lang.String $r2;
+        android.support.v4.util.SparseArrayCompat $r3, $r3_1, $r3_2, $r3_3;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4;
+        java.lang.Object $r4;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r5;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $z0 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mRetaining>;
+
+(0)     if $z0 == 0 goto label3;
+
+        $z0_1 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(1)     if $z0_1 == 0 goto label1;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1_1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Finished Retaining in ");
+
+        $r1_2 = virtualinvoke $r1_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r2 = virtualinvoke $r1_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(2)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r2);
+
+     label1:
+        $r1_3 = Phi($r1 #1, $r1_2 #2);
+
+        $r0.<android.support.v4.app.LoaderManagerImpl: boolean mRetaining> = 0;
+
+        $r3 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i0 = virtualinvoke $r3.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(3)     $i0_1 = $i0 + -1;
+
+     label2:
+        $i0_2 = Phi($i0_1 #3, $i0_3 #5);
+
+        $r3_1 = Phi($r3 #3, $r3_2 #5);
+
+(4)     if $i0_2 < 0 goto label3;
+
+        $r3_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r4 = virtualinvoke $r3_2.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i0_2);
+
+        $r5 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r4;
+
+        virtualinvoke $r5.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void finishRetain()>();
+
+        $i0_3 = $i0_2 + -1;
+
+(5)     goto label2;
+
+     label3:
+        $i0_4 = Phi($i0 #0, $i0_2 #4);
+
+        $r3_3 = Phi($r3 #0, $r3_1 #4);
+
+        $r1_4 = Phi($r1 #0, $r1_3 #4);
+
+        $z0_2 = Phi($z0 #0, $z0_1 #4);
+
+        return;
+    }
+
+    public android.support.v4.content.Loader getLoader(int)
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        int $i0;
+        boolean $z0;
+        java.lang.IllegalStateException $r1;
+        android.support.v4.util.SparseArrayCompat $r2;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r3, $r5, $r3_1;
+        java.lang.Object $r4;
+        android.support.v4.content.Loader r6, r6_1;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $i0 := @parameter0: int;
+
+        $z0 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mCreatingLoader>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Called while creating a loader");
+
+        throw $r1;
+
+     label1:
+        $r2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r4 = virtualinvoke $r2.<android.support.v4.util.SparseArrayCompat: java.lang.Object get(int)>($i0);
+
+        $r5 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r4;
+
+        if $r5 == null goto label3;
+
+        $r3 = $r5.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.app.LoaderManagerImpl$LoaderInfo mPendingLoader>;
+
+        if $r3 == null goto label2;
+
+        $r3_1 = $r5.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.app.LoaderManagerImpl$LoaderInfo mPendingLoader>;
+
+        r6 = $r3_1.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.content.Loader mLoader>;
+
+        return r6;
+
+     label2:
+        r6_1 = $r5.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.content.Loader mLoader>;
+
+        return r6_1;
+
+     label3:
+        return null;
+    }
+
+    public boolean hasRunningLoaders()
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        boolean $z0, $z1, $z0_1, $z1_1, $z1_2, $z1_3, $z1_4, $z0_2, $z1_5, $z1_6;
+        android.support.v4.util.SparseArrayCompat $r1, $r1_1, $r1_2;
+        int $i0, $i1, $i1_1, $i1_2;
+        java.lang.Object $r2;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r3;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $z0 = 0;
+
+        $r1 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i0 = virtualinvoke $r1.<android.support.v4.util.SparseArrayCompat: int size()>();
+
+(0)     $i1 = 0;
+
+     label1:
+        $z0_1 = Phi($z0 #0, $z0_2 #4);
+
+        $r1_1 = Phi($r1 #0, $r1_2 #4);
+
+        $i1_1 = Phi($i1 #0, $i1_2 #4);
+
+        $z1 = Phi($z1 #0, $z1_4 #4);
+
+        if $i1_1 >= $i0 goto label4;
+
+        $r1_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r2 = virtualinvoke $r1_2.<android.support.v4.util.SparseArrayCompat: java.lang.Object valueAt(int)>($i1_1);
+
+        $r3 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r2;
+
+        $z1_1 = $r3.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: boolean mStarted>;
+
+(1)     if $z1_1 == 0 goto label3;
+
+        $z1_2 = $r3.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: boolean mDeliveredData>;
+
+(2)     if $z1_2 != 0 goto label3;
+
+(3)     $z1_3 = 1;
+
+     label2:
+        $z1_4 = Phi($z1_3 #3, $z1_6 #5);
+
+        $z0_2 = $z0_1 | $z1_4;
+
+        $i1_2 = $i1_1 + 1;
+
+(4)     goto label1;
+
+     label3:
+        $z1_5 = Phi($z1_1 #1, $z1_2 #2);
+
+        $z1_6 = 0;
+
+(5)     goto label2;
+
+     label4:
+        return $z0_1;
+    }
+
+    public android.support.v4.content.Loader initLoader(int, android.os.Bundle, android.support.v4.app.LoaderManager$LoaderCallbacks)
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        int $i0;
+        android.os.Bundle $r1;
+        android.support.v4.app.LoaderManager$LoaderCallbacks $r2;
+        java.lang.IllegalStateException $r3;
+        android.support.v4.util.SparseArrayCompat $r4;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7;
+        java.lang.Object $r5, $r5_1, $r5_2;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r6, $r7, $r6_1, $r7_1, $r7_2, $r6_2;
+        java.lang.StringBuilder $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8, $r8_9, $r8_10, $r8_11, $r8_12, $r8_13;
+        java.lang.String $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5;
+        android.support.v4.content.Loader $r10, $r10_1, $r10_2;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.os.Bundle;
+
+        $r2 := @parameter2: android.support.v4.app.LoaderManager$LoaderCallbacks;
+
+        $z0 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mCreatingLoader>;
+
+        if $z0 == 0 goto label1;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Called while creating a loader");
+
+        throw $r3;
+
+     label1:
+        $r4 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r5 = virtualinvoke $r4.<android.support.v4.util.SparseArrayCompat: java.lang.Object get(int)>($i0);
+
+        $r6 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r5;
+
+        $r7 = $r6;
+
+        $z0_1 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(0)     if $z0_1 == 0 goto label2;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("initLoader in ");
+
+        $r8_2 = virtualinvoke $r8_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r8_3 = virtualinvoke $r8_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(": args=");
+
+        $r8_4 = virtualinvoke $r8_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r9 = virtualinvoke $r8_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r9);
+
+     label2:
+        $r9_1 = Phi($r9 #0, $r9 #1);
+
+        $r8_5 = Phi($r8 #0, $r8_4 #1);
+
+        if $r6 != null goto label5;
+
+        $r6_1 = specialinvoke $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.app.LoaderManagerImpl$LoaderInfo createAndInstallLoader(int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)>($i0, $r1, $r2);
+
+        $r7_1 = $r6_1;
+
+        $z0_2 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(2)     if $z0_2 == 0 goto label3;
+
+        $r8_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r8_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_7 = virtualinvoke $r8_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  Created new loader ");
+
+        $r8_8 = virtualinvoke $r8_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6_1);
+
+        $r9_2 = virtualinvoke $r8_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(3)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r9_2);
+
+     label3:
+        $z0_3 = Phi($z0_2 #2, $z0_2 #3, $z0_7 #9);
+
+        $r7_2 = Phi($r7_1 #2, $r7_1 #3, $r7 #9);
+
+        $r6_2 = Phi($r6_1 #2, $r6_1 #3, $r6 #9);
+
+        $r9_3 = Phi($r9_1 #2, $r9_2 #3, $r9_5 #9);
+
+        $r8_9 = Phi($r8_5 #2, $r8_8 #3, $r8_13 #9);
+
+        $z0_4 = $r7_2.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: boolean mHaveData>;
+
+(4)     if $z0_4 == 0 goto label4;
+
+        $z0_5 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mStarted>;
+
+(5)     if $z0_5 == 0 goto label4;
+
+        $r10 = $r7_2.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.content.Loader mLoader>;
+
+        $r5_1 = $r7_2.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: java.lang.Object mData>;
+
+(6)     virtualinvoke $r7_2.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void callOnLoadFinished(android.support.v4.content.Loader,java.lang.Object)>($r10, $r5_1);
+
+     label4:
+        $z0_6 = Phi($z0_4 #4, $z0_5 #5, $z0_5 #6);
+
+        $r5_2 = Phi($r5 #4, $r5 #5, $r5_1 #6);
+
+        $r10_1 = Phi($r10 #4, $r10 #5, $r10 #6);
+
+        $r10_2 = $r7_2.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.content.Loader mLoader>;
+
+        return $r10_2;
+
+     label5:
+        $z0_7 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(7)     if $z0_7 == 0 goto label6;
+
+        $r8_10 = new java.lang.StringBuilder;
+
+        specialinvoke $r8_10.<java.lang.StringBuilder: void <init>()>();
+
+        $r8_11 = virtualinvoke $r8_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  Re-using existing loader ");
+
+        $r8_12 = virtualinvoke $r8_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6);
+
+        $r9_4 = virtualinvoke $r8_12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(8)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r9_4);
+
+     label6:
+        $r9_5 = Phi($r9_1 #7, $r9_4 #8);
+
+        $r8_13 = Phi($r8_5 #7, $r8_12 #8);
+
+        $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.app.LoaderManager$LoaderCallbacks mCallbacks> = $r2;
+
+(9)     goto label3;
+    }
+
+    void installLoader(android.support.v4.app.LoaderManagerImpl$LoaderInfo)
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r1;
+        android.support.v4.util.SparseArrayCompat $r2;
+        int $i0;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $r1 := @parameter0: android.support.v4.app.LoaderManagerImpl$LoaderInfo;
+
+        $r2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $i0 = $r1.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: int mId>;
+
+        virtualinvoke $r2.<android.support.v4.util.SparseArrayCompat: void put(int,java.lang.Object)>($i0, $r1);
+
+        $z0 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mStarted>;
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r1.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void start()>();
+
+     label1:
+        return;
+    }
+
+    public android.support.v4.content.Loader restartLoader(int, android.os.Bundle, android.support.v4.app.LoaderManager$LoaderCallbacks)
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        int $i0;
+        android.os.Bundle $r1;
+        android.support.v4.app.LoaderManager$LoaderCallbacks $r2;
+        java.lang.IllegalStateException $r3;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10;
+        android.support.v4.util.SparseArrayCompat $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        java.lang.Object $r5, $r5_1, $r5_2;
+        android.support.v4.app.LoaderManagerImpl$LoaderInfo $r6, $r9, $r9_1, $r9_2, $r9_3, $r9_4, $r9_5, $r9_6, $r6_1, $r9_7, $r6_2;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8, $r7_9, $r7_10, $r7_11, $r7_12, $r7_13, $r7_14, $r7_15, $r7_16, $r7_17, $r7_18, $r7_19;
+        java.lang.String $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8, $r8_9;
+        android.support.v4.content.Loader $r10, $r10_1, $r10_2, $r10_3, $r10_4;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.os.Bundle;
+
+        $r2 := @parameter2: android.support.v4.app.LoaderManager$LoaderCallbacks;
+
+        $z0 = $r0.<android.support.v4.app.LoaderManagerImpl: boolean mCreatingLoader>;
+
+        if $z0 == 0 goto label01;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Called while creating a loader");
+
+        throw $r3;
+
+     label01:
+        $r4 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        $r5 = virtualinvoke $r4.<android.support.v4.util.SparseArrayCompat: java.lang.Object get(int)>($i0);
+
+        $r6 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r5;
+
+        $z0_1 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(0)     if $z0_1 == 0 goto label02;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("restartLoader in ");
+
+        $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r0);
+
+        $r7_3 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(": args=");
+
+        $r7_4 = virtualinvoke $r7_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r8 = virtualinvoke $r7_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(1)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r8);
+
+     label02:
+        $r7_5 = Phi($r7 #0, $r7_4 #1);
+
+        $r8_1 = Phi($r8 #0, $r8 #1);
+
+(2)     if $r6 == null goto label04;
+
+        $r4_1 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        $r5_1 = virtualinvoke $r4_1.<android.support.v4.util.SparseArrayCompat: java.lang.Object get(int)>($i0);
+
+        $r9 = (android.support.v4.app.LoaderManagerImpl$LoaderInfo) $r5_1;
+
+        if $r9 == null goto label11;
+
+        $z0_2 = $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: boolean mHaveData>;
+
+        if $z0_2 == 0 goto label05;
+
+        $z0_3 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(3)     if $z0_3 == 0 goto label03;
+
+        $r7_6 = new java.lang.StringBuilder;
+
+        specialinvoke $r7_6.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_7 = virtualinvoke $r7_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  Removing last inactive loader: ");
+
+        $r7_8 = virtualinvoke $r7_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6);
+
+        $r8_2 = virtualinvoke $r7_8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(4)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r8_2);
+
+     label03:
+        $r7_9 = Phi($r7_5 #3, $r7_8 #4);
+
+        $r8_3 = Phi($r8_1 #3, $r8_2 #4);
+
+        $r9.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: boolean mDeliveredData> = 0;
+
+        virtualinvoke $r9.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void destroy()>();
+
+        $r10 = $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.content.Loader mLoader>;
+
+        virtualinvoke $r10.<android.support.v4.content.Loader: void abandon()>();
+
+        $r4_2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+(5)     virtualinvoke $r4_2.<android.support.v4.util.SparseArrayCompat: void put(int,java.lang.Object)>($i0, $r6);
+
+     label04:
+        $r7_19 = Phi($r7_5 #2, $r7_9 #5, $r7_5 #6, $r7_18 #13);
+
+        $r5_2 = Phi($r5 #2, $r5_1 #5, $r5_1 #6, $r5_1 #13);
+
+        $r4_5 = Phi($r4 #2, $r4_2 #5, $r4_3 #6, $r4_4 #13);
+
+        $r10_3 = Phi($r10 #2, $r10 #5, $r10 #6, $r10_2 #13);
+
+        $r9_7 = Phi($r9 #2, $r9 #5, $r9 #6, $r9 #13);
+
+        $r8_9 = Phi($r8_1 #2, $r8_3 #5, $r8_1 #6, $r8_8 #13);
+
+        $z0_10 = Phi($z0_1 #2, $z0_3 #5, $z0_5 #6, $z0_9 #13);
+
+        $r6_2 = specialinvoke $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.app.LoaderManagerImpl$LoaderInfo createAndInstallLoader(int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)>($i0, $r1, $r2);
+
+        $r10_4 = $r6_2.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.content.Loader mLoader>;
+
+        return $r10_4;
+
+     label05:
+        $z0_4 = $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: boolean mStarted>;
+
+        if $z0_4 != 0 goto label07;
+
+        $z0_5 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+        if $z0_5 == 0 goto label06;
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", "  Current loader is stopped; replacing");
+
+     label06:
+        $r4_3 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mLoaders>;
+
+        virtualinvoke $r4_3.<android.support.v4.util.SparseArrayCompat: void put(int,java.lang.Object)>($i0, null);
+
+        virtualinvoke $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void destroy()>();
+
+(6)     goto label04;
+
+     label07:
+        $r9_1 = $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.app.LoaderManagerImpl$LoaderInfo mPendingLoader>;
+
+(7)     if $r9_1 == null goto label09;
+
+        $z0_6 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(8)     if $z0_6 == 0 goto label08;
+
+        $r7_10 = new java.lang.StringBuilder;
+
+        specialinvoke $r7_10.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_11 = virtualinvoke $r7_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  Removing pending loader: ");
+
+        $r9_2 = $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.app.LoaderManagerImpl$LoaderInfo mPendingLoader>;
+
+        $r7_12 = virtualinvoke $r7_11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r9_2);
+
+        $r8_4 = virtualinvoke $r7_12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(9)     staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r8_4);
+
+     label08:
+        $r7_13 = Phi($r7_5 #8, $r7_12 #9);
+
+        $r9_3 = Phi($r9_1 #8, $r9_2 #9);
+
+        $r8_5 = Phi($r8_1 #8, $r8_4 #9);
+
+        $r9_4 = $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.app.LoaderManagerImpl$LoaderInfo mPendingLoader>;
+
+        virtualinvoke $r9_4.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: void destroy()>();
+
+(10)    $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.app.LoaderManagerImpl$LoaderInfo mPendingLoader> = null;
+
+     label09:
+        $r7_14 = Phi($r7_5 #7, $r7_13 #10);
+
+        $r9_5 = Phi($r9_1 #7, $r9_4 #10);
+
+        $r8_6 = Phi($r8_1 #7, $r8_5 #10);
+
+        $z0_7 = Phi($z0_4 #7, $z0_6 #10);
+
+        $z0_8 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+        if $z0_8 == 0 goto label10;
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", "  Enqueuing as new pending loader");
+
+     label10:
+        $r9_6 = specialinvoke $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.app.LoaderManagerImpl$LoaderInfo createLoader(int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)>($i0, $r1, $r2);
+
+        $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.app.LoaderManagerImpl$LoaderInfo mPendingLoader> = $r9_6;
+
+        $r6_1 = $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.app.LoaderManagerImpl$LoaderInfo mPendingLoader>;
+
+        $r10_1 = $r6_1.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.content.Loader mLoader>;
+
+        return $r10_1;
+
+     label11:
+        $z0_9 = <android.support.v4.app.LoaderManagerImpl: boolean DEBUG>;
+
+(11)    if $z0_9 == 0 goto label12;
+
+        $r7_15 = new java.lang.StringBuilder;
+
+        specialinvoke $r7_15.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_16 = virtualinvoke $r7_15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  Making last loader inactive: ");
+
+        $r7_17 = virtualinvoke $r7_16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6);
+
+        $r8_7 = virtualinvoke $r7_17.<java.lang.StringBuilder: java.lang.String toString()>();
+
+(12)    staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("LoaderManager", $r8_7);
+
+     label12:
+        $r7_18 = Phi($r7_5 #11, $r7_17 #12);
+
+        $r8_8 = Phi($r8_1 #11, $r8_7 #12);
+
+        $r10_2 = $r6.<android.support.v4.app.LoaderManagerImpl$LoaderInfo: android.support.v4.content.Loader mLoader>;
+
+        virtualinvoke $r10_2.<android.support.v4.content.Loader: void abandon()>();
+
+        $r4_4 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.util.SparseArrayCompat mInactiveLoaders>;
+
+        virtualinvoke $r4_4.<android.support.v4.util.SparseArrayCompat: void put(int,java.lang.Object)>($i0, $r6);
+
+(13)    goto label04;
+    }
+
+    public java.lang.String toString()
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        java.lang.StringBuilder $r1;
+        android.support.v4.app.FragmentActivity $r2;
+        int $i0;
+        java.lang.String $r3, $r3_1;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(int)>(128);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("LoaderManager{");
+
+        $i0 = staticinvoke <java.lang.System: int identityHashCode(java.lang.Object)>($r0);
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" in ");
+
+        $r2 = $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.app.FragmentActivity mActivity>;
+
+        staticinvoke <android.support.v4.util.DebugUtils: void buildShortClassTag(java.lang.Object,java.lang.StringBuilder)>($r2, $r1);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}}");
+
+        $r3_1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3_1;
+    }
+
+    void updateActivity(android.support.v4.app.FragmentActivity)
+    {
+        android.support.v4.app.LoaderManagerImpl $r0;
+        android.support.v4.app.FragmentActivity $r1;
+
+        $r0 := @this: android.support.v4.app.LoaderManagerImpl;
+
+        $r1 := @parameter0: android.support.v4.app.FragmentActivity;
+
+        $r0.<android.support.v4.app.LoaderManagerImpl: android.support.v4.app.FragmentActivity mActivity> = $r1;
+
+        return;
+    }
+}

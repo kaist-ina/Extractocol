@@ -1,0 +1,324 @@
+public abstract class ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter extends ch.boye.httpclientandroidlib.impl.conn.AbstractClientConnAdapter
+{
+    protected volatile ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry poolEntry;
+
+    protected void <init>(ch.boye.httpclientandroidlib.conn.ClientConnectionManager, ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.conn.ClientConnectionManager $r1;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r2;
+        ch.boye.httpclientandroidlib.conn.OperatedClientConnection $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.ClientConnectionManager;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry;
+
+        $r3 = $r2.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.OperatedClientConnection connection>;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractClientConnAdapter: void <init>(ch.boye.httpclientandroidlib.conn.ClientConnectionManager,ch.boye.httpclientandroidlib.conn.OperatedClientConnection)>($r1, $r3);
+
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry poolEntry> = $r2;
+
+        return;
+    }
+
+    protected final void assertAttached()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r1;
+        ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry poolEntry>;
+
+        if $r1 != null goto label1;
+
+        $r2 = new ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException: void <init>()>();
+
+        throw $r2;
+
+     label1:
+        return;
+    }
+
+    protected void assertValid(ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r1;
+        ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException $r2;
+        boolean $z0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry;
+
+        $z0 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: boolean isReleased()>();
+
+        if $z0 != 0 goto label1;
+
+        if $r1 != null goto label2;
+
+     label1:
+        $r2 = new ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException;
+
+        specialinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.ConnectionShutdownException: void <init>()>();
+
+        throw $r2;
+
+     label2:
+        return;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r1;
+        ch.boye.httpclientandroidlib.conn.OperatedClientConnection $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        if $r1 == null goto label1;
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: void shutdownEntry()>();
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.conn.OperatedClientConnection getWrappedConnection()>();
+
+        if $r2 == null goto label2;
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.conn.OperatedClientConnection: void close()>();
+
+     label2:
+        return;
+    }
+
+    protected void detach()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        java.lang.Throwable $r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        entermonitor $r0;
+
+     label1:
+        $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry poolEntry> = null;
+
+        specialinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractClientConnAdapter: void detach()>();
+
+     label2:
+        exitmonitor $r0;
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    protected ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry r1;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        r1 = $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry poolEntry>;
+
+        return r1;
+    }
+
+    public ch.boye.httpclientandroidlib.conn.routing.HttpRoute getRoute()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r1;
+        ch.boye.httpclientandroidlib.conn.routing.RouteTracker $r2, $r2_1;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: void assertValid(ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry)>($r1);
+
+        $r2 = $r1.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        if $r2 != null goto label1;
+
+        return null;
+
+     label1:
+        $r2_1 = $r1.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: ch.boye.httpclientandroidlib.conn.routing.RouteTracker tracker>;
+
+        $r3 = virtualinvoke $r2_1.<ch.boye.httpclientandroidlib.conn.routing.RouteTracker: ch.boye.httpclientandroidlib.conn.routing.HttpRoute toRoute()>();
+
+        return $r3;
+    }
+
+    public java.lang.Object getState()
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r1;
+        java.lang.Object $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: void assertValid(ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry)>($r1);
+
+        $r2 = virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: java.lang.Object getState()>();
+
+        return $r2;
+    }
+
+    public void layerProtocol(ch.boye.httpclientandroidlib.protocol.HttpContext, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r1;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: void assertValid(ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry)>($r3);
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: void layerProtocol(ch.boye.httpclientandroidlib.protocol.HttpContext,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $r2);
+
+        return;
+    }
+
+    public void open(ch.boye.httpclientandroidlib.conn.routing.HttpRoute, ch.boye.httpclientandroidlib.protocol.HttpContext, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.conn.routing.HttpRoute $r1;
+        ch.boye.httpclientandroidlib.protocol.HttpContext $r2;
+        ch.boye.httpclientandroidlib.params.HttpParams $r3;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.conn.routing.HttpRoute;
+
+        $r2 := @parameter1: ch.boye.httpclientandroidlib.protocol.HttpContext;
+
+        $r3 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r4 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: void assertValid(ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry)>($r4);
+
+        virtualinvoke $r4.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: void open(ch.boye.httpclientandroidlib.conn.routing.HttpRoute,ch.boye.httpclientandroidlib.protocol.HttpContext,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    public void setState(java.lang.Object)
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        java.lang.Object $r1;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: void assertValid(ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry)>($r2);
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: void setState(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void shutdown() throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r1;
+        ch.boye.httpclientandroidlib.conn.OperatedClientConnection $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        if $r1 == null goto label1;
+
+        virtualinvoke $r1.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: void shutdownEntry()>();
+
+     label1:
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.conn.OperatedClientConnection getWrappedConnection()>();
+
+        if $r2 == null goto label2;
+
+        interfaceinvoke $r2.<ch.boye.httpclientandroidlib.conn.OperatedClientConnection: void shutdown()>();
+
+     label2:
+        return;
+    }
+
+    public void tunnelProxy(ch.boye.httpclientandroidlib.HttpHost, boolean, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        ch.boye.httpclientandroidlib.HttpHost $r1;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r2;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r3;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $r1 := @parameter0: ch.boye.httpclientandroidlib.HttpHost;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 := @parameter2: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r3 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: void assertValid(ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry)>($r3);
+
+        virtualinvoke $r3.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: void tunnelProxy(ch.boye.httpclientandroidlib.HttpHost,boolean,ch.boye.httpclientandroidlib.params.HttpParams)>($r1, $z0, $r2);
+
+        return;
+    }
+
+    public void tunnelTarget(boolean, ch.boye.httpclientandroidlib.params.HttpParams) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter $r0;
+        boolean $z0;
+        ch.boye.httpclientandroidlib.params.HttpParams $r1;
+        ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry $r2;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 := @parameter1: ch.boye.httpclientandroidlib.params.HttpParams;
+
+        $r2 = virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry getPoolEntry()>();
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.impl.conn.AbstractPooledConnAdapter: void assertValid(ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry)>($r2);
+
+        virtualinvoke $r2.<ch.boye.httpclientandroidlib.impl.conn.AbstractPoolEntry: void tunnelTarget(boolean,ch.boye.httpclientandroidlib.params.HttpParams)>($z0, $r1);
+
+        return;
+    }
+}

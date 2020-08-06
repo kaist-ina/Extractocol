@@ -1,0 +1,192 @@
+public class io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor extends java.util.concurrent.ScheduledThreadPoolExecutor
+{
+    private final io.fabric.sdk.android.services.concurrency.internal.Backoff backoff;
+    private final io.fabric.sdk.android.services.concurrency.internal.RetryPolicy retryPolicy;
+
+    public void <init>(int, io.fabric.sdk.android.services.concurrency.internal.RetryPolicy, io.fabric.sdk.android.services.concurrency.internal.Backoff)
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r0;
+        int $i0;
+        io.fabric.sdk.android.services.concurrency.internal.RetryPolicy $r1;
+        io.fabric.sdk.android.services.concurrency.internal.Backoff $r2;
+        java.util.concurrent.ThreadFactory $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: io.fabric.sdk.android.services.concurrency.internal.RetryPolicy;
+
+        $r2 := @parameter2: io.fabric.sdk.android.services.concurrency.internal.Backoff;
+
+        $r3 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.ThreadFactory defaultThreadFactory()>();
+
+        specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: void <init>(int,java.util.concurrent.ThreadFactory,io.fabric.sdk.android.services.concurrency.internal.RetryPolicy,io.fabric.sdk.android.services.concurrency.internal.Backoff)>($i0, $r3, $r1, $r2);
+
+        return;
+    }
+
+    public void <init>(int, java.util.concurrent.ThreadFactory, io.fabric.sdk.android.services.concurrency.internal.RetryPolicy, io.fabric.sdk.android.services.concurrency.internal.Backoff)
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r0;
+        int $i0;
+        java.util.concurrent.ThreadFactory $r1;
+        io.fabric.sdk.android.services.concurrency.internal.RetryPolicy $r2;
+        io.fabric.sdk.android.services.concurrency.internal.Backoff $r3;
+        java.lang.NullPointerException $r4, $r4_1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.util.concurrent.ThreadFactory;
+
+        $r2 := @parameter2: io.fabric.sdk.android.services.concurrency.internal.RetryPolicy;
+
+        $r3 := @parameter3: io.fabric.sdk.android.services.concurrency.internal.Backoff;
+
+        specialinvoke $r0.<java.util.concurrent.ScheduledThreadPoolExecutor: void <init>(int,java.util.concurrent.ThreadFactory)>($i0, $r1);
+
+        if $r2 != null goto label1;
+
+        $r4 = new java.lang.NullPointerException;
+
+        specialinvoke $r4.<java.lang.NullPointerException: void <init>(java.lang.String)>("retry policy must not be null");
+
+        throw $r4;
+
+     label1:
+        if $r3 != null goto label2;
+
+        $r4_1 = new java.lang.NullPointerException;
+
+        specialinvoke $r4_1.<java.lang.NullPointerException: void <init>(java.lang.String)>("backoff must not be null");
+
+        throw $r4_1;
+
+     label2:
+        $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: io.fabric.sdk.android.services.concurrency.internal.RetryPolicy retryPolicy> = $r2;
+
+        $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: io.fabric.sdk.android.services.concurrency.internal.Backoff backoff> = $r3;
+
+        return;
+    }
+
+    private java.util.concurrent.Future scheduleWithRetryInternal(java.util.concurrent.Callable)
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r0;
+        java.util.concurrent.Callable $r1;
+        java.lang.NullPointerException $r2;
+        io.fabric.sdk.android.services.concurrency.internal.RetryState $r3;
+        io.fabric.sdk.android.services.concurrency.internal.Backoff $r4;
+        io.fabric.sdk.android.services.concurrency.internal.RetryPolicy $r5;
+        io.fabric.sdk.android.services.concurrency.internal.RetryFuture $r6;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+
+        $r1 := @parameter0: java.util.concurrent.Callable;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>()>();
+
+        throw $r2;
+
+     label1:
+        $r3 = new io.fabric.sdk.android.services.concurrency.internal.RetryState;
+
+        $r4 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: io.fabric.sdk.android.services.concurrency.internal.Backoff backoff>;
+
+        $r5 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: io.fabric.sdk.android.services.concurrency.internal.RetryPolicy retryPolicy>;
+
+        specialinvoke $r3.<io.fabric.sdk.android.services.concurrency.internal.RetryState: void <init>(io.fabric.sdk.android.services.concurrency.internal.Backoff,io.fabric.sdk.android.services.concurrency.internal.RetryPolicy)>($r4, $r5);
+
+        $r6 = new io.fabric.sdk.android.services.concurrency.internal.RetryFuture;
+
+        specialinvoke $r6.<io.fabric.sdk.android.services.concurrency.internal.RetryFuture: void <init>(java.util.concurrent.Callable,io.fabric.sdk.android.services.concurrency.internal.RetryState,io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor)>($r1, $r3, $r0);
+
+        virtualinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: void execute(java.lang.Runnable)>($r6);
+
+        return $r6;
+    }
+
+    public io.fabric.sdk.android.services.concurrency.internal.Backoff getBackoff()
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r0;
+        io.fabric.sdk.android.services.concurrency.internal.Backoff r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+
+        r1 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: io.fabric.sdk.android.services.concurrency.internal.Backoff backoff>;
+
+        return r1;
+    }
+
+    public io.fabric.sdk.android.services.concurrency.internal.RetryPolicy getRetryPolicy()
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r0;
+        io.fabric.sdk.android.services.concurrency.internal.RetryPolicy r1;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+
+        r1 = $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: io.fabric.sdk.android.services.concurrency.internal.RetryPolicy retryPolicy>;
+
+        return r1;
+    }
+
+    public java.util.concurrent.Future scheduleWithRetry(java.lang.Runnable)
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r0;
+        java.lang.Runnable $r1;
+        java.util.concurrent.Callable $r2;
+        java.util.concurrent.Future $r3;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+
+        $r1 := @parameter0: java.lang.Runnable;
+
+        $r2 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.Callable callable(java.lang.Runnable)>($r1);
+
+        $r3 = specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: java.util.concurrent.Future scheduleWithRetryInternal(java.util.concurrent.Callable)>($r2);
+
+        return $r3;
+    }
+
+    public java.util.concurrent.Future scheduleWithRetry(java.lang.Runnable, java.lang.Object)
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r0;
+        java.lang.Runnable $r1;
+        java.lang.Object $r2;
+        java.util.concurrent.Callable $r3;
+        java.util.concurrent.Future $r4;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+
+        $r1 := @parameter0: java.lang.Runnable;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.Callable callable(java.lang.Runnable,java.lang.Object)>($r1, $r2);
+
+        $r4 = specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: java.util.concurrent.Future scheduleWithRetryInternal(java.util.concurrent.Callable)>($r3);
+
+        return $r4;
+    }
+
+    public java.util.concurrent.Future scheduleWithRetry(java.util.concurrent.Callable)
+    {
+        io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor $r0;
+        java.util.concurrent.Callable $r1;
+        java.util.concurrent.Future $r2;
+
+        $r0 := @this: io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
+
+        $r1 := @parameter0: java.util.concurrent.Callable;
+
+        $r2 = specialinvoke $r0.<io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor: java.util.concurrent.Future scheduleWithRetryInternal(java.util.concurrent.Callable)>($r1);
+
+        return $r2;
+    }
+}

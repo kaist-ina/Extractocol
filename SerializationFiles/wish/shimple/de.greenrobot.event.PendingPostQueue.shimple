@@ -1,0 +1,186 @@
+final class de.greenrobot.event.PendingPostQueue extends java.lang.Object
+{
+    private de.greenrobot.event.PendingPost head;
+    private de.greenrobot.event.PendingPost tail;
+
+    void <init>()
+    {
+        de.greenrobot.event.PendingPostQueue $r0;
+
+        $r0 := @this: de.greenrobot.event.PendingPostQueue;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    void enqueue(de.greenrobot.event.PendingPost)
+    {
+        de.greenrobot.event.PendingPostQueue $r0;
+        de.greenrobot.event.PendingPost $r1, $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        java.lang.NullPointerException $r2;
+        java.lang.Throwable $r3;
+        java.lang.IllegalStateException $r4;
+
+        $r0 := @this: de.greenrobot.event.PendingPostQueue;
+
+        $r1 := @parameter0: de.greenrobot.event.PendingPost;
+
+        entermonitor $r0;
+
+(0)     if $r1 != null goto label3;
+
+     label1:
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>(java.lang.String)>("null cannot be enqueued");
+
+        throw $r2;
+
+     label2:
+        $r3 := @caughtexception;
+
+        $r5 = Phi($r5 #0, $r5_1 #1, $r5_2 #2, $r5_3 #4, $r5_4 #5);
+
+        exitmonitor $r0;
+
+        throw $r3;
+
+     label3:
+(1)     $r5_1 = $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost tail>;
+
+        if $r5_1 == null goto label6;
+
+(2)     $r5_2 = $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost tail>;
+
+        $r5_2.<de.greenrobot.event.PendingPost: de.greenrobot.event.PendingPost next> = $r1;
+
+(3)     $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost tail> = $r1;
+
+     label4:
+        $r5_3 = Phi($r5_2 #3, $r5_4 #6);
+
+(4)     virtualinvoke $r0.<java.lang.Object: void notifyAll()>();
+
+     label5:
+        exitmonitor $r0;
+
+        return;
+
+     label6:
+(5)     $r5_4 = $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost head>;
+
+        if $r5_4 != null goto label7;
+
+        $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost tail> = $r1;
+
+        $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost head> = $r1;
+
+(6)     goto label4;
+
+     label7:
+        $r4 = new java.lang.IllegalStateException;
+
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Head present, but no tail");
+
+        throw $r4;
+
+     label8:
+        nop;
+
+        catch java.lang.Throwable from label1 to label2 with label2;
+        catch java.lang.Throwable from label3 to label5 with label2;
+        catch java.lang.Throwable from label6 to label8 with label2;
+    }
+
+    de.greenrobot.event.PendingPost poll()
+    {
+        de.greenrobot.event.PendingPostQueue $r0;
+        java.lang.Throwable $r1;
+        de.greenrobot.event.PendingPost $r2, r3, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+
+        $r0 := @this: de.greenrobot.event.PendingPostQueue;
+
+(0)     entermonitor $r0;
+
+     label1:
+        r3 = $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost head>;
+
+        $r2 = $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost head>;
+
+(1)     if $r2 == null goto label2;
+
+(2)     $r2_1 = $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost head>;
+
+(3)     $r2_2 = $r2_1.<de.greenrobot.event.PendingPost: de.greenrobot.event.PendingPost next>;
+
+        $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost head> = $r2_2;
+
+(4)     $r2_3 = $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost head>;
+
+(5)     if $r2_3 != null goto label2;
+
+(6)     $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost tail> = null;
+
+     label2:
+        $r2_4 = Phi($r2 #1, $r2_3 #5, $r2_3 #6);
+
+        exitmonitor $r0;
+
+        return r3;
+
+     label3:
+        $r1 := @caughtexception;
+
+        $r2_5 = Phi($r2 #0, $r2_1 #2, $r2_2 #3, $r2_3 #4);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    de.greenrobot.event.PendingPost poll(int) throws java.lang.InterruptedException
+    {
+        de.greenrobot.event.PendingPostQueue $r0;
+        int $i0;
+        long $l1;
+        java.lang.Throwable $r1;
+        de.greenrobot.event.PendingPost $r2, $r2_1, $r2_2;
+
+        $r0 := @this: de.greenrobot.event.PendingPostQueue;
+
+        $i0 := @parameter0: int;
+
+(0)     entermonitor $r0;
+
+     label1:
+        $r2 = $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost head>;
+
+        if $r2 != null goto label2;
+
+        $l1 = (long) $i0;
+
+        virtualinvoke $r0.<java.lang.Object: void wait(long)>($l1);
+
+     label2:
+(1)     $r2_1 = virtualinvoke $r0.<de.greenrobot.event.PendingPostQueue: de.greenrobot.event.PendingPost poll()>();
+
+     label3:
+        exitmonitor $r0;
+
+        return $r2_1;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        exitmonitor $r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+}

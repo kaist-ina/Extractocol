@@ -1,0 +1,1659 @@
+public class com.viewpagerindicator.CirclePageIndicator extends android.view.View implements com.viewpagerindicator.PageIndicator
+{
+    private static final int INVALID_POINTER;
+    private int mActivePointerId;
+    private boolean mCentered;
+    private int mCurrentPage;
+    private int mForceCount;
+    private boolean mIsDragging;
+    private float mLastMotionX;
+    private android.support.v4.view.ViewPager$OnPageChangeListener mListener;
+    private int mOrientation;
+    private float mPageOffset;
+    private final android.graphics.Paint mPaintFill;
+    private final android.graphics.Paint mPaintPageFill;
+    private final android.graphics.Paint mPaintStroke;
+    private float mRadius;
+    private int mScrollState;
+    private boolean mSnap;
+    private int mSnapPage;
+    private int mTouchSlop;
+    private android.support.v4.view.ViewPager mViewPager;
+
+    public void <init>(android.content.Context)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        int $i0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 = <com.viewpagerindicator.R$attr: int vpiCirclePageIndicatorStyle>;
+
+        specialinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        int[] $r3;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i1_1, $i1_2, $i3_1, $i3_2, $i5_1, $i5_2, $i5_3, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5;
+        android.graphics.Paint $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9;
+        boolean $z0, $z1, $z0_1, $z1_1, $z0_2;
+        android.content.res.Resources $r5;
+        float $f0, $f1, $f0_1, $f1_1;
+        android.content.res.TypedArray $r6;
+        android.graphics.Paint$Style $r7, $r7_1, $r7_2;
+        android.graphics.drawable.Drawable $r8;
+        android.view.ViewConfiguration $r9;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<android.view.View: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        $r4 = new android.graphics.Paint;
+
+        specialinvoke $r4.<android.graphics.Paint: void <init>(int)>(1);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintPageFill> = $r4;
+
+        $r4_1 = new android.graphics.Paint;
+
+        specialinvoke $r4_1.<android.graphics.Paint: void <init>(int)>(1);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke> = $r4_1;
+
+        $r4_2 = new android.graphics.Paint;
+
+        specialinvoke $r4_2.<android.graphics.Paint: void <init>(int)>(1);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintFill> = $r4_2;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: float mLastMotionX> = -1.0F;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mActivePointerId> = -1;
+
+        $z0 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: boolean isInEditMode()>();
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r5 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: android.content.res.Resources getResources()>();
+
+        $i1 = <com.viewpagerindicator.R$color: int default_circle_indicator_page_color>;
+
+        $i2 = virtualinvoke $r5.<android.content.res.Resources: int getColor(int)>($i1);
+
+        $i1_1 = <com.viewpagerindicator.R$color: int default_circle_indicator_fill_color>;
+
+        $i1_2 = virtualinvoke $r5.<android.content.res.Resources: int getColor(int)>($i1_1);
+
+        $i3 = <com.viewpagerindicator.R$integer: int default_circle_indicator_orientation>;
+
+        $i4 = virtualinvoke $r5.<android.content.res.Resources: int getInteger(int)>($i3);
+
+        $i3_1 = <com.viewpagerindicator.R$color: int default_circle_indicator_stroke_color>;
+
+        $i3_2 = virtualinvoke $r5.<android.content.res.Resources: int getColor(int)>($i3_1);
+
+        $i5 = <com.viewpagerindicator.R$dimen: int default_circle_indicator_stroke_width>;
+
+        $f0 = virtualinvoke $r5.<android.content.res.Resources: float getDimension(int)>($i5);
+
+        $i5_1 = <com.viewpagerindicator.R$dimen: int default_circle_indicator_radius>;
+
+        $f1 = virtualinvoke $r5.<android.content.res.Resources: float getDimension(int)>($i5_1);
+
+        $i5_2 = <com.viewpagerindicator.R$bool: int default_circle_indicator_centered>;
+
+        $z1 = virtualinvoke $r5.<android.content.res.Resources: boolean getBoolean(int)>($i5_2);
+
+        $i5_3 = <com.viewpagerindicator.R$bool: int default_circle_indicator_snap>;
+
+        $z0_1 = virtualinvoke $r5.<android.content.res.Resources: boolean getBoolean(int)>($i5_3);
+
+        $r3 = <com.viewpagerindicator.R$styleable: int[] CirclePageIndicator>;
+
+        $r6 = virtualinvoke $r1.<android.content.Context: android.content.res.TypedArray obtainStyledAttributes(android.util.AttributeSet,int[],int,int)>($r2, $r3, $i0, 0);
+
+        $z1_1 = virtualinvoke $r6.<android.content.res.TypedArray: boolean getBoolean(int,boolean)>(2, $z1);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mCentered> = $z1_1;
+
+        $i0_1 = virtualinvoke $r6.<android.content.res.TypedArray: int getInt(int,int)>(0, $i4);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mOrientation> = $i0_1;
+
+        $r4_3 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintPageFill>;
+
+        $r7 = <android.graphics.Paint$Style: android.graphics.Paint$Style FILL>;
+
+        virtualinvoke $r4_3.<android.graphics.Paint: void setStyle(android.graphics.Paint$Style)>($r7);
+
+        $r4_4 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintPageFill>;
+
+        $i0_2 = virtualinvoke $r6.<android.content.res.TypedArray: int getColor(int,int)>(5, $i2);
+
+        virtualinvoke $r4_4.<android.graphics.Paint: void setColor(int)>($i0_2);
+
+        $r4_5 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke>;
+
+        $r7_1 = <android.graphics.Paint$Style: android.graphics.Paint$Style STROKE>;
+
+        virtualinvoke $r4_5.<android.graphics.Paint: void setStyle(android.graphics.Paint$Style)>($r7_1);
+
+        $r4_6 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke>;
+
+        $i0_3 = virtualinvoke $r6.<android.content.res.TypedArray: int getColor(int,int)>(8, $i3_2);
+
+        virtualinvoke $r4_6.<android.graphics.Paint: void setColor(int)>($i0_3);
+
+        $r4_7 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke>;
+
+        $f0_1 = virtualinvoke $r6.<android.content.res.TypedArray: float getDimension(int,float)>(3, $f0);
+
+        virtualinvoke $r4_7.<android.graphics.Paint: void setStrokeWidth(float)>($f0_1);
+
+        $r4_8 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintFill>;
+
+        $r7_2 = <android.graphics.Paint$Style: android.graphics.Paint$Style FILL>;
+
+        virtualinvoke $r4_8.<android.graphics.Paint: void setStyle(android.graphics.Paint$Style)>($r7_2);
+
+        $r4_9 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintFill>;
+
+        $i0_4 = virtualinvoke $r6.<android.content.res.TypedArray: int getColor(int,int)>(4, $i1_2);
+
+        virtualinvoke $r4_9.<android.graphics.Paint: void setColor(int)>($i0_4);
+
+        $f1_1 = virtualinvoke $r6.<android.content.res.TypedArray: float getDimension(int,float)>(6, $f1);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius> = $f1_1;
+
+        $z0_2 = virtualinvoke $r6.<android.content.res.TypedArray: boolean getBoolean(int,boolean)>(7, $z0_1);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mSnap> = $z0_2;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mForceCount> = -1;
+
+        $r8 = virtualinvoke $r6.<android.content.res.TypedArray: android.graphics.drawable.Drawable getDrawable(int)>(1);
+
+        if $r8 == null goto label2;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void setBackgroundDrawable(android.graphics.drawable.Drawable)>($r8);
+
+     label2:
+        virtualinvoke $r6.<android.content.res.TypedArray: void recycle()>();
+
+        $r9 = staticinvoke <android.view.ViewConfiguration: android.view.ViewConfiguration get(android.content.Context)>($r1);
+
+        $i0_5 = staticinvoke <android.support.v4.view.ViewConfigurationCompat: int getScaledPagingTouchSlop(android.view.ViewConfiguration)>($r9);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mTouchSlop> = $i0_5;
+
+        return;
+    }
+
+    private int measureLong(int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i0_1, $i2_1, $i2_2, $i3_1, $i3_2, $i2_3, $i2_4, $i0_2, $i2_5;
+        android.support.v4.view.ViewPager $r1, $r1_1, $r1_2;
+        android.support.v4.view.PagerAdapter $r2;
+        float $f0, $f1, $f2, $f1_1, $f0_1, $f1_2, $f2_1, $f1_3, $f0_2, $f0_3;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $i1 = staticinvoke <android.view.View$MeasureSpec: int getMode(int)>($i0);
+
+        $i0_1 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i0);
+
+        if $i1 == 1073741824 goto label5;
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        if $r1 != null goto label1;
+
+        return $i0_1;
+
+     label1:
+        $i2 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mForceCount>;
+
+        if $i2 != -1 goto label3;
+
+        $r1_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $r2 = virtualinvoke $r1_1.<android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()>();
+
+(0)     $i2_1 = virtualinvoke $r2.<android.support.v4.view.PagerAdapter: int getCount()>();
+
+     label2:
+        $i2_2 = Phi($i2_1 #0, $i2_5 #1);
+
+        $r1_2 = Phi($r1_1 #0, $r1 #1);
+
+        $i3 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getPaddingLeft()>();
+
+        $i4 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getPaddingRight()>();
+
+        $i3_1 = $i3 + $i4;
+
+        $f0 = (float) $i3_1;
+
+        $i3_2 = $i2_2 * 2;
+
+        $f1 = (float) $i3_2;
+
+        $f2 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        $f1_1 = $f1 * $f2;
+
+        $f0_1 = $f0 + $f1_1;
+
+        $i2_3 = $i2_2 + -1;
+
+        $f1_2 = (float) $i2_3;
+
+        $f2_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        $f1_3 = $f1_2 * $f2_1;
+
+        $f0_2 = $f0_1 + $f1_3;
+
+        $f0_3 = $f0_2 + 1.0F;
+
+        $i2_4 = (int) $f0_3;
+
+        if $i1 != -2147483648 goto label4;
+
+        $i0_2 = staticinvoke <java.lang.Math: int min(int,int)>($i2_4, $i0_1);
+
+        return $i0_2;
+
+     label3:
+        $i2_5 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mForceCount>;
+
+(1)     goto label2;
+
+     label4:
+        return $i2_4;
+
+     label5:
+        return $i0_1;
+    }
+
+    private int measureShort(int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0, $i1, $i2, $i0_1, $i2_1, $i2_2, $i0_2;
+        float $f0, $f1, $f0_1, $f0_2, $f1_1, $f0_3, $f0_4;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $i1 = staticinvoke <android.view.View$MeasureSpec: int getMode(int)>($i0);
+
+        $i0_1 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i0);
+
+        if $i1 != 1073741824 goto label1;
+
+        return $i0_1;
+
+     label1:
+        $f0 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        $f0_1 = 2.0F * $f0;
+
+        $i2 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getPaddingTop()>();
+
+        $f1 = (float) $i2;
+
+        $f0_2 = $f0_1 + $f1;
+
+        $i2_1 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getPaddingBottom()>();
+
+        $f1_1 = (float) $i2_1;
+
+        $f0_3 = $f0_2 + $f1_1;
+
+        $f0_4 = $f0_3 + 1.0F;
+
+        $i2_2 = (int) $f0_4;
+
+        if $i1 != -2147483648 goto label2;
+
+        $i0_2 = staticinvoke <java.lang.Math: int min(int,int)>($i2_2, $i0_1);
+
+        return $i0_2;
+
+     label2:
+        return $i2_2;
+    }
+
+    public int getFillColor()
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.graphics.Paint $r1;
+        int $i0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintFill>;
+
+        $i0 = virtualinvoke $r1.<android.graphics.Paint: int getColor()>();
+
+        return $i0;
+    }
+
+    public int getOrientation()
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int i0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        i0 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mOrientation>;
+
+        return i0;
+    }
+
+    public int getPageColor()
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.graphics.Paint $r1;
+        int $i0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintPageFill>;
+
+        $i0 = virtualinvoke $r1.<android.graphics.Paint: int getColor()>();
+
+        return $i0;
+    }
+
+    public float getRadius()
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        float f0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        f0 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        return f0;
+    }
+
+    public int getStrokeColor()
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.graphics.Paint $r1;
+        int $i0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke>;
+
+        $i0 = virtualinvoke $r1.<android.graphics.Paint: int getColor()>();
+
+        return $i0;
+    }
+
+    public float getStrokeWidth()
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.graphics.Paint $r1;
+        float $f0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke>;
+
+        $f0 = virtualinvoke $r1.<android.graphics.Paint: float getStrokeWidth()>();
+
+        return $f0;
+    }
+
+    public boolean isCentered()
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        boolean z0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        z0 = $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mCentered>;
+
+        return z0;
+    }
+
+    public boolean isSnap()
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        boolean z0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        z0 = $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mSnap>;
+
+        return z0;
+    }
+
+    public void notifyDataSetChanged()
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    protected void onDraw(android.graphics.Canvas)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.graphics.Canvas $r1;
+        android.support.v4.view.ViewPager $r2, $r2_1, $r2_2;
+        int $i0, $i1, $i2, $i3, $i4, $i0_1, $i0_2, $i1_1, $i0_3, $i1_2, $i1_3, $i1_4, $i4_1, $i1_5, $i3_1, $i2_1, $i1_6, $i1_7, $i1_8, $i1_9, $i1_10, $i2_2, $i2_3, $i2_4, $i1_11, $i1_12, $i0_4, $i0_5, $i0_6, $i0_7, $i1_13, $i2_5, $i3_2, $i4_2, $i4_3, $i1_14, $i3_3, $i2_6, $i0_8;
+        android.support.v4.view.PagerAdapter $r3;
+        float $f0, $f1, $f2, $f3, $f4, $f5, $f6, $f0_1, $f0_2, $f2_1, $f3_1, $f2_2, $f2_3, $f2_4, $f4_1, $f4_2, $f2_5, $f2_6, $f4_3, $f2_7, $f4_4, $f3_2, $f3_3, $f3_4, $f3_5, $f3_6, $f4_5, $f5_1, $f4_6, $f4_7, $f4_8, $f5_2, $f4_9, $f4_10, $f5_3, $f6_1, $f6_2, $f6_3, $f5_4, $f3_7, $f3_8, $f4_11, $f4_12, $f1_1, $f4_13, $f4_14, $f1_2, $f1_3, $f1_4, $f0_3, $f2_8, $f1_5, $f0_4, $f4_15, $f1_6, $f5_5, $f6_4, $f3_9, $f0_5, $f2_9;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        android.graphics.Paint $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6, $r4_7, $r4_8, $r4_9, $r4_10;
+        byte $b5, $b5_1, $b5_2, $b5_3;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        specialinvoke $r0.<android.view.View: void onDraw(android.graphics.Canvas)>($r1);
+
+        $r2 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        if $r2 != null goto label01;
+
+        return;
+
+     label01:
+        $i0 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mForceCount>;
+
+        if $i0 != -1 goto label03;
+
+        $r2_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $r3 = virtualinvoke $r2_1.<android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()>();
+
+(0)     $i0_1 = virtualinvoke $r3.<android.support.v4.view.PagerAdapter: int getCount()>();
+
+     label02:
+        $r2_2 = Phi($r2_1 #0, $r2 #4);
+
+        $i0_2 = Phi($i0_1 #0, $i0_8 #4);
+
+(1)     if $i0_2 == 0 goto label20;
+
+        $i1 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mForceCount>;
+
+(2)     if $i1 != -1 goto label04;
+
+        $i1_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage>;
+
+(3)     if $i1_1 < $i0_2 goto label04;
+
+        $i0_3 = $i0_2 + -1;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void setCurrentItem(int)>($i0_3);
+
+        return;
+
+     label03:
+        $i0_8 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mForceCount>;
+
+(4)     goto label02;
+
+     label04:
+        $i1_2 = Phi($i1 #2, $i1_1 #3);
+
+        $i1_3 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mOrientation>;
+
+        if $i1_3 != 0 goto label12;
+
+        $i1_4 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getWidth()>();
+
+        $i2 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getPaddingLeft()>();
+
+        $i3 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getPaddingRight()>();
+
+(5)     $i4 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getPaddingTop()>();
+
+     label05:
+        $i4_1 = Phi($i4 #5, $i4_2 #17);
+
+        $i1_5 = Phi($i1_4 #5, $i1_13 #17);
+
+        $i3_1 = Phi($i3 #5, $i3_2 #17);
+
+        $i2_1 = Phi($i2 #5, $i2_5 #17);
+
+        $f0 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        $f1 = $f0 * 3.0F;
+
+        $f0_1 = (float) $i4_1;
+
+        $f2 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        $f0_2 = $f0_1 + $f2;
+
+        $f2_1 = (float) $i2_1;
+
+        $f3 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        $f3_1 = $f2_1 + $f3;
+
+        $f2_2 = $f3_1;
+
+        $z0 = $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mCentered>;
+
+(6)     if $z0 == 0 goto label06;
+
+        $i1_6 = $i1_5 - $i2_1;
+
+        $i1_7 = $i1_6 - $i3_1;
+
+        $f2_3 = (float) $i1_7;
+
+        $f2_4 = $f2_3 / 2.0F;
+
+        $f4 = (float) $i0_2;
+
+        $f4_1 = $f4 * $f1;
+
+        $f4_2 = $f4_1 / 2.0F;
+
+        $f2_5 = $f2_4 - $f4_2;
+
+(7)     $f2_6 = $f3_1 + $f2_5;
+
+     label06:
+        $f4_3 = Phi($f4 #6, $f4_2 #7);
+
+        $f2_7 = Phi($f2_2 #6, $f2_6 #7);
+
+        $i1_8 = Phi($i1_5 #6, $i1_7 #7);
+
+        $f4_4 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        $f3_2 = $f4_4;
+
+        $r4 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke>;
+
+        $f5 = virtualinvoke $r4.<android.graphics.Paint: float getStrokeWidth()>();
+
+        $b5 = $f5 cmpl 0.0F;
+
+(8)     if $b5 <= 0 goto label07;
+
+        $r4_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke>;
+
+        $f3_3 = virtualinvoke $r4_1.<android.graphics.Paint: float getStrokeWidth()>();
+
+        $f3_4 = $f3_3 / 2.0F;
+
+(9)     $f3_5 = $f4_4 - $f3_4;
+
+     label07:
+        $r4_2 = Phi($r4 #8, $r4_1 #9);
+
+        $f3_6 = Phi($f3_2 #8, $f3_5 #9);
+
+(10)    $i1_9 = 0;
+
+     label08:
+        $r4_3 = Phi($r4_2 #10, $r4_8 #16);
+
+        $f4_5 = Phi($f4_4 #10, $f4_10 #16);
+
+        $f5_1 = Phi($f5 #10, $f5_3 #16);
+
+        $b5_1 = Phi($b5 #10, $b5_2 #16);
+
+        $f6 = Phi($f6 #10, $f6_3 #16);
+
+        $i1_10 = Phi($i1_9 #10, $i1_11 #16);
+
+        $i2_2 = Phi($i2_1 #10, $i2_4 #16);
+
+        if $i1_10 >= $i0_2 goto label14;
+
+        $f4_6 = (float) $i1_10;
+
+        $f4_7 = $f4_6 * $f1;
+
+        $f4_8 = $f2_7 + $f4_7;
+
+        $i2_3 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mOrientation>;
+
+        if $i2_3 != 0 goto label13;
+
+        $f5_2 = $f4_8;
+
+(11)    $f4_9 = $f0_2;
+
+     label09:
+        $f4_10 = Phi($f4_9 #11, $f4_8 #18);
+
+        $f5_3 = Phi($f5_2 #11, $f5_4 #18);
+
+        $r4_4 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintPageFill>;
+
+        $i2_4 = virtualinvoke $r4_4.<android.graphics.Paint: int getAlpha()>();
+
+(12)    if $i2_4 <= 0 goto label10;
+
+        $r4_5 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintPageFill>;
+
+(13)    virtualinvoke $r1.<android.graphics.Canvas: void drawCircle(float,float,float,android.graphics.Paint)>($f5_3, $f4_10, $f3_6, $r4_5);
+
+     label10:
+        $r4_6 = Phi($r4_4 #12, $r4_5 #13);
+
+        $f6_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        $b5_2 = $f3_6 cmpl $f6_1;
+
+(14)    if $b5_2 == 0 goto label11;
+
+        $f6_2 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        $r4_7 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke>;
+
+(15)    virtualinvoke $r1.<android.graphics.Canvas: void drawCircle(float,float,float,android.graphics.Paint)>($f5_3, $f4_10, $f6_2, $r4_7);
+
+     label11:
+        $r4_8 = Phi($r4_6 #14, $r4_7 #15);
+
+        $f6_3 = Phi($f6_1 #14, $f6_2 #15);
+
+        $i1_11 = $i1_10 + 1;
+
+(16)    goto label08;
+
+     label12:
+        $i1_13 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getHeight()>();
+
+        $i2_5 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getPaddingTop()>();
+
+        $i3_2 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getPaddingBottom()>();
+
+        $i4_2 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getPaddingLeft()>();
+
+(17)    goto label05;
+
+     label13:
+        $f5_4 = $f0_2;
+
+(18)    goto label09;
+
+     label14:
+        $i1_12 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage>;
+
+(19)    if $i1_12 > $i0_2 goto label20;
+
+        $z0_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mSnap>;
+
+        if $z0_1 == 0 goto label18;
+
+(20)    $i0_4 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mSnapPage>;
+
+     label15:
+        $i0_5 = Phi($i0_4 #20, $i0_7 #24);
+
+        $f3_7 = (float) $i0_5;
+
+        $f3_8 = $f3_7 * $f1;
+
+        $f4_11 = $f3_8;
+
+        $z0_2 = $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mSnap>;
+
+(21)    if $z0_2 != 0 goto label16;
+
+        $f4_12 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mPageOffset>;
+
+        $f1_1 = $f4_12 * $f1;
+
+(22)    $f4_13 = $f3_8 + $f1_1;
+
+     label16:
+        $f4_14 = Phi($f4_11 #21, $f4_13 #22);
+
+        $f1_2 = Phi($f1 #21, $f1_1 #22);
+
+        $i0_6 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mOrientation>;
+
+        if $i0_6 != 0 goto label19;
+
+(23)    $f1_3 = $f2_7 + $f4_14;
+
+     label17:
+        $f1_4 = Phi($f1_3 #23, $f1_5 #25);
+
+        $f0_3 = Phi($f0_2 #23, $f0_4 #25);
+
+        $f2_8 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius>;
+
+        $r4_9 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintFill>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawCircle(float,float,float,android.graphics.Paint)>($f1_4, $f0_3, $f2_8, $r4_9);
+
+        return;
+
+     label18:
+        $i0_7 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage>;
+
+(24)    goto label15;
+
+     label19:
+        $f1_5 = $f0_2;
+
+        $f0_4 = $f2_7 + $f4_14;
+
+(25)    goto label17;
+
+     label20:
+        $r4_10 = Phi($r4 #1, $r4_3 #19);
+
+        $f4_15 = Phi($f4 #1, $f4_5 #19);
+
+        $f1_6 = Phi($f1 #1, $f1 #19);
+
+        $f5_5 = Phi($f5 #1, $f5_1 #19);
+
+        $i4_3 = Phi($i4 #1, $i4_1 #19);
+
+        $b5_3 = Phi($b5 #1, $b5_1 #19);
+
+        $f6_4 = Phi($f6 #1, $f6 #19);
+
+        $f3_9 = Phi($f3 #1, $f3_6 #19);
+
+        $f0_5 = Phi($f0 #1, $f0_2 #19);
+
+        $z0_3 = Phi($z0 #1, $z0 #19);
+
+        $f2_9 = Phi($f2 #1, $f2_7 #19);
+
+        $i1_14 = Phi($i1 #1, $i1_12 #19);
+
+        $i3_3 = Phi($i3 #1, $i3_1 #19);
+
+        $i2_6 = Phi($i2 #1, $i2_2 #19);
+
+        return;
+    }
+
+    protected void onMeasure(int, int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0, $i1, $i2, $i1_1, $i2_1, $i1_2, $i2_2;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i1 := @parameter0: int;
+
+        $i2 := @parameter1: int;
+
+        $i0 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mOrientation>;
+
+        if $i0 != 0 goto label1;
+
+        $i1_1 = specialinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int measureLong(int)>($i1);
+
+        $i2_1 = specialinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int measureShort(int)>($i2);
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void setMeasuredDimension(int,int)>($i1_1, $i2_1);
+
+        return;
+
+     label1:
+        $i1_2 = specialinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int measureShort(int)>($i1);
+
+        $i2_2 = specialinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int measureLong(int)>($i2);
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void setMeasuredDimension(int,int)>($i1_2, $i2_2);
+
+        return;
+    }
+
+    public void onPageScrollStateChanged(int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0;
+        android.support.v4.view.ViewPager$OnPageChangeListener $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mScrollState> = $i0;
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+(1)     interfaceinvoke $r1_1.<android.support.v4.view.ViewPager$OnPageChangeListener: void onPageScrollStateChanged(int)>($i0);
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void onPageScrolled(int, float, int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0, $i1;
+        float $f0;
+        android.support.v4.view.ViewPager$OnPageChangeListener $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $f0 := @parameter1: float;
+
+        $i1 := @parameter2: int;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage> = $i0;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: float mPageOffset> = $f0;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+(1)     interfaceinvoke $r1_1.<android.support.v4.view.ViewPager$OnPageChangeListener: void onPageScrolled(int,float,int)>($i0, $f0, $i1);
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void onPageSelected(int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0, $i1;
+        boolean $z0;
+        android.support.v4.view.ViewPager$OnPageChangeListener $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $z0 = $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mSnap>;
+
+        if $z0 != 0 goto label1;
+
+        $i1 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mScrollState>;
+
+        if $i1 != 0 goto label2;
+
+     label1:
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage> = $i0;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mSnapPage> = $i0;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+     label2:
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+(0)     if $r1 == null goto label3;
+
+        $r1_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener>;
+
+(1)     interfaceinvoke $r1_1.<android.support.v4.view.ViewPager$OnPageChangeListener: void onPageSelected(int)>($i0);
+
+     label3:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    public void onRestoreInstanceState(android.os.Parcelable)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.os.Parcelable $r1, $r1_1;
+        com.viewpagerindicator.CirclePageIndicator$SavedState $r2;
+        int $i0, $i0_1;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 := @parameter0: android.os.Parcelable;
+
+        $r2 = (com.viewpagerindicator.CirclePageIndicator$SavedState) $r1;
+
+        $r1_1 = virtualinvoke $r2.<com.viewpagerindicator.CirclePageIndicator$SavedState: android.os.Parcelable getSuperState()>();
+
+        specialinvoke $r0.<android.view.View: void onRestoreInstanceState(android.os.Parcelable)>($r1_1);
+
+        $i0 = $r2.<com.viewpagerindicator.CirclePageIndicator$SavedState: int currentPage>;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage> = $i0;
+
+        $i0_1 = $r2.<com.viewpagerindicator.CirclePageIndicator$SavedState: int currentPage>;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mSnapPage> = $i0_1;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void requestLayout()>();
+
+        return;
+    }
+
+    public android.os.Parcelable onSaveInstanceState()
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        com.viewpagerindicator.CirclePageIndicator$SavedState $r1;
+        int $i0;
+        android.os.Parcelable $r2;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r2 = specialinvoke $r0.<android.view.View: android.os.Parcelable onSaveInstanceState()>();
+
+        $r1 = new com.viewpagerindicator.CirclePageIndicator$SavedState;
+
+        specialinvoke $r1.<com.viewpagerindicator.CirclePageIndicator$SavedState: void <init>(android.os.Parcelable)>($r2);
+
+        $i0 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage>;
+
+        $r1.<com.viewpagerindicator.CirclePageIndicator$SavedState: int currentPage> = $i0;
+
+        return $r1;
+    }
+
+    public boolean onTouchEvent(android.view.MotionEvent)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.view.MotionEvent $r1;
+        java.lang.Throwable $r2;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9;
+        android.support.v4.view.ViewPager $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8, $r3_9, $r3_10, $r3_11, $r3_12, $r3_13, $r3_14, $r3_15, $r3_16;
+        android.support.v4.view.PagerAdapter $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        int $i0, $i2, $i3, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7, $i0_8, $i2_1, $i3_1, $i3_2, $i0_9, $i0_10, $i0_11, $i3_3, $i2_2, $i0_12, $i0_13, $i0_14, $i3_4, $i2_3, $i0_15, $i0_16, $i0_17, $i2_4, $i3_5, $i0_18, $i0_19, $i0_20, $i0_21, $i0_22;
+        float $f0, $f1, $f2, $f3, $f0_1, $f0_2, $f1_1, $f1_2, $f2_1, $f3_1, $f3_2, $f2_2, $f0_3, $f0_4, $f1_3, $f1_4, $f2_3, $f3_3, $f3_4, $f2_4, $f2_5, $f0_5, $f3_5, $f2_6, $f0_6, $f1_5, $f0_7, $f0_8;
+        byte $b1, $b1_1, $b1_2, $b1_3, $b1_4, $b1_5, $b1_6, $b1_7, $b1_8, $b1_9, $b1_10;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $z0 = specialinvoke $r0.<android.view.View: boolean onTouchEvent(android.view.MotionEvent)>($r1);
+
+        if $z0 == 0 goto label01;
+
+        return 1;
+
+     label01:
+        $r3 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+(0)     if $r3 == null goto label02;
+
+        $r3_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $r4 = virtualinvoke $r3_1.<android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()>();
+
+        $i0 = virtualinvoke $r4.<android.support.v4.view.PagerAdapter: int getCount()>();
+
+(1)     if $i0 != 0 goto label03;
+
+     label02:
+        $r4_4 = Phi($r4 #0, $r4 #1);
+
+        $i0_22 = Phi($i0 #0, $i0 #1);
+
+        $r3_16 = Phi($r3 #0, $r3_1 #1);
+
+        return 0;
+
+     label03:
+        $i0_1 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+        $i0_2 = $i0_1 & 255;
+
+(2)     lookupswitch($i0_2)
+        {
+            case 0: goto label06;
+            case 1: goto label12;
+            case 2: goto label07;
+            case 3: goto label12;
+            case 4: goto label05;
+            case 5: goto label17;
+            case 6: goto label18;
+            default: goto label04;
+        };
+
+     label04:
+(3)     goto label05;
+
+     label05:
+        $z0_1 = Phi($z0 #2, $z0 #3, $z0 #4, $z0_3 #8, $z0_5 #10, $z0_6 #12, $z0_7 #13, $z0_9 #23, $z0_9 #24, $z0 #25, $z0 #29);
+
+        $f3 = Phi($f3 #2, $f3 #3, $f3 #4, $f3_2 #8, $f3_2 #10, $f3_2 #12, $f3_2 #13, $f3_5 #23, $f3_5 #24, $f3 #25, $f3 #29);
+
+        $f2 = Phi($f2 #2, $f2 #3, $f2 #4, $f2_2 #8, $f2_2 #10, $f2_2 #12, $f2_2 #13, $f2_6 #23, $f2_6 #24, $f2 #25, $f2 #29);
+
+        $i3 = Phi($i3 #2, $i3 #3, $i3 #4, $i3 #8, $i3 #10, $i3 #12, $i3 #13, $i3_4 #23, $i3_4 #24, $i3 #25, $i3_5 #29);
+
+        $r4_1 = Phi($r4 #2, $r4 #3, $r4 #4, $r4 #8, $r4 #10, $r4 #12, $r4 #13, $r4_3 #23, $r4_3 #24, $r4 #25, $r4 #29);
+
+        $f0 = Phi($f0 #2, $f0 #3, $f0_1 #4, $f0_2 #8, $f0_2 #10, $f0_2 #12, $f0_2 #13, $f0_6 #23, $f0_6 #24, $f0_7 #25, $f0_8 #29);
+
+        $i2 = Phi($i2 #2, $i2 #3, $i2 #4, $i2 #8, $i2 #10, $i2 #12, $i2 #13, $i2_3 #23, $i2_3 #24, $i2 #25, $i2_4 #29);
+
+        $f1 = Phi($f1 #2, $f1 #3, $f1 #4, $f1_2 #8, $f1_2 #10, $f1_2 #12, $f1_2 #13, $f1_5 #23, $f1_5 #24, $f1 #25, $f1 #29);
+
+        $i0_3 = Phi($i0_2 #2, $i0_2 #3, $i0_4 #4, $i0_8 #8, $i0_8 #10, $i0_8 #12, $i0_8 #13, $i0_2 #23, $i0_2 #24, $i0_16 #25, $i0_21 #29);
+
+        $r3_2 = Phi($r3_1 #2, $r3_1 #3, $r3_1 #4, $r3_1 #8, $r3_4 #10, $r3_6 #12, $r3_7 #13, $r3_14 #23, $r3_15 #24, $r3_1 #25, $r3_1 #29);
+
+        $b1 = Phi($b1 #2, $b1 #3, $b1 #4, $b1_2 #8, $b1_2 #10, $b1_2 #12, $b1_2 #13, $b1_6 #23, $b1_6 #24, $b1 #25, $b1_10 #29);
+
+        return 1;
+
+     label06:
+        $i0_4 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, 0);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mActivePointerId> = $i0_4;
+
+        $f0_1 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: float mLastMotionX> = $f0_1;
+
+(4)     goto label05;
+
+     label07:
+        $i0_5 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mActivePointerId>;
+
+        $i0_6 = staticinvoke <android.support.v4.view.MotionEventCompat: int findPointerIndex(android.view.MotionEvent,int)>($r1, $i0_5);
+
+        $f0_2 = staticinvoke <android.support.v4.view.MotionEventCompat: float getX(android.view.MotionEvent,int)>($r1, $i0_6);
+
+        $f1_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: float mLastMotionX>;
+
+        $f1_2 = $f0_2 - $f1_1;
+
+        $z0_2 = $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mIsDragging>;
+
+(5)     if $z0_2 != 0 goto label08;
+
+        $f2_1 = staticinvoke <java.lang.Math: float abs(float)>($f1_2);
+
+        $i0_7 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mTouchSlop>;
+
+        $f3_1 = (float) $i0_7;
+
+        $b1_1 = $f2_1 cmpl $f3_1;
+
+(6)     if $b1_1 <= 0 goto label08;
+
+(7)     $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mIsDragging> = 1;
+
+     label08:
+        $f3_2 = Phi($f3 #5, $f3_1 #6, $f3_1 #7);
+
+        $f2_2 = Phi($f2 #5, $f2_1 #6, $f2_1 #7);
+
+        $i0_8 = Phi($i0_6 #5, $i0_7 #6, $i0_7 #7);
+
+        $b1_2 = Phi($b1 #5, $b1_1 #6, $b1_1 #7);
+
+        $z0_3 = $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mIsDragging>;
+
+(8)     if $z0_3 == 0 goto label05;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: float mLastMotionX> = $f0_2;
+
+        $r3_3 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $z0_4 = virtualinvoke $r3_3.<android.support.v4.view.ViewPager: boolean isFakeDragging()>();
+
+(9)     if $z0_4 != 0 goto label09;
+
+        $r3_4 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $z0_5 = virtualinvoke $r3_4.<android.support.v4.view.ViewPager: boolean beginFakeDrag()>();
+
+(10)    if $z0_5 == 0 goto label05;
+
+     label09:
+        $z0_6 = Phi($z0_4 #9, $z0_5 #10);
+
+        $r3_5 = Phi($r3_3 #9, $r3_4 #10);
+
+(11)    $r3_6 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        virtualinvoke $r3_6.<android.support.v4.view.ViewPager: void fakeDragBy(float)>($f1_2);
+
+     label10:
+(12)    goto label05;
+
+     label11:
+        $r2 := @caughtexception;
+
+        $z0_7 = Phi($z0_4 #9, $z0_5 #10, $z0_6 #11);
+
+        $r3_7 = Phi($r3_3 #9, $r3_4 #10, $r3_6 #11);
+
+(13)    goto label05;
+
+     label12:
+        $z0_8 = $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mIsDragging>;
+
+(14)    if $z0_8 != 0 goto label16;
+
+        $r3_8 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $r4_2 = virtualinvoke $r3_8.<android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()>();
+
+        $i2_1 = virtualinvoke $r4_2.<android.support.v4.view.PagerAdapter: int getCount()>();
+
+        $i3_1 = virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: int getWidth()>();
+
+        $f0_3 = (float) $i3_1;
+
+        $f0_4 = $f0_3 / 2.0F;
+
+        $f1_3 = (float) $i3_1;
+
+        $f1_4 = $f1_3 / 6.0F;
+
+        $i3_2 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage>;
+
+(15)    if $i3_2 <= 0 goto label14;
+
+        $f2_3 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f3_3 = $f0_4 - $f1_4;
+
+        $b1_3 = $f2_3 cmpg $f3_3;
+
+(16)    if $b1_3 >= 0 goto label14;
+
+(17)    if $i0_2 == 3 goto label13;
+
+        $r3_9 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $i0_9 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage>;
+
+        $i0_10 = $i0_9 + -1;
+
+(18)    virtualinvoke $r3_9.<android.support.v4.view.ViewPager: void setCurrentItem(int)>($i0_10);
+
+     label13:
+        $i0_11 = Phi($i0_2 #17, $i0_10 #18);
+
+        $r3_10 = Phi($r3_8 #17, $r3_9 #18);
+
+        return 1;
+
+     label14:
+        $f3_4 = Phi($f3 #15, $f3_3 #16);
+
+        $f2_4 = Phi($f2 #15, $f2_3 #16);
+
+        $b1_4 = Phi($b1 #15, $b1_3 #16);
+
+        $i3_3 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage>;
+
+        $i2_2 = $i2_1 + -1;
+
+(19)    if $i3_3 >= $i2_2 goto label16;
+
+        $f2_5 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f0_5 = $f0_4 + $f1_4;
+
+        $b1_5 = $f2_5 cmpl $f0_5;
+
+(20)    if $b1_5 <= 0 goto label16;
+
+(21)    if $i0_2 == 3 goto label15;
+
+        $r3_11 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $i0_12 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage>;
+
+        $i0_13 = $i0_12 + 1;
+
+(22)    virtualinvoke $r3_11.<android.support.v4.view.ViewPager: void setCurrentItem(int)>($i0_13);
+
+     label15:
+        $i0_14 = Phi($i0_2 #21, $i0_13 #22);
+
+        $r3_12 = Phi($r3_8 #21, $r3_11 #22);
+
+        return 1;
+
+     label16:
+        $f3_5 = Phi($f3 #14, $f3_4 #19, $f3_4 #20);
+
+        $f2_6 = Phi($f2 #14, $f2_4 #19, $f2_5 #20);
+
+        $i3_4 = Phi($i3 #14, $i3_3 #19, $i3_3 #20);
+
+        $r4_3 = Phi($r4 #14, $r4_2 #19, $r4_2 #20);
+
+        $f0_6 = Phi($f0 #14, $f0_4 #19, $f0_5 #20);
+
+        $i2_3 = Phi($i2 #14, $i2_2 #19, $i2_2 #20);
+
+        $f1_5 = Phi($f1 #14, $f1_4 #19, $f1_4 #20);
+
+        $r3_13 = Phi($r3_1 #14, $r3_8 #19, $r3_8 #20);
+
+        $b1_6 = Phi($b1 #14, $b1_4 #19, $b1_5 #20);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mIsDragging> = 0;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mActivePointerId> = -1;
+
+        $r3_14 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        $z0_9 = virtualinvoke $r3_14.<android.support.v4.view.ViewPager: boolean isFakeDragging()>();
+
+(23)    if $z0_9 == 0 goto label05;
+
+        $r3_15 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        virtualinvoke $r3_15.<android.support.v4.view.ViewPager: void endFakeDrag()>();
+
+(24)    goto label05;
+
+     label17:
+        $i0_15 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionIndex(android.view.MotionEvent)>($r1);
+
+        $f0_7 = staticinvoke <android.support.v4.view.MotionEventCompat: float getX(android.view.MotionEvent,int)>($r1, $i0_15);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: float mLastMotionX> = $f0_7;
+
+        $i0_16 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $i0_15);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mActivePointerId> = $i0_16;
+
+(25)    goto label05;
+
+     label18:
+        $i0_17 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionIndex(android.view.MotionEvent)>($r1);
+
+        $i2_4 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $i0_17);
+
+        $i3_5 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mActivePointerId>;
+
+(26)    if $i2_4 != $i3_5 goto label20;
+
+        if $i0_17 != 0 goto label21;
+
+(27)    $b1_7 = 1;
+
+     label19:
+        $b1_8 = Phi($b1_7 #27, $b1_9 #30);
+
+        $i0_18 = staticinvoke <android.support.v4.view.MotionEventCompat: int getPointerId(android.view.MotionEvent,int)>($r1, $b1_8);
+
+(28)    $r0.<com.viewpagerindicator.CirclePageIndicator: int mActivePointerId> = $i0_18;
+
+     label20:
+        $i0_19 = Phi($i0_17 #26, $i0_18 #28);
+
+        $b1_10 = Phi($b1 #26, $b1_8 #28);
+
+        $i0_20 = $r0.<com.viewpagerindicator.CirclePageIndicator: int mActivePointerId>;
+
+        $i0_21 = staticinvoke <android.support.v4.view.MotionEventCompat: int findPointerIndex(android.view.MotionEvent,int)>($r1, $i0_20);
+
+        $f0_8 = staticinvoke <android.support.v4.view.MotionEventCompat: float getX(android.view.MotionEvent,int)>($r1, $i0_21);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: float mLastMotionX> = $f0_8;
+
+(29)    goto label05;
+
+     label21:
+        $b1_9 = 0;
+
+(30)    goto label19;
+
+        catch java.lang.Throwable from label09 to label10 with label11;
+    }
+
+    public void setCentered(boolean)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        boolean $z0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mCentered> = $z0;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setCurrentItem(int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0;
+        java.lang.IllegalStateException $r1;
+        android.support.v4.view.ViewPager $r2, $r2_1;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r2 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        if $r2 != null goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("ViewPager has not been bound.");
+
+        throw $r1;
+
+     label1:
+        $r2_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        virtualinvoke $r2_1.<android.support.v4.view.ViewPager: void setCurrentItem(int)>($i0);
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mCurrentPage> = $i0;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setFillColor(int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0;
+        android.graphics.Paint $r1;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintFill>;
+
+        virtualinvoke $r1.<android.graphics.Paint: void setColor(int)>($i0);
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setForceCount(int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mForceCount> = $i0;
+
+        return;
+    }
+
+    public void setOnPageChangeListener(android.support.v4.view.ViewPager$OnPageChangeListener)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.support.v4.view.ViewPager$OnPageChangeListener $r1;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 := @parameter0: android.support.v4.view.ViewPager$OnPageChangeListener;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager$OnPageChangeListener mListener> = $r1;
+
+        return;
+    }
+
+    public void setOrientation(int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0;
+        java.lang.IllegalArgumentException $r1;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        lookupswitch($i0)
+        {
+            case 0: goto label3;
+            case 1: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        goto label2;
+
+     label2:
+        $r1 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Orientation must be either HORIZONTAL or VERTICAL.");
+
+        throw $r1;
+
+     label3:
+        $r0.<com.viewpagerindicator.CirclePageIndicator: int mOrientation> = $i0;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void requestLayout()>();
+
+        return;
+    }
+
+    public void setPageColor(int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0;
+        android.graphics.Paint $r1;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintPageFill>;
+
+        virtualinvoke $r1.<android.graphics.Paint: void setColor(int)>($i0);
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setRadius(float)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        float $f0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $f0 := @parameter0: float;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: float mRadius> = $f0;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setSnap(boolean)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        boolean $z0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.viewpagerindicator.CirclePageIndicator: boolean mSnap> = $z0;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setStrokeColor(int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        int $i0;
+        android.graphics.Paint $r1;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke>;
+
+        virtualinvoke $r1.<android.graphics.Paint: void setColor(int)>($i0);
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setStrokeWidth(float)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        float $f0;
+        android.graphics.Paint $r1;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $f0 := @parameter0: float;
+
+        $r1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.graphics.Paint mPaintStroke>;
+
+        virtualinvoke $r1.<android.graphics.Paint: void setStrokeWidth(float)>($f0);
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setViewPager(android.support.v4.view.ViewPager)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        java.lang.IllegalStateException $r1;
+        android.support.v4.view.PagerAdapter $r2;
+        android.support.v4.view.ViewPager $r3, $r4, $r4_1, $r4_2, $r4_3, $r3_1;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r3 := @parameter0: android.support.v4.view.ViewPager;
+
+        $r4 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        if $r4 != $r3 goto label1;
+
+        return;
+
+     label1:
+        $r4_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+(0)     if $r4_1 == null goto label2;
+
+        $r4_2 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+(1)     virtualinvoke $r4_2.<android.support.v4.view.ViewPager: void setOnPageChangeListener(android.support.v4.view.ViewPager$OnPageChangeListener)>(null);
+
+     label2:
+        $r4_3 = Phi($r4_1 #0, $r4_2 #1);
+
+        $r2 = virtualinvoke $r3.<android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()>();
+
+        if $r2 != null goto label3;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("ViewPager does not have adapter instance.");
+
+        throw $r1;
+
+     label3:
+        $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager> = $r3;
+
+        $r3_1 = $r0.<com.viewpagerindicator.CirclePageIndicator: android.support.v4.view.ViewPager mViewPager>;
+
+        virtualinvoke $r3_1.<android.support.v4.view.ViewPager: void setOnPageChangeListener(android.support.v4.view.ViewPager$OnPageChangeListener)>($r0);
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void invalidate()>();
+
+        return;
+    }
+
+    public void setViewPager(android.support.v4.view.ViewPager, int)
+    {
+        com.viewpagerindicator.CirclePageIndicator $r0;
+        android.support.v4.view.ViewPager $r1;
+        int $i0;
+
+        $r0 := @this: com.viewpagerindicator.CirclePageIndicator;
+
+        $r1 := @parameter0: android.support.v4.view.ViewPager;
+
+        $i0 := @parameter1: int;
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void setViewPager(android.support.v4.view.ViewPager)>($r1);
+
+        virtualinvoke $r0.<com.viewpagerindicator.CirclePageIndicator: void setCurrentItem(int)>($i0);
+
+        return;
+    }
+}

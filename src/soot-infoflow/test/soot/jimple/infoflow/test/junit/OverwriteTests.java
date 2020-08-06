@@ -16,7 +16,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import soot.jimple.infoflow.Infoflow;
+import soot.jimple.infoflow.IInfoflow;
 
 /**
  * test the overwrite behavior of tainted variables, fields and static variables 
@@ -25,7 +25,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void varOverwriteTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void varOverwrite()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -34,7 +34,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void staticFieldOverwriteTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void staticFieldOverwrite()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -43,7 +43,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void fieldOverwriteTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void fieldOverwrite()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -52,7 +52,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void returnOverwriteTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void returnOverwrite()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -61,7 +61,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void returnOverwriteTest2() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void returnOverwrite2()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -70,7 +70,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void returnOverwriteTest3() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void returnOverwrite3()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -79,7 +79,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void returnOverwriteTest4() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void returnOverwrite4()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -88,7 +88,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void returnOverwriteTest5() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void returnOverwrite5()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -98,7 +98,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void returnOverwriteTest6() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void returnOverwrite6()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -108,7 +108,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void loopTest() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void loopOverwrite()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -118,7 +118,7 @@ public class OverwriteTests extends JUnitTests {
 
 	@Test(timeout = 300000)
 	public void loopTest2() {
-		Infoflow infoflow = initInfoflow();
+		IInfoflow infoflow = initInfoflow();
 		List<String> epoints = new ArrayList<String>();
 		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void loopOverwrite2()>");
 		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
@@ -126,4 +126,14 @@ public class OverwriteTests extends JUnitTests {
 		Assert.assertEquals(1, infoflow.getResults().size());
 	}
 
+	@Test(timeout = 300000)
+	public void overwriteAliasTest() {
+		IInfoflow infoflow = initInfoflow();
+		List<String> epoints = new ArrayList<String>();
+		epoints.add("<soot.jimple.infoflow.test.OverwriteTestCode: void overwriteAlias()>");
+		infoflow.computeInfoflow(appPath, libPath, epoints, sources, sinks);
+		checkInfoflow(infoflow, 1);
+		Assert.assertEquals(1, infoflow.getResults().size());
+	}
+	
 }

@@ -1,0 +1,2436 @@
+public class com.facebook.internal.LikeActionController extends java.lang.Object
+{
+    public static final java.lang.String ACTION_LIKE_ACTION_CONTROLLER_DID_ERROR;
+    public static final java.lang.String ACTION_LIKE_ACTION_CONTROLLER_DID_RESET;
+    public static final java.lang.String ACTION_LIKE_ACTION_CONTROLLER_UPDATED;
+    public static final java.lang.String ACTION_OBJECT_ID_KEY;
+    private static final int ERROR_CODE_OBJECT_ALREADY_LIKED;
+    public static final java.lang.String ERROR_INVALID_OBJECT_ID;
+    private static final java.lang.String JSON_BOOL_IS_OBJECT_LIKED_KEY;
+    private static final java.lang.String JSON_BUNDLE_PENDING_CALL_ANALYTICS_BUNDLE;
+    private static final java.lang.String JSON_INT_VERSION_KEY;
+    private static final java.lang.String JSON_STRING_LIKE_COUNT_WITHOUT_LIKE_KEY;
+    private static final java.lang.String JSON_STRING_LIKE_COUNT_WITH_LIKE_KEY;
+    private static final java.lang.String JSON_STRING_OBJECT_ID_KEY;
+    private static final java.lang.String JSON_STRING_PENDING_CALL_ID_KEY;
+    private static final java.lang.String JSON_STRING_SOCIAL_SENTENCE_WITHOUT_LIKE_KEY;
+    private static final java.lang.String JSON_STRING_SOCIAL_SENTENCE_WITH_LIKE_KEY;
+    private static final java.lang.String JSON_STRING_UNLIKE_TOKEN_KEY;
+    private static final java.lang.String LIKE_ACTION_CONTROLLER_STORE;
+    private static final java.lang.String LIKE_ACTION_CONTROLLER_STORE_OBJECT_SUFFIX_KEY;
+    private static final java.lang.String LIKE_ACTION_CONTROLLER_STORE_PENDING_OBJECT_ID_KEY;
+    private static final int LIKE_ACTION_CONTROLLER_VERSION;
+    private static final java.lang.String LIKE_DIALOG_RESPONSE_LIKE_COUNT_STRING_KEY;
+    private static final java.lang.String LIKE_DIALOG_RESPONSE_OBJECT_IS_LIKED_KEY;
+    private static final java.lang.String LIKE_DIALOG_RESPONSE_SOCIAL_SENTENCE_KEY;
+    private static final java.lang.String LIKE_DIALOG_RESPONSE_UNLIKE_TOKEN_KEY;
+    private static final int MAX_CACHE_SIZE;
+    private static final int MAX_OBJECT_SUFFIX;
+    private static final java.lang.String TAG;
+    private static final java.util.concurrent.ConcurrentHashMap cache;
+    private static com.facebook.internal.FileLruCache controllerDiskCache;
+    private static com.facebook.internal.WorkQueue diskIOWorkQueue;
+    private static android.os.Handler handler;
+    private static boolean isInitialized;
+    private static boolean isPendingBroadcastReset;
+    private static com.facebook.internal.WorkQueue mruCacheWorkQueue;
+    private static java.lang.String objectIdForPendingController;
+    private static volatile int objectSuffix;
+    private com.facebook.AppEventsLogger appEventsLogger;
+    private android.content.Context context;
+    private boolean isObjectLiked;
+    private boolean isObjectLikedOnServer;
+    private boolean isPendingLikeOrUnlike;
+    private java.lang.String likeCountStringWithLike;
+    private java.lang.String likeCountStringWithoutLike;
+    private java.lang.String objectId;
+    private boolean objectIsPage;
+    private android.os.Bundle pendingCallAnalyticsBundle;
+    private java.util.UUID pendingCallId;
+    private com.facebook.Session session;
+    private java.lang.String socialSentenceWithLike;
+    private java.lang.String socialSentenceWithoutLike;
+    private java.lang.String unlikeToken;
+    private java.lang.String verifiedObjectId;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        java.util.concurrent.ConcurrentHashMap $r1;
+        java.lang.String $r2;
+        com.facebook.internal.WorkQueue $r3, $r3_1;
+
+        $r0 = class "com/facebook/internal/LikeActionController";
+
+        $r2 = virtualinvoke $r0.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        <com.facebook.internal.LikeActionController: java.lang.String TAG> = $r2;
+
+        $r1 = new java.util.concurrent.ConcurrentHashMap;
+
+        specialinvoke $r1.<java.util.concurrent.ConcurrentHashMap: void <init>()>();
+
+        <com.facebook.internal.LikeActionController: java.util.concurrent.ConcurrentHashMap cache> = $r1;
+
+        $r3 = new com.facebook.internal.WorkQueue;
+
+        specialinvoke $r3.<com.facebook.internal.WorkQueue: void <init>(int)>(1);
+
+        <com.facebook.internal.LikeActionController: com.facebook.internal.WorkQueue mruCacheWorkQueue> = $r3;
+
+        $r3_1 = new com.facebook.internal.WorkQueue;
+
+        specialinvoke $r3_1.<com.facebook.internal.WorkQueue: void <init>(int)>(1);
+
+        <com.facebook.internal.LikeActionController: com.facebook.internal.WorkQueue diskIOWorkQueue> = $r3_1;
+
+        return;
+    }
+
+    private void <init>(android.content.Context, com.facebook.Session, java.lang.String)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.content.Context $r1;
+        com.facebook.Session $r2;
+        java.lang.String $r3;
+        com.facebook.AppEventsLogger $r4;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.facebook.Session;
+
+        $r3 := @parameter2: java.lang.String;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $r0.<com.facebook.internal.LikeActionController: android.content.Context context> = $r1;
+
+        $r0.<com.facebook.internal.LikeActionController: com.facebook.Session session> = $r2;
+
+        $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId> = $r3;
+
+        $r4 = staticinvoke <com.facebook.AppEventsLogger: com.facebook.AppEventsLogger newLogger(android.content.Context,com.facebook.Session)>($r1, $r2);
+
+        $r0.<com.facebook.internal.LikeActionController: com.facebook.AppEventsLogger appEventsLogger> = $r4;
+
+        return;
+    }
+
+    static boolean access$000(com.facebook.internal.LikeActionController, int, int, android.content.Intent, java.util.UUID)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        int $i0, $i1;
+        android.content.Intent $r1;
+        java.util.UUID $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r1 := @parameter3: android.content.Intent;
+
+        $r2 := @parameter4: java.util.UUID;
+
+        $z0 = specialinvoke $r0.<com.facebook.internal.LikeActionController: boolean onActivityResult(int,int,android.content.Intent,java.util.UUID)>($i0, $i1, $r1, $r2);
+
+        return $z0;
+    }
+
+    static void access$100(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void refreshStatusAsync()>();
+
+        return;
+    }
+
+    static java.lang.String access$1000()
+    {
+        java.lang.String r0;
+
+        r0 = <com.facebook.internal.LikeActionController: java.lang.String TAG>;
+
+        return r0;
+    }
+
+    static void access$1100(com.facebook.internal.LikeActionController, java.lang.String, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String $r1;
+        android.os.Bundle $r2;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: android.os.Bundle;
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void logAppEventForError(java.lang.String,android.os.Bundle)>($r1, $r2);
+
+        return;
+    }
+
+    static android.content.Context access$1200(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.content.Context r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: android.content.Context context>;
+
+        return r1;
+    }
+
+    static void access$1300(android.content.Context, com.facebook.internal.LikeActionController, java.lang.String, android.os.Bundle)
+    {
+        android.content.Context $r0;
+        com.facebook.internal.LikeActionController $r1;
+        java.lang.String $r2;
+        android.os.Bundle $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.internal.LikeActionController;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: android.os.Bundle;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void broadcastAction(android.content.Context,com.facebook.internal.LikeActionController,java.lang.String,android.os.Bundle)>($r0, $r1, $r2, $r3);
+
+        return;
+    }
+
+    static java.lang.String access$1400(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String verifiedObjectId>;
+
+        return r1;
+    }
+
+    static java.lang.String access$1402(com.facebook.internal.LikeActionController, java.lang.String)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r0.<com.facebook.internal.LikeActionController: java.lang.String verifiedObjectId> = $r1;
+
+        return $r1;
+    }
+
+    static boolean access$1502(com.facebook.internal.LikeActionController, boolean)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.facebook.internal.LikeActionController: boolean isPendingLikeOrUnlike> = $z0;
+
+        return $z0;
+    }
+
+    static java.lang.String access$1600(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithLike>;
+
+        return r1;
+    }
+
+    static java.lang.String access$1700(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithoutLike>;
+
+        return r1;
+    }
+
+    static java.lang.String access$1800(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithLike>;
+
+        return r1;
+    }
+
+    static java.lang.String access$1900(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithoutLike>;
+
+        return r1;
+    }
+
+    static boolean access$200()
+    {
+        boolean z0;
+
+        z0 = <com.facebook.internal.LikeActionController: boolean isPendingBroadcastReset>;
+
+        return z0;
+    }
+
+    static java.lang.String access$2000(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String unlikeToken>;
+
+        return r1;
+    }
+
+    static java.lang.String access$2002(com.facebook.internal.LikeActionController, java.lang.String)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r0.<com.facebook.internal.LikeActionController: java.lang.String unlikeToken> = $r1;
+
+        return $r1;
+    }
+
+    static boolean access$202(boolean)
+    {
+        boolean $z0;
+
+        $z0 := @parameter0: boolean;
+
+        <com.facebook.internal.LikeActionController: boolean isPendingBroadcastReset> = $z0;
+
+        return $z0;
+    }
+
+    static void access$2100(com.facebook.internal.LikeActionController, android.app.Activity, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.app.Activity $r1;
+        android.os.Bundle $r2;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter1: android.app.Activity;
+
+        $r2 := @parameter2: android.os.Bundle;
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void presentLikeDialog(android.app.Activity,android.os.Bundle)>($r1, $r2);
+
+        return;
+    }
+
+    static boolean access$2202(com.facebook.internal.LikeActionController, boolean)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.facebook.internal.LikeActionController: boolean isObjectLikedOnServer> = $z0;
+
+        return $z0;
+    }
+
+    static void access$2300(com.facebook.internal.LikeActionController, android.app.Activity, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.app.Activity $r1;
+        android.os.Bundle $r2;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter1: android.app.Activity;
+
+        $r2 := @parameter2: android.os.Bundle;
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void toggleAgainIfNeeded(android.app.Activity,android.os.Bundle)>($r1, $r2);
+
+        return;
+    }
+
+    static java.lang.String access$2400(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId>;
+
+        return r1;
+    }
+
+    static boolean access$2502(com.facebook.internal.LikeActionController, boolean)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.facebook.internal.LikeActionController: boolean objectIsPage> = $z0;
+
+        return $z0;
+    }
+
+    static void access$2600(com.facebook.internal.LikeActionController, java.lang.String, com.facebook.FacebookRequestError)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String $r1;
+        com.facebook.FacebookRequestError $r2;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: com.facebook.FacebookRequestError;
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void logAppEventForError(java.lang.String,com.facebook.FacebookRequestError)>($r1, $r2);
+
+        return;
+    }
+
+    static com.facebook.Session access$2700(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        com.facebook.Session r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: com.facebook.Session session>;
+
+        return r1;
+    }
+
+    static void access$2800(java.lang.String, java.lang.String)
+    {
+        java.lang.String $r0, $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void serializeToDiskSynchronously(java.lang.String,java.lang.String)>($r0, $r1);
+
+        return;
+    }
+
+    static void access$2900(android.content.Context, java.lang.String, com.facebook.internal.LikeActionController$CreationCallback)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        com.facebook.internal.LikeActionController$CreationCallback $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: com.facebook.internal.LikeActionController$CreationCallback;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void createControllerForObjectId(android.content.Context,java.lang.String,com.facebook.internal.LikeActionController$CreationCallback)>($r0, $r1, $r2);
+
+        return;
+    }
+
+    static int access$300()
+    {
+        int i0;
+
+        i0 = <com.facebook.internal.LikeActionController: int objectSuffix>;
+
+        return i0;
+    }
+
+    static int access$302(int)
+    {
+        int $i0;
+
+        $i0 := @parameter0: int;
+
+        <com.facebook.internal.LikeActionController: int objectSuffix> = $i0;
+
+        return $i0;
+    }
+
+    static java.util.concurrent.ConcurrentHashMap access$400()
+    {
+        java.util.concurrent.ConcurrentHashMap r0;
+
+        r0 = <com.facebook.internal.LikeActionController: java.util.concurrent.ConcurrentHashMap cache>;
+
+        return r0;
+    }
+
+    static com.facebook.internal.FileLruCache access$500()
+    {
+        com.facebook.internal.FileLruCache r0;
+
+        r0 = <com.facebook.internal.LikeActionController: com.facebook.internal.FileLruCache controllerDiskCache>;
+
+        return r0;
+    }
+
+    static void access$600(android.content.Context, com.facebook.internal.LikeActionController, java.lang.String)
+    {
+        android.content.Context $r0;
+        com.facebook.internal.LikeActionController $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.internal.LikeActionController;
+
+        $r2 := @parameter2: java.lang.String;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void broadcastAction(android.content.Context,com.facebook.internal.LikeActionController,java.lang.String)>($r0, $r1, $r2);
+
+        return;
+    }
+
+    static android.os.Handler access$700()
+    {
+        android.os.Handler r0;
+
+        r0 = <com.facebook.internal.LikeActionController: android.os.Handler handler>;
+
+        return r0;
+    }
+
+    static com.facebook.AppEventsLogger access$800(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        com.facebook.AppEventsLogger r1;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: com.facebook.AppEventsLogger appEventsLogger>;
+
+        return r1;
+    }
+
+    static void access$900(com.facebook.internal.LikeActionController, boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        boolean $z0;
+        java.lang.String $r1, $r2, $r3, $r4, $r5;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $z0 := @parameter1: boolean;
+
+        $r1 := @parameter2: java.lang.String;
+
+        $r2 := @parameter3: java.lang.String;
+
+        $r3 := @parameter4: java.lang.String;
+
+        $r4 := @parameter5: java.lang.String;
+
+        $r5 := @parameter6: java.lang.String;
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void updateState(boolean,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)>($z0, $r1, $r2, $r3, $r4, $r5);
+
+        return;
+    }
+
+    private static void broadcastAction(android.content.Context, com.facebook.internal.LikeActionController, java.lang.String)
+    {
+        android.content.Context $r0;
+        com.facebook.internal.LikeActionController $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.internal.LikeActionController;
+
+        $r2 := @parameter2: java.lang.String;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void broadcastAction(android.content.Context,com.facebook.internal.LikeActionController,java.lang.String,android.os.Bundle)>($r0, $r1, $r2, null);
+
+        return;
+    }
+
+    private static void broadcastAction(android.content.Context, com.facebook.internal.LikeActionController, java.lang.String, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.content.Intent $r1;
+        android.content.Context $r2, $r2_1;
+        java.lang.String $r3, $r3_1, $r3_2;
+        android.os.Bundle $r4, $r4_1, $r4_2, $r4_3;
+        android.support.v4.content.LocalBroadcastManager $r5;
+
+        $r2 := @parameter0: android.content.Context;
+
+        $r0 := @parameter1: com.facebook.internal.LikeActionController;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: android.os.Bundle;
+
+        $r1 = new android.content.Intent;
+
+        specialinvoke $r1.<android.content.Intent: void <init>(java.lang.String)>($r3);
+
+(0)     if $r0 == null goto label2;
+
+(1)     if $r4 != null goto label1;
+
+        $r4_1 = new android.os.Bundle;
+
+(2)     specialinvoke $r4_1.<android.os.Bundle: void <init>()>();
+
+     label1:
+        $r4_2 = Phi($r4 #1, $r4_1 #2);
+
+        $r3_1 = virtualinvoke $r0.<com.facebook.internal.LikeActionController: java.lang.String getObjectId()>();
+
+(3)     virtualinvoke $r4_2.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("com.facebook.sdk.LikeActionController.OBJECT_ID", $r3_1);
+
+     label2:
+        $r3_2 = Phi($r3 #0, $r3_1 #3);
+
+        $r4_3 = Phi($r4 #0, $r4_2 #3);
+
+        if $r4_3 == null goto label3;
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtras(android.os.Bundle)>($r4_3);
+
+     label3:
+        $r2_1 = virtualinvoke $r2.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r5 = staticinvoke <android.support.v4.content.LocalBroadcastManager: android.support.v4.content.LocalBroadcastManager getInstance(android.content.Context)>($r2_1);
+
+        virtualinvoke $r5.<android.support.v4.content.LocalBroadcastManager: boolean sendBroadcast(android.content.Intent)>($r1);
+
+        return;
+    }
+
+    private boolean canUseOGPublish(boolean)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        boolean $z0, $z1, $z1_1, $z0_1, $z0_2, $z0_3, $z1_2;
+        java.lang.String $r1, $r1_1, $r1_2, $r1_3;
+        com.facebook.Session $r2, $r2_1, $r2_2, $r2_3;
+        java.util.List $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = $r0.<com.facebook.internal.LikeActionController: boolean objectIsPage>;
+
+(0)     if $z1 != 0 goto label2;
+
+        $r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String verifiedObjectId>;
+
+(1)     if $r1 == null goto label2;
+
+        $r2 = $r0.<com.facebook.internal.LikeActionController: com.facebook.Session session>;
+
+(2)     if $r2 == null goto label2;
+
+        $r2_1 = $r0.<com.facebook.internal.LikeActionController: com.facebook.Session session>;
+
+        $r3 = virtualinvoke $r2_1.<com.facebook.Session: java.util.List getPermissions()>();
+
+(3)     if $r3 == null goto label2;
+
+        $r2_2 = $r0.<com.facebook.internal.LikeActionController: com.facebook.Session session>;
+
+        $r3_1 = virtualinvoke $r2_2.<com.facebook.Session: java.util.List getPermissions()>();
+
+        $z1_1 = interfaceinvoke $r3_1.<java.util.List: boolean contains(java.lang.Object)>("publish_actions");
+
+(4)     if $z1_1 == 0 goto label2;
+
+(5)     if $z0 != 0 goto label1;
+
+        $r1_1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String unlikeToken>;
+
+        $z0_1 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r1_1);
+
+(6)     if $z0_1 != 0 goto label2;
+
+     label1:
+        $z0_2 = Phi($z0 #5, $z0_1 #6);
+
+        $r1_2 = Phi($r1 #5, $r1_1 #6);
+
+        return 1;
+
+     label2:
+        $z0_3 = Phi($z0 #0, $z0 #1, $z0 #2, $z0 #3, $z0 #4, $z0_1 #6);
+
+        $z1_2 = Phi($z1 #0, $z1 #1, $z1 #2, $z1 #3, $z1_1 #4, $z1_1 #6);
+
+        $r1_3 = Phi($r1 #0, $r1 #1, $r1 #2, $r1 #3, $r1 #4, $r1_1 #6);
+
+        $r2_3 = Phi($r2 #0, $r2 #1, $r2 #2, $r2_1 #3, $r2_2 #4, $r2_2 #6);
+
+        $r3_2 = Phi($r3 #0, $r3 #1, $r3 #2, $r3 #3, $r3_1 #4, $r3_1 #6);
+
+        return 0;
+    }
+
+    private static void createControllerForObjectId(android.content.Context, java.lang.String, com.facebook.internal.LikeActionController$CreationCallback)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        com.facebook.internal.LikeActionController$CreationCallback $r2;
+        android.os.Handler $r3;
+        com.facebook.internal.LikeActionController$2 $r4;
+        com.facebook.internal.LikeActionController $r5, $r6, $r5_1, $r6_1, $r6_2;
+        com.facebook.Session $r7;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: com.facebook.internal.LikeActionController$CreationCallback;
+
+        $r5 = staticinvoke <com.facebook.internal.LikeActionController: com.facebook.internal.LikeActionController getControllerFromInMemoryCache(java.lang.String)>($r1);
+
+        if $r5 == null goto label1;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void invokeCallbackWithController(com.facebook.internal.LikeActionController$CreationCallback,com.facebook.internal.LikeActionController)>($r2, $r5);
+
+        return;
+
+     label1:
+        $r5_1 = staticinvoke <com.facebook.internal.LikeActionController: com.facebook.internal.LikeActionController deserializeFromDiskSynchronously(android.content.Context,java.lang.String)>($r0, $r1);
+
+        $r6 = $r5_1;
+
+(0)     if $r5_1 != null goto label2;
+
+        $r6_1 = new com.facebook.internal.LikeActionController;
+
+        $r7 = staticinvoke <com.facebook.Session: com.facebook.Session getActiveSession()>();
+
+        specialinvoke $r6_1.<com.facebook.internal.LikeActionController: void <init>(android.content.Context,com.facebook.Session,java.lang.String)>($r0, $r7, $r1);
+
+(1)     staticinvoke <com.facebook.internal.LikeActionController: void serializeToDiskAsync(com.facebook.internal.LikeActionController)>($r6_1);
+
+     label2:
+        $r6_2 = Phi($r6 #0, $r6_1 #1);
+
+        staticinvoke <com.facebook.internal.LikeActionController: void putControllerInMemoryCache(java.lang.String,com.facebook.internal.LikeActionController)>($r1, $r6_2);
+
+        $r3 = <com.facebook.internal.LikeActionController: android.os.Handler handler>;
+
+        $r4 = new com.facebook.internal.LikeActionController$2;
+
+        specialinvoke $r4.<com.facebook.internal.LikeActionController$2: void <init>(com.facebook.internal.LikeActionController)>($r6_2);
+
+        virtualinvoke $r3.<android.os.Handler: boolean post(java.lang.Runnable)>($r4);
+
+        staticinvoke <com.facebook.internal.LikeActionController: void invokeCallbackWithController(com.facebook.internal.LikeActionController$CreationCallback,com.facebook.internal.LikeActionController)>($r2, $r6_2);
+
+        return;
+    }
+
+    private static com.facebook.internal.LikeActionController deserializeFromDiskSynchronously(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        com.facebook.internal.FileLruCache $r1;
+        java.io.IOException $r2;
+        java.lang.Throwable $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5, $r4_6;
+        com.facebook.internal.LikeActionController $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        java.io.InputStream $r6, $r7, $r6_1, $r6_2, $r6_3;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r4 := @parameter1: java.lang.String;
+
+        $r5 = null;
+
+(0)     $r6 = null;
+
+     label01:
+(1)     $r4_1 = staticinvoke <com.facebook.internal.LikeActionController: java.lang.String getCacheKeyForObjectId(java.lang.String)>($r4);
+
+     label02:
+        $r1 = <com.facebook.internal.LikeActionController: com.facebook.internal.FileLruCache controllerDiskCache>;
+
+     label03:
+        $r7 = virtualinvoke $r1.<com.facebook.internal.FileLruCache: java.io.InputStream get(java.lang.String)>($r4_1);
+
+     label04:
+        $r6_1 = $r7;
+
+(2)     if $r7 == null goto label08;
+
+     label05:
+(3)     $r4_2 = staticinvoke <com.facebook.internal.Utility: java.lang.String readStreamToString(java.io.InputStream)>($r7);
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r4_2);
+
+     label06:
+(4)     if $z0 != 0 goto label08;
+
+     label07:
+(5)     $r5_1 = staticinvoke <com.facebook.internal.LikeActionController: com.facebook.internal.LikeActionController deserializeFromJson(android.content.Context,java.lang.String)>($r0, $r4_2);
+
+     label08:
+        $r5_2 = Phi($r5 #2, $r5 #4, $r5_1 #5);
+
+        $r4_3 = Phi($r4_1 #2, $r4_2 #4, $r4_2 #5);
+
+        if $r7 == null goto label15;
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r7);
+
+        return $r5_2;
+
+     label09:
+        $r2 := @caughtexception;
+
+        $r5_3 = Phi($r5 #0, $r5_1 #5);
+
+        $r6_2 = Phi($r6 #0, $r6_1 #2);
+
+(6)     $r4_4 = Phi($r4 #0, $r4_1 #1, $r4_2 #3);
+
+     label10:
+(7)     $r4_5 = <com.facebook.internal.LikeActionController: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>($r4_5, "Unable to deserialize controller from disk", $r2);
+
+     label11:
+        if $r6_2 == null goto label14;
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r6_2);
+
+        return null;
+
+     label12:
+        $r3 := @caughtexception;
+
+        $r5_4 = Phi($r5 #0, $r5_1 #5, $r5_3 #6);
+
+        $r6_3 = Phi($r6 #0, $r6_1 #2, $r6_2 #6);
+
+        $r4_6 = Phi($r4 #0, $r4_1 #1, $r4_2 #3, $r4_4 #6, $r4_5 #7);
+
+        if $r6_3 == null goto label13;
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r6_3);
+
+     label13:
+        throw $r3;
+
+     label14:
+        return null;
+
+     label15:
+        return $r5_2;
+
+        catch java.io.IOException from label01 to label02 with label09;
+        catch java.lang.Throwable from label01 to label02 with label12;
+        catch java.io.IOException from label03 to label04 with label09;
+        catch java.lang.Throwable from label03 to label04 with label12;
+        catch java.io.IOException from label05 to label06 with label09;
+        catch java.lang.Throwable from label05 to label06 with label12;
+        catch java.io.IOException from label07 to label08 with label09;
+        catch java.lang.Throwable from label07 to label08 with label12;
+        catch java.lang.Throwable from label10 to label11 with label12;
+    }
+
+    private static com.facebook.internal.LikeActionController deserializeFromJson(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        com.facebook.internal.LikeActionController $r1;
+        org.json.JSONException $r2;
+        java.lang.String $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8, $r3_9;
+        org.json.JSONObject $r4, $r4_1, $r4_2;
+        int $i0;
+        com.facebook.Session $r5;
+        boolean $z0, $z0_1, $z0_2;
+        java.util.UUID $r6;
+        android.os.Bundle $r7;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r3 := @parameter1: java.lang.String;
+
+(0)     $r4 = new org.json.JSONObject;
+
+     label01:
+        specialinvoke $r4.<org.json.JSONObject: void <init>(java.lang.String)>($r3);
+
+        $i0 = virtualinvoke $r4.<org.json.JSONObject: int optInt(java.lang.String,int)>("com.facebook.internal.LikeActionController.version", -1);
+
+     label02:
+        if $i0 == 2 goto label03;
+
+        return null;
+
+     label03:
+        $r1 = new com.facebook.internal.LikeActionController;
+
+     label04:
+        $r5 = staticinvoke <com.facebook.Session: com.facebook.Session getActiveSession()>();
+
+(1)     $r3_1 = virtualinvoke $r4.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("object_id");
+
+        specialinvoke $r1.<com.facebook.internal.LikeActionController: void <init>(android.content.Context,com.facebook.Session,java.lang.String)>($r0, $r5, $r3_1);
+
+(2)     $r3_2 = virtualinvoke $r4.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("like_count_string_with_like", null);
+
+     label05:
+        $r1.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithLike> = $r3_2;
+
+     label06:
+(3)     $r3_3 = virtualinvoke $r4.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("like_count_string_without_like", null);
+
+     label07:
+        $r1.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithoutLike> = $r3_3;
+
+     label08:
+(4)     $r3_4 = virtualinvoke $r4.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("social_sentence_with_like", null);
+
+     label09:
+        $r1.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithLike> = $r3_4;
+
+     label10:
+(5)     $r3_5 = virtualinvoke $r4.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("social_sentence_without_like", null);
+
+     label11:
+        $r1.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithoutLike> = $r3_5;
+
+     label12:
+        $z0 = virtualinvoke $r4.<org.json.JSONObject: boolean optBoolean(java.lang.String)>("is_object_liked");
+
+     label13:
+        $r1.<com.facebook.internal.LikeActionController: boolean isObjectLiked> = $z0;
+
+     label14:
+(6)     $r3_6 = virtualinvoke $r4.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("unlike_token", null);
+
+     label15:
+        $r1.<com.facebook.internal.LikeActionController: java.lang.String unlikeToken> = $r3_6;
+
+     label16:
+(7)     $r3_7 = virtualinvoke $r4.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("pending_call_id", null);
+
+(8)     $z0_1 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r3_7);
+
+     label17:
+        if $z0_1 != 0 goto label20;
+
+     label18:
+        $r6 = staticinvoke <java.util.UUID: java.util.UUID fromString(java.lang.String)>($r3_7);
+
+     label19:
+        $r1.<com.facebook.internal.LikeActionController: java.util.UUID pendingCallId> = $r6;
+
+     label20:
+(9)     $r4_1 = virtualinvoke $r4.<org.json.JSONObject: org.json.JSONObject optJSONObject(java.lang.String)>("pending_call_analytics_bundle");
+
+     label21:
+        if $r4_1 == null goto label25;
+
+     label22:
+        $r7 = staticinvoke <com.facebook.internal.BundleJSONConverter: android.os.Bundle convertToBundle(org.json.JSONObject)>($r4_1);
+
+     label23:
+        $r1.<com.facebook.internal.LikeActionController: android.os.Bundle pendingCallAnalyticsBundle> = $r7;
+
+        return $r1;
+
+     label24:
+        $r2 := @caughtexception;
+
+        $z0_2 = Phi($z0 #0, $z0_1 #8);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #9);
+
+        $r3_8 = Phi($r3 #0, $r3_1 #1, $r3_2 #2, $r3_3 #3, $r3_4 #4, $r3_5 #5, $r3_6 #6, $r3_7 #7);
+
+        $r3_9 = <com.facebook.internal.LikeActionController: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>($r3_9, "Unable to deserialize controller from JSON", $r2);
+
+        return null;
+
+     label25:
+        return $r1;
+
+        catch org.json.JSONException from label01 to label02 with label24;
+        catch org.json.JSONException from label04 to label05 with label24;
+        catch org.json.JSONException from label06 to label07 with label24;
+        catch org.json.JSONException from label08 to label09 with label24;
+        catch org.json.JSONException from label10 to label11 with label24;
+        catch org.json.JSONException from label12 to label13 with label24;
+        catch org.json.JSONException from label14 to label15 with label24;
+        catch org.json.JSONException from label16 to label17 with label24;
+        catch org.json.JSONException from label18 to label19 with label24;
+        catch org.json.JSONException from label20 to label21 with label24;
+        catch org.json.JSONException from label22 to label23 with label24;
+    }
+
+    private void fetchVerifiedObjectId(com.facebook.internal.LikeActionController$RequestCompletionCallback)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        com.facebook.internal.LikeActionController$RequestCompletionCallback $r1;
+        com.facebook.internal.LikeActionController$GetOGObjectIdRequestWrapper $r2;
+        com.facebook.internal.LikeActionController$GetPageIdRequestWrapper $r3;
+        com.facebook.RequestBatch $r4;
+        com.facebook.internal.LikeActionController$10 $r5;
+        boolean $z0;
+        java.lang.String $r6, $r6_1, $r6_2, $r6_3;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: com.facebook.internal.LikeActionController$RequestCompletionCallback;
+
+        $r6 = $r0.<com.facebook.internal.LikeActionController: java.lang.String verifiedObjectId>;
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r6);
+
+        if $z0 != 0 goto label1;
+
+(0)     if $r1 == null goto label2;
+
+        interfaceinvoke $r1.<com.facebook.internal.LikeActionController$RequestCompletionCallback: void onComplete()>();
+
+        return;
+
+     label1:
+        $r2 = new com.facebook.internal.LikeActionController$GetOGObjectIdRequestWrapper;
+
+        $r6_1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId>;
+
+        specialinvoke $r2.<com.facebook.internal.LikeActionController$GetOGObjectIdRequestWrapper: void <init>(com.facebook.internal.LikeActionController,java.lang.String)>($r0, $r6_1);
+
+        $r3 = new com.facebook.internal.LikeActionController$GetPageIdRequestWrapper;
+
+        $r6_2 = $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId>;
+
+        specialinvoke $r3.<com.facebook.internal.LikeActionController$GetPageIdRequestWrapper: void <init>(com.facebook.internal.LikeActionController,java.lang.String)>($r0, $r6_2);
+
+        $r4 = new com.facebook.RequestBatch;
+
+        specialinvoke $r4.<com.facebook.RequestBatch: void <init>()>();
+
+        virtualinvoke $r2.<com.facebook.internal.LikeActionController$GetOGObjectIdRequestWrapper: void addToBatch(com.facebook.RequestBatch)>($r4);
+
+        virtualinvoke $r3.<com.facebook.internal.LikeActionController$GetPageIdRequestWrapper: void addToBatch(com.facebook.RequestBatch)>($r4);
+
+        $r5 = new com.facebook.internal.LikeActionController$10;
+
+        specialinvoke $r5.<com.facebook.internal.LikeActionController$10: void <init>(com.facebook.internal.LikeActionController,com.facebook.internal.LikeActionController$GetOGObjectIdRequestWrapper,com.facebook.internal.LikeActionController$GetPageIdRequestWrapper,com.facebook.internal.LikeActionController$RequestCompletionCallback)>($r0, $r2, $r3, $r1);
+
+        virtualinvoke $r4.<com.facebook.RequestBatch: void addCallback(com.facebook.RequestBatch$Callback)>($r5);
+
+(1)     virtualinvoke $r4.<com.facebook.RequestBatch: com.facebook.RequestAsyncTask executeAsync()>();
+
+     label2:
+        $r6_3 = Phi($r6 #0, $r6_2 #1);
+
+        return;
+    }
+
+    private static java.lang.String getCacheKeyForObjectId(java.lang.String)
+    {
+        java.lang.Object[] $r0;
+        int $i0;
+        java.lang.String $r1, $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r1_1, $r1_2;
+        com.facebook.Session $r3;
+        boolean $z0;
+        java.lang.Integer $r4;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = null;
+
+        $r3 = staticinvoke <com.facebook.Session: com.facebook.Session getActiveSession()>();
+
+(0)     if $r3 == null goto label1;
+
+        $z0 = virtualinvoke $r3.<com.facebook.Session: boolean isOpened()>();
+
+(1)     if $z0 == 0 goto label1;
+
+(2)     $r2_1 = virtualinvoke $r3.<com.facebook.Session: java.lang.String getAccessToken()>();
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2 #1, $r2_1 #2);
+
+(3)     if $r2_2 == null goto label2;
+
+(4)     $r2_3 = staticinvoke <com.facebook.internal.Utility: java.lang.String md5hash(java.lang.String)>($r2_2);
+
+     label2:
+        $r2_4 = Phi($r2_2 #3, $r2_3 #4);
+
+        $r0 = newarray (java.lang.Object)[3];
+
+        $r0[0] = $r1;
+
+        $r1_1 = staticinvoke <com.facebook.internal.Utility: java.lang.String coerceValueIfNullOrEmpty(java.lang.String,java.lang.String)>($r2_4, "");
+
+        $r0[1] = $r1_1;
+
+        $i0 = <com.facebook.internal.LikeActionController: int objectSuffix>;
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r0[2] = $r4;
+
+        $r1_2 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s|%s|com.fb.sdk.like|%d", $r0);
+
+        return $r1_2;
+    }
+
+    public static void getControllerForObjectId(android.content.Context, java.lang.String, com.facebook.internal.LikeActionController$CreationCallback)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        com.facebook.internal.LikeActionController$CreationCallback $r2;
+        boolean $z0;
+        com.facebook.internal.WorkQueue $r3;
+        com.facebook.internal.LikeActionController$CreateLikeActionControllerWorkItem $r4;
+        com.facebook.internal.LikeActionController $r5;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: com.facebook.internal.LikeActionController$CreationCallback;
+
+        $z0 = <com.facebook.internal.LikeActionController: boolean isInitialized>;
+
+        if $z0 != 0 goto label1;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void performFirstInitialize(android.content.Context)>($r0);
+
+     label1:
+        $r5 = staticinvoke <com.facebook.internal.LikeActionController: com.facebook.internal.LikeActionController getControllerFromInMemoryCache(java.lang.String)>($r1);
+
+        if $r5 == null goto label2;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void invokeCallbackWithController(com.facebook.internal.LikeActionController$CreationCallback,com.facebook.internal.LikeActionController)>($r2, $r5);
+
+        return;
+
+     label2:
+        $r3 = <com.facebook.internal.LikeActionController: com.facebook.internal.WorkQueue diskIOWorkQueue>;
+
+        $r4 = new com.facebook.internal.LikeActionController$CreateLikeActionControllerWorkItem;
+
+        specialinvoke $r4.<com.facebook.internal.LikeActionController$CreateLikeActionControllerWorkItem: void <init>(android.content.Context,java.lang.String,com.facebook.internal.LikeActionController$CreationCallback)>($r0, $r1, $r2);
+
+        virtualinvoke $r3.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkItem addActiveWorkItem(java.lang.Runnable)>($r4);
+
+        return;
+    }
+
+    private static com.facebook.internal.LikeActionController getControllerFromInMemoryCache(java.lang.String)
+    {
+        java.util.concurrent.ConcurrentHashMap $r0;
+        com.facebook.internal.WorkQueue $r1;
+        com.facebook.internal.LikeActionController$MRUCacheWorkItem $r2;
+        java.lang.String $r3, $r3_1;
+        java.lang.Object $r4;
+        com.facebook.internal.LikeActionController $r5;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r3_1 = staticinvoke <com.facebook.internal.LikeActionController: java.lang.String getCacheKeyForObjectId(java.lang.String)>($r3);
+
+        $r0 = <com.facebook.internal.LikeActionController: java.util.concurrent.ConcurrentHashMap cache>;
+
+        $r4 = virtualinvoke $r0.<java.util.concurrent.ConcurrentHashMap: java.lang.Object get(java.lang.Object)>($r3_1);
+
+        $r5 = (com.facebook.internal.LikeActionController) $r4;
+
+        if $r5 == null goto label1;
+
+        $r1 = <com.facebook.internal.LikeActionController: com.facebook.internal.WorkQueue mruCacheWorkQueue>;
+
+        $r2 = new com.facebook.internal.LikeActionController$MRUCacheWorkItem;
+
+        specialinvoke $r2.<com.facebook.internal.LikeActionController$MRUCacheWorkItem: void <init>(java.lang.String,boolean)>($r3_1, 0);
+
+        virtualinvoke $r1.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkItem addActiveWorkItem(java.lang.Runnable)>($r2);
+
+     label1:
+        return $r5;
+    }
+
+    private com.facebook.widget.FacebookDialog$Callback getFacebookDialogCallback(android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.os.Bundle $r1;
+        com.facebook.internal.LikeActionController$5 $r2;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $r2 = new com.facebook.internal.LikeActionController$5;
+
+        specialinvoke $r2.<com.facebook.internal.LikeActionController$5: void <init>(com.facebook.internal.LikeActionController,android.os.Bundle)>($r0, $r1);
+
+        return $r2;
+    }
+
+    public static boolean handleOnActivityResult(android.content.Context, int, int, android.content.Intent)
+    {
+        android.content.Context $r0;
+        int $i0, $i1;
+        android.content.Intent $r1;
+        com.facebook.internal.LikeActionController$1 $r2;
+        java.util.UUID $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3, $r4_4;
+        boolean $z0, $z0_1;
+        android.content.SharedPreferences $r5;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r1 := @parameter3: android.content.Intent;
+
+        $r3 = staticinvoke <com.facebook.internal.NativeProtocol: java.util.UUID getCallIdFromIntent(android.content.Intent)>($r1);
+
+        if $r3 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r4 = <com.facebook.internal.LikeActionController: java.lang.String objectIdForPendingController>;
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r4);
+
+(0)     if $z0 == 0 goto label2;
+
+        $r5 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.facebook.LikeActionController.CONTROLLER_STORE_KEY", 0);
+
+        $r4_1 = interfaceinvoke $r5.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("PENDING_CONTROLLER_KEY", null);
+
+(1)     <com.facebook.internal.LikeActionController: java.lang.String objectIdForPendingController> = $r4_1;
+
+     label2:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r4_3 = <com.facebook.internal.LikeActionController: java.lang.String objectIdForPendingController>;
+
+        $z0_1 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r4_3);
+
+        if $z0_1 != 0 goto label3;
+
+        $r4_4 = <com.facebook.internal.LikeActionController: java.lang.String objectIdForPendingController>;
+
+        $r2 = new com.facebook.internal.LikeActionController$1;
+
+        specialinvoke $r2.<com.facebook.internal.LikeActionController$1: void <init>(int,int,android.content.Intent,java.util.UUID)>($i0, $i1, $r1, $r3);
+
+        staticinvoke <com.facebook.internal.LikeActionController: void getControllerForObjectId(android.content.Context,java.lang.String,com.facebook.internal.LikeActionController$CreationCallback)>($r0, $r4_4, $r2);
+
+        return 1;
+
+     label3:
+        return 0;
+    }
+
+    private static void invokeCallbackWithController(com.facebook.internal.LikeActionController$CreationCallback, com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController$CreationCallback $r0;
+        com.facebook.internal.LikeActionController $r1;
+        android.os.Handler $r2;
+        com.facebook.internal.LikeActionController$3 $r3;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController$CreationCallback;
+
+        $r1 := @parameter1: com.facebook.internal.LikeActionController;
+
+        if $r0 != null goto label1;
+
+        return;
+
+     label1:
+        $r2 = <com.facebook.internal.LikeActionController: android.os.Handler handler>;
+
+        $r3 = new com.facebook.internal.LikeActionController$3;
+
+        specialinvoke $r3.<com.facebook.internal.LikeActionController$3: void <init>(com.facebook.internal.LikeActionController$CreationCallback,com.facebook.internal.LikeActionController)>($r0, $r1);
+
+        virtualinvoke $r2.<android.os.Handler: boolean post(java.lang.Runnable)>($r3);
+
+        return;
+    }
+
+    private void logAppEventForError(java.lang.String, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String $r1, $r4;
+        android.os.Bundle $r2, $r3;
+        com.facebook.AppEventsLogger $r5;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $r3 = new android.os.Bundle;
+
+        specialinvoke $r3.<android.os.Bundle: void <init>(android.os.Bundle)>($r2);
+
+        $r4 = $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId>;
+
+        virtualinvoke $r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("object_id", $r4);
+
+        virtualinvoke $r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("current_action", $r1);
+
+        $r5 = $r0.<com.facebook.internal.LikeActionController: com.facebook.AppEventsLogger appEventsLogger>;
+
+        virtualinvoke $r5.<com.facebook.AppEventsLogger: void logSdkEvent(java.lang.String,java.lang.Double,android.os.Bundle)>("fb_like_control_error", null, $r3);
+
+        return;
+    }
+
+    private void logAppEventForError(java.lang.String, com.facebook.FacebookRequestError)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String $r1, $r5;
+        com.facebook.FacebookRequestError $r2;
+        android.os.Bundle $r3;
+        org.json.JSONObject $r4;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.facebook.FacebookRequestError;
+
+        $r3 = new android.os.Bundle;
+
+        specialinvoke $r3.<android.os.Bundle: void <init>()>();
+
+        if $r2 == null goto label1;
+
+        $r4 = virtualinvoke $r2.<com.facebook.FacebookRequestError: org.json.JSONObject getRequestResult()>();
+
+        if $r4 == null goto label1;
+
+        $r5 = virtualinvoke $r4.<org.json.JSONObject: java.lang.String toString()>();
+
+        virtualinvoke $r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("error", $r5);
+
+     label1:
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void logAppEventForError(java.lang.String,android.os.Bundle)>($r1, $r3);
+
+        return;
+    }
+
+    private boolean onActivityResult(int, int, android.content.Intent, java.util.UUID)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        int $i0, $i1;
+        android.content.Intent $r1;
+        android.content.Context $r2;
+        android.os.Bundle $r3;
+        java.util.UUID $r4, $r5, $r5_1, $r4_1, $r5_2, $r4_2;
+        boolean $z0;
+        com.facebook.internal.PendingCallStore $r6;
+        com.facebook.widget.FacebookDialog$PendingCall $r7;
+        com.facebook.widget.FacebookDialog$Callback $r8;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: android.content.Intent;
+
+        $r4 := @parameter3: java.util.UUID;
+
+        $r5 = $r0.<com.facebook.internal.LikeActionController: java.util.UUID pendingCallId>;
+
+(0)     if $r5 == null goto label2;
+
+        $r5_1 = $r0.<com.facebook.internal.LikeActionController: java.util.UUID pendingCallId>;
+
+        $z0 = virtualinvoke $r5_1.<java.util.UUID: boolean equals(java.lang.Object)>($r4);
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r6 = staticinvoke <com.facebook.internal.PendingCallStore: com.facebook.internal.PendingCallStore getInstance()>();
+
+        $r4_1 = $r0.<com.facebook.internal.LikeActionController: java.util.UUID pendingCallId>;
+
+        $r7 = virtualinvoke $r6.<com.facebook.internal.PendingCallStore: com.facebook.widget.FacebookDialog$PendingCall getPendingCallById(java.util.UUID)>($r4_1);
+
+(1)     if $r7 == null goto label2;
+
+        $r2 = $r0.<com.facebook.internal.LikeActionController: android.content.Context context>;
+
+        $r3 = $r0.<com.facebook.internal.LikeActionController: android.os.Bundle pendingCallAnalyticsBundle>;
+
+        $r8 = specialinvoke $r0.<com.facebook.internal.LikeActionController: com.facebook.widget.FacebookDialog$Callback getFacebookDialogCallback(android.os.Bundle)>($r3);
+
+        staticinvoke <com.facebook.widget.FacebookDialog: boolean handleActivityResult(android.content.Context,com.facebook.widget.FacebookDialog$PendingCall,int,android.content.Intent,com.facebook.widget.FacebookDialog$Callback)>($r2, $r7, $i0, $r1, $r8);
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void stopTrackingPendingCall()>();
+
+        return 1;
+
+     label2:
+        $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        return 0;
+    }
+
+    private static void performFirstInitialize(android.content.Context)
+    {
+        android.content.Context $r0;
+        boolean $z0;
+        android.os.Handler $r1;
+        com.facebook.internal.FileLruCache $r2;
+        java.lang.String $r3;
+        com.facebook.internal.FileLruCache$Limits $r4;
+        java.lang.Throwable $r5;
+        android.os.Looper $r6;
+        android.content.SharedPreferences $r7;
+        int $i0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        entermonitor class "com/facebook/internal/LikeActionController";
+
+     label1:
+        $z0 = <com.facebook.internal.LikeActionController: boolean isInitialized>;
+
+     label2:
+        if $z0 == 0 goto label4;
+
+     label3:
+        exitmonitor class "com/facebook/internal/LikeActionController";
+
+        return;
+
+     label4:
+        $r1 = new android.os.Handler;
+
+        $r6 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r1.<android.os.Handler: void <init>(android.os.Looper)>($r6);
+
+        <com.facebook.internal.LikeActionController: android.os.Handler handler> = $r1;
+
+        $r7 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.facebook.LikeActionController.CONTROLLER_STORE_KEY", 0);
+
+        $i0 = interfaceinvoke $r7.<android.content.SharedPreferences: int getInt(java.lang.String,int)>("OBJECT_SUFFIX", 1);
+
+        <com.facebook.internal.LikeActionController: int objectSuffix> = $i0;
+
+        $r2 = new com.facebook.internal.FileLruCache;
+
+        $r3 = <com.facebook.internal.LikeActionController: java.lang.String TAG>;
+
+        $r4 = new com.facebook.internal.FileLruCache$Limits;
+
+        specialinvoke $r4.<com.facebook.internal.FileLruCache$Limits: void <init>()>();
+
+        specialinvoke $r2.<com.facebook.internal.FileLruCache: void <init>(android.content.Context,java.lang.String,com.facebook.internal.FileLruCache$Limits)>($r0, $r3, $r4);
+
+        <com.facebook.internal.LikeActionController: com.facebook.internal.FileLruCache controllerDiskCache> = $r2;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void registerSessionBroadcastReceivers(android.content.Context)>($r0);
+
+        <com.facebook.internal.LikeActionController: boolean isInitialized> = 1;
+
+     label5:
+        goto label3;
+
+     label6:
+        $r5 := @caughtexception;
+
+        exitmonitor class "com/facebook/internal/LikeActionController";
+
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    private void performLikeOrUnlike(android.app.Activity, boolean, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.app.Activity $r1;
+        boolean $z0, $z1;
+        android.os.Bundle $r2;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 := @parameter2: android.os.Bundle;
+
+        $z1 = specialinvoke $r0.<com.facebook.internal.LikeActionController: boolean canUseOGPublish(boolean)>($z0);
+
+        if $z1 == 0 goto label2;
+
+        if $z0 == 0 goto label1;
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void publishLikeAsync(android.app.Activity,android.os.Bundle)>($r1, $r2);
+
+        return;
+
+     label1:
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void publishUnlikeAsync(android.app.Activity,android.os.Bundle)>($r1, $r2);
+
+        return;
+
+     label2:
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void presentLikeDialog(android.app.Activity,android.os.Bundle)>($r1, $r2);
+
+        return;
+    }
+
+    private void presentLikeDialog(android.app.Activity, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.app.Activity $r1;
+        android.os.Bundle $r2;
+        com.facebook.internal.LikeActionController$LikeDialogBuilder $r3;
+        java.lang.String $r4, $r8, $r4_1;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+        com.facebook.widget.FacebookDialog $r5;
+        com.facebook.widget.FacebookDialog$PendingCall $r6, $r6_1, $r6_2;
+        com.facebook.AppEventsLogger $r7, $r7_1, $r7_2;
+        com.facebook.widget.FacebookDialog$Callback $r9;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $r3 = new com.facebook.internal.LikeActionController$LikeDialogBuilder;
+
+        $r4 = $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId>;
+
+        specialinvoke $r3.<com.facebook.internal.LikeActionController$LikeDialogBuilder: void <init>(android.app.Activity,java.lang.String)>($r1, $r4);
+
+        $z0 = virtualinvoke $r3.<com.facebook.internal.LikeActionController$LikeDialogBuilder: boolean canPresent()>();
+
+        if $z0 == 0 goto label1;
+
+        $r5 = virtualinvoke $r3.<com.facebook.internal.LikeActionController$LikeDialogBuilder: com.facebook.widget.FacebookDialog build()>();
+
+        $r6 = virtualinvoke $r5.<com.facebook.widget.FacebookDialog: com.facebook.widget.FacebookDialog$PendingCall present()>();
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void trackPendingCall(com.facebook.widget.FacebookDialog$PendingCall,android.os.Bundle)>($r6, $r2);
+
+        $r7 = $r0.<com.facebook.internal.LikeActionController: com.facebook.AppEventsLogger appEventsLogger>;
+
+        virtualinvoke $r7.<com.facebook.AppEventsLogger: void logSdkEvent(java.lang.String,java.lang.Double,android.os.Bundle)>("fb_like_control_did_present_dialog", null, $r2);
+
+        return;
+
+     label1:
+        $r4_1 = virtualinvoke $r3.<com.facebook.internal.LikeActionController$LikeDialogBuilder: java.lang.String getWebFallbackUrl()>();
+
+        $z0_1 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r4_1);
+
+(0)     if $z0_1 != 0 goto label2;
+
+        $r8 = virtualinvoke $r3.<com.facebook.internal.LikeActionController$LikeDialogBuilder: java.lang.String getApplicationId()>();
+
+        $r6_1 = virtualinvoke $r3.<com.facebook.internal.LikeActionController$LikeDialogBuilder: com.facebook.widget.FacebookDialog$PendingCall getAppCall()>();
+
+        $r9 = specialinvoke $r0.<com.facebook.internal.LikeActionController: com.facebook.widget.FacebookDialog$Callback getFacebookDialogCallback(android.os.Bundle)>($r2);
+
+        $z0_2 = staticinvoke <com.facebook.internal.FacebookWebFallbackDialog: boolean presentWebFallback(android.content.Context,java.lang.String,java.lang.String,com.facebook.widget.FacebookDialog$PendingCall,com.facebook.widget.FacebookDialog$Callback)>($r1, $r4_1, $r8, $r6_1, $r9);
+
+(1)     if $z0_2 == 0 goto label2;
+
+        $r7_1 = $r0.<com.facebook.internal.LikeActionController: com.facebook.AppEventsLogger appEventsLogger>;
+
+(2)     virtualinvoke $r7_1.<com.facebook.AppEventsLogger: void logSdkEvent(java.lang.String,java.lang.Double,android.os.Bundle)>("fb_like_control_did_present_fallback_dialog", null, $r2);
+
+     label2:
+        $z0_3 = Phi($z0_1 #0, $z0_2 #1, $z0_2 #2);
+
+        $r7_2 = Phi($r7 #0, $r7 #1, $r7_1 #2);
+
+        $r6_2 = Phi($r6 #0, $r6_1 #1, $r6_1 #2);
+
+        return;
+    }
+
+    private void publishLikeAsync(android.app.Activity, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.app.Activity $r1;
+        android.os.Bundle $r2;
+        com.facebook.internal.LikeActionController$6 $r3;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $r0.<com.facebook.internal.LikeActionController: boolean isPendingLikeOrUnlike> = 1;
+
+        $r3 = new com.facebook.internal.LikeActionController$6;
+
+        specialinvoke $r3.<com.facebook.internal.LikeActionController$6: void <init>(com.facebook.internal.LikeActionController,android.app.Activity,android.os.Bundle)>($r0, $r1, $r2);
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void fetchVerifiedObjectId(com.facebook.internal.LikeActionController$RequestCompletionCallback)>($r3);
+
+        return;
+    }
+
+    private void publishUnlikeAsync(android.app.Activity, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.app.Activity $r1;
+        android.os.Bundle $r2;
+        com.facebook.RequestBatch $r3;
+        com.facebook.internal.LikeActionController$PublishUnlikeRequestWrapper $r4;
+        java.lang.String $r5;
+        com.facebook.internal.LikeActionController$7 $r6;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $r0.<com.facebook.internal.LikeActionController: boolean isPendingLikeOrUnlike> = 1;
+
+        $r3 = new com.facebook.RequestBatch;
+
+        specialinvoke $r3.<com.facebook.RequestBatch: void <init>()>();
+
+        $r4 = new com.facebook.internal.LikeActionController$PublishUnlikeRequestWrapper;
+
+        $r5 = $r0.<com.facebook.internal.LikeActionController: java.lang.String unlikeToken>;
+
+        specialinvoke $r4.<com.facebook.internal.LikeActionController$PublishUnlikeRequestWrapper: void <init>(com.facebook.internal.LikeActionController,java.lang.String)>($r0, $r5);
+
+        virtualinvoke $r4.<com.facebook.internal.LikeActionController$PublishUnlikeRequestWrapper: void addToBatch(com.facebook.RequestBatch)>($r3);
+
+        $r6 = new com.facebook.internal.LikeActionController$7;
+
+        specialinvoke $r6.<com.facebook.internal.LikeActionController$7: void <init>(com.facebook.internal.LikeActionController,com.facebook.internal.LikeActionController$PublishUnlikeRequestWrapper,android.app.Activity,android.os.Bundle)>($r0, $r4, $r1, $r2);
+
+        virtualinvoke $r3.<com.facebook.RequestBatch: void addCallback(com.facebook.RequestBatch$Callback)>($r6);
+
+        virtualinvoke $r3.<com.facebook.RequestBatch: com.facebook.RequestAsyncTask executeAsync()>();
+
+        return;
+    }
+
+    private static void putControllerInMemoryCache(java.lang.String, com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        com.facebook.internal.WorkQueue $r1;
+        com.facebook.internal.LikeActionController$MRUCacheWorkItem $r2;
+        java.util.concurrent.ConcurrentHashMap $r3;
+        java.lang.String $r4, $r4_1;
+
+        $r4 := @parameter0: java.lang.String;
+
+        $r0 := @parameter1: com.facebook.internal.LikeActionController;
+
+        $r4_1 = staticinvoke <com.facebook.internal.LikeActionController: java.lang.String getCacheKeyForObjectId(java.lang.String)>($r4);
+
+        $r1 = <com.facebook.internal.LikeActionController: com.facebook.internal.WorkQueue mruCacheWorkQueue>;
+
+        $r2 = new com.facebook.internal.LikeActionController$MRUCacheWorkItem;
+
+        specialinvoke $r2.<com.facebook.internal.LikeActionController$MRUCacheWorkItem: void <init>(java.lang.String,boolean)>($r4_1, 1);
+
+        virtualinvoke $r1.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkItem addActiveWorkItem(java.lang.Runnable)>($r2);
+
+        $r3 = <com.facebook.internal.LikeActionController: java.util.concurrent.ConcurrentHashMap cache>;
+
+        virtualinvoke $r3.<java.util.concurrent.ConcurrentHashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r4_1, $r0);
+
+        return;
+    }
+
+    private void refreshStatusAsync()
+    {
+        com.facebook.internal.LikeActionController $r0;
+        com.facebook.SessionState $r1, $r4;
+        com.facebook.internal.LikeActionController$8 $r2;
+        com.facebook.Session $r3, $r3_1, $r3_2, $r3_3;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r3 = $r0.<com.facebook.internal.LikeActionController: com.facebook.Session session>;
+
+(0)     if $r3 == null goto label1;
+
+        $r3_1 = $r0.<com.facebook.internal.LikeActionController: com.facebook.Session session>;
+
+        $z0 = virtualinvoke $r3_1.<com.facebook.Session: boolean isClosed()>();
+
+(1)     if $z0 != 0 goto label1;
+
+        $r1 = <com.facebook.SessionState: com.facebook.SessionState CREATED>;
+
+        $r3_2 = $r0.<com.facebook.internal.LikeActionController: com.facebook.Session session>;
+
+        $r4 = virtualinvoke $r3_2.<com.facebook.Session: com.facebook.SessionState getState()>();
+
+        $z0_1 = virtualinvoke $r1.<com.facebook.SessionState: boolean equals(java.lang.Object)>($r4);
+
+(2)     if $z0_1 == 0 goto label2;
+
+     label1:
+        $r3_3 = Phi($r3 #0, $r3_1 #1, $r3_2 #2);
+
+        $z0_2 = Phi($z0 #0, $z0 #1, $z0_1 #2);
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void refreshStatusViaService()>();
+
+        return;
+
+     label2:
+        $r2 = new com.facebook.internal.LikeActionController$8;
+
+        specialinvoke $r2.<com.facebook.internal.LikeActionController$8: void <init>(com.facebook.internal.LikeActionController)>($r0);
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void fetchVerifiedObjectId(com.facebook.internal.LikeActionController$RequestCompletionCallback)>($r2);
+
+        return;
+    }
+
+    private void refreshStatusViaService()
+    {
+        com.facebook.internal.LikeActionController $r0;
+        com.facebook.internal.LikeStatusClient $r1;
+        android.content.Context $r2;
+        java.lang.String $r3, $r5;
+        com.facebook.internal.LikeActionController$9 $r4;
+        boolean $z0;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 = new com.facebook.internal.LikeStatusClient;
+
+        $r2 = $r0.<com.facebook.internal.LikeActionController: android.content.Context context>;
+
+        $r5 = staticinvoke <com.facebook.Settings: java.lang.String getApplicationId()>();
+
+        $r3 = $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId>;
+
+        specialinvoke $r1.<com.facebook.internal.LikeStatusClient: void <init>(android.content.Context,java.lang.String,java.lang.String)>($r2, $r5, $r3);
+
+        $z0 = virtualinvoke $r1.<com.facebook.internal.LikeStatusClient: boolean start()>();
+
+        if $z0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $r4 = new com.facebook.internal.LikeActionController$9;
+
+        specialinvoke $r4.<com.facebook.internal.LikeActionController$9: void <init>(com.facebook.internal.LikeActionController)>($r0);
+
+        virtualinvoke $r1.<com.facebook.internal.LikeStatusClient: void setCompletedListener(com.facebook.internal.PlatformServiceClient$CompletedListener)>($r4);
+
+        return;
+    }
+
+    private static void registerSessionBroadcastReceivers(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.IntentFilter $r1;
+        com.facebook.internal.LikeActionController$4 $r2;
+        android.support.v4.content.LocalBroadcastManager $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r3 = staticinvoke <android.support.v4.content.LocalBroadcastManager: android.support.v4.content.LocalBroadcastManager getInstance(android.content.Context)>($r0);
+
+        $r1 = new android.content.IntentFilter;
+
+        specialinvoke $r1.<android.content.IntentFilter: void <init>()>();
+
+        virtualinvoke $r1.<android.content.IntentFilter: void addAction(java.lang.String)>("com.facebook.sdk.ACTIVE_SESSION_UNSET");
+
+        virtualinvoke $r1.<android.content.IntentFilter: void addAction(java.lang.String)>("com.facebook.sdk.ACTIVE_SESSION_CLOSED");
+
+        virtualinvoke $r1.<android.content.IntentFilter: void addAction(java.lang.String)>("com.facebook.sdk.ACTIVE_SESSION_OPENED");
+
+        $r2 = new com.facebook.internal.LikeActionController$4;
+
+        specialinvoke $r2.<com.facebook.internal.LikeActionController$4: void <init>()>();
+
+        virtualinvoke $r3.<android.support.v4.content.LocalBroadcastManager: void registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r2, $r1);
+
+        return;
+    }
+
+    private static void serializeToDiskAsync(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        com.facebook.internal.WorkQueue $r1;
+        com.facebook.internal.LikeActionController$SerializeToDiskWorkItem $r2;
+        java.lang.String $r3, $r4, $r4_1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $r3 = staticinvoke <com.facebook.internal.LikeActionController: java.lang.String serializeToJson(com.facebook.internal.LikeActionController)>($r0);
+
+        $r4 = $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId>;
+
+        $r4_1 = staticinvoke <com.facebook.internal.LikeActionController: java.lang.String getCacheKeyForObjectId(java.lang.String)>($r4);
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r3);
+
+(0)     if $z0 != 0 goto label1;
+
+        $z0_1 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r4_1);
+
+(1)     if $z0_1 != 0 goto label1;
+
+        $r1 = <com.facebook.internal.LikeActionController: com.facebook.internal.WorkQueue diskIOWorkQueue>;
+
+        $r2 = new com.facebook.internal.LikeActionController$SerializeToDiskWorkItem;
+
+        specialinvoke $r2.<com.facebook.internal.LikeActionController$SerializeToDiskWorkItem: void <init>(java.lang.String,java.lang.String)>($r4_1, $r3);
+
+(2)     virtualinvoke $r1.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkItem addActiveWorkItem(java.lang.Runnable)>($r2);
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2);
+
+        return;
+    }
+
+    private static void serializeToDiskSynchronously(java.lang.String, java.lang.String)
+    {
+        java.lang.String $r0, $r4, $r4_1, $r4_2, $r4_3;
+        com.facebook.internal.FileLruCache $r1;
+        java.io.IOException $r2;
+        java.lang.Throwable $r3;
+        java.io.OutputStream $r5, $r6, $r5_1, $r5_2, $r5_3, $r5_4;
+        byte[] $r7;
+
+        $r4 := @parameter0: java.lang.String;
+
+        $r0 := @parameter1: java.lang.String;
+
+        $r5 = null;
+
+(0)     $r1 = <com.facebook.internal.LikeActionController: com.facebook.internal.FileLruCache controllerDiskCache>;
+
+     label01:
+        $r6 = virtualinvoke $r1.<com.facebook.internal.FileLruCache: java.io.OutputStream openPutStream(java.lang.String)>($r4);
+
+     label02:
+(1)     $r5_1 = $r6;
+
+     label03:
+        $r7 = virtualinvoke $r0.<java.lang.String: byte[] getBytes()>();
+
+        virtualinvoke $r6.<java.io.OutputStream: void write(byte[])>($r7);
+
+     label04:
+(2)     if $r6 == null goto label10;
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r6);
+
+        return;
+
+     label05:
+        $r2 := @caughtexception;
+
+(3)     $r5_2 = Phi($r5 #0, $r5_1 #1);
+
+     label06:
+(4)     $r4_1 = <com.facebook.internal.LikeActionController: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>($r4_1, "Unable to serialize controller to disk", $r2);
+
+     label07:
+(5)     if $r5_2 == null goto label10;
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r5_2);
+
+        return;
+
+     label08:
+        $r3 := @caughtexception;
+
+        $r4_2 = Phi($r4 #0, $r4_1 #4);
+
+        $r5_3 = Phi($r5 #0, $r5_1 #1, $r5_2 #3);
+
+        if $r5_3 == null goto label09;
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r5_3);
+
+     label09:
+        throw $r3;
+
+     label10:
+        $r4_3 = Phi($r4 #2, $r4_1 #5);
+
+        $r5_4 = Phi($r5_1 #2, $r5_2 #5);
+
+        return;
+
+        catch java.io.IOException from label01 to label02 with label05;
+        catch java.lang.Throwable from label01 to label02 with label08;
+        catch java.io.IOException from label03 to label04 with label05;
+        catch java.lang.Throwable from label03 to label04 with label08;
+        catch java.lang.Throwable from label06 to label07 with label08;
+    }
+
+    private static java.lang.String serializeToJson(com.facebook.internal.LikeActionController)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        org.json.JSONObject $r1, $r6;
+        boolean $z0;
+        org.json.JSONException $r2;
+        java.lang.String $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8, $r3_9, $r3_10;
+        java.util.UUID $r4, $r4_1, $r4_2, $r4_3;
+        android.os.Bundle $r5, $r5_1, $r5_2, $r5_3;
+
+        $r0 := @parameter0: com.facebook.internal.LikeActionController;
+
+        $r1 = new org.json.JSONObject;
+
+(0)     specialinvoke $r1.<org.json.JSONObject: void <init>()>();
+
+     label01:
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("com.facebook.internal.LikeActionController.version", 2);
+
+     label02:
+        $r3 = $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId>;
+
+     label03:
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("object_id", $r3);
+
+     label04:
+(1)     $r3_1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithLike>;
+
+     label05:
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("like_count_string_with_like", $r3_1);
+
+     label06:
+(2)     $r3_2 = $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithoutLike>;
+
+     label07:
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("like_count_string_without_like", $r3_2);
+
+     label08:
+(3)     $r3_3 = $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithLike>;
+
+     label09:
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("social_sentence_with_like", $r3_3);
+
+     label10:
+(4)     $r3_4 = $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithoutLike>;
+
+     label11:
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("social_sentence_without_like", $r3_4);
+
+     label12:
+        $z0 = $r0.<com.facebook.internal.LikeActionController: boolean isObjectLiked>;
+
+     label13:
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,boolean)>("is_object_liked", $z0);
+
+     label14:
+(5)     $r3_5 = $r0.<com.facebook.internal.LikeActionController: java.lang.String unlikeToken>;
+
+     label15:
+        virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("unlike_token", $r3_5);
+
+     label16:
+        $r4 = $r0.<com.facebook.internal.LikeActionController: java.util.UUID pendingCallId>;
+
+(6)     if $r4 == null goto label18;
+
+(7)     $r4_1 = $r0.<com.facebook.internal.LikeActionController: java.util.UUID pendingCallId>;
+
+     label17:
+(8)     $r3_6 = virtualinvoke $r4_1.<java.util.UUID: java.lang.String toString()>();
+
+(9)     virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("pending_call_id", $r3_6);
+
+     label18:
+        $r4_2 = Phi($r4 #6, $r4_1 #9);
+
+        $r3_7 = Phi($r3_5 #6, $r3_6 #9);
+
+        $r5 = $r0.<com.facebook.internal.LikeActionController: android.os.Bundle pendingCallAnalyticsBundle>;
+
+(10)    if $r5 == null goto label22;
+
+(11)    $r5_1 = $r0.<com.facebook.internal.LikeActionController: android.os.Bundle pendingCallAnalyticsBundle>;
+
+     label19:
+        $r6 = staticinvoke <com.facebook.internal.BundleJSONConverter: org.json.JSONObject convertToJSON(android.os.Bundle)>($r5_1);
+
+     label20:
+(12)    if $r6 == null goto label22;
+
+     label21:
+(13)    virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("pending_call_analytics_bundle", $r6);
+
+     label22:
+        $r5_2 = Phi($r5 #10, $r5_1 #12, $r5_1 #13);
+
+        $r3_8 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String toString()>();
+
+        return $r3_8;
+
+     label23:
+        $r2 := @caughtexception;
+
+        $r4_3 = Phi($r4 #0, $r4_1 #7, $r4_2 #11);
+
+        $r5_3 = Phi($r5 #0, $r5_1 #11);
+
+        $r3_9 = Phi($r3 #0, $r3_1 #1, $r3_2 #2, $r3_3 #3, $r3_4 #4, $r3_5 #5, $r3_6 #8, $r3_7 #11);
+
+        $r3_10 = <com.facebook.internal.LikeActionController: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>($r3_10, "Unable to serialize controller to JSON", $r2);
+
+        return null;
+
+        catch org.json.JSONException from label01 to label02 with label23;
+        catch org.json.JSONException from label03 to label04 with label23;
+        catch org.json.JSONException from label05 to label06 with label23;
+        catch org.json.JSONException from label07 to label08 with label23;
+        catch org.json.JSONException from label09 to label10 with label23;
+        catch org.json.JSONException from label11 to label12 with label23;
+        catch org.json.JSONException from label13 to label14 with label23;
+        catch org.json.JSONException from label15 to label16 with label23;
+        catch org.json.JSONException from label17 to label18 with label23;
+        catch org.json.JSONException from label19 to label20 with label23;
+        catch org.json.JSONException from label21 to label22 with label23;
+    }
+
+    private void stopTrackingPendingCall()
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.util.UUID $r1;
+        com.facebook.internal.PendingCallStore $r2;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r2 = staticinvoke <com.facebook.internal.PendingCallStore: com.facebook.internal.PendingCallStore getInstance()>();
+
+        $r1 = $r0.<com.facebook.internal.LikeActionController: java.util.UUID pendingCallId>;
+
+        virtualinvoke $r2.<com.facebook.internal.PendingCallStore: void stopTrackingPendingCall(java.util.UUID)>($r1);
+
+        $r0.<com.facebook.internal.LikeActionController: java.util.UUID pendingCallId> = null;
+
+        $r0.<com.facebook.internal.LikeActionController: android.os.Bundle pendingCallAnalyticsBundle> = null;
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void storeObjectIdForPendingController(java.lang.String)>(null);
+
+        return;
+    }
+
+    private void storeObjectIdForPendingController(java.lang.String)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.content.Context $r1;
+        java.lang.String $r2, $r2_1;
+        android.content.SharedPreferences $r3;
+        android.content.SharedPreferences$Editor $r4, $r4_1;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r2 := @parameter0: java.lang.String;
+
+        <com.facebook.internal.LikeActionController: java.lang.String objectIdForPendingController> = $r2;
+
+        $r1 = $r0.<com.facebook.internal.LikeActionController: android.content.Context context>;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.facebook.LikeActionController.CONTROLLER_STORE_KEY", 0);
+
+        $r4 = interfaceinvoke $r3.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r2_1 = <com.facebook.internal.LikeActionController: java.lang.String objectIdForPendingController>;
+
+        $r4_1 = interfaceinvoke $r4.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("PENDING_CONTROLLER_KEY", $r2_1);
+
+        interfaceinvoke $r4_1.<android.content.SharedPreferences$Editor: void apply()>();
+
+        return;
+    }
+
+    private void toggleAgainIfNeeded(android.app.Activity, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.app.Activity $r1;
+        android.os.Bundle $r2;
+        boolean $z0, $z1, $z0_1, $z0_2;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $z0 = $r0.<com.facebook.internal.LikeActionController: boolean isObjectLiked>;
+
+        $z1 = $r0.<com.facebook.internal.LikeActionController: boolean isObjectLikedOnServer>;
+
+(0)     if $z0 == $z1 goto label1;
+
+        $z0_1 = $r0.<com.facebook.internal.LikeActionController: boolean isObjectLiked>;
+
+(1)     specialinvoke $r0.<com.facebook.internal.LikeActionController: void performLikeOrUnlike(android.app.Activity,boolean,android.os.Bundle)>($r1, $z0_1, $r2);
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return;
+    }
+
+    private void trackPendingCall(com.facebook.widget.FacebookDialog$PendingCall, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        com.facebook.widget.FacebookDialog$PendingCall $r1;
+        android.os.Bundle $r2;
+        java.lang.String $r3;
+        com.facebook.internal.PendingCallStore $r4;
+        java.util.UUID $r5;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: com.facebook.widget.FacebookDialog$PendingCall;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $r4 = staticinvoke <com.facebook.internal.PendingCallStore: com.facebook.internal.PendingCallStore getInstance()>();
+
+        virtualinvoke $r4.<com.facebook.internal.PendingCallStore: void trackPendingCall(com.facebook.widget.FacebookDialog$PendingCall)>($r1);
+
+        $r5 = virtualinvoke $r1.<com.facebook.widget.FacebookDialog$PendingCall: java.util.UUID getCallId()>();
+
+        $r0.<com.facebook.internal.LikeActionController: java.util.UUID pendingCallId> = $r5;
+
+        $r3 = $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId>;
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void storeObjectIdForPendingController(java.lang.String)>($r3);
+
+        $r0.<com.facebook.internal.LikeActionController: android.os.Bundle pendingCallAnalyticsBundle> = $r2;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void serializeToDiskAsync(com.facebook.internal.LikeActionController)>($r0);
+
+        return;
+    }
+
+    private void updateState(boolean, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        boolean $z0, $z1, $z1_1, $z1_2, $z1_3, $z1_4, $z1_5, $z1_6, $z1_7, $z1_8, $z1_9;
+        android.content.Context $r1;
+        java.lang.String $r2, $r3, $r4, $r5, $r6, $r7, $r2_1, $r3_1, $r4_1, $r5_1, $r6_1, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $z0 := @parameter0: boolean;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String;
+
+        $r5 := @parameter4: java.lang.String;
+
+        $r6 := @parameter5: java.lang.String;
+
+        $r2_1 = staticinvoke <com.facebook.internal.Utility: java.lang.String coerceValueIfNullOrEmpty(java.lang.String,java.lang.String)>($r2, null);
+
+        $r3_1 = staticinvoke <com.facebook.internal.Utility: java.lang.String coerceValueIfNullOrEmpty(java.lang.String,java.lang.String)>($r3, null);
+
+        $r4_1 = staticinvoke <com.facebook.internal.Utility: java.lang.String coerceValueIfNullOrEmpty(java.lang.String,java.lang.String)>($r4, null);
+
+        $r5_1 = staticinvoke <com.facebook.internal.Utility: java.lang.String coerceValueIfNullOrEmpty(java.lang.String,java.lang.String)>($r5, null);
+
+        $r6_1 = staticinvoke <com.facebook.internal.Utility: java.lang.String coerceValueIfNullOrEmpty(java.lang.String,java.lang.String)>($r6, null);
+
+        $z1 = $r0.<com.facebook.internal.LikeActionController: boolean isObjectLiked>;
+
+(0)     if $z0 != $z1 goto label1;
+
+        $r7 = $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithLike>;
+
+        $z1_1 = staticinvoke <com.facebook.internal.Utility: boolean areObjectsEqual(java.lang.Object,java.lang.Object)>($r2_1, $r7);
+
+(1)     if $z1_1 == 0 goto label1;
+
+        $r7_1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithoutLike>;
+
+        $z1_2 = staticinvoke <com.facebook.internal.Utility: boolean areObjectsEqual(java.lang.Object,java.lang.Object)>($r3_1, $r7_1);
+
+(2)     if $z1_2 == 0 goto label1;
+
+        $r7_2 = $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithLike>;
+
+        $z1_3 = staticinvoke <com.facebook.internal.Utility: boolean areObjectsEqual(java.lang.Object,java.lang.Object)>($r4_1, $r7_2);
+
+(3)     if $z1_3 == 0 goto label1;
+
+        $r7_3 = $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithoutLike>;
+
+        $z1_4 = staticinvoke <com.facebook.internal.Utility: boolean areObjectsEqual(java.lang.Object,java.lang.Object)>($r5_1, $r7_3);
+
+(4)     if $z1_4 == 0 goto label1;
+
+        $r7_4 = $r0.<com.facebook.internal.LikeActionController: java.lang.String unlikeToken>;
+
+        $z1_5 = staticinvoke <com.facebook.internal.Utility: boolean areObjectsEqual(java.lang.Object,java.lang.Object)>($r6_1, $r7_4);
+
+(5)     if $z1_5 != 0 goto label3;
+
+     label1:
+        $r7_5 = Phi($r7 #0, $r7 #1, $r7_1 #2, $r7_2 #3, $r7_3 #4, $r7_4 #5);
+
+        $z1_7 = Phi($z1 #0, $z1_1 #1, $z1_2 #2, $z1_3 #3, $z1_4 #4, $z1_5 #5);
+
+(6)     $z1_8 = 1;
+
+     label2:
+        $r7_6 = Phi($r7_5 #6, $r7_4 #7);
+
+        $z1_9 = Phi($z1_8 #6, $z1_6 #7);
+
+        if $z1_9 != 0 goto label4;
+
+        return;
+
+     label3:
+        $z1_6 = 0;
+
+(7)     goto label2;
+
+     label4:
+        $r0.<com.facebook.internal.LikeActionController: boolean isObjectLiked> = $z0;
+
+        $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithLike> = $r2_1;
+
+        $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithoutLike> = $r3_1;
+
+        $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithLike> = $r4_1;
+
+        $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithoutLike> = $r5_1;
+
+        $r0.<com.facebook.internal.LikeActionController: java.lang.String unlikeToken> = $r6_1;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void serializeToDiskAsync(com.facebook.internal.LikeActionController)>($r0);
+
+        $r1 = $r0.<com.facebook.internal.LikeActionController: android.content.Context context>;
+
+        staticinvoke <com.facebook.internal.LikeActionController: void broadcastAction(android.content.Context,com.facebook.internal.LikeActionController,java.lang.String)>($r1, $r0, "com.facebook.sdk.LikeActionController.UPDATED");
+
+        return;
+    }
+
+    public java.lang.String getLikeCountString()
+    {
+        com.facebook.internal.LikeActionController $r0;
+        boolean $z0;
+        java.lang.String r1, r1_1;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $z0 = $r0.<com.facebook.internal.LikeActionController: boolean isObjectLiked>;
+
+        if $z0 == 0 goto label1;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithLike>;
+
+        return r1;
+
+     label1:
+        r1_1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithoutLike>;
+
+        return r1_1;
+    }
+
+    public java.lang.String getObjectId()
+    {
+        com.facebook.internal.LikeActionController $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String objectId>;
+
+        return r1;
+    }
+
+    public java.lang.String getSocialSentence()
+    {
+        com.facebook.internal.LikeActionController $r0;
+        boolean $z0;
+        java.lang.String r1, r1_1;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $z0 = $r0.<com.facebook.internal.LikeActionController: boolean isObjectLiked>;
+
+        if $z0 == 0 goto label1;
+
+        r1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithLike>;
+
+        return r1;
+
+     label1:
+        r1_1 = $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithoutLike>;
+
+        return r1_1;
+    }
+
+    public boolean isObjectLiked()
+    {
+        com.facebook.internal.LikeActionController $r0;
+        boolean z0;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        z0 = $r0.<com.facebook.internal.LikeActionController: boolean isObjectLiked>;
+
+        return z0;
+    }
+
+    public void toggleLike(android.app.Activity, android.os.Bundle)
+    {
+        com.facebook.internal.LikeActionController $r0;
+        android.app.Activity $r1;
+        android.os.Bundle $r2;
+        java.lang.String $r3, $r4, $r5, $r6, $r8;
+        boolean $z0, $z1, $z1_1, $z1_2, $z0_1, $z0_2, $z1_3;
+        com.facebook.AppEventsLogger $r7, $r7_1;
+
+        $r0 := @this: com.facebook.internal.LikeActionController;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $r7 = $r0.<com.facebook.internal.LikeActionController: com.facebook.AppEventsLogger appEventsLogger>;
+
+        virtualinvoke $r7.<com.facebook.AppEventsLogger: void logSdkEvent(java.lang.String,java.lang.Double,android.os.Bundle)>("fb_like_control_did_tap", null, $r2);
+
+        $z1 = $r0.<com.facebook.internal.LikeActionController: boolean isObjectLiked>;
+
+        if $z1 != 0 goto label2;
+
+(0)     $z1_1 = 1;
+
+     label1:
+        $z1_2 = Phi($z1_1 #0, $z1_3 #3);
+
+        $z0 = specialinvoke $r0.<com.facebook.internal.LikeActionController: boolean canUseOGPublish(boolean)>($z1_2);
+
+(1)     if $z0 == 0 goto label3;
+
+        $r3 = $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithLike>;
+
+        $r4 = $r0.<com.facebook.internal.LikeActionController: java.lang.String likeCountStringWithoutLike>;
+
+        $r5 = $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithLike>;
+
+        $r6 = $r0.<com.facebook.internal.LikeActionController: java.lang.String socialSentenceWithoutLike>;
+
+        $r8 = $r0.<com.facebook.internal.LikeActionController: java.lang.String unlikeToken>;
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void updateState(boolean,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)>($z1_2, $r3, $r4, $r5, $r6, $r8);
+
+        $z0_1 = $r0.<com.facebook.internal.LikeActionController: boolean isPendingLikeOrUnlike>;
+
+(2)     if $z0_1 == 0 goto label3;
+
+        $r7_1 = $r0.<com.facebook.internal.LikeActionController: com.facebook.AppEventsLogger appEventsLogger>;
+
+        virtualinvoke $r7_1.<com.facebook.AppEventsLogger: void logSdkEvent(java.lang.String,java.lang.Double,android.os.Bundle)>("fb_like_control_did_undo_quickly", null, $r2);
+
+        return;
+
+     label2:
+        $z1_3 = 0;
+
+(3)     goto label1;
+
+     label3:
+        $z0_2 = Phi($z0 #1, $z0_1 #2);
+
+        specialinvoke $r0.<com.facebook.internal.LikeActionController: void performLikeOrUnlike(android.app.Activity,boolean,android.os.Bundle)>($r1, $z1_2, $r2);
+
+        return;
+    }
+}

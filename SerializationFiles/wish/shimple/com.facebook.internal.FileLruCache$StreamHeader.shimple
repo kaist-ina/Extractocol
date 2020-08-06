@@ -1,0 +1,246 @@
+final class com.facebook.internal.FileLruCache$StreamHeader extends java.lang.Object
+{
+    private static final int HEADER_VERSION;
+
+    private void <init>()
+    {
+        com.facebook.internal.FileLruCache$StreamHeader $r0;
+
+        $r0 := @this: com.facebook.internal.FileLruCache$StreamHeader;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static org.json.JSONObject readHeader(java.io.InputStream) throws java.io.IOException
+    {
+        java.io.InputStream $r0;
+        byte[] $r1;
+        org.json.JSONTokener $r2;
+        boolean $z0;
+        org.json.JSONException $r3;
+        java.io.IOException $r4;
+        int $i0, $i1, $i2, $i0_1, $i0_2, $i1_1, $i2_1, $i1_2, $i2_2, $i1_3, $i0_3, $i0_4, $i0_5, $i2_3, $i2_4, $i2_5, $i2_6, $i2_7, $i0_6, $i0_7;
+        com.facebook.LoggingBehavior $r5, $r5_1, $r5_2, $r5_3;
+        java.lang.String $r6, $r9, $r6_1, $r6_2, $r6_3, $r9_1, $r9_2, $r9_3, $r6_4, $r6_5;
+        java.lang.StringBuilder $r7, $r7_1, $r7_2, $r7_3, $r7_4, $r7_5, $r7_6, $r7_7, $r7_8;
+        java.lang.Integer $r8;
+        java.lang.Object $r10;
+        java.lang.Class $r11;
+        org.json.JSONObject $r12;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $i0 = virtualinvoke $r0.<java.io.InputStream: int read()>();
+
+        if $i0 == 0 goto label01;
+
+        return null;
+
+     label01:
+        $i1 = 0;
+
+(0)     $i0_1 = 0;
+
+     label02:
+        $i0_2 = Phi($i0_1 #0, $i0_3 #1);
+
+        $i2 = Phi($i2 #0, $i2_2 #1);
+
+        $i1_1 = Phi($i1 #0, $i1_3 #1);
+
+        if $i0_2 >= 3 goto label04;
+
+        $i2_1 = virtualinvoke $r0.<java.io.InputStream: int read()>();
+
+        if $i2_1 != -1 goto label03;
+
+        $r5 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior CACHE>;
+
+        $r6 = <com.facebook.internal.FileLruCache: java.lang.String TAG>;
+
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String)>($r5, $r6, "readHeader: stream.read returned -1 while reading header size");
+
+        return null;
+
+     label03:
+        $i1_2 = $i1_1 << 8;
+
+        $i2_2 = $i2_1 & 255;
+
+        $i1_3 = $i1_2 + $i2_2;
+
+        $i0_3 = $i0_2 + 1;
+
+(1)     goto label02;
+
+     label04:
+        $r1 = newarray (byte)[$i1_1];
+
+(2)     $i0_4 = 0;
+
+     label05:
+        $i0_5 = Phi($i0_4 #2, $i0_7 #3);
+
+        $i2_3 = Phi($i2 #2, $i2_7 #3);
+
+        $i2_4 = lengthof $r1;
+
+        if $i0_5 >= $i2_4 goto label07;
+
+        $i2_5 = lengthof $r1;
+
+        $i2_6 = $i2_5 - $i0_5;
+
+        $i2_7 = virtualinvoke $r0.<java.io.InputStream: int read(byte[],int,int)>($r1, $i0_5, $i2_6);
+
+        if $i2_7 >= 1 goto label06;
+
+        $r5_1 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior CACHE>;
+
+        $r6_1 = <com.facebook.internal.FileLruCache: java.lang.String TAG>;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7_1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("readHeader: stream.read stopped at ");
+
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0_5);
+
+        $r7_2 = virtualinvoke $r7_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8);
+
+        $r7_3 = virtualinvoke $r7_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" when expected ");
+
+        $i0_6 = lengthof $r1;
+
+        $r7_4 = virtualinvoke $r7_3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0_6);
+
+        $r9 = virtualinvoke $r7_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String)>($r5_1, $r6_1, $r9);
+
+        return null;
+
+     label06:
+        $i0_7 = $i0_5 + $i2_7;
+
+(3)     goto label05;
+
+     label07:
+        $r6_2 = new java.lang.String;
+
+        specialinvoke $r6_2.<java.lang.String: void <init>(byte[])>($r1);
+
+        $r2 = new org.json.JSONTokener;
+
+(4)     specialinvoke $r2.<org.json.JSONTokener: void <init>(java.lang.String)>($r6_2);
+
+     label08:
+        $r10 = virtualinvoke $r2.<org.json.JSONTokener: java.lang.Object nextValue()>();
+
+     label09:
+        $z0 = $r10 instanceof org.json.JSONObject;
+
+        if $z0 != 0 goto label12;
+
+        $r5_2 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior CACHE>;
+
+        $r6_3 = <com.facebook.internal.FileLruCache: java.lang.String TAG>;
+
+(5)     $r7_5 = new java.lang.StringBuilder;
+
+     label10:
+        specialinvoke $r7_5.<java.lang.StringBuilder: void <init>()>();
+
+(6)     $r7_6 = virtualinvoke $r7_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("readHeader: expected JSONObject, got ");
+
+        $r11 = virtualinvoke $r10.<java.lang.Object: java.lang.Class getClass()>();
+
+(7)     $r9_1 = virtualinvoke $r11.<java.lang.Class: java.lang.String getCanonicalName()>();
+
+(8)     $r7_7 = virtualinvoke $r7_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9_1);
+
+(9)     $r9_2 = virtualinvoke $r7_7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String)>($r5_2, $r6_3, $r9_2);
+
+     label11:
+        return null;
+
+     label12:
+        $r12 = (org.json.JSONObject) $r10;
+
+        return $r12;
+
+     label13:
+        $r3 := @caughtexception;
+
+        $r9_3 = Phi($r9 #4, $r9_1 #7, $r9_2 #9);
+
+        $r5_3 = Phi($r5 #4, $r5_2 #5);
+
+        $r6_4 = Phi($r6_2 #4, $r6_3 #5);
+
+        $r7_8 = Phi($r7 #4, $r7_5 #5, $r7_6 #6, $r7_7 #8);
+
+        $r4 = new java.io.IOException;
+
+        $r6_5 = virtualinvoke $r3.<org.json.JSONException: java.lang.String getMessage()>();
+
+        specialinvoke $r4.<java.io.IOException: void <init>(java.lang.String)>($r6_5);
+
+        throw $r4;
+
+        catch org.json.JSONException from label08 to label09 with label13;
+        catch org.json.JSONException from label10 to label11 with label13;
+    }
+
+    static void writeHeader(java.io.OutputStream, org.json.JSONObject) throws java.io.IOException
+    {
+        java.io.OutputStream $r0;
+        org.json.JSONObject $r1;
+        java.lang.String $r2;
+        byte[] $r3;
+        int $i0, $i0_1, $i0_2, $i0_3, $i0_4, $i0_5, $i0_6, $i0_7, $i0_8;
+
+        $r0 := @parameter0: java.io.OutputStream;
+
+        $r1 := @parameter1: org.json.JSONObject;
+
+        $r2 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String toString()>();
+
+        $r3 = virtualinvoke $r2.<java.lang.String: byte[] getBytes()>();
+
+        virtualinvoke $r0.<java.io.OutputStream: void write(int)>(0);
+
+        $i0 = lengthof $r3;
+
+        $i0_1 = $i0 >> 16;
+
+        $i0_2 = $i0_1 & 255;
+
+        virtualinvoke $r0.<java.io.OutputStream: void write(int)>($i0_2);
+
+        $i0_3 = lengthof $r3;
+
+        $i0_4 = $i0_3 >> 8;
+
+        $i0_5 = $i0_4 & 255;
+
+        virtualinvoke $r0.<java.io.OutputStream: void write(int)>($i0_5);
+
+        $i0_6 = lengthof $r3;
+
+        $i0_7 = $i0_6 >> 0;
+
+        $i0_8 = $i0_7 & 255;
+
+        virtualinvoke $r0.<java.io.OutputStream: void write(int)>($i0_8);
+
+        virtualinvoke $r0.<java.io.OutputStream: void write(byte[])>($r3);
+
+        return;
+    }
+}

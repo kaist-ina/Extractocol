@@ -1,0 +1,830 @@
+public abstract class ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier extends java.lang.Object implements ch.boye.httpclientandroidlib.conn.ssl.X509HostnameVerifier
+{
+    private static final java.lang.String[] BAD_COUNTRY_2LDS;
+
+    static void <clinit>()
+    {
+        java.lang.String[] $r0, $r0_1;
+
+        $r0 = newarray (java.lang.String)[14];
+
+        $r0[0] = "ac";
+
+        $r0[1] = "co";
+
+        $r0[2] = "com";
+
+        $r0[3] = "ed";
+
+        $r0[4] = "edu";
+
+        $r0[5] = "go";
+
+        $r0[6] = "gouv";
+
+        $r0[7] = "gov";
+
+        $r0[8] = "info";
+
+        $r0[9] = "lg";
+
+        $r0[10] = "ne";
+
+        $r0[11] = "net";
+
+        $r0[12] = "or";
+
+        $r0[13] = "org";
+
+        <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: java.lang.String[] BAD_COUNTRY_2LDS> = $r0;
+
+        $r0_1 = <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: java.lang.String[] BAD_COUNTRY_2LDS>;
+
+        staticinvoke <java.util.Arrays: void sort(java.lang.Object[])>($r0_1);
+
+        return;
+    }
+
+    public void <init>()
+    {
+        ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier $r0;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static boolean acceptableCountryWildcard(java.lang.String)
+    {
+        java.lang.String[] $r0, $r2;
+        java.lang.String $r1, $r1_1, $r1_2, $r1_3;
+        int $i0, $i0_1, $i0_2, $i0_3;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke $r1.<java.lang.String: java.lang.String[] split(java.lang.String)>("\\.");
+
+        $i0 = lengthof $r2;
+
+(0)     if $i0 != 3 goto label2;
+
+        $r1_1 = $r2[2];
+
+        $i0_1 = virtualinvoke $r1_1.<java.lang.String: int length()>();
+
+        if $i0_1 == 2 goto label1;
+
+        return 1;
+
+     label1:
+        $r0 = <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: java.lang.String[] BAD_COUNTRY_2LDS>;
+
+        $r1_2 = $r2[1];
+
+        $i0_2 = staticinvoke <java.util.Arrays: int binarySearch(java.lang.Object[],java.lang.Object)>($r0, $r1_2);
+
+(1)     if $i0_2 < 0 goto label2;
+
+        return 0;
+
+     label2:
+        $r1_3 = Phi($r1 #0, $r1_2 #1);
+
+        $i0_3 = Phi($i0 #0, $i0_2 #1);
+
+        return 1;
+    }
+
+    public static int countDots(java.lang.String)
+    {
+        java.lang.String $r0;
+        int $i0, $i1, $i2, $i1_1, $i0_1, $i0_2, $i0_3, $i1_2;
+        char $c3;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $i0 = 0;
+
+(0)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #0, $i1_2 #3);
+
+        $i0_1 = Phi($i0 #0, $i0_3 #3);
+
+        $i2 = virtualinvoke $r0.<java.lang.String: int length()>();
+
+        if $i1_1 >= $i2 goto label3;
+
+        $c3 = virtualinvoke $r0.<java.lang.String: char charAt(int)>($i1_1);
+
+(1)     if $c3 != 46 goto label2;
+
+(2)     $i0_2 = $i0_1 + 1;
+
+     label2:
+        $i0_3 = Phi($i0_1 #1, $i0_2 #2);
+
+        $i1_2 = $i1_1 + 1;
+
+(3)     goto label1;
+
+     label3:
+        return $i0_1;
+    }
+
+    public static java.lang.String[] getCNs(java.security.cert.X509Certificate)
+    {
+        java.security.cert.X509Certificate $r0;
+        java.util.LinkedList $r1;
+        java.util.StringTokenizer $r2;
+        java.lang.String[] $r3;
+        javax.security.auth.x500.X500Principal $r4;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3;
+        boolean $z0, $z0_1, $z0_2;
+        int $i0, $i0_1, $i0_2, $i0_3;
+
+        $r0 := @parameter0: java.security.cert.X509Certificate;
+
+        $r1 = new java.util.LinkedList;
+
+        specialinvoke $r1.<java.util.LinkedList: void <init>()>();
+
+        $r4 = virtualinvoke $r0.<java.security.cert.X509Certificate: javax.security.auth.x500.X500Principal getSubjectX500Principal()>();
+
+        $r5 = virtualinvoke $r4.<javax.security.auth.x500.X500Principal: java.lang.String toString()>();
+
+        $r2 = new java.util.StringTokenizer;
+
+(0)     specialinvoke $r2.<java.util.StringTokenizer: void <init>(java.lang.String,java.lang.String)>($r5, ",");
+
+     label1:
+        $i0 = Phi($i0 #0, $i0_1 #1, $i0_2 #2);
+
+        $z0 = Phi($z0 #0, $z0_1 #1, $z0_1 #2);
+
+        $r5_1 = Phi($r5 #0, $r5_2 #1, $r5_3 #2);
+
+        $z0_1 = virtualinvoke $r2.<java.util.StringTokenizer: boolean hasMoreTokens()>();
+
+        if $z0_1 == 0 goto label2;
+
+        $r5_2 = virtualinvoke $r2.<java.util.StringTokenizer: java.lang.String nextToken()>();
+
+        $i0_1 = virtualinvoke $r5_2.<java.lang.String: int indexOf(java.lang.String)>("CN=");
+
+(1)     if $i0_1 < 0 goto label1;
+
+        $i0_2 = $i0_1 + 3;
+
+        $r5_3 = virtualinvoke $r5_2.<java.lang.String: java.lang.String substring(int)>($i0_2);
+
+        virtualinvoke $r1.<java.util.LinkedList: boolean add(java.lang.Object)>($r5_3);
+
+(2)     goto label1;
+
+     label2:
+        $z0_2 = virtualinvoke $r1.<java.util.LinkedList: boolean isEmpty()>();
+
+        if $z0_2 != 0 goto label3;
+
+        $i0_3 = virtualinvoke $r1.<java.util.LinkedList: int size()>();
+
+        $r3 = newarray (java.lang.String)[$i0_3];
+
+        virtualinvoke $r1.<java.util.LinkedList: java.lang.Object[] toArray(java.lang.Object[])>($r3);
+
+        return $r3;
+
+     label3:
+        return null;
+    }
+
+    public static java.lang.String[] getDNSSubjectAlts(java.security.cert.X509Certificate)
+    {
+        java.security.cert.X509Certificate $r0;
+        java.lang.String[] $r1;
+
+        $r0 := @parameter0: java.security.cert.X509Certificate;
+
+        $r1 = staticinvoke <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: java.lang.String[] getSubjectAlts(java.security.cert.X509Certificate,java.lang.String)>($r0, null);
+
+        return $r1;
+    }
+
+    private static java.lang.String[] getSubjectAlts(java.security.cert.X509Certificate, java.lang.String)
+    {
+        java.security.cert.X509Certificate $r0;
+        java.util.LinkedList $r1;
+        java.security.cert.CertificateParsingException $r2;
+        java.util.logging.Level $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        byte $b0, $b0_1, $b0_2;
+        java.util.Collection $r5, $r5_1, $r5_2, $r5_3;
+        java.util.Iterator $r6;
+        java.lang.Object $r7, $r7_1, $r7_2, $r7_3, $r7_4;
+        java.util.List $r8;
+        java.lang.Integer $r9;
+        int $i1, $i1_1, $i1_2, $i1_3;
+        java.lang.Class $r10;
+        java.util.logging.Logger $r11;
+        java.lang.String[] $r12;
+
+        $r0 := @parameter0: java.security.cert.X509Certificate;
+
+        $r4 := @parameter1: java.lang.String;
+
+        $z0 = staticinvoke <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: boolean isIPAddress(java.lang.String)>($r4);
+
+        if $z0 == 0 goto label5;
+
+(0)     $b0 = 7;
+
+     label1:
+        $b0_1 = Phi($b0 #0, $b0_2 #8);
+
+        $r1 = new java.util.LinkedList;
+
+        specialinvoke $r1.<java.util.LinkedList: void <init>()>();
+
+(1)     $r5 = null;
+
+     label2:
+(2)     $r5_1 = virtualinvoke $r0.<java.security.cert.X509Certificate: java.util.Collection getSubjectAlternativeNames()>();
+
+     label3:
+        $r5_2 = Phi($r5_1 #2, $r5_3 #9);
+
+        $r4_1 = Phi($r4 #2, $r4_5 #9);
+
+(3)     if $r5_2 == null goto label7;
+
+(4)     $r6 = interfaceinvoke $r5_2.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label4:
+        $i1 = Phi($i1 #4, $i1_1 #6, $i1_1 #7);
+
+        $r7 = Phi($r7 #4, $r7_2 #6, $r7_3 #7);
+
+        $r4_2 = Phi($r4_1 #4, $r4_2 #6, $r4_3 #7);
+
+        $z0_1 = Phi($z0 #4, $z0_2 #6, $z0_2 #7);
+
+        $z0_2 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+(5)     if $z0_2 == 0 goto label7;
+
+        $r7_1 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r8 = (java.util.List) $r7_1;
+
+        $r7_2 = interfaceinvoke $r8.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r9 = (java.lang.Integer) $r7_2;
+
+        $i1_1 = virtualinvoke $r9.<java.lang.Integer: int intValue()>();
+
+(6)     if $i1_1 != $b0_1 goto label4;
+
+        $r7_3 = interfaceinvoke $r8.<java.util.List: java.lang.Object get(int)>(1);
+
+        $r4_3 = (java.lang.String) $r7_3;
+
+        virtualinvoke $r1.<java.util.LinkedList: boolean add(java.lang.Object)>($r4_3);
+
+(7)     goto label4;
+
+     label5:
+        $b0_2 = 2;
+
+(8)     goto label1;
+
+     label6:
+        $r2 := @caughtexception;
+
+        $r5_3 = Phi($r5 #1, $r5_1 #2);
+
+        $r10 = class "ch/boye/httpclientandroidlib/conn/ssl/AbstractVerifier";
+
+        $r4_5 = virtualinvoke $r10.<java.lang.Class: java.lang.String getName()>();
+
+        $r11 = staticinvoke <java.util.logging.Logger: java.util.logging.Logger getLogger(java.lang.String)>($r4_5);
+
+        $r3 = <java.util.logging.Level: java.util.logging.Level FINE>;
+
+        virtualinvoke $r11.<java.util.logging.Logger: void log(java.util.logging.Level,java.lang.String,java.lang.Throwable)>($r3, "Error parsing certificate.", $r2);
+
+(9)     goto label3;
+
+     label7:
+        $i1_2 = Phi($i1 #3, $i1 #5);
+
+        $r7_4 = Phi($r7 #3, $r7 #5);
+
+        $r4_4 = Phi($r4_1 #3, $r4_2 #5);
+
+        $z0_3 = Phi($z0 #3, $z0_2 #5);
+
+        $z0_4 = virtualinvoke $r1.<java.util.LinkedList: boolean isEmpty()>();
+
+        if $z0_4 != 0 goto label8;
+
+        $i1_3 = virtualinvoke $r1.<java.util.LinkedList: int size()>();
+
+        $r12 = newarray (java.lang.String)[$i1_3];
+
+        virtualinvoke $r1.<java.util.LinkedList: java.lang.Object[] toArray(java.lang.Object[])>($r12);
+
+        return $r12;
+
+     label8:
+        return null;
+
+        catch java.security.cert.CertificateParsingException from label2 to label3 with label6;
+    }
+
+    private static boolean isIPAddress(java.lang.String)
+    {
+        java.lang.String $r0;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+
+        $r0 := @parameter0: java.lang.String;
+
+(0)     if $r0 == null goto label2;
+
+        $z0 = staticinvoke <ch.boye.httpclientandroidlib.conn.util.InetAddressUtils: boolean isIPv4Address(java.lang.String)>($r0);
+
+(1)     if $z0 != 0 goto label1;
+
+        $z0_1 = staticinvoke <ch.boye.httpclientandroidlib.conn.util.InetAddressUtils: boolean isIPv6Address(java.lang.String)>($r0);
+
+(2)     if $z0_1 == 0 goto label2;
+
+     label1:
+        $z0_2 = Phi($z0 #1, $z0_1 #2);
+
+        return 1;
+
+     label2:
+        $z0_3 = Phi($z0 #0, $z0_1 #2);
+
+        return 0;
+    }
+
+    public final void verify(java.lang.String, java.security.cert.X509Certificate) throws javax.net.ssl.SSLException
+    {
+        ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier $r0;
+        java.lang.String $r1;
+        java.security.cert.X509Certificate $r2;
+        java.lang.String[] $r3, $r4;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.security.cert.X509Certificate;
+
+        $r3 = staticinvoke <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: java.lang.String[] getCNs(java.security.cert.X509Certificate)>($r2);
+
+        $r4 = staticinvoke <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: java.lang.String[] getSubjectAlts(java.security.cert.X509Certificate,java.lang.String)>($r2, $r1);
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: void verify(java.lang.String,java.lang.String[],java.lang.String[])>($r1, $r3, $r4);
+
+        return;
+    }
+
+    public final void verify(java.lang.String, javax.net.ssl.SSLSocket) throws java.io.IOException
+    {
+        ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier $r0;
+        java.lang.String $r1;
+        javax.net.ssl.SSLSocket $r2;
+        java.lang.NullPointerException $r3;
+        java.security.cert.Certificate $r4;
+        javax.net.ssl.SSLSession $r5, $r6, $r5_1, $r6_1, $r6_2, $r6_3, $r5_2;
+        java.io.InputStream $r7;
+        java.security.cert.Certificate[] $r8;
+        java.security.cert.X509Certificate $r9;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: javax.net.ssl.SSLSocket;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.NullPointerException;
+
+        specialinvoke $r3.<java.lang.NullPointerException: void <init>(java.lang.String)>("host to verify is null");
+
+        throw $r3;
+
+     label1:
+        $r5 = virtualinvoke $r2.<javax.net.ssl.SSLSocket: javax.net.ssl.SSLSession getSession()>();
+
+        $r6 = $r5;
+
+(0)     if $r5 != null goto label2;
+
+        $r7 = virtualinvoke $r2.<javax.net.ssl.SSLSocket: java.io.InputStream getInputStream()>();
+
+        virtualinvoke $r7.<java.io.InputStream: int available()>();
+
+        $r5_1 = virtualinvoke $r2.<javax.net.ssl.SSLSocket: javax.net.ssl.SSLSession getSession()>();
+
+        $r6_1 = $r5_1;
+
+(1)     if $r5_1 != null goto label2;
+
+        virtualinvoke $r2.<javax.net.ssl.SSLSocket: void startHandshake()>();
+
+(2)     $r6_2 = virtualinvoke $r2.<javax.net.ssl.SSLSocket: javax.net.ssl.SSLSession getSession()>();
+
+     label2:
+        $r6_3 = Phi($r6 #0, $r6_1 #1, $r6_2 #2);
+
+        $r5_2 = Phi($r5 #0, $r5_1 #1, $r5_1 #2);
+
+        $r8 = interfaceinvoke $r6_3.<javax.net.ssl.SSLSession: java.security.cert.Certificate[] getPeerCertificates()>();
+
+        $r4 = $r8[0];
+
+        $r9 = (java.security.cert.X509Certificate) $r4;
+
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: void verify(java.lang.String,java.security.cert.X509Certificate)>($r1, $r9);
+
+        return;
+    }
+
+    public final void verify(java.lang.String, java.lang.String[], java.lang.String[], boolean) throws javax.net.ssl.SSLException
+    {
+        ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier $r0;
+        java.lang.String[] $r1, $r4, $r4_1, $r4_2, $r4_3;
+        boolean $z0, $z1, $z2, $z1_1, $z1_2, $z1_3, $z1_4, $z1_5, $z1_6, $z1_7, $z1_8, $z1_9, $z1_10, $z1_11, $z1_12, $z1_13, $z1_14, $z1_15, $z1_16, $z1_17, $z1_18, $z1_19, $z1_20, $z1_21, $z1_22;
+        java.util.LinkedList $r2;
+        java.lang.String $r3, $r5, $r11, $r12, $r13, $r14, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r3_1, $r5_6, $r5_7, $r11_1, $r11_2, $r12_1, $r12_2, $r12_3, $r12_4, $r12_5, $r13_1, $r13_2, $r12_6, $r13_3, $r12_7, $r12_8, $r13_4, $r12_9, $r12_10, $r11_3, $r13_5, $r3_2;
+        int $i0, $i1, $i0_1, $i0_2, $i1_1, $i1_2, $i1_3, $i0_3, $i1_4, $i0_4, $i0_5, $i0_6, $i0_7, $i0_8, $i0_9, $i0_10, $i0_11, $i0_12, $i1_5, $i1_6, $i0_13, $i1_7, $i0_14;
+        java.lang.StringBuilder $r6, $r15, $r6_1, $r6_2, $r6_3, $r6_4, $r15_1, $r15_2, $r15_3, $r6_5;
+        javax.net.ssl.SSLException $r7, $r7_1;
+        java.util.Locale $r8, $r8_1, $r8_2, $r8_3;
+        java.util.Iterator $r9;
+        java.lang.Object $r10;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r4 := @parameter1: java.lang.String[];
+
+        $r1 := @parameter2: java.lang.String[];
+
+        $z0 := @parameter3: boolean;
+
+        $r2 = new java.util.LinkedList;
+
+        specialinvoke $r2.<java.util.LinkedList: void <init>()>();
+
+(0)     if $r4 == null goto label01;
+
+        $i0 = lengthof $r4;
+
+(1)     if $i0 <= 0 goto label01;
+
+        $r5 = $r4[0];
+
+(2)     if $r5 == null goto label01;
+
+        $r5_1 = $r4[0];
+
+(3)     virtualinvoke $r2.<java.util.LinkedList: boolean add(java.lang.Object)>($r5_1);
+
+     label01:
+        $r5_2 = Phi($r5 #0, $r5 #1, $r5 #2, $r5_1 #3);
+
+        $i0_1 = Phi($i0 #0, $i0 #1, $i0 #2, $i0 #3);
+
+(4)     if $r1 == null goto label04;
+
+        $i0_2 = lengthof $r1;
+
+(5)     $i1 = 0;
+
+     label02:
+        $i1_1 = Phi($i1 #5, $i1_2 #7);
+
+        $r5_3 = Phi($r5_2 #5, $r5_4 #7);
+
+(6)     if $i1_1 >= $i0_2 goto label04;
+
+        $r5_4 = $r1[$i1_1];
+
+        if $r5_4 == null goto label03;
+
+        virtualinvoke $r2.<java.util.LinkedList: boolean add(java.lang.Object)>($r5_4);
+
+     label03:
+        $i1_2 = $i1_1 + 1;
+
+(7)     goto label02;
+
+     label04:
+        $i1_3 = Phi($i1 #4, $i1_1 #6);
+
+        $r5_5 = Phi($r5_2 #4, $r5_3 #6);
+
+        $i0_3 = Phi($i0_1 #4, $i0_2 #6);
+
+        $z1 = virtualinvoke $r2.<java.util.LinkedList: boolean isEmpty()>();
+
+        if $z1 == 0 goto label05;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6_1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Certificate for <");
+
+        $r6_2 = virtualinvoke $r6_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r6_3 = virtualinvoke $r6_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("> doesn\'t contain CN or DNS subjectAlt");
+
+        $r3_1 = virtualinvoke $r6_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r7 = new javax.net.ssl.SSLException;
+
+        specialinvoke $r7.<javax.net.ssl.SSLException: void <init>(java.lang.String)>($r3_1);
+
+        throw $r7;
+
+     label05:
+        $r6_4 = new java.lang.StringBuilder;
+
+        specialinvoke $r6_4.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_6 = virtualinvoke $r3.<java.lang.String: java.lang.String trim()>();
+
+        $r8 = <java.util.Locale: java.util.Locale ENGLISH>;
+
+        $r5_7 = virtualinvoke $r5_6.<java.lang.String: java.lang.String toLowerCase(java.util.Locale)>($r8);
+
+        $z1_1 = 0;
+
+(8)     $r9 = virtualinvoke $r2.<java.util.LinkedList: java.util.Iterator iterator()>();
+
+     label06:
+        $i1_4 = Phi($i1_3 #8, $i1_6 #21);
+
+        $r12 = Phi($r12 #8, $r12_8 #21);
+
+        $z1_2 = Phi($z1_1 #8, $z1_18 #21);
+
+        $r11 = Phi($r11 #8, $r11_2 #21);
+
+        $r4_1 = Phi($r4 #8, $r4_2 #21);
+
+        $r8_1 = Phi($r8 #8, $r8_2 #21);
+
+        $r13 = Phi($r13 #8, $r13_4 #21);
+
+        $i0_4 = Phi($i0_3 #8, $i0_13 #21);
+
+        $z2 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+(9)     if $z2 == 0 goto label11;
+
+        $r10 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        $r11_1 = (java.lang.String) $r10;
+
+        $r8_2 = <java.util.Locale: java.util.Locale ENGLISH>;
+
+        $r11_2 = virtualinvoke $r11_1.<java.lang.String: java.lang.String toLowerCase(java.util.Locale)>($r8_2);
+
+        virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" <");
+
+        virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r11_2);
+
+        virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(62);
+
+        $z1_3 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1_3 == 0 goto label07;
+
+        virtualinvoke $r6_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" OR");
+
+     label07:
+        $r4_2 = virtualinvoke $r11_2.<java.lang.String: java.lang.String[] split(java.lang.String)>("\\.");
+
+        $i0_5 = lengthof $r4_2;
+
+(10)    if $i0_5 < 3 goto label12;
+
+        $r12_1 = $r4_2[0];
+
+        $z1_4 = virtualinvoke $r12_1.<java.lang.String: boolean endsWith(java.lang.String)>("*");
+
+(11)    if $z1_4 == 0 goto label12;
+
+        $z1_5 = staticinvoke <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: boolean acceptableCountryWildcard(java.lang.String)>($r11_2);
+
+(12)    if $z1_5 == 0 goto label12;
+
+        $z1_6 = staticinvoke <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: boolean isIPAddress(java.lang.String)>($r3);
+
+(13)    if $z1_6 != 0 goto label12;
+
+(14)    $z1_7 = 1;
+
+     label08:
+        $r12_2 = Phi($r12_1 #14, $r12_9 #22);
+
+        $z1_8 = Phi($z1_7 #14, $z1_21 #22);
+
+        if $z1_8 == 0 goto label16;
+
+        $r12_3 = $r4_2[0];
+
+        $i0_6 = virtualinvoke $r12_3.<java.lang.String: int length()>();
+
+        if $i0_6 <= 1 goto label14;
+
+        $r12_4 = $r4_2[0];
+
+        $i0_7 = lengthof $r4_2;
+
+        $i0_8 = $i0_7 + -2;
+
+        $r12_5 = virtualinvoke $r12_4.<java.lang.String: java.lang.String substring(int,int)>(0, $i0_8);
+
+        $r13_1 = $r4_2[0];
+
+        $i0_9 = virtualinvoke $r13_1.<java.lang.String: int length()>();
+
+        $r13_2 = virtualinvoke $r11_2.<java.lang.String: java.lang.String substring(int)>($i0_9);
+
+        $i0_10 = virtualinvoke $r12_5.<java.lang.String: int length()>();
+
+        $r14 = virtualinvoke $r5_7.<java.lang.String: java.lang.String substring(int)>($i0_10);
+
+        $z1_9 = virtualinvoke $r5_7.<java.lang.String: boolean startsWith(java.lang.String)>($r12_5);
+
+(15)    if $z1_9 == 0 goto label13;
+
+        $z1_10 = virtualinvoke $r14.<java.lang.String: boolean endsWith(java.lang.String)>($r13_2);
+
+(16)    if $z1_10 == 0 goto label13;
+
+(17)    $z1_11 = 1;
+
+     label09:
+        $r12_6 = Phi($r12_5 #17, $r12_5 #23, $r12_7 #24);
+
+        $z1_14 = Phi($z1_11 #17, $z1_13 #23, $z1_17 #24);
+
+        $r13_3 = Phi($r13_2 #17, $r13_2 #23, $r13 #24);
+
+        $i0_11 = Phi($i0_10 #17, $i0_10 #23, $i0_6 #24);
+
+(18)    if $z1_14 == 0 goto label10;
+
+(19)    if $z0 == 0 goto label10;
+
+        $i0_12 = staticinvoke <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: int countDots(java.lang.String)>($r5_7);
+
+        $i1_5 = staticinvoke <ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: int countDots(java.lang.String)>($r11_2);
+
+        if $i0_12 != $i1_5 goto label15;
+
+(20)    $z1_15 = 1;
+
+     label10:
+        $i1_6 = Phi($i1_4 #18, $i1_4 #19, $i1_5 #20, $i1_5 #25, $i1_4 #26);
+
+        $r12_8 = Phi($r12_6 #18, $r12_6 #19, $r12_6 #20, $r12_6 #25, $r12_2 #26);
+
+        $z1_18 = Phi($z1_14 #18, $z1_14 #19, $z1_15 #20, $z1_16 #25, $z1_19 #26);
+
+        $r13_4 = Phi($r13_3 #18, $r13_3 #19, $r13_3 #20, $r13_3 #25, $r13 #26);
+
+        $i0_13 = Phi($i0_11 #18, $i0_11 #19, $i0_12 #20, $i0_12 #25, $i0_5 #26);
+
+(21)    if $z1_18 == 0 goto label06;
+
+     label11:
+        $i1_7 = Phi($i1_4 #9, $i1_6 #21);
+
+        $r12_10 = Phi($r12 #9, $r12_8 #21);
+
+        $z1_22 = Phi($z1_2 #9, $z1_18 #21);
+
+        $r11_3 = Phi($r11 #9, $r11_2 #21);
+
+        $r4_3 = Phi($r4_1 #9, $r4_2 #21);
+
+        $r8_3 = Phi($r8_1 #9, $r8_2 #21);
+
+        $r13_5 = Phi($r13 #9, $r13_4 #21);
+
+        $i0_14 = Phi($i0_4 #9, $i0_13 #21);
+
+        if $z1_22 != 0 goto label17;
+
+        $r7_1 = new javax.net.ssl.SSLException;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r15_1 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("hostname in certificate didn\'t match: <");
+
+        $r15_2 = virtualinvoke $r15_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r15_3 = virtualinvoke $r15_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("> !=");
+
+        $r6_5 = virtualinvoke $r15_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6_4);
+
+        $r3_2 = virtualinvoke $r6_5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7_1.<javax.net.ssl.SSLException: void <init>(java.lang.String)>($r3_2);
+
+        throw $r7_1;
+
+     label12:
+        $r12_9 = Phi($r12 #10, $r12_1 #11, $r12_1 #12, $r12_1 #13);
+
+        $z1_20 = Phi($z1_3 #10, $z1_4 #11, $z1_5 #12, $z1_6 #13);
+
+        $z1_21 = 0;
+
+(22)    goto label08;
+
+     label13:
+        $z1_12 = Phi($z1_9 #15, $z1_10 #16);
+
+        $z1_13 = 0;
+
+(23)    goto label09;
+
+     label14:
+        $r12_7 = virtualinvoke $r11_2.<java.lang.String: java.lang.String substring(int)>(1);
+
+        $z1_17 = virtualinvoke $r5_7.<java.lang.String: boolean endsWith(java.lang.String)>($r12_7);
+
+(24)    goto label09;
+
+     label15:
+        $z1_16 = 0;
+
+(25)    goto label10;
+
+     label16:
+        $z1_19 = virtualinvoke $r5_7.<java.lang.String: boolean equals(java.lang.Object)>($r11_2);
+
+(26)    goto label10;
+
+     label17:
+        return;
+    }
+
+    public final boolean verify(java.lang.String, javax.net.ssl.SSLSession)
+    {
+        ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier $r0;
+        java.lang.String $r1;
+        javax.net.ssl.SSLSession $r2;
+        java.security.cert.Certificate $r3;
+        javax.net.ssl.SSLException $r4;
+        java.security.cert.Certificate[] $r5;
+        java.security.cert.X509Certificate $r6;
+
+        $r0 := @this: ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: javax.net.ssl.SSLSession;
+
+     label1:
+        $r5 = interfaceinvoke $r2.<javax.net.ssl.SSLSession: java.security.cert.Certificate[] getPeerCertificates()>();
+
+     label2:
+        $r3 = $r5[0];
+
+        $r6 = (java.security.cert.X509Certificate) $r3;
+
+     label3:
+        virtualinvoke $r0.<ch.boye.httpclientandroidlib.conn.ssl.AbstractVerifier: void verify(java.lang.String,java.security.cert.X509Certificate)>($r1, $r6);
+
+     label4:
+        return 1;
+
+     label5:
+        $r4 := @caughtexception;
+
+        return 0;
+
+        catch javax.net.ssl.SSLException from label1 to label2 with label5;
+        catch javax.net.ssl.SSLException from label3 to label4 with label5;
+    }
+}

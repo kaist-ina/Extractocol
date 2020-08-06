@@ -1,0 +1,224 @@
+public final class com.paypal.android.sdk.onetouch.core.an extends org.apache.http.conn.ssl.SSLSocketFactory
+{
+    private final javax.net.ssl.SSLSocketFactory a;
+
+    public void <init>()
+    {
+        com.paypal.android.sdk.onetouch.core.an $r0;
+        javax.net.ssl.TrustManager[] $r1;
+        com.paypal.android.sdk.onetouch.core.ao $r2;
+        com.paypal.android.sdk.onetouch.core.ap $r3;
+        javax.net.ssl.SSLContext $r4;
+        javax.net.ssl.SSLSocketFactory $r5;
+
+        $r0 := @this: com.paypal.android.sdk.onetouch.core.an;
+
+        specialinvoke $r0.<org.apache.http.conn.ssl.SSLSocketFactory: void <init>(java.security.KeyStore)>(null);
+
+        $r3 = staticinvoke <com.paypal.android.sdk.onetouch.core.ap: com.paypal.android.sdk.onetouch.core.ap a()>();
+
+        $r4 = staticinvoke <javax.net.ssl.SSLContext: javax.net.ssl.SSLContext getInstance(java.lang.String)>("TLS");
+
+        $r1 = newarray (javax.net.ssl.TrustManager)[1];
+
+        $r2 = new com.paypal.android.sdk.onetouch.core.ao;
+
+        specialinvoke $r2.<com.paypal.android.sdk.onetouch.core.ao: void <init>(com.paypal.android.sdk.onetouch.core.ap)>($r3);
+
+        $r1[0] = $r2;
+
+        virtualinvoke $r4.<javax.net.ssl.SSLContext: void init(javax.net.ssl.KeyManager[],javax.net.ssl.TrustManager[],java.security.SecureRandom)>(null, $r1, null);
+
+        $r5 = virtualinvoke $r4.<javax.net.ssl.SSLContext: javax.net.ssl.SSLSocketFactory getSocketFactory()>();
+
+        $r0.<com.paypal.android.sdk.onetouch.core.an: javax.net.ssl.SSLSocketFactory a> = $r5;
+
+        return;
+    }
+
+    public final java.net.Socket connectSocket(java.net.Socket, java.lang.String, int, java.net.InetAddress, int, org.apache.http.params.HttpParams)
+    {
+        com.paypal.android.sdk.onetouch.core.an $r0;
+        java.lang.String $r1;
+        int $i0, $i1, $i2, $i1_1, $i1_2, $i1_3, $i1_4;
+        java.net.InetAddress $r2;
+        org.apache.http.params.HttpParams $r3;
+        org.apache.http.conn.ssl.X509HostnameVerifier $r4;
+        java.io.IOException $r5;
+        java.lang.Exception $r6;
+        java.net.Socket $r7, $r7_1, $r7_2;
+        javax.net.ssl.SSLSocket $r8;
+        java.net.InetSocketAddress $r9, $r9_1, $r9_2;
+
+        $r0 := @this: com.paypal.android.sdk.onetouch.core.an;
+
+        $r7 := @parameter0: java.net.Socket;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $i0 := @parameter2: int;
+
+        $r2 := @parameter3: java.net.InetAddress;
+
+        $i1 := @parameter4: int;
+
+        $r3 := @parameter5: org.apache.http.params.HttpParams;
+
+(0)     if $r7 == null goto label07;
+
+     label01:
+        $r7_1 = Phi($r7 #0, $r7_2 #5);
+
+        $r8 = (javax.net.ssl.SSLSocket) $r7_1;
+
+        if $r2 != null goto label02;
+
+(1)     if $i1 <= 0 goto label04;
+
+     label02:
+(2)     if $i1 >= 0 goto label03;
+
+(3)     $i1_1 = 0;
+
+     label03:
+        $i1_2 = Phi($i1 #2, $i1_1 #3);
+
+        $r9 = new java.net.InetSocketAddress;
+
+        specialinvoke $r9.<java.net.InetSocketAddress: void <init>(java.net.InetAddress,int)>($r2, $i1_2);
+
+(4)     virtualinvoke $r8.<javax.net.ssl.SSLSocket: void bind(java.net.SocketAddress)>($r9);
+
+     label04:
+        $i1_3 = Phi($i1 #1, $i1_2 #4);
+
+        $r9_1 = Phi($r9 #1, $r9 #4);
+
+        $i1_4 = staticinvoke <org.apache.http.params.HttpConnectionParams: int getConnectionTimeout(org.apache.http.params.HttpParams)>($r3);
+
+        $i2 = staticinvoke <org.apache.http.params.HttpConnectionParams: int getSoTimeout(org.apache.http.params.HttpParams)>($r3);
+
+        $r9_2 = new java.net.InetSocketAddress;
+
+        specialinvoke $r9_2.<java.net.InetSocketAddress: void <init>(java.lang.String,int)>($r1, $i0);
+
+        virtualinvoke $r8.<javax.net.ssl.SSLSocket: void connect(java.net.SocketAddress,int)>($r9_2, $i1_4);
+
+        virtualinvoke $r8.<javax.net.ssl.SSLSocket: void setSoTimeout(int)>($i2);
+
+        $r4 = <org.apache.http.conn.ssl.SSLSocketFactory: org.apache.http.conn.ssl.X509HostnameVerifier STRICT_HOSTNAME_VERIFIER>;
+
+     label05:
+        interfaceinvoke $r4.<org.apache.http.conn.ssl.X509HostnameVerifier: void verify(java.lang.String,javax.net.ssl.SSLSocket)>($r1, $r8);
+
+     label06:
+        return $r8;
+
+     label07:
+        $r7_2 = virtualinvoke $r0.<com.paypal.android.sdk.onetouch.core.an: java.net.Socket createSocket()>();
+
+(5)     goto label01;
+
+     label08:
+        $r5 := @caughtexception;
+
+     label09:
+        virtualinvoke $r8.<javax.net.ssl.SSLSocket: void close()>();
+
+     label10:
+        throw $r5;
+
+     label11:
+        $r6 := @caughtexception;
+
+        goto label10;
+
+        catch java.io.IOException from label05 to label06 with label08;
+        catch java.lang.Exception from label09 to label10 with label11;
+    }
+
+    public final java.net.Socket createSocket()
+    {
+        com.paypal.android.sdk.onetouch.core.an $r0;
+        javax.net.ssl.SSLSocketFactory $r1;
+        java.net.Socket $r2;
+
+        $r0 := @this: com.paypal.android.sdk.onetouch.core.an;
+
+        $r1 = $r0.<com.paypal.android.sdk.onetouch.core.an: javax.net.ssl.SSLSocketFactory a>;
+
+        $r2 = virtualinvoke $r1.<javax.net.ssl.SSLSocketFactory: java.net.Socket createSocket()>();
+
+        return $r2;
+    }
+
+    public final java.net.Socket createSocket(java.net.Socket, java.lang.String, int, boolean)
+    {
+        com.paypal.android.sdk.onetouch.core.an $r0;
+        java.lang.String $r1;
+        boolean $z0;
+        javax.net.ssl.SSLSocketFactory $r2;
+        org.apache.http.conn.ssl.X509HostnameVerifier $r3;
+        java.net.Socket $r4, $r4_1;
+        int $i0, $i0_1, $i0_2;
+        javax.net.ssl.SSLSocket $r5;
+
+        $r0 := @this: com.paypal.android.sdk.onetouch.core.an;
+
+        $r4 := @parameter0: java.net.Socket;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $i0 := @parameter2: int;
+
+        $z0 := @parameter3: boolean;
+
+(0)     if $i0 != -1 goto label1;
+
+(1)     $i0_1 = 443;
+
+     label1:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        $r2 = $r0.<com.paypal.android.sdk.onetouch.core.an: javax.net.ssl.SSLSocketFactory a>;
+
+        $r4_1 = virtualinvoke $r2.<javax.net.ssl.SSLSocketFactory: java.net.Socket createSocket(java.net.Socket,java.lang.String,int,boolean)>($r4, $r1, $i0_2, $z0);
+
+        $r5 = (javax.net.ssl.SSLSocket) $r4_1;
+
+        $r3 = <org.apache.http.conn.ssl.SSLSocketFactory: org.apache.http.conn.ssl.X509HostnameVerifier STRICT_HOSTNAME_VERIFIER>;
+
+        interfaceinvoke $r3.<org.apache.http.conn.ssl.X509HostnameVerifier: void verify(java.lang.String,javax.net.ssl.SSLSocket)>($r1, $r5);
+
+        return $r5;
+    }
+
+    public final org.apache.http.conn.ssl.X509HostnameVerifier getHostnameVerifier()
+    {
+        com.paypal.android.sdk.onetouch.core.an $r0;
+        org.apache.http.conn.ssl.X509HostnameVerifier r1;
+
+        $r0 := @this: com.paypal.android.sdk.onetouch.core.an;
+
+        r1 = <org.apache.http.conn.ssl.SSLSocketFactory: org.apache.http.conn.ssl.X509HostnameVerifier STRICT_HOSTNAME_VERIFIER>;
+
+        return r1;
+    }
+
+    public final void setHostnameVerifier(org.apache.http.conn.ssl.X509HostnameVerifier)
+    {
+        com.paypal.android.sdk.onetouch.core.an $r0;
+        org.apache.http.conn.ssl.X509HostnameVerifier $r1;
+        java.lang.IllegalArgumentException $r2;
+
+        $r0 := @this: com.paypal.android.sdk.onetouch.core.an;
+
+        $r1 := @parameter0: org.apache.http.conn.ssl.X509HostnameVerifier;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Only strict hostname verification is supported!");
+
+        throw $r2;
+    }
+}

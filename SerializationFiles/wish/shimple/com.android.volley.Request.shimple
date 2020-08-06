@@ -1,0 +1,1000 @@
+public abstract class com.android.volley.Request extends java.lang.Object implements java.lang.Comparable
+{
+    private static final java.lang.String DEFAULT_PARAMS_ENCODING;
+    private static final long SLOW_REQUEST_THRESHOLD_MS;
+    private com.android.volley.Cache$Entry mCacheEntry;
+    private boolean mCanceled;
+    private final int mDefaultTrafficStatsTag;
+    private final com.android.volley.Response$ErrorListener mErrorListener;
+    private final com.android.volley.VolleyLog$MarkerLog mEventLog;
+    private final int mMethod;
+    private long mRequestBirthTime;
+    private com.android.volley.RequestQueue mRequestQueue;
+    private boolean mResponseDelivered;
+    private com.android.volley.RetryPolicy mRetryPolicy;
+    private java.lang.Integer mSequence;
+    private boolean mShouldCache;
+    private java.lang.Object mTag;
+    private final java.lang.String mUrl;
+
+    public void <init>(int, java.lang.String, com.android.volley.Response$ErrorListener)
+    {
+        com.android.volley.Request $r0;
+        java.lang.String $r1;
+        com.android.volley.Response$ErrorListener $r2;
+        boolean $z0;
+        com.android.volley.DefaultRetryPolicy $r3;
+        int $i0, $i0_1;
+        com.android.volley.VolleyLog$MarkerLog $r4, $r4_1, $r4_2;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: com.android.volley.Response$ErrorListener;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        $z0 = <com.android.volley.VolleyLog$MarkerLog: boolean ENABLED>;
+
+        if $z0 == 0 goto label2;
+
+        $r4 = new com.android.volley.VolleyLog$MarkerLog;
+
+(0)     specialinvoke $r4.<com.android.volley.VolleyLog$MarkerLog: void <init>()>();
+
+     label1:
+        $r4_1 = Phi($r4 #0, $r4_2 #1);
+
+        $r0.<com.android.volley.Request: com.android.volley.VolleyLog$MarkerLog mEventLog> = $r4_1;
+
+        $r0.<com.android.volley.Request: boolean mShouldCache> = 1;
+
+        $r0.<com.android.volley.Request: boolean mCanceled> = 0;
+
+        $r0.<com.android.volley.Request: boolean mResponseDelivered> = 0;
+
+        $r0.<com.android.volley.Request: long mRequestBirthTime> = 0L;
+
+        $r0.<com.android.volley.Request: com.android.volley.Cache$Entry mCacheEntry> = null;
+
+        $r0.<com.android.volley.Request: int mMethod> = $i0;
+
+        $r0.<com.android.volley.Request: java.lang.String mUrl> = $r1;
+
+        $r0.<com.android.volley.Request: com.android.volley.Response$ErrorListener mErrorListener> = $r2;
+
+        $r3 = new com.android.volley.DefaultRetryPolicy;
+
+        specialinvoke $r3.<com.android.volley.DefaultRetryPolicy: void <init>()>();
+
+        virtualinvoke $r0.<com.android.volley.Request: com.android.volley.Request setRetryPolicy(com.android.volley.RetryPolicy)>($r3);
+
+        $i0_1 = staticinvoke <com.android.volley.Request: int findDefaultTrafficStatsTag(java.lang.String)>($r1);
+
+        $r0.<com.android.volley.Request: int mDefaultTrafficStatsTag> = $i0_1;
+
+        return;
+
+     label2:
+        $r4_2 = null;
+
+(1)     goto label1;
+    }
+
+    public void <init>(java.lang.String, com.android.volley.Response$ErrorListener)
+    {
+        com.android.volley.Request $r0;
+        java.lang.String $r1;
+        com.android.volley.Response$ErrorListener $r2;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.android.volley.Response$ErrorListener;
+
+        specialinvoke $r0.<com.android.volley.Request: void <init>(int,java.lang.String,com.android.volley.Response$ErrorListener)>(-1, $r1, $r2);
+
+        return;
+    }
+
+    static com.android.volley.VolleyLog$MarkerLog access$000(com.android.volley.Request)
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.VolleyLog$MarkerLog r1;
+
+        $r0 := @parameter0: com.android.volley.Request;
+
+        r1 = $r0.<com.android.volley.Request: com.android.volley.VolleyLog$MarkerLog mEventLog>;
+
+        return r1;
+    }
+
+    private byte[] encodeParameters(java.util.Map, java.lang.String)
+    {
+        com.android.volley.Request $r0;
+        java.util.Map $r1;
+        java.io.UnsupportedEncodingException $r2;
+        java.lang.RuntimeException $r3;
+        java.lang.String $r4, $r10, $r10_1, $r10_2, $r10_3, $r10_4, $r10_5, $r10_6, $r4_1;
+        java.lang.StringBuilder $r5, $r5_1, $r5_2, $r5_3;
+        java.util.Set $r6;
+        java.util.Iterator $r7;
+        boolean $z0;
+        java.lang.Object $r8, $r8_1, $r8_2, $r8_3, $r8_4;
+        java.util.Map$Entry $r9;
+        byte[] $r11;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: java.util.Map;
+
+        $r4 := @parameter1: java.lang.String;
+
+        $r5 = new java.lang.StringBuilder;
+
+(0)     specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+     label01:
+        $r6 = interfaceinvoke $r1.<java.util.Map: java.util.Set entrySet()>();
+
+(1)     $r7 = interfaceinvoke $r6.<java.util.Set: java.util.Iterator iterator()>();
+
+     label02:
+        $r8 = Phi($r8 #1, $r8_3 #9);
+
+        $r10 = Phi($r10 #1, $r10_4 #9);
+
+        $z0 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+     label03:
+        if $z0 == 0 goto label13;
+
+     label04:
+(2)     $r8_1 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+     label05:
+        $r9 = (java.util.Map$Entry) $r8_1;
+
+     label06:
+(3)     $r8_2 = interfaceinvoke $r9.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+     label07:
+(4)     $r10_1 = (java.lang.String) $r8_2;
+
+     label08:
+(5)     $r10_2 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r10_1, $r4);
+
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10_2);
+
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(61);
+
+(6)     $r8_3 = interfaceinvoke $r9.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+     label09:
+(7)     $r10_3 = (java.lang.String) $r8_3;
+
+     label10:
+(8)     $r10_4 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r10_3, $r4);
+
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10_4);
+
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(38);
+
+     label11:
+(9)     goto label02;
+
+     label12:
+        $r2 := @caughtexception;
+
+        $r8_4 = Phi($r8 #0, $r8_1 #2, $r8_2 #3, $r8_3 #6);
+
+        $r10_6 = Phi($r10 #0, $r10_1 #4, $r10_2 #5, $r10_3 #7, $r10_4 #8, $r10_5 #10);
+
+        $r3 = new java.lang.RuntimeException;
+
+        $r5_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r5_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r5_2 = virtualinvoke $r5_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Encoding not supported: ");
+
+        $r5_3 = virtualinvoke $r5_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4_1 = virtualinvoke $r5_3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>($r4_1, $r2);
+
+        throw $r3;
+
+     label13:
+(10)    $r10_5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r11 = virtualinvoke $r10_5.<java.lang.String: byte[] getBytes(java.lang.String)>($r4);
+
+     label14:
+        return $r11;
+
+        catch java.io.UnsupportedEncodingException from label01 to label03 with label12;
+        catch java.io.UnsupportedEncodingException from label04 to label05 with label12;
+        catch java.io.UnsupportedEncodingException from label06 to label07 with label12;
+        catch java.io.UnsupportedEncodingException from label08 to label09 with label12;
+        catch java.io.UnsupportedEncodingException from label10 to label11 with label12;
+        catch java.io.UnsupportedEncodingException from label13 to label14 with label12;
+    }
+
+    private static int findDefaultTrafficStatsTag(java.lang.String)
+    {
+        java.lang.String $r0, $r0_1, $r0_2;
+        boolean $z0;
+        android.net.Uri $r1;
+        int $i0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r0);
+
+(0)     if $z0 != 0 goto label1;
+
+        $r1 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r0);
+
+(1)     if $r1 == null goto label1;
+
+        $r0_1 = virtualinvoke $r1.<android.net.Uri: java.lang.String getHost()>();
+
+(2)     if $r0_1 == null goto label1;
+
+        $i0 = virtualinvoke $r0_1.<java.lang.String: int hashCode()>();
+
+        return $i0;
+
+     label1:
+        $r0_2 = Phi($r0 #0, $r0 #1, $r0_1 #2);
+
+        return 0;
+    }
+
+    public void addMarker(java.lang.String)
+    {
+        com.android.volley.Request $r0;
+        java.lang.String $r1;
+        boolean $z0;
+        com.android.volley.VolleyLog$MarkerLog $r2;
+        byte $b0;
+        java.lang.Thread $r3;
+        long $l1, $l1_1, $l1_2, $l1_3;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = <com.android.volley.VolleyLog$MarkerLog: boolean ENABLED>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = $r0.<com.android.volley.Request: com.android.volley.VolleyLog$MarkerLog mEventLog>;
+
+        $r3 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        $l1 = virtualinvoke $r3.<java.lang.Thread: long getId()>();
+
+        virtualinvoke $r2.<com.android.volley.VolleyLog$MarkerLog: void add(java.lang.String,long)>($r1, $l1);
+
+        return;
+
+     label1:
+        $l1_1 = $r0.<com.android.volley.Request: long mRequestBirthTime>;
+
+        $b0 = $l1_1 cmp 0L;
+
+(0)     if $b0 != 0 goto label2;
+
+        $l1_2 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+(1)     $r0.<com.android.volley.Request: long mRequestBirthTime> = $l1_2;
+
+     label2:
+        $l1_3 = Phi($l1_1 #0, $l1_2 #1);
+
+        return;
+    }
+
+    public void cancel()
+    {
+        com.android.volley.Request $r0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r0.<com.android.volley.Request: boolean mCanceled> = 1;
+
+        return;
+    }
+
+    public int compareTo(com.android.volley.Request)
+    {
+        com.android.volley.Request $r0, $r1;
+        com.android.volley.Request$Priority $r2, $r3;
+        java.lang.Integer $r4, $r4_1;
+        int $i0, $i1, $i0_1, $i0_2, $i1_1, $i0_3;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: com.android.volley.Request;
+
+        $r2 = virtualinvoke $r0.<com.android.volley.Request: com.android.volley.Request$Priority getPriority()>();
+
+        $r3 = virtualinvoke $r1.<com.android.volley.Request: com.android.volley.Request$Priority getPriority()>();
+
+        if $r2 != $r3 goto label1;
+
+        $r4 = $r0.<com.android.volley.Request: java.lang.Integer mSequence>;
+
+        $i0 = virtualinvoke $r4.<java.lang.Integer: int intValue()>();
+
+        $r4_1 = $r1.<com.android.volley.Request: java.lang.Integer mSequence>;
+
+        $i1 = virtualinvoke $r4_1.<java.lang.Integer: int intValue()>();
+
+        $i0_1 = $i0 - $i1;
+
+        return $i0_1;
+
+     label1:
+        $i0_2 = virtualinvoke $r3.<com.android.volley.Request$Priority: int ordinal()>();
+
+        $i1_1 = virtualinvoke $r2.<com.android.volley.Request$Priority: int ordinal()>();
+
+        $i0_3 = $i0_2 - $i1_1;
+
+        return $i0_3;
+    }
+
+    public volatile int compareTo(java.lang.Object)
+    {
+        com.android.volley.Request $r0, $r2;
+        java.lang.Object $r1;
+        int $i0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = (com.android.volley.Request) $r1;
+
+        $i0 = virtualinvoke $r0.<com.android.volley.Request: int compareTo(com.android.volley.Request)>($r2);
+
+        return $i0;
+    }
+
+    public void deliverError(com.android.volley.VolleyError)
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.VolleyError $r1;
+        com.android.volley.Response$ErrorListener $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: com.android.volley.VolleyError;
+
+        $r2 = $r0.<com.android.volley.Request: com.android.volley.Response$ErrorListener mErrorListener>;
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = $r0.<com.android.volley.Request: com.android.volley.Response$ErrorListener mErrorListener>;
+
+(1)     interfaceinvoke $r2_1.<com.android.volley.Response$ErrorListener: void onErrorResponse(com.android.volley.VolleyError)>($r1);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    protected abstract void deliverResponse(java.lang.Object);
+
+    void finish(java.lang.String)
+    {
+        com.android.volley.Request $r0;
+        boolean $z0;
+        android.os.Handler $r1;
+        com.android.volley.Request$1 $r2;
+        long $l0, $l2, $l0_1, $l0_2;
+        byte $b1;
+        java.lang.String $r3, $r3_1, $r3_2, $r3_3;
+        com.android.volley.RequestQueue $r4, $r4_1, $r4_2;
+        java.lang.Thread $r5;
+        android.os.Looper $r6, $r7, $r6_1;
+        com.android.volley.VolleyLog$MarkerLog $r8, $r8_1;
+        java.lang.Object[] $r9;
+        java.lang.Long $r10;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $r4 = $r0.<com.android.volley.Request: com.android.volley.RequestQueue mRequestQueue>;
+
+(0)     if $r4 == null goto label1;
+
+        $r4_1 = $r0.<com.android.volley.Request: com.android.volley.RequestQueue mRequestQueue>;
+
+(1)     virtualinvoke $r4_1.<com.android.volley.RequestQueue: void finish(com.android.volley.Request)>($r0);
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $z0 = <com.android.volley.VolleyLog$MarkerLog: boolean ENABLED>;
+
+        if $z0 == 0 goto label3;
+
+        $r5 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        $l0 = virtualinvoke $r5.<java.lang.Thread: long getId()>();
+
+        $r6 = staticinvoke <android.os.Looper: android.os.Looper myLooper()>();
+
+        $r7 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        if $r6 == $r7 goto label2;
+
+        $r1 = new android.os.Handler;
+
+        $r6_1 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r1.<android.os.Handler: void <init>(android.os.Looper)>($r6_1);
+
+        $r2 = new com.android.volley.Request$1;
+
+        specialinvoke $r2.<com.android.volley.Request$1: void <init>(com.android.volley.Request,java.lang.String,long)>($r0, $r3, $l0);
+
+        virtualinvoke $r1.<android.os.Handler: boolean post(java.lang.Runnable)>($r2);
+
+        return;
+
+     label2:
+        $r8 = $r0.<com.android.volley.Request: com.android.volley.VolleyLog$MarkerLog mEventLog>;
+
+        virtualinvoke $r8.<com.android.volley.VolleyLog$MarkerLog: void add(java.lang.String,long)>($r3, $l0);
+
+        $r8_1 = $r0.<com.android.volley.Request: com.android.volley.VolleyLog$MarkerLog mEventLog>;
+
+        $r3_1 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String toString()>();
+
+        virtualinvoke $r8_1.<com.android.volley.VolleyLog$MarkerLog: void finish(java.lang.String)>($r3_1);
+
+        return;
+
+     label3:
+        $l2 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+        $l0_1 = $r0.<com.android.volley.Request: long mRequestBirthTime>;
+
+        $l0_2 = $l2 - $l0_1;
+
+        $b1 = $l0_2 cmp 3000L;
+
+(2)     if $b1 < 0 goto label4;
+
+        $r9 = newarray (java.lang.Object)[2];
+
+        $r10 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0_2);
+
+        $r9[0] = $r10;
+
+        $r3_2 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String toString()>();
+
+        $r9[1] = $r3_2;
+
+(3)     staticinvoke <com.android.volley.VolleyLog: void d(java.lang.String,java.lang.Object[])>("%d ms: %s", $r9);
+
+     label4:
+        $r3_3 = Phi($r3 #2, $r3_2 #3);
+
+        return;
+    }
+
+    public byte[] getBody() throws com.android.volley.AuthFailureError
+    {
+        com.android.volley.Request $r0;
+        java.util.Map $r1;
+        int $i0;
+        java.lang.String $r2;
+        byte[] $r3;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 = virtualinvoke $r0.<com.android.volley.Request: java.util.Map getParams()>();
+
+        if $r1 == null goto label1;
+
+        $i0 = interfaceinvoke $r1.<java.util.Map: int size()>();
+
+        if $i0 <= 0 goto label1;
+
+        $r2 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getParamsEncoding()>();
+
+        $r3 = specialinvoke $r0.<com.android.volley.Request: byte[] encodeParameters(java.util.Map,java.lang.String)>($r1, $r2);
+
+        return $r3;
+
+     label1:
+        return null;
+    }
+
+    public java.lang.String getBodyContentType()
+    {
+        com.android.volley.Request $r0;
+        java.lang.StringBuilder $r1, $r1_1, $r1_2;
+        java.lang.String $r2, $r2_1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1_1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("application/x-www-form-urlencoded; charset=");
+
+        $r2 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getParamsEncoding()>();
+
+        $r1_2 = virtualinvoke $r1_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2_1 = virtualinvoke $r1_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r2_1;
+    }
+
+    public com.android.volley.Cache$Entry getCacheEntry()
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.Cache$Entry r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        r1 = $r0.<com.android.volley.Request: com.android.volley.Cache$Entry mCacheEntry>;
+
+        return r1;
+    }
+
+    public java.lang.String getCacheKey()
+    {
+        com.android.volley.Request $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        return $r1;
+    }
+
+    public java.util.Map getHeaders() throws com.android.volley.AuthFailureError
+    {
+        com.android.volley.Request $r0;
+        java.util.Map $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 = staticinvoke <java.util.Collections: java.util.Map emptyMap()>();
+
+        return $r1;
+    }
+
+    public int getMethod()
+    {
+        com.android.volley.Request $r0;
+        int i0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        i0 = $r0.<com.android.volley.Request: int mMethod>;
+
+        return i0;
+    }
+
+    protected java.util.Map getParams() throws com.android.volley.AuthFailureError
+    {
+        com.android.volley.Request $r0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        return null;
+    }
+
+    protected java.lang.String getParamsEncoding()
+    {
+        com.android.volley.Request $r0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        return "UTF-8";
+    }
+
+    public byte[] getPostBody() throws com.android.volley.AuthFailureError
+    {
+        com.android.volley.Request $r0;
+        java.util.Map $r1;
+        int $i0;
+        java.lang.String $r2;
+        byte[] $r3;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 = virtualinvoke $r0.<com.android.volley.Request: java.util.Map getPostParams()>();
+
+        if $r1 == null goto label1;
+
+        $i0 = interfaceinvoke $r1.<java.util.Map: int size()>();
+
+        if $i0 <= 0 goto label1;
+
+        $r2 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getPostParamsEncoding()>();
+
+        $r3 = specialinvoke $r0.<com.android.volley.Request: byte[] encodeParameters(java.util.Map,java.lang.String)>($r1, $r2);
+
+        return $r3;
+
+     label1:
+        return null;
+    }
+
+    public java.lang.String getPostBodyContentType()
+    {
+        com.android.volley.Request $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getBodyContentType()>();
+
+        return $r1;
+    }
+
+    protected java.util.Map getPostParams() throws com.android.volley.AuthFailureError
+    {
+        com.android.volley.Request $r0;
+        java.util.Map $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 = virtualinvoke $r0.<com.android.volley.Request: java.util.Map getParams()>();
+
+        return $r1;
+    }
+
+    protected java.lang.String getPostParamsEncoding()
+    {
+        com.android.volley.Request $r0;
+        java.lang.String $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getParamsEncoding()>();
+
+        return $r1;
+    }
+
+    public com.android.volley.Request$Priority getPriority()
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.Request$Priority r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        r1 = <com.android.volley.Request$Priority: com.android.volley.Request$Priority NORMAL>;
+
+        return r1;
+    }
+
+    public com.android.volley.RetryPolicy getRetryPolicy()
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.RetryPolicy r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        r1 = $r0.<com.android.volley.Request: com.android.volley.RetryPolicy mRetryPolicy>;
+
+        return r1;
+    }
+
+    public final int getSequence()
+    {
+        com.android.volley.Request $r0;
+        java.lang.IllegalStateException $r1;
+        int $i0;
+        java.lang.Integer $r2, $r2_1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r2 = $r0.<com.android.volley.Request: java.lang.Integer mSequence>;
+
+        if $r2 != null goto label1;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("getSequence called before setSequence");
+
+        throw $r1;
+
+     label1:
+        $r2_1 = $r0.<com.android.volley.Request: java.lang.Integer mSequence>;
+
+        $i0 = virtualinvoke $r2_1.<java.lang.Integer: int intValue()>();
+
+        return $i0;
+    }
+
+    public java.lang.Object getTag()
+    {
+        com.android.volley.Request $r0;
+        java.lang.Object r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        r1 = $r0.<com.android.volley.Request: java.lang.Object mTag>;
+
+        return r1;
+    }
+
+    public final int getTimeoutMs()
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.RetryPolicy $r1;
+        int $i0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 = $r0.<com.android.volley.Request: com.android.volley.RetryPolicy mRetryPolicy>;
+
+        $i0 = interfaceinvoke $r1.<com.android.volley.RetryPolicy: int getCurrentTimeout()>();
+
+        return $i0;
+    }
+
+    public int getTrafficStatsTag()
+    {
+        com.android.volley.Request $r0;
+        int i0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        i0 = $r0.<com.android.volley.Request: int mDefaultTrafficStatsTag>;
+
+        return i0;
+    }
+
+    public java.lang.String getUrl()
+    {
+        com.android.volley.Request $r0;
+        java.lang.String r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        r1 = $r0.<com.android.volley.Request: java.lang.String mUrl>;
+
+        return r1;
+    }
+
+    public boolean hasHadResponseDelivered()
+    {
+        com.android.volley.Request $r0;
+        boolean z0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        z0 = $r0.<com.android.volley.Request: boolean mResponseDelivered>;
+
+        return z0;
+    }
+
+    public boolean isCanceled()
+    {
+        com.android.volley.Request $r0;
+        boolean z0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        z0 = $r0.<com.android.volley.Request: boolean mCanceled>;
+
+        return z0;
+    }
+
+    public void markDelivered()
+    {
+        com.android.volley.Request $r0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r0.<com.android.volley.Request: boolean mResponseDelivered> = 1;
+
+        return;
+    }
+
+    protected com.android.volley.VolleyError parseNetworkError(com.android.volley.VolleyError)
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.VolleyError $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: com.android.volley.VolleyError;
+
+        return $r1;
+    }
+
+    protected abstract com.android.volley.Response parseNetworkResponse(com.android.volley.NetworkResponse);
+
+    public com.android.volley.Request setCacheEntry(com.android.volley.Cache$Entry)
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.Cache$Entry $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: com.android.volley.Cache$Entry;
+
+        $r0.<com.android.volley.Request: com.android.volley.Cache$Entry mCacheEntry> = $r1;
+
+        return $r0;
+    }
+
+    public com.android.volley.Request setRequestQueue(com.android.volley.RequestQueue)
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.RequestQueue $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: com.android.volley.RequestQueue;
+
+        $r0.<com.android.volley.Request: com.android.volley.RequestQueue mRequestQueue> = $r1;
+
+        return $r0;
+    }
+
+    public com.android.volley.Request setRetryPolicy(com.android.volley.RetryPolicy)
+    {
+        com.android.volley.Request $r0;
+        com.android.volley.RetryPolicy $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: com.android.volley.RetryPolicy;
+
+        $r0.<com.android.volley.Request: com.android.volley.RetryPolicy mRetryPolicy> = $r1;
+
+        return $r0;
+    }
+
+    public final com.android.volley.Request setSequence(int)
+    {
+        com.android.volley.Request $r0;
+        int $i0;
+        java.lang.Integer $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $i0 := @parameter0: int;
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r0.<com.android.volley.Request: java.lang.Integer mSequence> = $r1;
+
+        return $r0;
+    }
+
+    public final com.android.volley.Request setShouldCache(boolean)
+    {
+        com.android.volley.Request $r0;
+        boolean $z0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $z0 := @parameter0: boolean;
+
+        $r0.<com.android.volley.Request: boolean mShouldCache> = $z0;
+
+        return $r0;
+    }
+
+    public com.android.volley.Request setTag(java.lang.Object)
+    {
+        com.android.volley.Request $r0;
+        java.lang.Object $r1;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r0.<com.android.volley.Request: java.lang.Object mTag> = $r1;
+
+        return $r0;
+    }
+
+    public final boolean shouldCache()
+    {
+        com.android.volley.Request $r0;
+        boolean z0;
+
+        $r0 := @this: com.android.volley.Request;
+
+        z0 = $r0.<com.android.volley.Request: boolean mShouldCache>;
+
+        return z0;
+    }
+
+    public java.lang.String toString()
+    {
+        com.android.volley.Request $r0;
+        boolean $z0;
+        java.lang.Integer $r1;
+        java.lang.StringBuilder $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6, $r2_7, $r2_8, $r2_9, $r2_10, $r2_11;
+        int $i0;
+        java.lang.String $r3, $r4, $r3_1, $r4_1, $r4_2, $r3_2, $r4_3;
+        com.android.volley.Request$Priority $r5;
+
+        $r0 := @this: com.android.volley.Request;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2_1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("0x");
+
+        $i0 = virtualinvoke $r0.<com.android.volley.Request: int getTrafficStatsTag()>();
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        $r2_2 = virtualinvoke $r2_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3_1 = virtualinvoke $r2_2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r2_3 = new java.lang.StringBuilder;
+
+        specialinvoke $r2_3.<java.lang.StringBuilder: void <init>()>();
+
+        $z0 = $r0.<com.android.volley.Request: boolean mCanceled>;
+
+        if $z0 == 0 goto label2;
+
+(0)     $r4 = "[X] ";
+
+     label1:
+        $r4_1 = Phi($r4 #0, $r4_3 #1);
+
+        $r2_4 = virtualinvoke $r2_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4_1);
+
+        $r4_2 = virtualinvoke $r0.<com.android.volley.Request: java.lang.String getUrl()>();
+
+        $r2_5 = virtualinvoke $r2_4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4_2);
+
+        $r2_6 = virtualinvoke $r2_5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r2_7 = virtualinvoke $r2_6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3_1);
+
+        $r2_8 = virtualinvoke $r2_7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r5 = virtualinvoke $r0.<com.android.volley.Request: com.android.volley.Request$Priority getPriority()>();
+
+        $r2_9 = virtualinvoke $r2_8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5);
+
+        $r2_10 = virtualinvoke $r2_9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r1 = $r0.<com.android.volley.Request: java.lang.Integer mSequence>;
+
+        $r2_11 = virtualinvoke $r2_10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3_2 = virtualinvoke $r2_11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3_2;
+
+     label2:
+        $r4_3 = "[ ] ";
+
+(1)     goto label1;
+    }
+}

@@ -1,0 +1,1140 @@
+public class com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment extends com.contextlogic.wish.ui.fragment.base.BaseContentFragment implements com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener, com.contextlogic.wish.ui.fragment.signup.SignupCategoryGridCellView$SignupCategoryCellFragment
+{
+    public static final java.lang.String ARG_RETURNING_MODE;
+    private static final java.lang.String STORED_STATE_DATA;
+    private java.util.ArrayList categories;
+    private com.contextlogic.wish.api.service.CategoryUnwishService categoryUnwishService;
+    private com.contextlogic.wish.api.service.CategoryWishService categoryWishService;
+    private java.lang.String dataStateStoreKey;
+    private android.view.View errorView;
+    private com.contextlogic.wish.api.service.GetSignupCategoriesService getSignupCategoryService;
+    private com.contextlogic.wish.ui.fragment.signup.SignupCategoryAdapter gridAdapter;
+    private com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView;
+    private boolean loadingComplete;
+    private boolean loadingErrored;
+    private android.view.View loadingView;
+    private android.view.View nextButton;
+    private android.view.View nextButtonContainer;
+    private int selectedCategoryCount;
+
+    public void <init>()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void <init>()>();
+
+        return;
+    }
+
+    static void access$000(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void handleNext()>();
+
+        return;
+    }
+
+    static void access$100(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void refresh()>();
+
+        return;
+    }
+
+    static int access$208(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        int $i0, $i1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: int selectedCategoryCount>;
+
+        $i1 = $i0 + 1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: int selectedCategoryCount> = $i1;
+
+        return $i0;
+    }
+
+    static int access$210(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        int $i0, $i1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $i0 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: int selectedCategoryCount>;
+
+        $i1 = $i0 + -1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: int selectedCategoryCount> = $i1;
+
+        return $i0;
+    }
+
+    static void access$300(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void refreshWishStatesDelayed()>();
+
+        return;
+    }
+
+    static void access$400(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void refreshWishStates()>();
+
+        return;
+    }
+
+    static void access$500(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment, java.util.ArrayList)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        java.util.ArrayList $r1;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 := @parameter1: java.util.ArrayList;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void handleLoadingSuccess(java.util.ArrayList)>($r1);
+
+        return;
+    }
+
+    static void access$600(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+
+        $r0 := @parameter0: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void handleLoadingFailure()>();
+
+        return;
+    }
+
+    private void handleLoadingFailure()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        android.support.v4.app.FragmentActivity $r1, $r2, $r2_1;
+        java.lang.String $r3, $r4;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingErrored> = 1;
+
+        $r1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r2 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r3 = virtualinvoke $r2.<android.support.v4.app.FragmentActivity: java.lang.String getString(int)>(2131100488);
+
+        $r2_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r4 = virtualinvoke $r2_1.<android.support.v4.app.FragmentActivity: java.lang.String getString(int)>(2131100100);
+
+        staticinvoke <com.contextlogic.wish.ui.components.alert.PopupAlertDialog: void showError(android.content.Context,java.lang.String,java.lang.String)>($r1, $r3, $r4);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void refreshViewState()>();
+
+        return;
+    }
+
+    private void handleLoadingSuccess(java.util.ArrayList)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        android.widget.FrameLayout $r1;
+        android.widget.FrameLayout$LayoutParams $r2;
+        java.util.ArrayList $r3, $r3_1, $r3_2;
+        java.util.Iterator $r4;
+        boolean $z0, $z0_1, $z0_2;
+        java.lang.Object $r5;
+        com.contextlogic.wish.api.data.WishSignupCategory $r6;
+        int $i0, $i0_1, $i0_2, $i0_3;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r7, $r7_1, $r7_2;
+        android.support.v4.app.FragmentActivity $r8;
+        android.content.res.Resources $r9;
+        android.util.DisplayMetrics $r10;
+        float $f0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r3 := @parameter0: java.util.ArrayList;
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingComplete> = 1;
+
+(0)     $r4 = virtualinvoke $r3.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label1:
+        $i0 = Phi($i0 #0, $i0 #1, $i0_2 #2);
+
+        $z0 = Phi($z0 #0, $z0_2 #1, $z0_2 #2);
+
+        $r3_1 = Phi($r3 #0, $r3_2 #1, $r3_2 #2);
+
+        $z0_1 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0_1 == 0 goto label2;
+
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (com.contextlogic.wish.api.data.WishSignupCategory) $r5;
+
+        $r3_2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.util.ArrayList categories>;
+
+        virtualinvoke $r3_2.<java.util.ArrayList: boolean add(java.lang.Object)>($r6);
+
+        $z0_2 = virtualinvoke $r6.<com.contextlogic.wish.api.data.WishSignupCategory: boolean isAlreadyWishing()>();
+
+(1)     if $z0_2 == 0 goto label1;
+
+        $i0_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: int selectedCategoryCount>;
+
+        $i0_2 = $i0_1 + 1;
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: int selectedCategoryCount> = $i0_2;
+
+(2)     goto label1;
+
+     label2:
+        $r7 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        virtualinvoke $r7.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void scrollTo(int,int)>(0, 0);
+
+        $r7_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        virtualinvoke $r7_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void reloadData()>();
+
+        $r1 = new android.widget.FrameLayout;
+
+        $r8 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        specialinvoke $r1.<android.widget.FrameLayout: void <init>(android.content.Context)>($r8);
+
+        $r9 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.content.res.Resources getResources()>();
+
+        $r10 = virtualinvoke $r9.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0 = staticinvoke <android.util.TypedValue: float applyDimension(int,float,android.util.DisplayMetrics)>(1, 80.0F, $r10);
+
+        $i0_3 = (int) $f0;
+
+        $r2 = new android.widget.FrameLayout$LayoutParams;
+
+        specialinvoke $r2.<android.widget.FrameLayout$LayoutParams: void <init>(int,int)>(-1, $i0_3);
+
+        virtualinvoke $r1.<android.widget.FrameLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r2);
+
+        $r7_2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        virtualinvoke $r7_2.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void addFooterView(android.view.View)>($r1);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void refreshViewState()>();
+
+        return;
+    }
+
+    private void handleNext()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.analytics.WishAnalyticsEvent $r1;
+        com.contextlogic.wish.analytics.Analytics$EventType $r2;
+        android.os.Handler $r3;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$3 $r4;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void dismissModal()>();
+
+        $r1 = <com.contextlogic.wish.analytics.WishAnalyticsEvent: com.contextlogic.wish.analytics.WishAnalyticsEvent CLICK_MOBILE_SIGNUP_CATEGORY_NEXT>;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void trackClick(com.contextlogic.wish.analytics.WishAnalyticsEvent)>($r1);
+
+        $r2 = <com.contextlogic.wish.analytics.Analytics$EventType: com.contextlogic.wish.analytics.Analytics$EventType GetStarted>;
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void trackClick(com.contextlogic.wish.analytics.Analytics$EventType)>($r2);
+
+        $r3 = new android.os.Handler;
+
+        specialinvoke $r3.<android.os.Handler: void <init>()>();
+
+        $r4 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$3;
+
+        specialinvoke $r4.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$3: void <init>(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r0);
+
+        virtualinvoke $r3.<android.os.Handler: boolean post(java.lang.Runnable)>($r4);
+
+        return;
+    }
+
+    private void hideAllUiElements()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r1;
+        android.view.View $r2, $r2_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setVisibility(int)>(8);
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View errorView>;
+
+        virtualinvoke $r2.<android.view.View: void setVisibility(int)>(8);
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View loadingView>;
+
+        virtualinvoke $r2_1.<android.view.View: void setVisibility(int)>(8);
+
+        return;
+    }
+
+    private void loadFeed()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.api.service.GetSignupCategoriesService $r1;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$9 $r2;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$10 $r3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingErrored> = 0;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.GetSignupCategoriesService getSignupCategoryService>;
+
+        $r2 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$9;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$9: void <init>(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r0);
+
+        $r3 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$10;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$10: void <init>(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r0);
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.GetSignupCategoriesService: void requestService(com.contextlogic.wish.api.service.GetSignupCategoriesService$SuccessCallback,com.contextlogic.wish.api.service.ApiService$FailureCallback)>($r2, $r3);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void refreshViewState()>();
+
+        return;
+    }
+
+    private void refresh()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        java.util.ArrayList $r1;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.util.ArrayList categories>;
+
+        virtualinvoke $r1.<java.util.ArrayList: void clear()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: int selectedCategoryCount> = 0;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        virtualinvoke $r2.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void reloadData()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingComplete> = 0;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void loadFeed()>();
+
+        return;
+    }
+
+    private void refreshViewState()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.api.service.GetSignupCategoriesService $r1;
+        boolean $z0, $z0_1, $z0_2;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r2, $r2_1, $r2_2, $r2_3;
+        android.view.View $r3, $r3_1, $r3_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void hideAllUiElements()>();
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingErrored>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        virtualinvoke $r2.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setVisibility(int)>(0);
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View errorView>;
+
+        virtualinvoke $r3.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label1:
+        $z0_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingComplete>;
+
+        if $z0_1 == 0 goto label2;
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        virtualinvoke $r2_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setVisibility(int)>(0);
+
+        return;
+
+     label2:
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.GetSignupCategoriesService getSignupCategoryService>;
+
+        $z0_2 = virtualinvoke $r1.<com.contextlogic.wish.api.service.GetSignupCategoriesService: boolean isPending()>();
+
+(0)     if $z0_2 == 0 goto label3;
+
+        $r2_2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        virtualinvoke $r2_2.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setVisibility(int)>(0);
+
+        $r3_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View loadingView>;
+
+(1)     virtualinvoke $r3_1.<android.view.View: void setVisibility(int)>(0);
+
+     label3:
+        $r2_3 = Phi($r2 #0, $r2_2 #1);
+
+        $r3_2 = Phi($r3 #0, $r3_1 #1);
+
+        return;
+    }
+
+    private void refreshWishStates()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r1;
+        boolean $z0;
+        com.contextlogic.wish.api.service.CategoryUnwishService $r2;
+        android.view.View $r3, $r3_1, $r3_2;
+        android.util.SparseArray $r4;
+        int $i0, $i1, $i1_1, $i1_2, $i1_3, $i0_1, $i0_2, $i1_4;
+        java.lang.Object $r5;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r6;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryGridCellView $r7;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r3 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View getView()>();
+
+(0)     if $r3 == null goto label3;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        $r4 = virtualinvoke $r1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: android.util.SparseArray getVisibleViews()>();
+
+        $i0 = virtualinvoke $r4.<android.util.SparseArray: int size()>();
+
+(1)     $i1 = 0;
+
+     label1:
+        $i1_1 = Phi($i1 #1, $i1_2 #3);
+
+(2)     if $i1_1 >= $i0 goto label3;
+
+        $r5 = virtualinvoke $r4.<android.util.SparseArray: java.lang.Object valueAt(int)>($i1_1);
+
+        $r6 = (com.contextlogic.wish.ui.components.grid.StaggeredGridCellView) $r5;
+
+        $z0 = $r6 instanceof com.contextlogic.wish.ui.fragment.signup.SignupCategoryGridCellView;
+
+        if $z0 == 0 goto label2;
+
+        $r7 = (com.contextlogic.wish.ui.fragment.signup.SignupCategoryGridCellView) $r6;
+
+        virtualinvoke $r7.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryGridCellView: void refreshWishState()>();
+
+     label2:
+        $i1_2 = $i1_1 + 1;
+
+(3)     goto label1;
+
+     label3:
+        $i1_3 = Phi($i1 #0, $i1_1 #2);
+
+        $i0_1 = Phi($i0 #0, $i0 #2);
+
+        $i0_2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: int selectedCategoryCount>;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.CategoryUnwishService categoryUnwishService>;
+
+        $i1_4 = virtualinvoke $r2.<com.contextlogic.wish.api.service.CategoryUnwishService: int pendingRequestCount()>();
+
+        if $i0_2 <= $i1_4 goto label4;
+
+        $r3_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View nextButtonContainer>;
+
+        virtualinvoke $r3_1.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label4:
+        $r3_2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View nextButtonContainer>;
+
+        virtualinvoke $r3_2.<android.view.View: void setVisibility(int)>(8);
+
+        return;
+    }
+
+    private void refreshWishStatesDelayed()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$8 $r1;
+        android.view.View $r2, $r2_1, $r2_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r2 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View getView()>();
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View getView()>();
+
+        $r1 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$8;
+
+        specialinvoke $r1.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$8: void <init>(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r0);
+
+(1)     virtualinvoke $r2_1.<android.view.View: boolean post(java.lang.Runnable)>($r1);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    protected com.contextlogic.wish.analytics.Analytics$PageViewType getAnalyticsPageViewType()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.analytics.Analytics$PageViewType r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        r1 = <com.contextlogic.wish.analytics.Analytics$PageViewType: com.contextlogic.wish.analytics.Analytics$PageViewType SignupStepOne>;
+
+        return r1;
+    }
+
+    protected int getLayoutResourceId()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        return 2130903208;
+    }
+
+    protected com.contextlogic.wish.analytics.WishAnalyticsEvent getWishAnalyticsPageViewType()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.analytics.WishAnalyticsEvent r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        r1 = <com.contextlogic.wish.analytics.WishAnalyticsEvent: com.contextlogic.wish.analytics.WishAnalyticsEvent IMPRESSION_MOBILE_SIGNUP_CATEGORY>;
+
+        return r1;
+    }
+
+    public void handleResume()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        boolean $z0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void handleResume()>();
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingComplete>;
+
+        if $z0 != 0 goto label1;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void loadFeed()>();
+
+     label1:
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void refreshViewState()>();
+
+        return;
+    }
+
+    public boolean hideBackButton()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        return 1;
+    }
+
+    protected void initializeUi(android.view.View)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        java.util.ArrayList $r1;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$1 $r2;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$2 $r3;
+        android.view.View $r4, $r5, $r5_1, $r5_2, $r5_3, $r5_4, $r5_5, $r5_6, $r4_1;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r6, $r6_1, $r6_2, $r6_3, $r6_4;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryAdapter $r7, $r7_1;
+        android.support.v4.app.FragmentActivity $r8;
+        com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper $r9, $r9_1;
+        java.lang.String $r10;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r4 := @parameter0: android.view.View;
+
+        $r5 = virtualinvoke $r4.<android.view.View: android.view.View findViewById(int)>(2131559271);
+
+        $r6 = (com.contextlogic.wish.ui.components.grid.StaggeredGridView) $r5;
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView> = $r6;
+
+        $r5_1 = virtualinvoke $r4.<android.view.View: android.view.View findViewById(int)>(2131559268);
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View loadingView> = $r5_1;
+
+        $r5_2 = virtualinvoke $r4.<android.view.View: android.view.View findViewById(int)>(2131559269);
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View errorView> = $r5_2;
+
+        $r6_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        virtualinvoke $r6_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setListener(com.contextlogic.wish.ui.components.grid.StaggeredGridViewListener)>($r0);
+
+        $r7 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryAdapter;
+
+        $r8 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.support.v4.app.FragmentActivity getActivity()>();
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.util.ArrayList categories>;
+
+        $r6_2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        specialinvoke $r7.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryAdapter: void <init>(android.content.Context,java.util.ArrayList,com.contextlogic.wish.ui.components.grid.StaggeredGridView,com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r8, $r1, $r6_2, $r0);
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.fragment.signup.SignupCategoryAdapter gridAdapter> = $r7;
+
+        $r6_3 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        $r7_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.fragment.signup.SignupCategoryAdapter gridAdapter>;
+
+        virtualinvoke $r6_3.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void setAdapter(com.contextlogic.wish.ui.components.grid.StaggeredGridViewAdapter)>($r7_1);
+
+        $r6_4 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+        virtualinvoke $r6_4.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void reloadData()>();
+
+        $r5_3 = virtualinvoke $r4.<android.view.View: android.view.View findViewById(int)>(2131559272);
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View nextButtonContainer> = $r5_3;
+
+        $r5_4 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View nextButtonContainer>;
+
+        virtualinvoke $r5_4.<android.view.View: void setVisibility(int)>(8);
+
+        $r5_5 = virtualinvoke $r4.<android.view.View: android.view.View findViewById(int)>(2131559273);
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View nextButton> = $r5_5;
+
+        $r5_6 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: android.view.View nextButton>;
+
+        $r2 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$1;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$1: void <init>(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r0);
+
+        virtualinvoke $r5_6.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>($r2);
+
+        $r4_1 = virtualinvoke $r4.<android.view.View: android.view.View findViewById(int)>(2131559270);
+
+        $r3 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$2;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$2: void <init>(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r0);
+
+        virtualinvoke $r4_1.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>($r3);
+
+        $r9 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper getNavigationBar()>();
+
+        virtualinvoke $r9.<com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper: void setBackButtonEnabled(boolean)>(0);
+
+        $r9_1 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper getNavigationBar()>();
+
+        $r10 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.lang.String getString(int)>(2131100884);
+
+        virtualinvoke $r9_1.<com.contextlogic.wish.ui.components.navigation.NavigationBarWrapper: void setTitle(java.lang.String)>($r10);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void hideAllUiElements()>();
+
+        return;
+    }
+
+    public boolean isWishPending(java.lang.String)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.api.service.CategoryWishService $r2;
+        com.contextlogic.wish.api.service.CategoryUnwishService $r3;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.CategoryWishService categoryWishService>;
+
+        $z0 = virtualinvoke $r2.<com.contextlogic.wish.api.service.CategoryWishService: boolean isPending(java.lang.String)>($r1);
+
+(0)     if $z0 != 0 goto label1;
+
+        $r3 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.CategoryUnwishService categoryUnwishService>;
+
+        $z0_1 = virtualinvoke $r3.<com.contextlogic.wish.api.service.CategoryUnwishService: boolean isPending(java.lang.String)>($r1);
+
+(1)     if $z0_1 == 0 goto label2;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public boolean onBackPressed()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        return 1;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        android.os.Bundle $r1;
+        com.contextlogic.wish.api.service.GetSignupCategoriesService $r2;
+        com.contextlogic.wish.api.service.CategoryWishService $r3;
+        com.contextlogic.wish.api.service.CategoryUnwishService $r4;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onCreate(android.os.Bundle)>($r1);
+
+        $r2 = new com.contextlogic.wish.api.service.GetSignupCategoriesService;
+
+        specialinvoke $r2.<com.contextlogic.wish.api.service.GetSignupCategoriesService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.GetSignupCategoriesService getSignupCategoryService> = $r2;
+
+        $r3 = new com.contextlogic.wish.api.service.CategoryWishService;
+
+        specialinvoke $r3.<com.contextlogic.wish.api.service.CategoryWishService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.CategoryWishService categoryWishService> = $r3;
+
+        $r4 = new com.contextlogic.wish.api.service.CategoryUnwishService;
+
+        specialinvoke $r4.<com.contextlogic.wish.api.service.CategoryUnwishService: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.CategoryUnwishService categoryUnwishService> = $r4;
+
+        return;
+    }
+
+    public void onDestroy()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.cache.RuntimeStateStore $r2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onDestroy()>();
+
+        $r2 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.lang.String dataStateStoreKey>;
+
+        virtualinvoke $r2.<com.contextlogic.wish.cache.RuntimeStateStore: void clearState(java.lang.String)>($r1);
+
+        return;
+    }
+
+    public boolean onLongClickCell(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView, int)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r1;
+        int $i0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridCellView;
+
+        $i0 := @parameter1: int;
+
+        return 0;
+    }
+
+    public void onPause()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.api.service.GetSignupCategoriesService $r1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onPause()>();
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.GetSignupCategoriesService getSignupCategoryService>;
+
+        virtualinvoke $r1.<com.contextlogic.wish.api.service.GetSignupCategoriesService: void cancelAllRequests()>();
+
+        return;
+    }
+
+    public void onSaveInstanceState(android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        android.os.Bundle $r1;
+        boolean $z0;
+        java.util.ArrayList $r2, $r2_1, $r2_2;
+        int $i0;
+        com.contextlogic.wish.cache.RuntimeStateStore $r3;
+        java.lang.String $r4, $r4_1, $r4_2, $r4_3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void onSaveInstanceState(android.os.Bundle)>($r1);
+
+        $z0 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingComplete>;
+
+(0)     if $z0 == 0 goto label1;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.util.ArrayList categories>;
+
+        $i0 = virtualinvoke $r2.<java.util.ArrayList: int size()>();
+
+(1)     if $i0 <= 0 goto label1;
+
+        $r3 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.util.ArrayList categories>;
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.lang.String dataStateStoreKey>;
+
+        $r4_1 = virtualinvoke $r3.<com.contextlogic.wish.cache.RuntimeStateStore: java.lang.String storeState(java.lang.Object,java.lang.String)>($r2_1, $r4);
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.lang.String dataStateStoreKey> = $r4_1;
+
+        $r4_2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.lang.String dataStateStoreKey>;
+
+(2)     virtualinvoke $r1.<android.os.Bundle: void putSerializable(java.lang.String,java.io.Serializable)>("StoredStateData", $r4_2);
+
+     label1:
+        $r4_3 = Phi($r4 #0, $r4 #1, $r4_2 #2);
+
+        $r2_2 = Phi($r2 #0, $r2 #1, $r2_1 #2);
+
+        return;
+    }
+
+    public void onScrollChanged(int, int, int, int)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        int $i0, $i1, $i2, $i3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $i3 := @parameter3: int;
+
+        return;
+    }
+
+    public void onSelectCell(com.contextlogic.wish.ui.components.grid.StaggeredGridCellView, int)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridCellView $r1;
+        int $i0;
+        java.util.ArrayList $r2;
+        java.lang.Object $r3;
+        com.contextlogic.wish.api.data.WishSignupCategory $r4;
+        java.lang.String $r5, $r5_1, $r5_2, $r5_3;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 := @parameter0: com.contextlogic.wish.ui.components.grid.StaggeredGridCellView;
+
+        $i0 := @parameter1: int;
+
+        $r2 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.util.ArrayList categories>;
+
+        $r3 = virtualinvoke $r2.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r4 = (com.contextlogic.wish.api.data.WishSignupCategory) $r3;
+
+        $r5 = virtualinvoke $r4.<com.contextlogic.wish.api.data.WishSignupCategory: java.lang.String getId()>();
+
+        $z0 = virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean isWishPending(java.lang.String)>($r5);
+
+        if $z0 != 0 goto label3;
+
+        $z0_1 = virtualinvoke $r4.<com.contextlogic.wish.api.data.WishSignupCategory: boolean isAlreadyWishing()>();
+
+        if $z0_1 == 0 goto label2;
+
+        $r5_1 = virtualinvoke $r4.<com.contextlogic.wish.api.data.WishSignupCategory: java.lang.String getId()>();
+
+(0)     virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void unwishForCategory(java.lang.String)>($r5_1);
+
+     label1:
+        $r5_2 = Phi($r5_1 #0, $r5_3 #1);
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void refreshWishStates()>();
+
+        return;
+
+     label2:
+        $r5_3 = virtualinvoke $r4.<com.contextlogic.wish.api.data.WishSignupCategory: java.lang.String getId()>();
+
+        virtualinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void wishForCategory(java.lang.String)>($r5_3);
+
+(1)     goto label1;
+
+     label3:
+        return;
+    }
+
+    protected void releaseImages()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void releaseImages()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    protected void restoreImages()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        com.contextlogic.wish.ui.components.grid.StaggeredGridView $r1, $r1_1, $r1_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+(0)     if $r1 == null goto label1;
+
+        $r1_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.ui.components.grid.StaggeredGridView gridView>;
+
+(1)     virtualinvoke $r1_1.<com.contextlogic.wish.ui.components.grid.StaggeredGridView: void restoreImages()>();
+
+     label1:
+        $r1_2 = Phi($r1 #0, $r1_1 #1);
+
+        return;
+    }
+
+    protected void restoreState(android.os.Bundle)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        android.os.Bundle $r1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+        java.lang.String $r2, $r2_1, $r2_2;
+        com.contextlogic.wish.cache.RuntimeStateStore $r3;
+        java.lang.Object $r4;
+        java.util.ArrayList $r5, $r5_1, $r5_2, $r5_3;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke $r0.<com.contextlogic.wish.ui.fragment.base.BaseContentFragment: void restoreState(android.os.Bundle)>($r1);
+
+(0)     if $r1 == null goto label2;
+
+        $z0 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("StoredStateData");
+
+(1)     if $z0 == 0 goto label2;
+
+        $r2 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("StoredStateData");
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.lang.String dataStateStoreKey> = $r2;
+
+        $r3 = staticinvoke <com.contextlogic.wish.cache.RuntimeStateStore: com.contextlogic.wish.cache.RuntimeStateStore getInstance()>();
+
+        $r2_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.lang.String dataStateStoreKey>;
+
+        $r4 = virtualinvoke $r3.<com.contextlogic.wish.cache.RuntimeStateStore: java.lang.Object getState(java.lang.String)>($r2_1);
+
+        $r5 = (java.util.ArrayList) $r4;
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.util.ArrayList categories> = $r5;
+
+        $r5_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.util.ArrayList categories>;
+
+        if $r5_1 == null goto label3;
+
+(2)     $z0_1 = 1;
+
+     label1:
+        $z0_2 = Phi($z0_1 #2, $z0_3 #4);
+
+(3)     $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingComplete> = $z0_2;
+
+     label2:
+        $r5_2 = Phi($r5 #0, $r5 #1, $r5_1 #3);
+
+        $z0_4 = Phi($z0 #0, $z0 #1, $z0_2 #3);
+
+        $r2_2 = Phi($r2 #0, $r2 #1, $r2_1 #3);
+
+        $z0_5 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingComplete>;
+
+        if $z0_5 != 0 goto label4;
+
+        $r5_3 = new java.util.ArrayList;
+
+        specialinvoke $r5_3.<java.util.ArrayList: void <init>()>();
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: java.util.ArrayList categories> = $r5_3;
+
+        $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: boolean loadingComplete> = 0;
+
+        return;
+
+     label3:
+        $z0_3 = 0;
+
+(4)     goto label1;
+
+     label4:
+        return;
+    }
+
+    public void unwishForCategory(java.lang.String)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$6 $r2;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$7 $r3;
+        boolean $z0;
+        com.contextlogic.wish.api.service.CategoryUnwishService $r4, $r4_1, $r4_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.CategoryUnwishService categoryUnwishService>;
+
+        $z0 = virtualinvoke $r4.<com.contextlogic.wish.api.service.CategoryUnwishService: boolean isPending(java.lang.String)>($r1);
+
+(0)     if $z0 != 0 goto label1;
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.CategoryUnwishService categoryUnwishService>;
+
+        $r2 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$6;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$6: void <init>(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r0);
+
+        $r3 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$7;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$7: void <init>(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r0);
+
+        virtualinvoke $r4_1.<com.contextlogic.wish.api.service.CategoryUnwishService: void requestService(java.lang.String,com.contextlogic.wish.api.service.CategoryUnwishService$SuccessCallback,com.contextlogic.wish.api.service.CategoryUnwishService$FailureCallback)>($r1, $r2, $r3);
+
+(1)     specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void refreshWishStates()>();
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        return;
+    }
+
+    public boolean useCanvasBackground()
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        return 1;
+    }
+
+    public void wishForCategory(java.lang.String)
+    {
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment $r0;
+        java.lang.String $r1;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$4 $r2;
+        com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$5 $r3;
+        boolean $z0;
+        com.contextlogic.wish.api.service.CategoryWishService $r4, $r4_1, $r4_2;
+
+        $r0 := @this: com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r4 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.CategoryWishService categoryWishService>;
+
+        $z0 = virtualinvoke $r4.<com.contextlogic.wish.api.service.CategoryWishService: boolean isPending(java.lang.String)>($r1);
+
+(0)     if $z0 != 0 goto label1;
+
+        $r4_1 = $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: com.contextlogic.wish.api.service.CategoryWishService categoryWishService>;
+
+        $r2 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$4;
+
+        specialinvoke $r2.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$4: void <init>(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r0);
+
+        $r3 = new com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$5;
+
+        specialinvoke $r3.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment$5: void <init>(com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment)>($r0);
+
+        virtualinvoke $r4_1.<com.contextlogic.wish.api.service.CategoryWishService: void requestService(java.lang.String,boolean,com.contextlogic.wish.api.service.CategoryWishService$SuccessCallback,com.contextlogic.wish.api.service.CategoryWishService$FailureCallback)>($r1, 1, $r2, $r3);
+
+(1)     specialinvoke $r0.<com.contextlogic.wish.ui.fragment.signup.SignupCategoryFragment: void refreshWishStates()>();
+
+     label1:
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        return;
+    }
+}

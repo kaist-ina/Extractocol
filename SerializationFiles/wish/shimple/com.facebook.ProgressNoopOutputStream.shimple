@@ -1,0 +1,204 @@
+class com.facebook.ProgressNoopOutputStream extends java.io.OutputStream implements com.facebook.RequestOutputStream
+{
+    private int batchMax;
+    private final android.os.Handler callbackHandler;
+    private com.facebook.Request currentRequest;
+    private com.facebook.RequestProgress currentRequestProgress;
+    private final java.util.Map progressMap;
+
+    void <init>(android.os.Handler)
+    {
+        com.facebook.ProgressNoopOutputStream $r0;
+        android.os.Handler $r1;
+        java.util.HashMap $r2;
+
+        $r0 := @this: com.facebook.ProgressNoopOutputStream;
+
+        $r1 := @parameter0: android.os.Handler;
+
+        specialinvoke $r0.<java.io.OutputStream: void <init>()>();
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        $r0.<com.facebook.ProgressNoopOutputStream: java.util.Map progressMap> = $r2;
+
+        $r0.<com.facebook.ProgressNoopOutputStream: android.os.Handler callbackHandler> = $r1;
+
+        return;
+    }
+
+    void addProgress(long)
+    {
+        com.facebook.ProgressNoopOutputStream $r0;
+        android.os.Handler $r1;
+        java.util.Map $r2;
+        long $l0, $l1, $l1_1;
+        com.facebook.RequestProgress $r3, $r3_1, $r3_2, $r3_3, $r3_4;
+        com.facebook.Request $r4, $r4_1, $r4_2;
+        int $i2, $i2_1;
+
+        $r0 := @this: com.facebook.ProgressNoopOutputStream;
+
+        $l1 := @parameter0: long;
+
+        $r3 = $r0.<com.facebook.ProgressNoopOutputStream: com.facebook.RequestProgress currentRequestProgress>;
+
+(0)     if $r3 != null goto label1;
+
+        $r3_1 = new com.facebook.RequestProgress;
+
+        $r1 = $r0.<com.facebook.ProgressNoopOutputStream: android.os.Handler callbackHandler>;
+
+        $r4 = $r0.<com.facebook.ProgressNoopOutputStream: com.facebook.Request currentRequest>;
+
+        specialinvoke $r3_1.<com.facebook.RequestProgress: void <init>(android.os.Handler,com.facebook.Request)>($r1, $r4);
+
+        $r0.<com.facebook.ProgressNoopOutputStream: com.facebook.RequestProgress currentRequestProgress> = $r3_1;
+
+        $r2 = $r0.<com.facebook.ProgressNoopOutputStream: java.util.Map progressMap>;
+
+        $r4_1 = $r0.<com.facebook.ProgressNoopOutputStream: com.facebook.Request currentRequest>;
+
+        $r3_2 = $r0.<com.facebook.ProgressNoopOutputStream: com.facebook.RequestProgress currentRequestProgress>;
+
+(1)     interfaceinvoke $r2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r4_1, $r3_2);
+
+     label1:
+        $r3_3 = Phi($r3 #0, $r3_2 #1);
+
+        $r4_2 = Phi($r4 #0, $r4_1 #1);
+
+        $r3_4 = $r0.<com.facebook.ProgressNoopOutputStream: com.facebook.RequestProgress currentRequestProgress>;
+
+        virtualinvoke $r3_4.<com.facebook.RequestProgress: void addToMax(long)>($l1);
+
+        $i2 = $r0.<com.facebook.ProgressNoopOutputStream: int batchMax>;
+
+        $l0 = (long) $i2;
+
+        $l1_1 = $l0 + $l1;
+
+        $i2_1 = (int) $l1_1;
+
+        $r0.<com.facebook.ProgressNoopOutputStream: int batchMax> = $i2_1;
+
+        return;
+    }
+
+    int getMaxProgress()
+    {
+        com.facebook.ProgressNoopOutputStream $r0;
+        int i0;
+
+        $r0 := @this: com.facebook.ProgressNoopOutputStream;
+
+        i0 = $r0.<com.facebook.ProgressNoopOutputStream: int batchMax>;
+
+        return i0;
+    }
+
+    java.util.Map getProgressMap()
+    {
+        com.facebook.ProgressNoopOutputStream $r0;
+        java.util.Map r1;
+
+        $r0 := @this: com.facebook.ProgressNoopOutputStream;
+
+        r1 = $r0.<com.facebook.ProgressNoopOutputStream: java.util.Map progressMap>;
+
+        return r1;
+    }
+
+    public void setCurrentRequest(com.facebook.Request)
+    {
+        com.facebook.ProgressNoopOutputStream $r0;
+        com.facebook.Request $r1;
+        java.util.Map $r2;
+        java.lang.Object $r3;
+        com.facebook.RequestProgress $r4, $r4_1, $r4_2;
+
+        $r0 := @this: com.facebook.ProgressNoopOutputStream;
+
+        $r1 := @parameter0: com.facebook.Request;
+
+        $r0.<com.facebook.ProgressNoopOutputStream: com.facebook.Request currentRequest> = $r1;
+
+        if $r1 == null goto label2;
+
+        $r2 = $r0.<com.facebook.ProgressNoopOutputStream: java.util.Map progressMap>;
+
+        $r3 = interfaceinvoke $r2.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+(0)     $r4 = (com.facebook.RequestProgress) $r3;
+
+     label1:
+        $r4_1 = Phi($r4 #0, $r4_2 #1);
+
+        $r0.<com.facebook.ProgressNoopOutputStream: com.facebook.RequestProgress currentRequestProgress> = $r4_1;
+
+        return;
+
+     label2:
+        $r4_2 = null;
+
+(1)     goto label1;
+    }
+
+    public void write(int)
+    {
+        com.facebook.ProgressNoopOutputStream $r0;
+        int $i0;
+
+        $r0 := @this: com.facebook.ProgressNoopOutputStream;
+
+        $i0 := @parameter0: int;
+
+        virtualinvoke $r0.<com.facebook.ProgressNoopOutputStream: void addProgress(long)>(1L);
+
+        return;
+    }
+
+    public void write(byte[])
+    {
+        com.facebook.ProgressNoopOutputStream $r0;
+        byte[] $r1;
+        int $i0;
+        long $l1;
+
+        $r0 := @this: com.facebook.ProgressNoopOutputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 = lengthof $r1;
+
+        $l1 = (long) $i0;
+
+        virtualinvoke $r0.<com.facebook.ProgressNoopOutputStream: void addProgress(long)>($l1);
+
+        return;
+    }
+
+    public void write(byte[], int, int)
+    {
+        com.facebook.ProgressNoopOutputStream $r0;
+        byte[] $r1;
+        int $i0, $i1;
+        long $l2;
+
+        $r0 := @this: com.facebook.ProgressNoopOutputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $l2 = (long) $i1;
+
+        virtualinvoke $r0.<com.facebook.ProgressNoopOutputStream: void addProgress(long)>($l2);
+
+        return;
+    }
+}

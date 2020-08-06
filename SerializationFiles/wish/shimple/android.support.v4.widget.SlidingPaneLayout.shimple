@@ -1,0 +1,3827 @@
+public class android.support.v4.widget.SlidingPaneLayout extends android.view.ViewGroup
+{
+    private static final int DEFAULT_FADE_COLOR;
+    private static final int DEFAULT_OVERHANG_SIZE;
+    static final android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImpl IMPL;
+    private static final int MIN_FLING_VELOCITY;
+    private static final java.lang.String TAG;
+    private boolean mCanSlide;
+    private int mCoveredFadeColor;
+    private final android.support.v4.widget.ViewDragHelper mDragHelper;
+    private boolean mFirstLayout;
+    private float mInitialMotionX;
+    private float mInitialMotionY;
+    private boolean mIsUnableToDrag;
+    private final int mOverhangSize;
+    private android.support.v4.widget.SlidingPaneLayout$PanelSlideListener mPanelSlideListener;
+    private int mParallaxBy;
+    private float mParallaxOffset;
+    private final java.util.ArrayList mPostedRunnables;
+    private boolean mPreservedOpenState;
+    private android.graphics.drawable.Drawable mShadowDrawableLeft;
+    private android.graphics.drawable.Drawable mShadowDrawableRight;
+    private float mSlideOffset;
+    private int mSlideRange;
+    private android.view.View mSlideableView;
+    private int mSliderFadeColor;
+    private final android.graphics.Rect mTmpRect;
+
+    static void <clinit>()
+    {
+        int $i0;
+        android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplJBMR1 $r0;
+        android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplJB $r1;
+        android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplBase $r2;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0 < 17 goto label1;
+
+        $r0 = new android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplJBMR1;
+
+        specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplJBMR1: void <init>()>();
+
+        <android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImpl IMPL> = $r0;
+
+        return;
+
+     label1:
+        if $i0 < 16 goto label2;
+
+        $r1 = new android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplJB;
+
+        specialinvoke $r1.<android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplJB: void <init>()>();
+
+        <android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImpl IMPL> = $r1;
+
+        return;
+
+     label2:
+        $r2 = new android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplBase;
+
+        specialinvoke $r2.<android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplBase: void <init>()>();
+
+        <android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImpl IMPL> = $r2;
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.content.Context $r1;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, 0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        android.graphics.Rect $r3;
+        java.util.ArrayList $r4;
+        android.support.v4.widget.SlidingPaneLayout$AccessibilityDelegate $r5;
+        android.support.v4.widget.SlidingPaneLayout$DragHelperCallback $r6;
+        int $i0, $i0_1;
+        android.content.res.Resources $r7;
+        android.util.DisplayMetrics $r8;
+        float $f0, $f1, $f1_1, $f0_1;
+        android.support.v4.widget.ViewDragHelper $r9, $r9_1;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke $r0.<android.view.ViewGroup: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: int mSliderFadeColor> = -858993460;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mFirstLayout> = 1;
+
+        $r3 = new android.graphics.Rect;
+
+        specialinvoke $r3.<android.graphics.Rect: void <init>()>();
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.Rect mTmpRect> = $r3;
+
+        $r4 = new java.util.ArrayList;
+
+        specialinvoke $r4.<java.util.ArrayList: void <init>()>();
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: java.util.ArrayList mPostedRunnables> = $r4;
+
+        $r7 = virtualinvoke $r1.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r8 = virtualinvoke $r7.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0 = $r8.<android.util.DisplayMetrics: float density>;
+
+        $f1 = 32.0F * $f0;
+
+        $f1_1 = $f1 + 0.5F;
+
+        $i0_1 = (int) $f1_1;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: int mOverhangSize> = $i0_1;
+
+        staticinvoke <android.view.ViewConfiguration: android.view.ViewConfiguration get(android.content.Context)>($r1);
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void setWillNotDraw(boolean)>(0);
+
+        $r5 = new android.support.v4.widget.SlidingPaneLayout$AccessibilityDelegate;
+
+        specialinvoke $r5.<android.support.v4.widget.SlidingPaneLayout$AccessibilityDelegate: void <init>(android.support.v4.widget.SlidingPaneLayout)>($r0);
+
+        staticinvoke <android.support.v4.view.ViewCompat: void setAccessibilityDelegate(android.view.View,android.support.v4.view.AccessibilityDelegateCompat)>($r0, $r5);
+
+        staticinvoke <android.support.v4.view.ViewCompat: void setImportantForAccessibility(android.view.View,int)>($r0, 1);
+
+        $r6 = new android.support.v4.widget.SlidingPaneLayout$DragHelperCallback;
+
+        specialinvoke $r6.<android.support.v4.widget.SlidingPaneLayout$DragHelperCallback: void <init>(android.support.v4.widget.SlidingPaneLayout,android.support.v4.widget.SlidingPaneLayout$1)>($r0, null);
+
+        $r9 = staticinvoke <android.support.v4.widget.ViewDragHelper: android.support.v4.widget.ViewDragHelper create(android.view.ViewGroup,float,android.support.v4.widget.ViewDragHelper$Callback)>($r0, 0.5F, $r6);
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper> = $r9;
+
+        $r9_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        $f0_1 = 400.0F * $f0;
+
+        virtualinvoke $r9_1.<android.support.v4.widget.ViewDragHelper: void setMinVelocity(float)>($f0_1);
+
+        return;
+    }
+
+    static boolean access$100(android.support.v4.widget.SlidingPaneLayout)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        boolean z0;
+
+        $r0 := @parameter0: android.support.v4.widget.SlidingPaneLayout;
+
+        z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mIsUnableToDrag>;
+
+        return z0;
+    }
+
+    static void access$1000(android.support.v4.widget.SlidingPaneLayout, android.view.View)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+
+        $r0 := @parameter0: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter1: android.view.View;
+
+        specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void invalidateChildRegion(android.view.View)>($r1);
+
+        return;
+    }
+
+    static java.util.ArrayList access$1100(android.support.v4.widget.SlidingPaneLayout)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        java.util.ArrayList r1;
+
+        $r0 := @parameter0: android.support.v4.widget.SlidingPaneLayout;
+
+        r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: java.util.ArrayList mPostedRunnables>;
+
+        return r1;
+    }
+
+    static android.support.v4.widget.ViewDragHelper access$200(android.support.v4.widget.SlidingPaneLayout)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.support.v4.widget.ViewDragHelper r1;
+
+        $r0 := @parameter0: android.support.v4.widget.SlidingPaneLayout;
+
+        r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        return r1;
+    }
+
+    static float access$300(android.support.v4.widget.SlidingPaneLayout)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        float f0;
+
+        $r0 := @parameter0: android.support.v4.widget.SlidingPaneLayout;
+
+        f0 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+        return f0;
+    }
+
+    static android.view.View access$400(android.support.v4.widget.SlidingPaneLayout)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View r1;
+
+        $r0 := @parameter0: android.support.v4.widget.SlidingPaneLayout;
+
+        r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        return r1;
+    }
+
+    static boolean access$502(android.support.v4.widget.SlidingPaneLayout, boolean)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.support.v4.widget.SlidingPaneLayout;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mPreservedOpenState> = $z0;
+
+        return $z0;
+    }
+
+    static void access$600(android.support.v4.widget.SlidingPaneLayout, int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0;
+
+        $r0 := @parameter0: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 := @parameter1: int;
+
+        specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void onPanelDragged(int)>($i0);
+
+        return;
+    }
+
+    static boolean access$700(android.support.v4.widget.SlidingPaneLayout)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.support.v4.widget.SlidingPaneLayout;
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isLayoutRtlSupport()>();
+
+        return $z0;
+    }
+
+    static int access$800(android.support.v4.widget.SlidingPaneLayout)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int i0;
+
+        $r0 := @parameter0: android.support.v4.widget.SlidingPaneLayout;
+
+        i0 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mSlideRange>;
+
+        return i0;
+    }
+
+    private boolean closePane(android.view.View, int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+        int $i0;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mFirstLayout>;
+
+(0)     if $z0 != 0 goto label1;
+
+        $z0_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean smoothSlideTo(float,int)>(0.0F, $i0);
+
+(1)     if $z0_1 == 0 goto label2;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mPreservedOpenState> = 0;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    private void dimChildView(android.view.View, float, int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+        byte $b0;
+        float $f0, $f1, $f1_1;
+        android.graphics.PorterDuffColorFilter $r2;
+        android.graphics.PorterDuff$Mode $r3;
+        android.support.v4.widget.SlidingPaneLayout$DisableLayerRunnable $r4;
+        java.util.ArrayList $r5;
+        int $i1, $i2, $i2_1, $i2_2, $i2_3, $i1_1, $i1_2, $i1_3, $i1_4;
+        android.view.ViewGroup$LayoutParams $r6;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r7;
+        android.graphics.Paint $r8, $r8_1, $r8_2, $r8_3, $r8_4, $r8_5, $r8_6, $r8_7, $r8_8, $r8_9;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $f1 := @parameter1: float;
+
+        $i1 := @parameter2: int;
+
+        $r6 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r7 = (android.support.v4.widget.SlidingPaneLayout$LayoutParams) $r6;
+
+        $b0 = $f1 cmpl 0.0F;
+
+        if $b0 <= 0 goto label3;
+
+        if $i1 == 0 goto label3;
+
+        $i2 = -16777216 & $i1;
+
+        $i2_1 = $i2 >>> 24;
+
+        $f0 = (float) $i2_1;
+
+        $f1_1 = $f0 * $f1;
+
+        $i2_2 = (int) $f1_1;
+
+        $i2_3 = $i2_2 << 24;
+
+        $i1_1 = 16777215 & $i1;
+
+        $i1_2 = $i2_3 | $i1_1;
+
+        $r8 = $r7.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: android.graphics.Paint dimPaint>;
+
+(0)     if $r8 != null goto label1;
+
+        $r8_1 = new android.graphics.Paint;
+
+        specialinvoke $r8_1.<android.graphics.Paint: void <init>()>();
+
+(1)     $r7.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: android.graphics.Paint dimPaint> = $r8_1;
+
+     label1:
+        $r8_2 = Phi($r8 #0, $r8_1 #1);
+
+        $r8_3 = $r7.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: android.graphics.Paint dimPaint>;
+
+        $r2 = new android.graphics.PorterDuffColorFilter;
+
+        $r3 = <android.graphics.PorterDuff$Mode: android.graphics.PorterDuff$Mode SRC_OVER>;
+
+        specialinvoke $r2.<android.graphics.PorterDuffColorFilter: void <init>(int,android.graphics.PorterDuff$Mode)>($i1_2, $r3);
+
+        virtualinvoke $r8_3.<android.graphics.Paint: android.graphics.ColorFilter setColorFilter(android.graphics.ColorFilter)>($r2);
+
+        $i1_3 = staticinvoke <android.support.v4.view.ViewCompat: int getLayerType(android.view.View)>($r1);
+
+(2)     if $i1_3 == 2 goto label2;
+
+        $r8_4 = $r7.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: android.graphics.Paint dimPaint>;
+
+(3)     staticinvoke <android.support.v4.view.ViewCompat: void setLayerType(android.view.View,int,android.graphics.Paint)>($r1, 2, $r8_4);
+
+     label2:
+        $r8_5 = Phi($r8_3 #2, $r8_4 #3);
+
+        specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void invalidateChildRegion(android.view.View)>($r1);
+
+        return;
+
+     label3:
+        $i1_4 = staticinvoke <android.support.v4.view.ViewCompat: int getLayerType(android.view.View)>($r1);
+
+(4)     if $i1_4 == 0 goto label5;
+
+        $r8_6 = $r7.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: android.graphics.Paint dimPaint>;
+
+(5)     if $r8_6 == null goto label4;
+
+        $r8_7 = $r7.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: android.graphics.Paint dimPaint>;
+
+(6)     virtualinvoke $r8_7.<android.graphics.Paint: android.graphics.ColorFilter setColorFilter(android.graphics.ColorFilter)>(null);
+
+     label4:
+        $r8_8 = Phi($r8_6 #5, $r8_7 #6);
+
+        $r4 = new android.support.v4.widget.SlidingPaneLayout$DisableLayerRunnable;
+
+        specialinvoke $r4.<android.support.v4.widget.SlidingPaneLayout$DisableLayerRunnable: void <init>(android.support.v4.widget.SlidingPaneLayout,android.view.View)>($r0, $r1);
+
+        $r5 = $r0.<android.support.v4.widget.SlidingPaneLayout: java.util.ArrayList mPostedRunnables>;
+
+        virtualinvoke $r5.<java.util.ArrayList: boolean add(java.lang.Object)>($r4);
+
+(7)     staticinvoke <android.support.v4.view.ViewCompat: void postOnAnimation(android.view.View,java.lang.Runnable)>($r0, $r4);
+
+     label5:
+        $r8_9 = Phi($r8 #4, $r8_8 #7);
+
+        return;
+    }
+
+    private void invalidateChildRegion(android.view.View)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+        android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImpl $r2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = <android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImpl IMPL>;
+
+        interfaceinvoke $r2.<android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImpl: void invalidateChildRegion(android.support.v4.widget.SlidingPaneLayout,android.view.View)>($r0, $r1);
+
+        return;
+    }
+
+    private boolean isLayoutRtlSupport()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 = staticinvoke <android.support.v4.view.ViewCompat: int getLayoutDirection(android.view.View)>($r0);
+
+        if $i0 != 1 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private void onPanelDragged(int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        float $f0, $f1, $f0_1, $f0_2, $f0_3, $f0_4, $f0_5;
+        int $i0, $i1, $i2, $i0_1, $i0_2, $i2_1, $i0_3, $i1_1, $i1_2, $i2_2, $i2_3, $i1_3, $i0_4, $i0_5, $i0_6, $i0_7, $i0_8, $i2_4, $i1_4;
+        android.view.View $r1, $r1_1, $r1_2, $r1_3, $r1_4, $r1_5;
+        boolean $z0, $z0_1;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r3;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        if $r1 != null goto label1;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset> = 0.0F;
+
+        return;
+
+     label1:
+        $z0 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isLayoutRtlSupport()>();
+
+        $r1_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $r2 = virtualinvoke $r1_1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.SlidingPaneLayout$LayoutParams) $r2;
+
+        $r1_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $i1 = virtualinvoke $r1_2.<android.view.View: int getWidth()>();
+
+(0)     if $z0 == 0 goto label2;
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getWidth()>();
+
+        $i0_1 = $i2 - $i0;
+
+(1)     $i0_2 = $i0_1 - $i1;
+
+     label2:
+        $i2_1 = Phi($i2 #0, $i2 #1);
+
+        $i0_3 = Phi($i0 #0, $i0_2 #1);
+
+        if $z0 == 0 goto label7;
+
+(2)     $i1_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingRight()>();
+
+     label3:
+        $i1_2 = Phi($i1_1 #2, $i1_4 #8);
+
+        if $z0 == 0 goto label8;
+
+(3)     $i2_2 = $r3.<android.view.ViewGroup$MarginLayoutParams: int rightMargin>;
+
+     label4:
+        $i2_3 = Phi($i2_2 #3, $i2_4 #9);
+
+        $i1_3 = $i1_2 + $i2_3;
+
+        $i0_4 = $i0_3 - $i1_3;
+
+        $f1 = (float) $i0_4;
+
+        $i0_5 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mSlideRange>;
+
+        $f0 = (float) $i0_5;
+
+        $f0_1 = $f1 / $f0;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset> = $f0_1;
+
+        $i0_6 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mParallaxBy>;
+
+(4)     if $i0_6 == 0 goto label5;
+
+        $f0_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+(5)     specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void parallaxOtherViews(float)>($f0_2);
+
+     label5:
+        $f0_3 = Phi($f0_1 #4, $f0_2 #5);
+
+        $z0_1 = $r3.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean dimWhenOffset>;
+
+(6)     if $z0_1 == 0 goto label6;
+
+        $r1_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $f0_4 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+        $i0_7 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mSliderFadeColor>;
+
+(7)     specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void dimChildView(android.view.View,float,int)>($r1_3, $f0_4, $i0_7);
+
+     label6:
+        $i0_8 = Phi($i0_6 #6, $i0_7 #7);
+
+        $f0_5 = Phi($f0_3 #6, $f0_4 #7);
+
+        $r1_4 = Phi($r1_2 #6, $r1_3 #7);
+
+        $r1_5 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void dispatchOnPanelSlide(android.view.View)>($r1_5);
+
+        return;
+
+     label7:
+        $i1_4 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingLeft()>();
+
+(8)     goto label3;
+
+     label8:
+        $i2_4 = $r3.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+(9)     goto label4;
+    }
+
+    private boolean openPane(android.view.View, int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+        int $i0;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        $z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mFirstLayout>;
+
+(0)     if $z0 != 0 goto label1;
+
+        $z0_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean smoothSlideTo(float,int)>(1.0F, $i0);
+
+(1)     if $z0_1 == 0 goto label2;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mPreservedOpenState> = 1;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    private void parallaxOtherViews(float)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        float $f0, $f1, $f2, $f1_1, $f2_1, $f1_2, $f1_3, $f2_2, $f1_4, $f1_5, $f2_3, $f1_6, $f1_7, $f1_8, $f1_9, $f1_10, $f1_11;
+        android.view.View $r1, $r4, $r1_1, $r1_2;
+        boolean $z0, $z1, $z1_1, $z1_2, $z1_3;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r3;
+        int $i0, $i1, $i2, $i3, $i0_1, $i0_2, $i0_3, $i0_4, $i1_1, $i3_1, $i2_1, $i1_2, $i2_2, $i2_3, $i3_2, $i3_3, $i2_4, $i2_5, $i2_6, $i2_7, $i0_5;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $f0 := @parameter0: float;
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isLayoutRtlSupport()>();
+
+        $r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.SlidingPaneLayout$LayoutParams) $r2;
+
+        $z1 = $r3.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean dimWhenOffset>;
+
+(0)     if $z1 == 0 goto label06;
+
+        if $z0 == 0 goto label05;
+
+(1)     $i0 = $r3.<android.view.ViewGroup$MarginLayoutParams: int rightMargin>;
+
+     label01:
+        $i0_1 = Phi($i0 #1, $i0_2 #7);
+
+(2)     if $i0_1 > 0 goto label06;
+
+(3)     $z1_1 = 1;
+
+     label02:
+        $z1_2 = Phi($z1_1 #3, $z1_3 #8);
+
+        $i0_3 = Phi($i0_1 #3, $i0_5 #8);
+
+        $i0_4 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getChildCount()>();
+
+(4)     $i1 = 0;
+
+     label03:
+        $i3 = Phi($i3 #4, $i3_1 #6);
+
+        $r1_1 = Phi($r1 #4, $r1_2 #6);
+
+        $i2 = Phi($i2 #4, $i2_1 #6);
+
+        $f1 = Phi($f1 #4, $f1_1 #6);
+
+        $f2 = Phi($f2 #4, $f2_1 #6);
+
+        $i1_1 = Phi($i1 #4, $i1_2 #6);
+
+        if $i1_1 >= $i0_4 goto label11;
+
+        $r4 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View getChildAt(int)>($i1_1);
+
+        $r1_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+(5)     if $r4 != $r1_2 goto label07;
+
+     label04:
+        $i3_1 = Phi($i3 #5, $i3_3 #11, $i3_3 #13);
+
+        $i2_1 = Phi($i2 #5, $i2_6 #11, $i2_7 #13);
+
+        $f1_1 = Phi($f1 #5, $f1_6 #11, $f1_9 #13);
+
+        $f2_1 = Phi($f2 #5, $f2_3 #11, $f2_3 #13);
+
+        $i1_2 = $i1_1 + 1;
+
+(6)     goto label03;
+
+     label05:
+        $i0_2 = $r3.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+(7)     goto label01;
+
+     label06:
+        $i0_5 = Phi($i0 #0, $i0_1 #2);
+
+        $z1_3 = 0;
+
+(8)     goto label02;
+
+     label07:
+        $f1_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mParallaxOffset>;
+
+        $f1_3 = 1.0F - $f1_2;
+
+        $i2_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mParallaxBy>;
+
+        $f2_2 = (float) $i2_2;
+
+        $f1_4 = $f1_3 * $f2_2;
+
+        $i2_3 = (int) $f1_4;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: float mParallaxOffset> = $f0;
+
+        $f1_5 = 1.0F - $f0;
+
+        $i3_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mParallaxBy>;
+
+        $f2_3 = (float) $i3_2;
+
+        $f1_6 = $f1_5 * $f2_3;
+
+        $i3_3 = (int) $f1_6;
+
+        $i2_4 = $i2_3 - $i3_3;
+
+(9)     if $z0 == 0 goto label08;
+
+(10)    $i2_5 = neg $i2_4;
+
+     label08:
+        $i2_6 = Phi($i2_4 #9, $i2_5 #10);
+
+        virtualinvoke $r4.<android.view.View: void offsetLeftAndRight(int)>($i2_6);
+
+(11)    if $z1_2 == 0 goto label04;
+
+        if $z0 == 0 goto label10;
+
+        $f1_7 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mParallaxOffset>;
+
+(12)    $f1_8 = $f1_7 - 1.0F;
+
+     label09:
+        $f1_9 = Phi($f1_8 #12, $f1_11 #14);
+
+        $i2_7 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mCoveredFadeColor>;
+
+        specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void dimChildView(android.view.View,float,int)>($r4, $f1_9, $i2_7);
+
+(13)    goto label04;
+
+     label10:
+        $f1_10 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mParallaxOffset>;
+
+        $f1_11 = 1.0F - $f1_10;
+
+(14)    goto label09;
+
+     label11:
+        return;
+    }
+
+    private static boolean viewIsOpaque(android.view.View)
+    {
+        android.view.View $r0;
+        boolean $z0;
+        int $i0, $i0_1, $i0_2;
+        android.graphics.drawable.Drawable $r1;
+
+        $r0 := @parameter0: android.view.View;
+
+        $z0 = staticinvoke <android.support.v4.view.ViewCompat: boolean isOpaque(android.view.View)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0 < 18 goto label2;
+
+        return 0;
+
+     label2:
+        $r1 = virtualinvoke $r0.<android.view.View: android.graphics.drawable.Drawable getBackground()>();
+
+(0)     if $r1 == null goto label3;
+
+        $i0_1 = virtualinvoke $r1.<android.graphics.drawable.Drawable: int getOpacity()>();
+
+(1)     if $i0_1 == -1 goto label4;
+
+     label3:
+        $i0_2 = Phi($i0 #0, $i0_1 #1);
+
+        return 0;
+
+     label4:
+        return 1;
+    }
+
+    protected boolean canScroll(android.view.View, boolean, int, int, int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1, $r3;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i5_1, $i5_2, $i6_1, $i7_1, $i6_2, $i7_2, $i6_3, $i7_3, $i6_4, $i7_4, $i6_5, $i7_5, $i6_6, $i7_6, $i7_7, $i6_7, $i7_8, $i5_3, $i6_8, $i5_4, $i7_9, $i2_1, $i2_2, $i2_3;
+        boolean $z0, $z1, $z1_1, $z1_2, $z1_3, $z1_4, $z0_1, $z0_2, $z0_3;
+        android.view.ViewGroup $r2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $z0 := @parameter1: boolean;
+
+        $i2 := @parameter2: int;
+
+        $i0 := @parameter3: int;
+
+        $i1 := @parameter4: int;
+
+        $z1 = $r1 instanceof android.view.ViewGroup;
+
+(0)     if $z1 == 0 goto label3;
+
+        $r2 = (android.view.ViewGroup) $r1;
+
+        $i3 = virtualinvoke $r1.<android.view.View: int getScrollX()>();
+
+        $i4 = virtualinvoke $r1.<android.view.View: int getScrollY()>();
+
+        $i5 = virtualinvoke $r2.<android.view.ViewGroup: int getChildCount()>();
+
+(1)     $i5_1 = $i5 + -1;
+
+     label1:
+        $z1_1 = Phi($z1 #1, $z1_3 #8);
+
+        $i6 = Phi($i6 #1, $i6_7 #8);
+
+        $i5_2 = Phi($i5_1 #1, $i5_3 #8);
+
+        $i7 = Phi($i7 #1, $i7_8 #8);
+
+(2)     if $i5_2 < 0 goto label3;
+
+        $r3 = virtualinvoke $r2.<android.view.ViewGroup: android.view.View getChildAt(int)>($i5_2);
+
+        $i6_1 = $i0 + $i3;
+
+        $i7_1 = virtualinvoke $r3.<android.view.View: int getLeft()>();
+
+(3)     if $i6_1 < $i7_1 goto label2;
+
+        $i6_2 = $i0 + $i3;
+
+        $i7_2 = virtualinvoke $r3.<android.view.View: int getRight()>();
+
+(4)     if $i6_2 >= $i7_2 goto label2;
+
+        $i6_3 = $i1 + $i4;
+
+        $i7_3 = virtualinvoke $r3.<android.view.View: int getTop()>();
+
+(5)     if $i6_3 < $i7_3 goto label2;
+
+        $i6_4 = $i1 + $i4;
+
+        $i7_4 = virtualinvoke $r3.<android.view.View: int getBottom()>();
+
+(6)     if $i6_4 >= $i7_4 goto label2;
+
+        $i6_5 = $i0 + $i3;
+
+        $i7_5 = virtualinvoke $r3.<android.view.View: int getLeft()>();
+
+        $i6_6 = $i6_5 - $i7_5;
+
+        $i7_6 = $i1 + $i4;
+
+        $i8 = virtualinvoke $r3.<android.view.View: int getTop()>();
+
+        $i7_7 = $i7_6 - $i8;
+
+        $z1_2 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean canScroll(android.view.View,boolean,int,int,int)>($r3, 1, $i2, $i6_6, $i7_7);
+
+(7)     if $z1_2 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        $z1_3 = Phi($z1_1 #3, $z1_1 #4, $z1_1 #5, $z1_1 #6, $z1_2 #7);
+
+        $i6_7 = Phi($i6_1 #3, $i6_2 #4, $i6_3 #5, $i6_4 #6, $i6_6 #7);
+
+        $i7_8 = Phi($i7_1 #3, $i7_2 #4, $i7_3 #5, $i7_4 #6, $i7_7 #7);
+
+        $i5_3 = $i5_2 + -1;
+
+(8)     goto label1;
+
+     label3:
+        $z1_4 = Phi($z1 #0, $z1_1 #2);
+
+        $i6_8 = Phi($i6 #0, $i6 #2);
+
+        $i5_4 = Phi($i5 #0, $i5_2 #2);
+
+        $i7_9 = Phi($i7 #0, $i7 #2);
+
+(9)     if $z0 == 0 goto label6;
+
+        $z0_1 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isLayoutRtlSupport()>();
+
+(10)    if $z0_1 == 0 goto label5;
+
+     label4:
+        $i2_1 = Phi($i2 #10, $i2_2 #12);
+
+        $z0_2 = staticinvoke <android.support.v4.view.ViewCompat: boolean canScrollHorizontally(android.view.View,int)>($r1, $i2_1);
+
+(11)    if $z0_2 == 0 goto label6;
+
+        return 1;
+
+     label5:
+        $i2_2 = neg $i2;
+
+(12)    goto label4;
+
+     label6:
+        $i2_3 = Phi($i2 #9, $i2_1 #11);
+
+        $z0_3 = Phi($z0 #9, $z0_2 #11);
+
+        return 0;
+    }
+
+    public boolean canSlide()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        boolean z0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+        return z0;
+    }
+
+    protected boolean checkLayoutParams(android.view.ViewGroup$LayoutParams)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.ViewGroup$LayoutParams $r1;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.ViewGroup$LayoutParams;
+
+        $z0 = $r1 instanceof android.support.v4.widget.SlidingPaneLayout$LayoutParams;
+
+(0)     if $z0 == 0 goto label1;
+
+        $z0_1 = specialinvoke $r0.<android.view.ViewGroup: boolean checkLayoutParams(android.view.ViewGroup$LayoutParams)>($r1);
+
+(1)     if $z0_1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return 0;
+    }
+
+    public boolean closePane()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean closePane(android.view.View,int)>($r1, 0);
+
+        return $z0;
+    }
+
+    public void computeScroll()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        boolean $z0, $z0_1, $z0_2;
+        android.support.v4.widget.ViewDragHelper $r1, $r1_1;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        $z0 = virtualinvoke $r1.<android.support.v4.widget.ViewDragHelper: boolean continueSettling(boolean)>(1);
+
+(0)     if $z0 == 0 goto label2;
+
+        $z0_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+        if $z0_1 != 0 goto label1;
+
+        $r1_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        virtualinvoke $r1_1.<android.support.v4.widget.ViewDragHelper: void abort()>();
+
+        return;
+
+     label1:
+(1)     staticinvoke <android.support.v4.view.ViewCompat: void postInvalidateOnAnimation(android.view.View)>($r0);
+
+     label2:
+        $z0_2 = Phi($z0 #0, $z0_1 #1);
+
+        return;
+    }
+
+    void dispatchOnPanelClosed(android.view.View)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+        android.support.v4.widget.SlidingPaneLayout$PanelSlideListener $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$PanelSlideListener mPanelSlideListener>;
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$PanelSlideListener mPanelSlideListener>;
+
+(1)     interfaceinvoke $r2_1.<android.support.v4.widget.SlidingPaneLayout$PanelSlideListener: void onPanelClosed(android.view.View)>($r1);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void sendAccessibilityEvent(int)>(32);
+
+        return;
+    }
+
+    void dispatchOnPanelOpened(android.view.View)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+        android.support.v4.widget.SlidingPaneLayout$PanelSlideListener $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$PanelSlideListener mPanelSlideListener>;
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$PanelSlideListener mPanelSlideListener>;
+
+(1)     interfaceinvoke $r2_1.<android.support.v4.widget.SlidingPaneLayout$PanelSlideListener: void onPanelOpened(android.view.View)>($r1);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void sendAccessibilityEvent(int)>(32);
+
+        return;
+    }
+
+    void dispatchOnPanelSlide(android.view.View)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+        float $f0;
+        android.support.v4.widget.SlidingPaneLayout$PanelSlideListener $r2, $r2_1, $r2_2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$PanelSlideListener mPanelSlideListener>;
+
+(0)     if $r2 == null goto label1;
+
+        $r2_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$PanelSlideListener mPanelSlideListener>;
+
+        $f0 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+(1)     interfaceinvoke $r2_1.<android.support.v4.widget.SlidingPaneLayout$PanelSlideListener: void onPanelSlide(android.view.View,float)>($r1, $f0);
+
+     label1:
+        $r2_2 = Phi($r2 #0, $r2_1 #1);
+
+        return;
+    }
+
+    public void draw(android.graphics.Canvas)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.graphics.Canvas $r1;
+        boolean $z0, $z0_1;
+        android.graphics.drawable.Drawable $r2, $r2_1, $r2_2;
+        int $i0, $i1, $i2, $i3, $i4, $i0_1, $i3_1, $i4_1, $i3_2, $i4_2, $i3_3, $i4_3;
+        android.view.View $r3, $r3_1, $r3_2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        specialinvoke $r0.<android.view.ViewGroup: void draw(android.graphics.Canvas)>($r1);
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isLayoutRtlSupport()>();
+
+        if $z0 == 0 goto label3;
+
+(0)     $r2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.drawable.Drawable mShadowDrawableRight>;
+
+     label1:
+        $r2_1 = Phi($r2 #0, $r2_2 #2);
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getChildCount()>();
+
+        if $i0 <= 1 goto label4;
+
+(1)     $r3 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View getChildAt(int)>(1);
+
+     label2:
+        $r3_1 = Phi($r3 #1, $r3_2 #3);
+
+        if $r3_1 == null goto label8;
+
+        if $r2_1 != null goto label5;
+
+        return;
+
+     label3:
+        $r2_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.drawable.Drawable mShadowDrawableLeft>;
+
+(2)     goto label1;
+
+     label4:
+        $r3_2 = null;
+
+(3)     goto label2;
+
+     label5:
+        $i0_1 = virtualinvoke $r3_1.<android.view.View: int getTop()>();
+
+        $i1 = virtualinvoke $r3_1.<android.view.View: int getBottom()>();
+
+        $i2 = virtualinvoke $r2_1.<android.graphics.drawable.Drawable: int getIntrinsicWidth()>();
+
+        $z0_1 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isLayoutRtlSupport()>();
+
+        if $z0_1 == 0 goto label7;
+
+        $i3 = virtualinvoke $r3_1.<android.view.View: int getRight()>();
+
+        $i4 = $i3;
+
+(4)     $i3_1 = $i3 + $i2;
+
+     label6:
+        $i4_1 = Phi($i4 #4, $i4_3 #5);
+
+        $i3_2 = Phi($i3_1 #4, $i3_3 #5);
+
+        virtualinvoke $r2_1.<android.graphics.drawable.Drawable: void setBounds(int,int,int,int)>($i4_1, $i0_1, $i3_2, $i1);
+
+        virtualinvoke $r2_1.<android.graphics.drawable.Drawable: void draw(android.graphics.Canvas)>($r1);
+
+        return;
+
+     label7:
+        $i4_2 = virtualinvoke $r3_1.<android.view.View: int getLeft()>();
+
+        $i3_3 = $i4_2;
+
+        $i4_3 = $i4_2 - $i2;
+
+(5)     goto label6;
+
+     label8:
+        return;
+    }
+
+    protected boolean drawChild(android.graphics.Canvas, android.view.View, long)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.graphics.Canvas $r1;
+        android.view.View $r2, $r5, $r5_1, $r5_2, $r5_3, $r5_4;
+        long $l0;
+        byte $b1;
+        android.view.ViewGroup$LayoutParams $r3;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r4;
+        int $i2, $i3, $i4, $i3_1, $i3_2, $i4_1, $i3_3, $i4_2, $i3_4, $i3_5, $i4_3, $i3_6, $i3_7, $i3_8, $i3_9;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z0_10, $z0_11;
+        android.graphics.Rect $r6, $r7, $r6_1, $r6_2, $r7_1, $r6_3, $r6_4, $r7_2, $r6_5, $r7_3;
+        float $f0, $f1, $f0_1, $f0_2, $f0_3;
+        android.graphics.Bitmap $r8;
+        android.graphics.Paint $r9;
+        java.lang.StringBuilder $r10, $r10_1, $r10_2, $r10_3, $r10_4;
+        java.lang.String $r11;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        $r2 := @parameter1: android.view.View;
+
+        $l0 := @parameter2: long;
+
+        $r3 = virtualinvoke $r2.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r4 = (android.support.v4.widget.SlidingPaneLayout$LayoutParams) $r3;
+
+        $i2 = virtualinvoke $r1.<android.graphics.Canvas: int save(int)>(2);
+
+        $z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+(0)     if $z0 == 0 goto label2;
+
+        $z0_1 = $r4.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean slideable>;
+
+(1)     if $z0_1 != 0 goto label2;
+
+        $r5 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+(2)     if $r5 == null goto label2;
+
+        $r6 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.Rect mTmpRect>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: boolean getClipBounds(android.graphics.Rect)>($r6);
+
+        $z0_2 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isLayoutRtlSupport()>();
+
+        if $z0_2 == 0 goto label4;
+
+        $r6_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.Rect mTmpRect>;
+
+        $r7 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.Rect mTmpRect>;
+
+        $i3 = $r7.<android.graphics.Rect: int left>;
+
+        $r5_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $i4 = virtualinvoke $r5_1.<android.view.View: int getRight()>();
+
+        $i3_1 = staticinvoke <java.lang.Math: int max(int,int)>($i3, $i4);
+
+(3)     $r6_1.<android.graphics.Rect: int left> = $i3_1;
+
+     label1:
+        $r6_2 = Phi($r6_1 #3, $r6_4 #6);
+
+        $r5_2 = Phi($r5_1 #3, $r5_3 #6);
+
+        $i3_2 = Phi($i3_1 #3, $i3_4 #6);
+
+        $i4_1 = Phi($i4 #3, $i4_2 #6);
+
+        $r7_1 = Phi($r7 #3, $r7_2 #6);
+
+        $r6_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.Rect mTmpRect>;
+
+(4)     virtualinvoke $r1.<android.graphics.Canvas: boolean clipRect(android.graphics.Rect)>($r6_3);
+
+     label2:
+        $z0_3 = Phi($z0 #0, $z0_1 #1, $z0_1 #2, $z0_2 #4);
+
+        $r6_5 = Phi($r6 #0, $r6 #1, $r6 #2, $r6_3 #4);
+
+        $r5_4 = Phi($r5 #0, $r5 #1, $r5 #2, $r5_2 #4);
+
+        $i3_5 = Phi($i3 #0, $i3 #1, $i3 #2, $i3_2 #4);
+
+        $i4_3 = Phi($i4 #0, $i4 #1, $i4 #2, $i4_1 #4);
+
+        $r7_3 = Phi($r7 #0, $r7 #1, $r7 #2, $r7_1 #4);
+
+        $i3_6 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i3_6 < 11 goto label5;
+
+(5)     $z0_4 = specialinvoke $r0.<android.view.ViewGroup: boolean drawChild(android.graphics.Canvas,android.view.View,long)>($r1, $r2, $l0);
+
+     label3:
+        $z0_5 = Phi($z0_4 #5, $z0_8 #9, $z0_9 #10, $z0_11 #11);
+
+        $r10 = Phi($r10 #5, $r10 #9, $r10_4 #10, $r10 #11);
+
+        $f0 = Phi($f0 #5, $f0_2 #9, $f0_1 #10, $f0_3 #11);
+
+        $i3_7 = Phi($i3_6 #5, $i3_9 #9, $i3_6 #10, $i3_6 #11);
+
+        virtualinvoke $r1.<android.graphics.Canvas: void restoreToCount(int)>($i2);
+
+        return $z0_5;
+
+     label4:
+        $r6_4 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.Rect mTmpRect>;
+
+        $r7_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.Rect mTmpRect>;
+
+        $i3_3 = $r7_2.<android.graphics.Rect: int right>;
+
+        $r5_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $i4_2 = virtualinvoke $r5_3.<android.view.View: int getLeft()>();
+
+        $i3_4 = staticinvoke <java.lang.Math: int min(int,int)>($i3_3, $i4_2);
+
+        $r6_4.<android.graphics.Rect: int right> = $i3_4;
+
+(6)     goto label1;
+
+     label5:
+        $z0_6 = $r4.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean dimWhenOffset>;
+
+(7)     if $z0_6 == 0 goto label8;
+
+        $f0_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+        $b1 = $f0_1 cmpl 0.0F;
+
+(8)     if $b1 <= 0 goto label8;
+
+        $z0_7 = virtualinvoke $r2.<android.view.View: boolean isDrawingCacheEnabled()>();
+
+        if $z0_7 != 0 goto label6;
+
+        virtualinvoke $r2.<android.view.View: void setDrawingCacheEnabled(boolean)>(1);
+
+     label6:
+        $r8 = virtualinvoke $r2.<android.view.View: android.graphics.Bitmap getDrawingCache()>();
+
+        if $r8 == null goto label7;
+
+        $i3_8 = virtualinvoke $r2.<android.view.View: int getLeft()>();
+
+        $f0_2 = (float) $i3_8;
+
+        $i3_9 = virtualinvoke $r2.<android.view.View: int getTop()>();
+
+        $f1 = (float) $i3_9;
+
+        $r9 = $r4.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: android.graphics.Paint dimPaint>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawBitmap(android.graphics.Bitmap,float,float,android.graphics.Paint)>($r8, $f0_2, $f1, $r9);
+
+        $z0_8 = 0;
+
+(9)     goto label3;
+
+     label7:
+        $r10_1 = new java.lang.StringBuilder;
+
+        specialinvoke $r10_1.<java.lang.StringBuilder: void <init>()>();
+
+        $r10_2 = virtualinvoke $r10_1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("drawChild: child view ");
+
+        $r10_3 = virtualinvoke $r10_2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        $r10_4 = virtualinvoke $r10_3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" returned null drawing cache");
+
+        $r11 = virtualinvoke $r10_4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("SlidingPaneLayout", $r11);
+
+        $z0_9 = specialinvoke $r0.<android.view.ViewGroup: boolean drawChild(android.graphics.Canvas,android.view.View,long)>($r1, $r2, $l0);
+
+(10)    goto label3;
+
+     label8:
+        $f0_3 = Phi($f0 #7, $f0_1 #8);
+
+        $z0_10 = virtualinvoke $r2.<android.view.View: boolean isDrawingCacheEnabled()>();
+
+        if $z0_10 == 0 goto label9;
+
+        virtualinvoke $r2.<android.view.View: void setDrawingCacheEnabled(boolean)>(0);
+
+     label9:
+        $z0_11 = specialinvoke $r0.<android.view.ViewGroup: boolean drawChild(android.graphics.Canvas,android.view.View,long)>($r1, $r2, $l0);
+
+(11)    goto label3;
+    }
+
+    protected android.view.ViewGroup$LayoutParams generateDefaultLayoutParams()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r1;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 = new android.support.v4.widget.SlidingPaneLayout$LayoutParams;
+
+        specialinvoke $r1.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: void <init>()>();
+
+        return $r1;
+    }
+
+    public android.view.ViewGroup$LayoutParams generateLayoutParams(android.util.AttributeSet)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.util.AttributeSet $r1;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r2;
+        android.content.Context $r3;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.util.AttributeSet;
+
+        $r2 = new android.support.v4.widget.SlidingPaneLayout$LayoutParams;
+
+        $r3 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.content.Context getContext()>();
+
+        specialinvoke $r2.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: void <init>(android.content.Context,android.util.AttributeSet)>($r3, $r1);
+
+        return $r2;
+    }
+
+    protected android.view.ViewGroup$LayoutParams generateLayoutParams(android.view.ViewGroup$LayoutParams)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.ViewGroup$LayoutParams $r1;
+        boolean $z0;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r2, $r2_1;
+        android.view.ViewGroup$MarginLayoutParams $r3;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.ViewGroup$LayoutParams;
+
+        $z0 = $r1 instanceof android.view.ViewGroup$MarginLayoutParams;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new android.support.v4.widget.SlidingPaneLayout$LayoutParams;
+
+        $r3 = (android.view.ViewGroup$MarginLayoutParams) $r1;
+
+        specialinvoke $r2.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: void <init>(android.view.ViewGroup$MarginLayoutParams)>($r3);
+
+        return $r2;
+
+     label1:
+        $r2_1 = new android.support.v4.widget.SlidingPaneLayout$LayoutParams;
+
+        specialinvoke $r2_1.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: void <init>(android.view.ViewGroup$LayoutParams)>($r1);
+
+        return $r2_1;
+    }
+
+    public int getCoveredFadeColor()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int i0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        i0 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mCoveredFadeColor>;
+
+        return i0;
+    }
+
+    public int getParallaxDistance()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int i0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        i0 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mParallaxBy>;
+
+        return i0;
+    }
+
+    public int getSliderFadeColor()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int i0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        i0 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mSliderFadeColor>;
+
+        return i0;
+    }
+
+    boolean isDimmed(android.view.View)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+        float $f0;
+        byte $b0;
+        android.view.ViewGroup$LayoutParams $r2;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r3;
+        boolean $z0, $z0_1, $z0_2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        if $r1 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r2 = virtualinvoke $r1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3 = (android.support.v4.widget.SlidingPaneLayout$LayoutParams) $r2;
+
+        $z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+(0)     if $z0 == 0 goto label2;
+
+        $z0_1 = $r3.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean dimWhenOffset>;
+
+(1)     if $z0_1 == 0 goto label2;
+
+        $f0 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+        $b0 = $f0 cmpl 0.0F;
+
+(2)     if $b0 <= 0 goto label2;
+
+        return 1;
+
+     label2:
+        $z0_2 = Phi($z0 #0, $z0_1 #1, $z0_1 #2);
+
+        return 0;
+    }
+
+    public boolean isOpen()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        boolean $z0;
+        float $f0;
+        byte $b0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+        if $z0 == 0 goto label1;
+
+        $f0 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+        $b0 = $f0 cmpl 1.0F;
+
+        if $b0 != 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public boolean isSlideable()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        boolean z0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+        return z0;
+    }
+
+    protected void onAttachedToWindow()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        specialinvoke $r0.<android.view.ViewGroup: void onAttachedToWindow()>();
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mFirstLayout> = 1;
+
+        return;
+    }
+
+    protected void onDetachedFromWindow()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0, $i1, $i0_1, $i0_2;
+        java.util.ArrayList $r1, $r1_1, $r1_2, $r1_3;
+        java.lang.Object $r2;
+        android.support.v4.widget.SlidingPaneLayout$DisableLayerRunnable $r3;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        specialinvoke $r0.<android.view.ViewGroup: void onDetachedFromWindow()>();
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mFirstLayout> = 1;
+
+        $i0 = 0;
+
+        $r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: java.util.ArrayList mPostedRunnables>;
+
+(0)     $i1 = virtualinvoke $r1.<java.util.ArrayList: int size()>();
+
+     label1:
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        $r1_1 = Phi($r1 #0, $r1_2 #1);
+
+        if $i0_1 >= $i1 goto label2;
+
+        $r1_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: java.util.ArrayList mPostedRunnables>;
+
+        $r2 = virtualinvoke $r1_2.<java.util.ArrayList: java.lang.Object get(int)>($i0_1);
+
+        $r3 = (android.support.v4.widget.SlidingPaneLayout$DisableLayerRunnable) $r2;
+
+        virtualinvoke $r3.<android.support.v4.widget.SlidingPaneLayout$DisableLayerRunnable: void run()>();
+
+        $i0_2 = $i0_1 + 1;
+
+(1)     goto label1;
+
+     label2:
+        $r1_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: java.util.ArrayList mPostedRunnables>;
+
+        virtualinvoke $r1_3.<java.util.ArrayList: void clear()>();
+
+        return;
+    }
+
+    public boolean onInterceptTouchEvent(android.view.MotionEvent)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.MotionEvent $r1;
+        int $i0, $i1, $i2, $i0_1, $i0_2, $i0_3, $i1_1, $i1_2, $i0_4, $i1_3;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6, $z0_7, $z0_8, $z0_9, $z1_1, $z1_2, $z1_3, $z0_10, $z0_11, $z0_12;
+        android.view.View $r2, $r2_1, $r2_2, $r2_3, $r2_4;
+        android.support.v4.widget.ViewDragHelper $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5, $r3_6, $r3_7, $r3_8;
+        float $f0, $f1, $f2, $f0_1, $f0_2, $f0_3, $f0_4, $f1_1, $f1_2, $f0_5, $f2_1, $f1_3, $f1_4, $f2_2, $f0_6, $f0_7, $f2_3;
+        byte $b3, $b3_1, $b3_2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $i1 = staticinvoke <android.support.v4.view.MotionEventCompat: int getActionMasked(android.view.MotionEvent)>($r1);
+
+        $z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+(0)     if $z0 != 0 goto label02;
+
+(1)     if $i1 != 0 goto label02;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getChildCount()>();
+
+(2)     if $i0 <= 1 goto label02;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View getChildAt(int)>(1);
+
+(3)     if $r2 == null goto label02;
+
+        $r3 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        $f0 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $i2 = (int) $f0;
+
+        $f0_1 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $i0_1 = (int) $f0_1;
+
+        $z0_1 = virtualinvoke $r3.<android.support.v4.widget.ViewDragHelper: boolean isViewUnder(android.view.View,int,int)>($r2, $i2, $i0_1);
+
+        if $z0_1 != 0 goto label04;
+
+(4)     $z0_2 = 1;
+
+     label01:
+        $z0_3 = Phi($z0_2 #4, $z0_4 #8);
+
+(5)     $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mPreservedOpenState> = $z0_3;
+
+     label02:
+        $z0_5 = Phi($z0 #0, $z0 #1, $z0 #2, $z0 #3, $z0_3 #5);
+
+        $r3_1 = Phi($r3 #0, $r3 #1, $r3 #2, $r3 #3, $r3 #5);
+
+        $i0_2 = Phi($i0 #0, $i0 #1, $i0 #2, $i0 #3, $i0_1 #5);
+
+        $r2_1 = Phi($r2 #0, $r2 #1, $r2 #2, $r2 #3, $r2 #5);
+
+        $f0_2 = Phi($f0 #0, $f0 #1, $f0 #2, $f0 #3, $f0_1 #5);
+
+        $z0_6 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+(6)     if $z0_6 == 0 goto label03;
+
+        $z0_7 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mIsUnableToDrag>;
+
+        if $z0_7 == 0 goto label05;
+
+(7)     if $i1 == 0 goto label05;
+
+     label03:
+        $z0_11 = Phi($z0_6 #6, $z0_7 #7);
+
+        $r3_8 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        virtualinvoke $r3_8.<android.support.v4.widget.ViewDragHelper: void cancel()>();
+
+        $z0_12 = specialinvoke $r0.<android.view.ViewGroup: boolean onInterceptTouchEvent(android.view.MotionEvent)>($r1);
+
+        return $z0_12;
+
+     label04:
+        $z0_4 = 0;
+
+(8)     goto label01;
+
+     label05:
+        if $i1 == 3 goto label06;
+
+        if $i1 != 1 goto label07;
+
+     label06:
+        $r3_7 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        virtualinvoke $r3_7.<android.support.v4.widget.ViewDragHelper: void cancel()>();
+
+        return 0;
+
+     label07:
+        $z0_8 = 0;
+
+(9)     lookupswitch($i1)
+        {
+            case 0: goto label11;
+            case 1: goto label09;
+            case 2: goto label12;
+            default: goto label08;
+        };
+
+     label08:
+(10)    goto label09;
+
+     label09:
+        $f2 = Phi($f2 #9, $f2 #10, $f2 #11, $f2 #12, $f2 #13, $f2_3 #14, $f2_3 #15);
+
+        $z0_9 = Phi($z0_8 #9, $z0_8 #10, $z0_8 #11, $z0_8 #12, $z0_10 #13, $z0_8 #14, $z0_8 #15);
+
+        $r3_2 = Phi($r3_1 #9, $r3_1 #10, $r3_4 #11, $r3_4 #12, $r3_4 #13, $r3_5 #14, $r3_5 #15);
+
+        $i0_3 = Phi($i0_2 #9, $i0_2 #10, $i0_4 #11, $i0_4 #12, $i0_4 #13, $i0_2 #14, $i0_2 #15);
+
+        $i1_1 = Phi($i1 #9, $i1 #10, $i1_2 #11, $i1_2 #12, $i1_2 #13, $i1_3 #14, $i1_3 #15);
+
+        $b3 = Phi($b3 #9, $b3 #10, $b3 #11, $b3 #12, $b3 #13, $b3_1 #14, $b3_2 #15);
+
+        $r2_2 = Phi($r2_1 #9, $r2_1 #10, $r2_3 #11, $r2_4 #12, $r2_4 #13, $r2_1 #14, $r2_1 #15);
+
+        $z1 = Phi($z1 #9, $z1 #10, $z1_2 #11, $z1_3 #12, $z1_3 #13, $z1 #14, $z1 #15);
+
+        $f1 = Phi($f1 #9, $f1 #10, $f1_1 #11, $f1_1 #12, $f1_1 #13, $f1_4 #14, $f1_4 #15);
+
+        $f0_3 = Phi($f0_2 #9, $f0_2 #10, $f0_4 #11, $f0_4 #12, $f0_4 #13, $f0_7 #14, $f0_7 #15);
+
+        $r3_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        $z1_1 = virtualinvoke $r3_3.<android.support.v4.widget.ViewDragHelper: boolean shouldInterceptTouchEvent(android.view.MotionEvent)>($r1);
+
+        if $z1_1 != 0 goto label10;
+
+        if $z0_9 == 0 goto label13;
+
+     label10:
+        return 1;
+
+     label11:
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mIsUnableToDrag> = 0;
+
+        $f0_4 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f1_1 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: float mInitialMotionX> = $f0_4;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: float mInitialMotionY> = $f1_1;
+
+        $r3_4 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        $r2_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $i1_2 = (int) $f0_4;
+
+        $i0_4 = (int) $f1_1;
+
+        $z1_2 = virtualinvoke $r3_4.<android.support.v4.widget.ViewDragHelper: boolean isViewUnder(android.view.View,int,int)>($r2_3, $i1_2, $i0_4);
+
+(11)    if $z1_2 == 0 goto label09;
+
+        $r2_4 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $z1_3 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isDimmed(android.view.View)>($r2_4);
+
+(12)    if $z1_3 == 0 goto label09;
+
+        $z0_10 = 1;
+
+(13)    goto label09;
+
+     label12:
+        $f1_2 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f0_5 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $f2_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mInitialMotionX>;
+
+        $f1_3 = $f1_2 - $f2_1;
+
+        $f1_4 = staticinvoke <java.lang.Math: float abs(float)>($f1_3);
+
+        $f2_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mInitialMotionY>;
+
+        $f0_6 = $f0_5 - $f2_2;
+
+        $f0_7 = staticinvoke <java.lang.Math: float abs(float)>($f0_6);
+
+        $r3_5 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        $i1_3 = virtualinvoke $r3_5.<android.support.v4.widget.ViewDragHelper: int getTouchSlop()>();
+
+        $f2_3 = (float) $i1_3;
+
+        $b3_1 = $f1_4 cmpl $f2_3;
+
+(14)    if $b3_1 <= 0 goto label09;
+
+        $b3_2 = $f0_7 cmpl $f1_4;
+
+(15)    if $b3_2 <= 0 goto label09;
+
+        $r3_6 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        virtualinvoke $r3_6.<android.support.v4.widget.ViewDragHelper: void cancel()>();
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mIsUnableToDrag> = 1;
+
+        return 0;
+
+     label13:
+        return 0;
+    }
+
+    protected void onLayout(boolean, int, int, int, int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        boolean $z0, $z1, $z0_1, $z1_1, $z1_2, $z1_3, $z1_4, $z1_5, $z1_6, $z1_7, $z1_8, $z1_9, $z1_10, $z1_11, $z1_12, $z1_13, $z0_2, $z0_3, $z0_4, $z0_5, $z0_6;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i9, $i10, $i11, $i12, $i0_1, $i1_1, $i1_2, $i3_1, $i3_2, $i2_1, $i1_3, $i5_1, $i6_1, $i7_1, $i8_1, $i10_1, $i11_1, $i9_1, $i7_2, $i1_4, $i5_2, $i12_1, $i6_2, $i7_3, $i8_2, $i9_2, $i10_2, $i9_3, $i10_3, $i11_2, $i10_4, $i10_5, $i10_6, $i9_4, $i10_7, $i10_8, $i11_3, $i11_4, $i12_2, $i11_5, $i12_3, $i9_5, $i10_9, $i5_3, $i9_6, $i10_10, $i8_3, $i10_11, $i11_6, $i9_7, $i5_4, $i12_4, $i9_8, $i8_4, $i9_9, $i8_5, $i9_10, $i7_4, $i7_5, $i7_6, $i1_5, $i9_11, $i8_6, $i5_5, $i5_6, $i8_7, $i5_7, $i5_8, $i5_9, $i0_2, $i0_3, $i0_4, $i1_6, $i0_5, $i0_6, $i1_7, $i1_8, $i0_7, $i0_8, $i1_9, $i3_3, $i1_10;
+        android.support.v4.widget.ViewDragHelper $r1, $r1_1, $r1_2;
+        float $f0, $f1, $f0_1, $f0_2, $f0_3, $f0_4, $f0_5, $f1_1, $f0_6, $f1_2, $f0_7, $f0_8, $f1_3, $f0_9, $f0_10, $f1_4, $f0_11, $f0_12, $f1_5, $f0_13, $f0_14, $f0_15, $f0_16, $f0_17, $f0_18;
+        android.view.View $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5, $r2_6, $r2_7, $r2_8;
+        android.view.ViewGroup$LayoutParams $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r4, $r4_1, $r4_2, $r4_3, $r4_4, $r4_5;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $z0 := @parameter0: boolean;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 := @parameter3: int;
+
+        $i3 := @parameter4: int;
+
+        $z0_1 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isLayoutRtlSupport()>();
+
+        if $z0_1 == 0 goto label08;
+
+        $r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+(0)     virtualinvoke $r1.<android.support.v4.widget.ViewDragHelper: void setEdgeTrackingEnabled(int)>(2);
+
+     label01:
+        $r1_1 = Phi($r1 #0, $r1_2 #11);
+
+        $i0_1 = $i2 - $i0;
+
+        if $z0_1 == 0 goto label09;
+
+(1)     $i1_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingRight()>();
+
+     label02:
+        $i1_2 = Phi($i1_1 #1, $i1_10 #12);
+
+        if $z0_1 == 0 goto label10;
+
+(2)     $i3_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingLeft()>();
+
+     label03:
+        $i3_2 = Phi($i3_1 #2, $i3_3 #13);
+
+        $i4 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingTop()>();
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getChildCount()>();
+
+        $i5 = $i1_2;
+
+        $z1 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mFirstLayout>;
+
+(3)     if $z1 == 0 goto label05;
+
+        $z1_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+(4)     if $z1_1 == 0 goto label11;
+
+        $z1_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mPreservedOpenState>;
+
+(5)     if $z1_2 == 0 goto label11;
+
+(6)     $f0 = 1.0F;
+
+     label04:
+        $z1_3 = Phi($z1_2 #6, $z1_4 #14);
+
+        $f0_1 = Phi($f0 #6, $f0_2 #14);
+
+(7)     $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset> = $f0_1;
+
+     label05:
+        $z1_5 = Phi($z1 #3, $z1_3 #7);
+
+        $f0_3 = Phi($f0 #3, $f0_1 #7);
+
+(8)     $i6 = 0;
+
+     label06:
+        $i8 = Phi($i8 #8, $i8_1 #10);
+
+        $i10 = Phi($i10 #8, $i10_1 #10);
+
+        $z1_6 = Phi($z1_5 #8, $z1_7 #10);
+
+        $i11 = Phi($i11 #8, $i11_1 #10);
+
+        $f0_4 = Phi($f0_3 #8, $f0_5 #10);
+
+        $i9 = Phi($i9 #8, $i9_1 #10);
+
+        $i7 = Phi($i7 #8, $i7_2 #10);
+
+        $i1_3 = Phi($i1_2 #8, $i1_4 #10);
+
+        $r4 = Phi($r4 #8, $r4_1 #10);
+
+        $f1 = Phi($f1 #8, $f1_1 #10);
+
+        $i5_1 = Phi($i5 #8, $i5_2 #10);
+
+        $i12 = Phi($i12 #8, $i12_1 #10);
+
+        $i6_1 = Phi($i6 #8, $i6_2 #10);
+
+        $r2 = Phi($r2 #8, $r2_1 #10);
+
+        $r3 = Phi($r3 #8, $r3_1 #10);
+
+        if $i6_1 >= $i2_1 goto label22;
+
+        $r2_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View getChildAt(int)>($i6_1);
+
+        $i7_1 = virtualinvoke $r2_1.<android.view.View: int getVisibility()>();
+
+(9)     if $i7_1 != 8 goto label12;
+
+     label07:
+        $i8_1 = Phi($i8 #9, $i8_5 #19);
+
+        $i10_1 = Phi($i10 #9, $i10_11 #19);
+
+        $z1_7 = Phi($z1_6 #9, $z1_12 #19);
+
+        $i11_1 = Phi($i11 #9, $i11_6 #19);
+
+        $f0_5 = Phi($f0_4 #9, $f0_10 #19);
+
+        $i9_1 = Phi($i9 #9, $i9_10 #19);
+
+        $i7_2 = Phi($i7_1 #9, $i7_6 #19);
+
+        $i1_4 = Phi($i1_3 #9, $i1_5 #19);
+
+        $r4_1 = Phi($r4 #9, $r4_2 #19);
+
+        $f1_1 = Phi($f1 #9, $f1_4 #19);
+
+        $i5_2 = Phi($i5_1 #9, $i5_4 #19);
+
+        $i12_1 = Phi($i12 #9, $i12_4 #19);
+
+        $r3_1 = Phi($r3 #9, $r3_2 #19);
+
+        $i6_2 = $i6_1 + 1;
+
+(10)    goto label06;
+
+     label08:
+        $r1_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        virtualinvoke $r1_2.<android.support.v4.widget.ViewDragHelper: void setEdgeTrackingEnabled(int)>(1);
+
+(11)    goto label01;
+
+     label09:
+        $i1_10 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingLeft()>();
+
+(12)    goto label02;
+
+     label10:
+        $i3_3 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingRight()>();
+
+(13)    goto label03;
+
+     label11:
+        $z1_4 = Phi($z1_1 #4, $z1_2 #5);
+
+        $f0_2 = 0.0F;
+
+(14)    goto label04;
+
+     label12:
+        $r3_2 = virtualinvoke $r2_1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r4_2 = (android.support.v4.widget.SlidingPaneLayout$LayoutParams) $r3_2;
+
+        $i7_3 = virtualinvoke $r2_1.<android.view.View: int getMeasuredWidth()>();
+
+        $i8_2 = 0;
+
+        $z1_8 = $r4_2.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean slideable>;
+
+        if $z1_8 == 0 goto label19;
+
+        $i9_2 = $r4_2.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+        $i10_2 = $r4_2.<android.view.ViewGroup$MarginLayoutParams: int rightMargin>;
+
+        $i9_3 = $i9_2 + $i10_2;
+
+        $i10_3 = $i0_1 - $i3_2;
+
+        $i11_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mOverhangSize>;
+
+        $i10_4 = $i10_3 - $i11_2;
+
+        $i10_5 = staticinvoke <java.lang.Math: int min(int,int)>($i1_3, $i10_4);
+
+        $i10_6 = $i10_5 - $i5_1;
+
+        $i9_4 = $i10_6 - $i9_3;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: int mSlideRange> = $i9_4;
+
+        if $z0_1 == 0 goto label17;
+
+(15)    $i10_7 = $r4_2.<android.view.ViewGroup$MarginLayoutParams: int rightMargin>;
+
+     label13:
+        $i10_8 = Phi($i10_7 #15, $i10_10 #20);
+
+        $i11_3 = $i5_1 + $i10_8;
+
+        $i11_4 = $i11_3 + $i9_4;
+
+        $i12_2 = $i7_3 / 2;
+
+        $i11_5 = $i11_4 + $i12_2;
+
+        $i12_3 = $i0_1 - $i3_2;
+
+        if $i11_5 <= $i12_3 goto label18;
+
+(16)    $z1_9 = 1;
+
+     label14:
+        $z1_10 = Phi($z1_9 #16, $z1_11 #21);
+
+        $r4_2.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean dimWhenOffset> = $z1_10;
+
+        $f0_6 = (float) $i9_4;
+
+        $f1_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+        $f0_7 = $f0_6 * $f1_2;
+
+        $i9_5 = (int) $f0_7;
+
+        $i10_9 = $i9_5 + $i10_8;
+
+        $i5_3 = $i5_1 + $i10_9;
+
+        $f0_8 = (float) $i9_5;
+
+        $i9_6 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mSlideRange>;
+
+        $f1_3 = (float) $i9_6;
+
+        $f0_9 = $f0_8 / $f1_3;
+
+(17)    $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset> = $f0_9;
+
+     label15:
+        $i8_3 = Phi($i8_2 #17, $i8_7 #24, $i8_2 #25);
+
+        $i10_11 = Phi($i10_9 #17, $i10 #24, $i10 #25);
+
+        $z1_12 = Phi($z1_10 #17, $z1_13 #24, $z1_13 #25);
+
+        $i11_6 = Phi($i11_5 #17, $i11 #24, $i11 #25);
+
+        $f0_10 = Phi($f0_9 #17, $f0_13 #24, $f0_4 #25);
+
+        $i9_7 = Phi($i9_6 #17, $i9 #24, $i9 #25);
+
+        $f1_4 = Phi($f1_3 #17, $f1_5 #24, $f1 #25);
+
+        $i5_4 = Phi($i5_3 #17, $i5_7 #24, $i5_9 #25);
+
+        $i12_4 = Phi($i12_3 #17, $i12 #24, $i12 #25);
+
+        if $z0_1 == 0 goto label21;
+
+        $i9_8 = $i0_1 - $i5_4;
+
+        $i8_4 = $i9_8 + $i8_3;
+
+(18)    $i9_9 = $i8_4 - $i7_3;
+
+     label16:
+        $i8_5 = Phi($i8_4 #18, $i8_6 #26);
+
+        $i9_10 = Phi($i9_9 #18, $i9_11 #26);
+
+        $i7_4 = virtualinvoke $r2_1.<android.view.View: int getMeasuredHeight()>();
+
+        $i7_5 = $i4 + $i7_4;
+
+        virtualinvoke $r2_1.<android.view.View: void layout(int,int,int,int)>($i9_10, $i4, $i8_5, $i7_5);
+
+        $i7_6 = virtualinvoke $r2_1.<android.view.View: int getWidth()>();
+
+        $i1_5 = $i1_3 + $i7_6;
+
+(19)    goto label07;
+
+     label17:
+        $i10_10 = $r4_2.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+(20)    goto label13;
+
+     label18:
+        $z1_11 = 0;
+
+(21)    goto label14;
+
+     label19:
+        $z1_13 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+(22)    if $z1_13 == 0 goto label20;
+
+        $i5_5 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mParallaxBy>;
+
+(23)    if $i5_5 == 0 goto label20;
+
+        $f0_11 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+        $f0_12 = 1.0F - $f0_11;
+
+        $i5_6 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mParallaxBy>;
+
+        $f1_5 = (float) $i5_6;
+
+        $f0_13 = $f0_12 * $f1_5;
+
+        $i8_7 = (int) $f0_13;
+
+        $i5_7 = $i1_3;
+
+(24)    goto label15;
+
+     label20:
+        $i5_8 = Phi($i5_1 #22, $i5_5 #23);
+
+        $i5_9 = $i1_3;
+
+(25)    goto label15;
+
+     label21:
+        $i9_11 = $i5_4 - $i8_3;
+
+        $i8_6 = $i9_11 + $i7_3;
+
+(26)    goto label16;
+
+     label22:
+        $z0_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mFirstLayout>;
+
+(27)    if $z0_2 == 0 goto label25;
+
+        $z0_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+        if $z0_3 == 0 goto label26;
+
+        $i0_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mParallaxBy>;
+
+(28)    if $i0_2 == 0 goto label23;
+
+        $f0_14 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+(29)    specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void parallaxOtherViews(float)>($f0_14);
+
+     label23:
+        $f0_15 = Phi($f0_4 #28, $f0_14 #29);
+
+        $r2_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $r3_3 = virtualinvoke $r2_2.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r4_3 = (android.support.v4.widget.SlidingPaneLayout$LayoutParams) $r3_3;
+
+        $z0_4 = $r4_3.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean dimWhenOffset>;
+
+(30)    if $z0_4 == 0 goto label24;
+
+        $r2_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $f0_16 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mSlideOffset>;
+
+        $i0_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mSliderFadeColor>;
+
+(31)    specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void dimChildView(android.view.View,float,int)>($r2_3, $f0_16, $i0_3);
+
+     label24:
+        $f0_17 = Phi($f0_15 #30, $f0_16 #31, $f0_4 #34);
+
+        $i0_4 = Phi($i0_2 #30, $i0_3 #31, $i0_6 #34);
+
+        $z0_5 = Phi($z0_4 #30, $z0_4 #31, $z0_3 #34);
+
+        $i1_6 = Phi($i1_3 #30, $i1_3 #31, $i1_7 #34);
+
+        $r4_4 = Phi($r4_3 #30, $r4_3 #31, $r4 #34);
+
+        $r2_4 = Phi($r2_2 #30, $r2_3 #31, $r2_6 #34);
+
+        $r3_4 = Phi($r3_3 #30, $r3_3 #31, $r3 #34);
+
+        $r2_5 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+(32)    virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void updateObscuredViewsVisibility(android.view.View)>($r2_5);
+
+     label25:
+        $f0_18 = Phi($f0_4 #27, $f0_17 #32);
+
+        $i0_8 = Phi($i0_1 #27, $i0_4 #32);
+
+        $z0_6 = Phi($z0_2 #27, $z0_5 #32);
+
+        $i1_9 = Phi($i1_3 #27, $i1_6 #32);
+
+        $r4_5 = Phi($r4 #27, $r4_4 #32);
+
+        $r2_8 = Phi($r2 #27, $r2_5 #32);
+
+        $r3_5 = Phi($r3 #27, $r3_4 #32);
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mFirstLayout> = 0;
+
+        return;
+
+     label26:
+(33)    $i0_5 = 0;
+
+     label27:
+        $i0_6 = Phi($i0_5 #33, $i0_7 #35);
+
+        $i1_7 = Phi($i1_3 #33, $i1_8 #35);
+
+        $r2_6 = Phi($r2 #33, $r2_7 #35);
+
+(34)    if $i0_6 >= $i2_1 goto label24;
+
+        $r2_7 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View getChildAt(int)>($i0_6);
+
+        $i1_8 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mSliderFadeColor>;
+
+        specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void dimChildView(android.view.View,float,int)>($r2_7, 0.0F, $i1_8);
+
+        $i0_7 = $i0_6 + 1;
+
+(35)    goto label27;
+    }
+
+    protected void onMeasure(int, int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        boolean $z0, $z1, $z0_1, $z0_2, $z0_3, $z1_1, $z0_4, $z1_2, $z1_3, $z0_5, $z1_4, $z1_5, $z1_6, $z1_7, $z1_8, $z1_9, $z1_10, $z1_11, $z0_6;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i10, $i11, $i12, $i0_1, $i0_2, $i5_1, $i0_3, $i4_1, $i1_1, $i2_1, $i5_2, $i1_2, $i2_2, $i5_3, $i5_4, $i3_1, $i5_5, $i3_2, $i7_1, $i3_3, $i1_3, $i8_1, $i3_4, $i10_1, $i1_4, $i8_2, $i7_2, $i8_3, $i8_4, $i8_5, $i10_2, $i8_6, $i10_3, $i8_7, $i8_8, $i10_4, $i8_9, $i10_5, $i10_6, $i10_7, $i8_10, $i10_8, $i1_5, $i1_6, $i3_5, $i10_9, $i10_10, $i10_11, $i10_12, $i10_13, $i8_11, $i8_12, $i8_13, $i8_14, $i4_2, $i4_3, $i7_3, $i7_4, $i10_14, $i8_15, $i8_16, $i11_1, $i12_1, $i10_15, $i8_17, $i7_5, $i8_18, $i8_19, $i8_20, $i8_21, $i10_16, $i8_22, $i8_23, $i8_24, $i8_25, $i8_26, $i8_27, $i8_28, $i10_17, $i8_29, $i8_30, $i10_18, $i10_19, $i10_20, $i10_21, $i10_22, $i10_23, $i10_24, $i10_25, $i11_2, $i12_2, $i11_3, $i11_4, $i12_3, $i11_5, $i11_6, $i8_31, $i8_32, $i10_26, $i10_27, $i8_33, $i7_6, $i11_7, $i12_4, $i10_28, $i4_4, $i8_34, $i2_3, $i1_7, $i2_4, $i1_8, $i0_4, $i1_9, $i1_10, $i2_5, $i2_6, $i1_11, $i2_7, $i2_8, $i5_6, $i2_9, $i4_5, $i5_7;
+        float $f0, $f1, $f2, $f0_1, $f0_2, $f1_1, $f1_2, $f1_3, $f0_3, $f0_4, $f1_4, $f1_5, $f1_6, $f1_7, $f1_8, $f1_9, $f1_10, $f1_11, $f1_12, $f1_13, $f1_14, $f1_15, $f1_16;
+        android.view.View $r1, $r5, $r1_1, $r1_2, $r1_3, $r1_4;
+        android.view.ViewGroup$LayoutParams $r2, $r2_1, $r2_2, $r2_3, $r2_4, $r2_5;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r3, $r3_1, $r3_2, $r3_3, $r3_4, $r3_5;
+        java.lang.IllegalStateException $r4, $r4_1;
+        byte $b9, $b9_1, $b9_2, $b9_3, $b9_4, $b9_5, $b9_6, $b9_7, $b9_8, $b9_9, $b9_10, $b9_11, $b9_12, $b9_13;
+        android.support.v4.widget.ViewDragHelper $r6, $r6_1, $r6_2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 = staticinvoke <android.view.View$MeasureSpec: int getMode(int)>($i0);
+
+        $i0_1 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i0);
+
+        $i3 = staticinvoke <android.view.View$MeasureSpec: int getMode(int)>($i1);
+
+        $i4 = $i3;
+
+        $i5 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i1);
+
+        if $i2 == 1073741824 goto label09;
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isInEditMode()>();
+
+        if $z0 == 0 goto label08;
+
+(0)     if $i2 != -2147483648 goto label07;
+
+     label01:
+        $i5_1 = Phi($i5 #0, $i5 #5, $i5 #6, $i5 #7, $i5 #8, $i5_7 #9);
+
+        $i0_3 = Phi($i0_1 #0, $i0_1 #5, $i0_2 #6, $i0_1 #7, $i0_1 #8, $i0_1 #9);
+
+        $z0_1 = Phi($z0 #0, $z0 #5, $z0 #6, $z0 #7, $z0_6 #8, $z0_6 #9);
+
+        $i4_1 = Phi($i4 #0, $i4 #5, $i4 #6, $i4 #7, $i4 #8, $i4_5 #9);
+
+        $i1_1 = 0;
+
+        $i2_1 = -1;
+
+        lookupswitch($i4_1)
+        {
+            case -2147483648: goto label12;
+            case 1073741824: goto label11;
+            default: goto label02;
+        };
+
+     label02:
+(1)     goto label03;
+
+     label03:
+        $i5_2 = Phi($i5_1 #1, $i5_1 #10, $i5_6 #11);
+
+        $i1_2 = Phi($i1_1 #1, $i1_11 #10, $i1_1 #11);
+
+        $i2_2 = Phi($i2_1 #1, $i2_6 #10, $i2_9 #11);
+
+        $f0 = 0.0F;
+
+        $z0_2 = 0;
+
+        $i5_3 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingLeft()>();
+
+        $i5_4 = $i0_3 - $i5_3;
+
+        $i3_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingRight()>();
+
+        $i5_5 = $i5_4 - $i3_1;
+
+        $i3_2 = $i5_5;
+
+        $i6 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getChildCount()>();
+
+        if $i6 <= 2 goto label04;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("SlidingPaneLayout", "onMeasure: More than two child views are not supported.");
+
+     label04:
+        $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView> = null;
+
+(2)     $i7 = 0;
+
+     label05:
+        $z1 = Phi($z1 #2, $z1_1 #4);
+
+        $r2 = Phi($r2 #2, $r2_1 #4);
+
+        $f0_1 = Phi($f0 #2, $f0_2 #4);
+
+        $i7_1 = Phi($i7 #2, $i7_2 #4);
+
+        $i3_3 = Phi($i3_2 #2, $i3_4 #4);
+
+        $r3 = Phi($r3 #2, $r3_1 #4);
+
+        $r1 = Phi($r1 #2, $r1_1 #4);
+
+        $i10 = Phi($i10 #2, $i10_1 #4);
+
+        $z0_3 = Phi($z0_2 #2, $z0_4 #4);
+
+        $b9 = Phi($b9 #2, $b9_1 #4);
+
+        $i1_3 = Phi($i1_2 #2, $i1_4 #4);
+
+        $f1 = Phi($f1 #2, $f1_1 #4);
+
+        $i8 = Phi($i8 #2, $i8_2 #4);
+
+        if $i7_1 >= $i6 goto label24;
+
+        $r1_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View getChildAt(int)>($i7_1);
+
+        $r2_1 = virtualinvoke $r1_1.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3_1 = (android.support.v4.widget.SlidingPaneLayout$LayoutParams) $r2_1;
+
+        $i8_1 = virtualinvoke $r1_1.<android.view.View: int getVisibility()>();
+
+        if $i8_1 != 8 goto label13;
+
+(3)     $r3_1.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean dimWhenOffset> = 0;
+
+     label06:
+        $z1_1 = Phi($z1 #3, $z1 #13, $z1_4 #20, $z1_4 #21);
+
+        $f0_2 = Phi($f0_1 #3, $f0_3 #13, $f0_4 #20, $f0_4 #21);
+
+        $i3_4 = Phi($i3_3 #3, $i3_3 #13, $i3_5 #20, $i3_5 #21);
+
+        $i10_1 = Phi($i10 #3, $i10 #13, $i10_8 #20, $i10_8 #21);
+
+        $z0_4 = Phi($z0_3 #3, $z0_3 #13, $z0_5 #20, $z0_5 #21);
+
+        $b9_1 = Phi($b9 #3, $b9_2 #13, $b9_2 #20, $b9_2 #21);
+
+        $i1_4 = Phi($i1_3 #3, $i1_3 #13, $i1_6 #20, $i1_6 #21);
+
+        $f1_1 = Phi($f1 #3, $f1_3 #13, $f1_4 #20, $f1_4 #21);
+
+        $i8_2 = Phi($i8_1 #3, $i8_3 #13, $i8_10 #20, $i8_10 #21);
+
+        $i7_2 = $i7_1 + 1;
+
+(4)     goto label05;
+
+     label07:
+(5)     if $i2 != 0 goto label01;
+
+        $i0_2 = 300;
+
+(6)     goto label01;
+
+     label08:
+        $r4 = new java.lang.IllegalStateException;
+
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Width must have an exact value or MATCH_PARENT");
+
+        throw $r4;
+
+     label09:
+(7)     if $i3 != 0 goto label01;
+
+        $z0_6 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isInEditMode()>();
+
+        if $z0_6 == 0 goto label10;
+
+(8)     if $i3 != 0 goto label01;
+
+        $i4_5 = -2147483648;
+
+        $i5_7 = 300;
+
+(9)     goto label01;
+
+     label10:
+        $r4_1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r4_1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Height must not be UNSPECIFIED");
+
+        throw $r4_1;
+
+     label11:
+        $i1_9 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingTop()>();
+
+        $i1_10 = $i5_1 - $i1_9;
+
+        $i2_5 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingBottom()>();
+
+        $i2_6 = $i1_10 - $i2_5;
+
+        $i1_11 = $i2_6;
+
+(10)    goto label03;
+
+     label12:
+        $i2_7 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingTop()>();
+
+        $i2_8 = $i5_1 - $i2_7;
+
+        $i5_6 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingBottom()>();
+
+        $i2_9 = $i2_8 - $i5_6;
+
+(11)    goto label03;
+
+     label13:
+        $f1_2 = $r3_1.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: float weight>;
+
+        $b9_2 = $f1_2 cmpl 0.0F;
+
+(12)    if $b9_2 <= 0 goto label14;
+
+        $f1_3 = $r3_1.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: float weight>;
+
+        $f0_3 = $f0_1 + $f1_3;
+
+        $i8_3 = $r3_1.<android.view.ViewGroup$LayoutParams: int width>;
+
+(13)    if $i8_3 == 0 goto label06;
+
+     label14:
+        $f0_4 = Phi($f0_1 #12, $f0_3 #13);
+
+        $f1_4 = Phi($f1_2 #12, $f1_3 #13);
+
+        $i8_4 = Phi($i8_1 #12, $i8_3 #13);
+
+        $i8_5 = $r3_1.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+        $i10_2 = $r3_1.<android.view.ViewGroup$MarginLayoutParams: int rightMargin>;
+
+        $i8_6 = $i8_5 + $i10_2;
+
+        $i10_3 = $r3_1.<android.view.ViewGroup$LayoutParams: int width>;
+
+        if $i10_3 != -2 goto label19;
+
+        $i8_7 = $i5_5 - $i8_6;
+
+(14)    $i8_8 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i8_7, -2147483648);
+
+     label15:
+        $i10_4 = Phi($i10_3 #14, $i10_13 #22, $i10_13 #23);
+
+        $i8_9 = Phi($i8_8 #14, $i8_12 #22, $i8_14 #23);
+
+        $i10_5 = $r3_1.<android.view.ViewGroup$LayoutParams: int height>;
+
+        if $i10_5 != -2 goto label21;
+
+(15)    $i10_6 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i2_2, -2147483648);
+
+     label16:
+        $i10_7 = Phi($i10_6 #15, $i10_10 #24, $i10_12 #25);
+
+        virtualinvoke $r1_1.<android.view.View: void measure(int,int)>($i8_9, $i10_7);
+
+        $i8_10 = virtualinvoke $r1_1.<android.view.View: int getMeasuredWidth()>();
+
+        $i10_8 = virtualinvoke $r1_1.<android.view.View: int getMeasuredHeight()>();
+
+(16)    if $i4_1 != -2147483648 goto label17;
+
+(17)    if $i10_8 <= $i1_3 goto label17;
+
+(18)    $i1_5 = staticinvoke <java.lang.Math: int min(int,int)>($i10_8, $i2_2);
+
+     label17:
+        $i1_6 = Phi($i1_3 #16, $i1_3 #17, $i1_5 #18);
+
+        $i3_5 = $i3_3 - $i8_10;
+
+        if $i3_5 >= 0 goto label23;
+
+(19)    $z1_2 = 1;
+
+     label18:
+        $z1_3 = Phi($z1_2 #19, $z1_5 #26);
+
+        $r3_1.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean slideable> = $z1_3;
+
+        $z0_5 = $z0_3 | $z1_3;
+
+        $z1_4 = $r3_1.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: boolean slideable>;
+
+(20)    if $z1_4 == 0 goto label06;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView> = $r1_1;
+
+(21)    goto label06;
+
+     label19:
+        $i10_13 = $r3_1.<android.view.ViewGroup$LayoutParams: int width>;
+
+        if $i10_13 != -1 goto label20;
+
+        $i8_11 = $i5_5 - $i8_6;
+
+        $i8_12 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i8_11, 1073741824);
+
+(22)    goto label15;
+
+     label20:
+        $i8_13 = $r3_1.<android.view.ViewGroup$LayoutParams: int width>;
+
+        $i8_14 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i8_13, 1073741824);
+
+(23)    goto label15;
+
+     label21:
+        $i10_9 = $r3_1.<android.view.ViewGroup$LayoutParams: int height>;
+
+        if $i10_9 != -1 goto label22;
+
+        $i10_10 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i2_2, 1073741824);
+
+(24)    goto label16;
+
+     label22:
+        $i10_11 = $r3_1.<android.view.ViewGroup$LayoutParams: int height>;
+
+        $i10_12 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i10_11, 1073741824);
+
+(25)    goto label16;
+
+     label23:
+        $z1_5 = 0;
+
+(26)    goto label18;
+
+     label24:
+(27)    if $z0_3 != 0 goto label25;
+
+        $b9_3 = $f0_1 cmpl 0.0F;
+
+(28)    if $b9_3 <= 0 goto label44;
+
+     label25:
+        $b9_4 = Phi($b9 #27, $b9_3 #28);
+
+        $i4_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mOverhangSize>;
+
+        $i4_3 = $i5_5 - $i4_2;
+
+(29)    $i7_3 = 0;
+
+     label26:
+        $z1_6 = Phi($z1 #29, $z1_7 #32);
+
+        $r2_2 = Phi($r2 #29, $r2_3 #32);
+
+        $i7_4 = Phi($i7_3 #29, $i7_5 #32);
+
+        $i11 = Phi($i11 #29, $i11_1 #32);
+
+        $i12 = Phi($i12 #29, $i12_1 #32);
+
+        $r3_2 = Phi($r3 #29, $r3_3 #32);
+
+        $r1_2 = Phi($r1 #29, $r1_3 #32);
+
+        $i10_14 = Phi($i10 #29, $i10_15 #32);
+
+        $b9_5 = Phi($b9_4 #29, $b9_6 #32);
+
+        $f1_5 = Phi($f1 #29, $f1_6 #32);
+
+        $i8_15 = Phi($i8 #29, $i8_17 #32);
+
+(30)    if $i7_4 >= $i6 goto label44;
+
+        $r1_3 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View getChildAt(int)>($i7_4);
+
+        $i8_16 = virtualinvoke $r1_3.<android.view.View: int getVisibility()>();
+
+(31)    if $i8_16 != 8 goto label28;
+
+     label27:
+        $z1_7 = Phi($z1_6 #31, $z1_6 #33, $z1_9 #38, $z1_9 #40, $z1_9 #42, $z1_9 #48, $z1_9 #50, $z1_9 #51, $z1_9 #55);
+
+        $r2_3 = Phi($r2_2 #31, $r2_4 #33, $r2_4 #38, $r2_4 #40, $r2_4 #42, $r2_4 #48, $r2_4 #50, $r2_4 #51, $r2_4 #55);
+
+        $i11_1 = Phi($i11 #31, $i11 #33, $i11 #38, $i11 #40, $i11 #42, $i11 #48, $i11_4 #50, $i11_4 #51, $i11_6 #55);
+
+        $i12_1 = Phi($i12 #31, $i12 #33, $i12 #38, $i12 #40, $i12 #42, $i12 #48, $i12_3 #50, $i12_3 #51, $i12 #55);
+
+        $r3_3 = Phi($r3_2 #31, $r3_4 #33, $r3_4 #38, $r3_4 #40, $r3_4 #42, $r3_4 #48, $r3_4 #50, $r3_4 #51, $r3_4 #55);
+
+        $i10_15 = Phi($i10_14 #31, $i10_14 #33, $i10_16 #38, $i10_16 #40, $i10_17 #42, $i10_14 #48, $i10_25 #50, $i10_25 #51, $i10_25 #55);
+
+        $b9_6 = Phi($b9_5 #31, $b9_5 #33, $b9_8 #38, $b9_9 #40, $b9_10 #42, $b9_11 #48, $b9_11 #50, $b9_11 #51, $b9_11 #55);
+
+        $f1_6 = Phi($f1_5 #31, $f1_5 #33, $f1_8 #38, $f1_9 #40, $f1_10 #42, $f1_11 #48, $f1_11 #50, $f1_11 #51, $f1_14 #55);
+
+        $i8_17 = Phi($i8_16 #31, $i8_18 #33, $i8_21 #38, $i8_21 #40, $i8_28 #42, $i8_21 #48, $i8_21 #50, $i8_21 #51, $i8_32 #55);
+
+        $i7_5 = $i7_4 + 1;
+
+(32)    goto label26;
+
+     label28:
+        $r2_4 = virtualinvoke $r1_3.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r3_4 = (android.support.v4.widget.SlidingPaneLayout$LayoutParams) $r2_4;
+
+        $i8_18 = virtualinvoke $r1_3.<android.view.View: int getVisibility()>();
+
+(33)    if $i8_18 == 8 goto label27;
+
+        $i8_19 = $r3_4.<android.view.ViewGroup$LayoutParams: int width>;
+
+(34)    if $i8_19 != 0 goto label33;
+
+        $f1_7 = $r3_4.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: float weight>;
+
+        $b9_7 = $f1_7 cmpl 0.0F;
+
+(35)    if $b9_7 <= 0 goto label33;
+
+(36)    $z1_8 = 1;
+
+     label29:
+        $z1_9 = Phi($z1_8 #36, $z1_10 #43);
+
+        $b9_8 = Phi($b9_7 #36, $b9_12 #43);
+
+        $f1_8 = Phi($f1_7 #36, $f1_15 #43);
+
+        if $z1_9 == 0 goto label34;
+
+(37)    $i8_20 = 0;
+
+     label30:
+        $i8_21 = Phi($i8_20 #37, $i8_33 #44);
+
+        if $z0_3 == 0 goto label38;
+
+        $r5 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        if $r1_3 == $r5 goto label38;
+
+        $i10_16 = $r3_4.<android.view.ViewGroup$LayoutParams: int width>;
+
+(38)    if $i10_16 >= 0 goto label27;
+
+(39)    if $i8_21 > $i4_3 goto label31;
+
+        $f1_9 = $r3_4.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: float weight>;
+
+        $b9_9 = $f1_9 cmpl 0.0F;
+
+(40)    if $b9_9 <= 0 goto label27;
+
+     label31:
+        $b9_10 = Phi($b9_8 #39, $b9_9 #40);
+
+        $f1_10 = Phi($f1_8 #39, $f1_9 #40);
+
+        if $z1_9 == 0 goto label37;
+
+        $i8_22 = $r3_4.<android.view.ViewGroup$LayoutParams: int height>;
+
+        if $i8_22 != -2 goto label35;
+
+(41)    $i8_23 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i2_2, -2147483648);
+
+     label32:
+        $i8_28 = Phi($i8_23 #41, $i8_25 #45, $i8_27 #46, $i8_30 #47);
+
+        $i10_17 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i4_3, 1073741824);
+
+        virtualinvoke $r1_3.<android.view.View: void measure(int,int)>($i10_17, $i8_28);
+
+(42)    goto label27;
+
+     label33:
+        $b9_12 = Phi($b9_5 #34, $b9_7 #35);
+
+        $f1_15 = Phi($f1_5 #34, $f1_7 #35);
+
+        $z1_10 = 0;
+
+(43)    goto label29;
+
+     label34:
+        $i8_33 = virtualinvoke $r1_3.<android.view.View: int getMeasuredWidth()>();
+
+(44)    goto label30;
+
+     label35:
+        $i8_24 = $r3_4.<android.view.ViewGroup$LayoutParams: int height>;
+
+        if $i8_24 != -1 goto label36;
+
+        $i8_25 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i2_2, 1073741824);
+
+(45)    goto label32;
+
+     label36:
+        $i8_26 = $r3_4.<android.view.ViewGroup$LayoutParams: int height>;
+
+        $i8_27 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i8_26, 1073741824);
+
+(46)    goto label32;
+
+     label37:
+        $i8_29 = virtualinvoke $r1_3.<android.view.View: int getMeasuredHeight()>();
+
+        $i8_30 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i8_29, 1073741824);
+
+(47)    goto label32;
+
+     label38:
+        $f1_11 = $r3_4.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: float weight>;
+
+        $b9_11 = $f1_11 cmpl 0.0F;
+
+(48)    if $b9_11 <= 0 goto label27;
+
+        $i10_18 = $r3_4.<android.view.ViewGroup$LayoutParams: int width>;
+
+        if $i10_18 != 0 goto label42;
+
+        $i10_19 = $r3_4.<android.view.ViewGroup$LayoutParams: int height>;
+
+        if $i10_19 != -2 goto label40;
+
+(49)    $i10_20 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i2_2, -2147483648);
+
+     label39:
+        $i10_25 = Phi($i10_20 #49, $i10_22 #52, $i10_24 #53, $i10_27 #54);
+
+        if $z0_3 == 0 goto label43;
+
+        $i11_2 = $r3_4.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+        $i12_2 = $r3_4.<android.view.ViewGroup$MarginLayoutParams: int rightMargin>;
+
+        $i11_3 = $i11_2 + $i12_2;
+
+        $i11_4 = $i5_5 - $i11_3;
+
+        $i12_3 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i11_4, 1073741824);
+
+(50)    if $i8_21 == $i11_4 goto label27;
+
+        virtualinvoke $r1_3.<android.view.View: void measure(int,int)>($i12_3, $i10_25);
+
+(51)    goto label27;
+
+     label40:
+        $i10_21 = $r3_4.<android.view.ViewGroup$LayoutParams: int height>;
+
+        if $i10_21 != -1 goto label41;
+
+        $i10_22 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i2_2, 1073741824);
+
+(52)    goto label39;
+
+     label41:
+        $i10_23 = $r3_4.<android.view.ViewGroup$LayoutParams: int height>;
+
+        $i10_24 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i10_23, 1073741824);
+
+(53)    goto label39;
+
+     label42:
+        $i10_26 = virtualinvoke $r1_3.<android.view.View: int getMeasuredHeight()>();
+
+        $i10_27 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i10_26, 1073741824);
+
+(54)    goto label39;
+
+     label43:
+        $i11_5 = staticinvoke <java.lang.Math: int max(int,int)>(0, $i3_3);
+
+        $f1_12 = $r3_4.<android.support.v4.widget.SlidingPaneLayout$LayoutParams: float weight>;
+
+        $f2 = (float) $i11_5;
+
+        $f1_13 = $f1_12 * $f2;
+
+        $f1_14 = $f1_13 / $f0_1;
+
+        $i11_6 = (int) $f1_14;
+
+        $i8_31 = $i8_21 + $i11_6;
+
+        $i8_32 = staticinvoke <android.view.View$MeasureSpec: int makeMeasureSpec(int,int)>($i8_31, 1073741824);
+
+        virtualinvoke $r1_3.<android.view.View: void measure(int,int)>($i8_32, $i10_25);
+
+(55)    goto label27;
+
+     label44:
+        $z1_11 = Phi($z1 #28, $z1_6 #30);
+
+        $r2_5 = Phi($r2 #28, $r2_2 #30);
+
+        $i7_6 = Phi($i7_1 #28, $i7_4 #30);
+
+        $i11_7 = Phi($i11 #28, $i11 #30);
+
+        $i12_4 = Phi($i12 #28, $i12 #30);
+
+        $r3_5 = Phi($r3 #28, $r3_2 #30);
+
+        $r1_4 = Phi($r1 #28, $r1_2 #30);
+
+        $i10_28 = Phi($i10 #28, $i10_14 #30);
+
+        $b9_13 = Phi($b9_3 #28, $b9_5 #30);
+
+        $f1_16 = Phi($f1 #28, $f1_5 #30);
+
+        $i4_4 = Phi($i4_1 #28, $i4_3 #30);
+
+        $i8_34 = Phi($i8 #28, $i8_15 #30);
+
+        $i2_3 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingTop()>();
+
+        $i1_7 = $i2_3 + $i1_3;
+
+        $i2_4 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingBottom()>();
+
+        $i1_8 = $i1_7 + $i2_4;
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void setMeasuredDimension(int,int)>($i0_3, $i1_8);
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide> = $z0_3;
+
+        $r6 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        $i0_4 = virtualinvoke $r6.<android.support.v4.widget.ViewDragHelper: int getViewDragState()>();
+
+(56)    if $i0_4 == 0 goto label45;
+
+(57)    if $z0_3 != 0 goto label45;
+
+        $r6_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+(58)    virtualinvoke $r6_1.<android.support.v4.widget.ViewDragHelper: void abort()>();
+
+     label45:
+        $r6_2 = Phi($r6 #56, $r6 #57, $r6_1 #58);
+
+        return;
+    }
+
+    protected void onRestoreInstanceState(android.os.Parcelable)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.os.Parcelable $r1, $r1_1;
+        android.support.v4.widget.SlidingPaneLayout$SavedState $r2;
+        boolean $z0, $z0_1;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.os.Parcelable;
+
+        $r2 = (android.support.v4.widget.SlidingPaneLayout$SavedState) $r1;
+
+        $r1_1 = virtualinvoke $r2.<android.support.v4.widget.SlidingPaneLayout$SavedState: android.os.Parcelable getSuperState()>();
+
+        specialinvoke $r0.<android.view.ViewGroup: void onRestoreInstanceState(android.os.Parcelable)>($r1_1);
+
+        $z0 = $r2.<android.support.v4.widget.SlidingPaneLayout$SavedState: boolean isOpen>;
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean openPane()>();
+
+     label1:
+        $z0_1 = $r2.<android.support.v4.widget.SlidingPaneLayout$SavedState: boolean isOpen>;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mPreservedOpenState> = $z0_1;
+
+        return;
+
+     label2:
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean closePane()>();
+
+        goto label1;
+    }
+
+    protected android.os.Parcelable onSaveInstanceState()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.support.v4.widget.SlidingPaneLayout$SavedState $r1;
+        android.os.Parcelable $r2;
+        boolean $z0, $z0_1, $z0_2, $z0_3;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r2 = specialinvoke $r0.<android.view.ViewGroup: android.os.Parcelable onSaveInstanceState()>();
+
+        $r1 = new android.support.v4.widget.SlidingPaneLayout$SavedState;
+
+        specialinvoke $r1.<android.support.v4.widget.SlidingPaneLayout$SavedState: void <init>(android.os.Parcelable)>($r2);
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isSlideable()>();
+
+        if $z0 == 0 goto label2;
+
+(0)     $z0_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isOpen()>();
+
+     label1:
+        $z0_2 = Phi($z0_1 #0, $z0_3 #1);
+
+        $r1.<android.support.v4.widget.SlidingPaneLayout$SavedState: boolean isOpen> = $z0_2;
+
+        return $r1;
+
+     label2:
+        $z0_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mPreservedOpenState>;
+
+(1)     goto label1;
+    }
+
+    protected void onSizeChanged(int, int, int, int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0, $i1, $i2, $i3;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $i3 := @parameter3: int;
+
+        specialinvoke $r0.<android.view.ViewGroup: void onSizeChanged(int,int,int,int)>($i0, $i1, $i2, $i3);
+
+        if $i0 == $i2 goto label1;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mFirstLayout> = 1;
+
+     label1:
+        return;
+    }
+
+    public boolean onTouchEvent(android.view.MotionEvent)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.MotionEvent $r1;
+        byte $b0;
+        int $i1, $i2, $i1_1, $i1_2, $i1_3, $i1_4, $i1_5;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4;
+        android.support.v4.widget.ViewDragHelper $r2, $r2_1, $r2_2, $r2_3;
+        float $f0, $f1, $f2, $f3, $f0_1, $f1_1, $f2_1, $f3_1, $f2_2, $f3_2, $f2_3, $f3_3, $f2_4, $f0_2, $f1_2, $f3_4;
+        android.view.View $r3, $r3_1, $r3_2, $r3_3;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+        if $z0 != 0 goto label1;
+
+        $z0_1 = specialinvoke $r0.<android.view.ViewGroup: boolean onTouchEvent(android.view.MotionEvent)>($r1);
+
+        return $z0_1;
+
+     label1:
+        $r2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        virtualinvoke $r2.<android.support.v4.widget.ViewDragHelper: void processTouchEvent(android.view.MotionEvent)>($r1);
+
+        $i1 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+        $i1_1 = $i1 & 255;
+
+        lookupswitch($i1_1)
+        {
+            case 0: goto label4;
+            case 1: goto label5;
+            default: goto label2;
+        };
+
+     label2:
+        goto label3;
+
+     label3:
+        return 1;
+
+     label4:
+        $f0 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f1 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: float mInitialMotionX> = $f0;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: float mInitialMotionY> = $f1;
+
+        return 1;
+
+     label5:
+        $r3 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $z0_2 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isDimmed(android.view.View)>($r3);
+
+(0)     if $z0_2 == 0 goto label6;
+
+        $f0_1 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f1_1 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $f2 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mInitialMotionX>;
+
+        $f2_1 = $f0_1 - $f2;
+
+        $f3 = $r0.<android.support.v4.widget.SlidingPaneLayout: float mInitialMotionY>;
+
+        $f3_1 = $f1_1 - $f3;
+
+        $r2_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        $i1_2 = virtualinvoke $r2_1.<android.support.v4.widget.ViewDragHelper: int getTouchSlop()>();
+
+        $f2_2 = $f2_1 * $f2_1;
+
+        $f3_2 = $f3_1 * $f3_1;
+
+        $f2_3 = $f2_2 + $f3_2;
+
+        $i1_3 = $i1_2 * $i1_2;
+
+        $f3_3 = (float) $i1_3;
+
+        $b0 = $f2_3 cmpg $f3_3;
+
+(1)     if $b0 >= 0 goto label6;
+
+        $r2_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        $r3_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $i2 = (int) $f0_1;
+
+        $i1_4 = (int) $f1_1;
+
+        $z0_3 = virtualinvoke $r2_2.<android.support.v4.widget.ViewDragHelper: boolean isViewUnder(android.view.View,int,int)>($r3_1, $i2, $i1_4);
+
+(2)     if $z0_3 == 0 goto label6;
+
+        $r3_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+(3)     specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean closePane(android.view.View,int)>($r3_2, 0);
+
+     label6:
+        $f2_4 = Phi($f2 #0, $f2_3 #1, $f2_3 #2, $f2_3 #3);
+
+        $f0_2 = Phi($f0 #0, $f0_1 #1, $f0_1 #2, $f0_1 #3);
+
+        $f1_2 = Phi($f1 #0, $f1_1 #1, $f1_1 #2, $f1_1 #3);
+
+        $z0_4 = Phi($z0_2 #0, $z0_2 #1, $z0_3 #2, $z0_3 #3);
+
+        $i1_5 = Phi($i1_1 #0, $i1_3 #1, $i1_4 #2, $i1_4 #3);
+
+        $r2_3 = Phi($r2 #0, $r2_1 #1, $r2_2 #2, $r2_2 #3);
+
+        $f3_4 = Phi($f3 #0, $f3_3 #1, $f3_3 #2, $f3_3 #3);
+
+        $r3_3 = Phi($r3 #0, $r3 #1, $r3_1 #2, $r3_2 #3);
+
+        return 1;
+    }
+
+    public boolean openPane()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1;
+        boolean $z0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean openPane(android.view.View,int)>($r1, 0);
+
+        return $z0;
+    }
+
+    public void requestChildFocus(android.view.View, android.view.View)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1, $r2, $r2_1;
+        boolean $z0, $z0_1, $z0_2, $z0_3, $z0_4, $z0_5;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 := @parameter1: android.view.View;
+
+        specialinvoke $r0.<android.view.ViewGroup: void requestChildFocus(android.view.View,android.view.View)>($r1, $r2);
+
+        $z0 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isInTouchMode()>();
+
+(0)     if $z0 != 0 goto label3;
+
+        $z0_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+(1)     if $z0_1 != 0 goto label3;
+
+        $r2_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        if $r1 != $r2_1 goto label2;
+
+(2)     $z0_2 = 1;
+
+     label1:
+        $z0_3 = Phi($z0_2 #2, $z0_4 #3);
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mPreservedOpenState> = $z0_3;
+
+        return;
+
+     label2:
+        $z0_4 = 0;
+
+(3)     goto label1;
+
+     label3:
+        $z0_5 = Phi($z0 #0, $z0_1 #1);
+
+        return;
+    }
+
+    void setAllChildrenVisible()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0, $i1, $i2, $i0_1, $i0_2;
+        android.view.View $r1;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 = 0;
+
+(0)     $i1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getChildCount()>();
+
+     label1:
+        $i0_1 = Phi($i0 #0, $i0_2 #1);
+
+        if $i0_1 >= $i1 goto label3;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View getChildAt(int)>($i0_1);
+
+        $i2 = virtualinvoke $r1.<android.view.View: int getVisibility()>();
+
+        if $i2 != 4 goto label2;
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>(0);
+
+     label2:
+        $i0_2 = $i0_1 + 1;
+
+(1)     goto label1;
+
+     label3:
+        return;
+    }
+
+    public void setCoveredFadeColor(int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 := @parameter0: int;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: int mCoveredFadeColor> = $i0;
+
+        return;
+    }
+
+    public void setPanelSlideListener(android.support.v4.widget.SlidingPaneLayout$PanelSlideListener)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.support.v4.widget.SlidingPaneLayout$PanelSlideListener $r1;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.support.v4.widget.SlidingPaneLayout$PanelSlideListener;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.SlidingPaneLayout$PanelSlideListener mPanelSlideListener> = $r1;
+
+        return;
+    }
+
+    public void setParallaxDistance(int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 := @parameter0: int;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: int mParallaxBy> = $i0;
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void requestLayout()>();
+
+        return;
+    }
+
+    public void setShadowDrawable(android.graphics.drawable.Drawable)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.graphics.drawable.Drawable $r1;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.graphics.drawable.Drawable;
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void setShadowDrawableLeft(android.graphics.drawable.Drawable)>($r1);
+
+        return;
+    }
+
+    public void setShadowDrawableLeft(android.graphics.drawable.Drawable)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.graphics.drawable.Drawable $r1;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.graphics.drawable.Drawable;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.drawable.Drawable mShadowDrawableLeft> = $r1;
+
+        return;
+    }
+
+    public void setShadowDrawableRight(android.graphics.drawable.Drawable)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.graphics.drawable.Drawable $r1;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.graphics.drawable.Drawable;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: android.graphics.drawable.Drawable mShadowDrawableRight> = $r1;
+
+        return;
+    }
+
+    public void setShadowResource(int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0;
+        android.content.res.Resources $r1;
+        android.graphics.drawable.Drawable $r2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.content.res.Resources getResources()>();
+
+        $r2 = virtualinvoke $r1.<android.content.res.Resources: android.graphics.drawable.Drawable getDrawable(int)>($i0);
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void setShadowDrawable(android.graphics.drawable.Drawable)>($r2);
+
+        return;
+    }
+
+    public void setShadowResourceLeft(int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0;
+        android.content.res.Resources $r1;
+        android.graphics.drawable.Drawable $r2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.content.res.Resources getResources()>();
+
+        $r2 = virtualinvoke $r1.<android.content.res.Resources: android.graphics.drawable.Drawable getDrawable(int)>($i0);
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void setShadowDrawableLeft(android.graphics.drawable.Drawable)>($r2);
+
+        return;
+    }
+
+    public void setShadowResourceRight(int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0;
+        android.content.res.Resources $r1;
+        android.graphics.drawable.Drawable $r2;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.content.res.Resources getResources()>();
+
+        $r2 = virtualinvoke $r1.<android.content.res.Resources: android.graphics.drawable.Drawable getDrawable(int)>($i0);
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void setShadowDrawableRight(android.graphics.drawable.Drawable)>($r2);
+
+        return;
+    }
+
+    public void setSliderFadeColor(int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        int $i0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $i0 := @parameter0: int;
+
+        $r0.<android.support.v4.widget.SlidingPaneLayout: int mSliderFadeColor> = $i0;
+
+        return;
+    }
+
+    public void smoothSlideClosed()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean closePane()>();
+
+        return;
+    }
+
+    public void smoothSlideOpen()
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean openPane()>();
+
+        return;
+    }
+
+    boolean smoothSlideTo(float, int)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        float $f0, $f1, $f2, $f3, $f1_1, $f1_2, $f3_1, $f1_3, $f1_4, $f1_5, $f2_1, $f3_2, $f2_2, $f3_3, $f1_6, $f1_7;
+        android.support.v4.widget.ViewDragHelper $r1;
+        android.view.View $r2, $r5, $r2_1, $r2_2, $r2_3;
+        int $i0, $i1, $i2, $i0_1, $i1_1, $i0_2, $i1_2, $i0_3, $i1_3, $i0_4, $i1_4, $i0_5, $i1_5, $i0_6, $i0_7, $i0_8;
+        boolean $z0, $z0_1, $z0_2;
+        android.view.ViewGroup$LayoutParams $r3;
+        android.support.v4.widget.SlidingPaneLayout$LayoutParams $r4;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $f1 := @parameter0: float;
+
+        $i0 := @parameter1: int;
+
+        $z0 = $r0.<android.support.v4.widget.SlidingPaneLayout: boolean mCanSlide>;
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $z0_1 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isLayoutRtlSupport()>();
+
+        $r2 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $r3 = virtualinvoke $r2.<android.view.View: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        $r4 = (android.support.v4.widget.SlidingPaneLayout$LayoutParams) $r3;
+
+        if $z0_1 == 0 goto label3;
+
+        $i0_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingRight()>();
+
+        $i1 = $r4.<android.view.ViewGroup$MarginLayoutParams: int rightMargin>;
+
+        $i1_1 = $i0_1 + $i1;
+
+        $r2_1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $i0_2 = virtualinvoke $r2_1.<android.view.View: int getWidth()>();
+
+        $i2 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getWidth()>();
+
+        $f2 = (float) $i2;
+
+        $f3 = (float) $i1_1;
+
+        $i1_2 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mSlideRange>;
+
+        $f0 = (float) $i1_2;
+
+        $f1_1 = $f0 * $f1;
+
+        $f1_2 = $f3 + $f1_1;
+
+        $f3_1 = (float) $i0_2;
+
+        $f1_3 = $f1_2 + $f3_1;
+
+        $f1_4 = $f2 - $f1_3;
+
+(0)     $i0_3 = (int) $f1_4;
+
+     label2:
+        $i1_3 = Phi($i1_2 #0, $i1_5 #1);
+
+        $f1_5 = Phi($f1_4 #0, $f1_7 #1);
+
+        $i0_4 = Phi($i0_3 #0, $i0_8 #1);
+
+        $f2_1 = Phi($f2 #0, $f2_2 #1);
+
+        $r2_2 = Phi($r2_1 #0, $r2 #1);
+
+        $f3_2 = Phi($f3_1 #0, $f3_3 #1);
+
+        $r1 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.support.v4.widget.ViewDragHelper mDragHelper>;
+
+        $r5 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $r2_3 = $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View mSlideableView>;
+
+        $i1_4 = virtualinvoke $r2_3.<android.view.View: int getTop()>();
+
+        $z0_2 = virtualinvoke $r1.<android.support.v4.widget.ViewDragHelper: boolean smoothSlideViewTo(android.view.View,int,int)>($r5, $i0_4, $i1_4);
+
+        if $z0_2 == 0 goto label4;
+
+        virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: void setAllChildrenVisible()>();
+
+        staticinvoke <android.support.v4.view.ViewCompat: void postInvalidateOnAnimation(android.view.View)>($r0);
+
+        return 1;
+
+     label3:
+        $i0_5 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingLeft()>();
+
+        $i1_5 = $r4.<android.view.ViewGroup$MarginLayoutParams: int leftMargin>;
+
+        $i0_6 = $i0_5 + $i1_5;
+
+        $f2_2 = (float) $i0_6;
+
+        $i0_7 = $r0.<android.support.v4.widget.SlidingPaneLayout: int mSlideRange>;
+
+        $f3_3 = (float) $i0_7;
+
+        $f1_6 = $f3_3 * $f1;
+
+        $f1_7 = $f2_2 + $f1_6;
+
+        $i0_8 = (int) $f1_7;
+
+(1)     goto label2;
+
+     label4:
+        return 0;
+    }
+
+    void updateObscuredViewsVisibility(android.view.View)
+    {
+        android.support.v4.widget.SlidingPaneLayout $r0;
+        android.view.View $r1, $r2;
+        boolean $z0, $z1;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i9, $i10, $i11, $i12, $i13, $i0_1, $i1_1, $i0_2, $i1_2, $i1_3, $i2_1, $i3_1, $i4_1, $i7_1, $i6_1, $i5_1, $i4_2, $i8_1, $i10_1, $i10_2, $i11_1, $i10_3, $i11_2, $i11_3, $i12_1, $i12_2, $i13_1, $i12_3, $i13_2, $i13_3, $i8_2, $i12_4, $i10_4, $i7_2, $i6_2, $i5_2, $i4_3, $i1_4, $i2_2, $i1_5, $i0_3;
+        byte $b14, $b14_1, $b14_2, $b14_3;
+
+        $r0 := @this: android.support.v4.widget.SlidingPaneLayout;
+
+        $r1 := @parameter0: android.view.View;
+
+        $z0 = specialinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: boolean isLayoutRtlSupport()>();
+
+        if $z0 == 0 goto label05;
+
+        $i0 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getWidth()>();
+
+        $i1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingRight()>();
+
+(0)     $i0_1 = $i0 - $i1;
+
+     label01:
+        $i1_1 = Phi($i1 #0, $i1 #4);
+
+        $i0_2 = Phi($i0_1 #0, $i0_3 #4);
+
+        if $z0 == 0 goto label06;
+
+(1)     $i1_2 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingLeft()>();
+
+     label02:
+        $i1_3 = Phi($i1_2 #1, $i1_5 #5);
+
+        $i2 = Phi($i2 #1, $i2_2 #5);
+
+        $i2_1 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingTop()>();
+
+        $i3 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getHeight()>();
+
+        $i4 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingBottom()>();
+
+        $i3_1 = $i3 - $i4;
+
+        if $r1 == null goto label07;
+
+        $z1 = staticinvoke <android.support.v4.widget.SlidingPaneLayout: boolean viewIsOpaque(android.view.View)>($r1);
+
+        if $z1 == 0 goto label07;
+
+        $i4_1 = virtualinvoke $r1.<android.view.View: int getLeft()>();
+
+        $i5 = virtualinvoke $r1.<android.view.View: int getRight()>();
+
+        $i6 = virtualinvoke $r1.<android.view.View: int getTop()>();
+
+(2)     $i7 = virtualinvoke $r1.<android.view.View: int getBottom()>();
+
+     label03:
+        $i7_1 = Phi($i7 #2, $i7_2 #6);
+
+        $i6_1 = Phi($i6 #2, $i6_2 #6);
+
+        $i5_1 = Phi($i5 #2, $i5_2 #6);
+
+        $i4_2 = Phi($i4_1 #2, $i4_3 #6);
+
+        $i8 = 0;
+
+(3)     $i9 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getChildCount()>();
+
+     label04:
+        $i12 = Phi($i12 #3, $i12_3 #10);
+
+        $i10 = Phi($i10 #3, $i10_3 #10);
+
+        $i8_1 = Phi($i8 #3, $i8_2 #10);
+
+        $i13 = Phi($i13 #3, $i13_3 #10);
+
+        $i11 = Phi($i11 #3, $i11_3 #10);
+
+        $b14 = Phi($b14 #3, $b14_2 #10);
+
+        if $i8_1 >= $i9 goto label15;
+
+        $r2 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: android.view.View getChildAt(int)>($i8_1);
+
+        if $r2 != $r1 goto label08;
+
+        return;
+
+     label05:
+        $i0_3 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingLeft()>();
+
+(4)     goto label01;
+
+     label06:
+        $i1_4 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getWidth()>();
+
+        $i2_2 = virtualinvoke $r0.<android.support.v4.widget.SlidingPaneLayout: int getPaddingRight()>();
+
+        $i1_5 = $i1_4 - $i2_2;
+
+(5)     goto label02;
+
+     label07:
+        $i7_2 = 0;
+
+        $i6_2 = 0;
+
+        $i5_2 = 0;
+
+        $i4_3 = 0;
+
+(6)     goto label03;
+
+     label08:
+        if $z0 == 0 goto label12;
+
+(7)     $i10_1 = $i1_3;
+
+     label09:
+        $i10_2 = Phi($i10_1 #7, $i10_4 #11);
+
+        $i11_1 = virtualinvoke $r2.<android.view.View: int getLeft()>();
+
+        $i10_3 = staticinvoke <java.lang.Math: int max(int,int)>($i10_2, $i11_1);
+
+        $i11_2 = virtualinvoke $r2.<android.view.View: int getTop()>();
+
+        $i11_3 = staticinvoke <java.lang.Math: int max(int,int)>($i2_1, $i11_2);
+
+        if $z0 == 0 goto label13;
+
+(8)     $i12_1 = $i0_2;
+
+     label10:
+        $i12_2 = Phi($i12_1 #8, $i12_4 #12);
+
+        $i13_1 = virtualinvoke $r2.<android.view.View: int getRight()>();
+
+        $i12_3 = staticinvoke <java.lang.Math: int min(int,int)>($i12_2, $i13_1);
+
+        $i13_2 = virtualinvoke $r2.<android.view.View: int getBottom()>();
+
+        $i13_3 = staticinvoke <java.lang.Math: int min(int,int)>($i3_1, $i13_2);
+
+        if $i10_3 < $i4_2 goto label14;
+
+        if $i11_3 < $i6_1 goto label14;
+
+        if $i12_3 > $i5_1 goto label14;
+
+        if $i13_3 > $i7_1 goto label14;
+
+(9)     $b14_1 = 4;
+
+     label11:
+        $b14_2 = Phi($b14_1 #9, $b14_3 #13);
+
+        virtualinvoke $r2.<android.view.View: void setVisibility(int)>($b14_2);
+
+        $i8_2 = $i8_1 + 1;
+
+(10)    goto label04;
+
+     label12:
+        $i10_4 = $i0_2;
+
+(11)    goto label09;
+
+     label13:
+        $i12_4 = $i1_3;
+
+(12)    goto label10;
+
+     label14:
+        $b14_3 = 0;
+
+(13)    goto label11;
+
+     label15:
+        return;
+    }
+}
