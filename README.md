@@ -1,47 +1,28 @@
 # Extractocol
 Automatic Protocol Behavior Analysis Framework for Android Apps.
 
-Currently, This version is incomplete.
-So Extractocol may can't properly perform for some apps in our dataset. Because we have modified some core modules for other projects. When we finish implementing the modules, we will update that. 
-<b>we will finish this work by Apr, 2017.</b>
 
-# How To
-Extractocol has two main modules that are program slicing and signature building modules. We extended flowdroid to slice network related instructions in APK. We implement signature building module using Soot framework. Currently, the two modules are divided so you should run the modules respectively (We plan to provide an all in one script). We implement Extractocol using Eclipse and this repository includes eclipse project setting file. Therefore, you can easily set up a development environment using import existing workspace menu in eclipse.
+## Running Extractocol
+### Before you start
+- Copy the APK file of your application into the directory named (SerializationFiles).
 
-<b>** Program Slicing Module</b>
-
-<b>A.Main Method</b>
-<br>soot.jimple.infoflow.android.TestApps.Test
-
-<b>B.Arguments</b>
-<br>APK, AndroidSDK path, --noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks [--backward or --forward]
-
-<b>C.Example</b> : Extracting request(backward) program slice of wish.apk.
-<br>wish.apk
-D:\extractocol\AndroidSDK
---noexceptions --nostatic --aplength 1 --aliasflowins --layoutmode none --nocallbacks
---backward
-
-<b>** Signature Building Module</b>
-
-<b>A.Main Method</b>
-<br>Extractocol.Tester.BackendTester_Request
-
-<b>B.Arguments</b>
-<br>--app (AppName) --backward
-
-<b>C.Example</b> : Building request signatures for wish app. If you want to build response signatures, you should run Extractocol.Tester.BackendTester_Response class.
-<br>--app wish --backward
+### How to run
+- Run Extractocol by passing the application name as an argument
+* The application name must be the same with the APK file. For example, if the apk file is myapp.apk, then you should pass 'myapp' to Extractocol.
+* You need to allocate enough memory to the heap space. We used 12GB of memory when running Extractocol for the applications mentioned in the reference papers below.
+* Extractocol might take from tens of minutes to several hours. Extractocol took 2 hours to run for an application named 'Wish', which is basically located in the directory 'SerializationFiles', when running on a machine with i5-7500@3.4GHz (4 cores).
+* Extractocol would take a very long time to finish and sometimes it seems to run forever. Then, what you need to do is to reduce the value of the following parameters: maxMS and maxDepth. How extensive and in-depth Extractocol explores the source code is proportional to the value of the parameters. If you set those values high, Extractocol takes a long time to run but extracts richer information. If you set those values relatively low, then Extractocol finishes quickly but the result would be incorrect. The default value of the two parameters is 7 and 3, respectively. You can set those values by using the arg options: maxms and maxdepth. (Example: wish --maxms 7 --maxdepth 3)
 
 
-# License
+## License
 <code>CC BY-NC-SA</code> <a href="https://github.com/idleberg/Creative-Commons-Markdown/blob/spaces/4.0/by-nc-sa.markdown">Attribution-NonCommercial-ShareAlike</a>
 
-# Reference
+## References
 
 Jeongmin Kim, Hyunwoo Choi, Hoon Namgung, Woohyun Choi, Byungkwon Choi, Hyunwook Choi, Yongdae Kim, Jonghyup Lee  and Dongsu Han, <i>Enabling Automatic Protocol Behavior Analysis for Android Apps</i>, ACM CoNEXT 2016 [<a href="http://ina.kaist.ac.kr/~dongsuh/paper/kim-conext16.pdf" target="_blank">PDF</a>]
+Byungkwon Choi, Jeongmin Kim, Daeyang Cho, Seongmin Kim, and Dongsu Han, <i>APPx: An Automated App Acceleration Framework for Low Latency Mobile App</i>, ACM CoNEXT 2018 [<a href="http://ina.kaist.ac.kr/~brad/appx.pdf" target="_blank">PDF</a>]
 
 
-# Contact
+## Contact
 Jeongmin Kim (appff at kaist.ac.kr)
-
+Byungkwon Choi (cbkbrad at kaist.ac.kr)
