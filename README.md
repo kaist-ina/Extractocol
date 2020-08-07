@@ -7,7 +7,7 @@ Automatic Protocol Behavior Analysis Framework for Android Apps.
 Copy the APK file of your application into the directory named `SerializationFiles`.
 
 ### How to run
-Run Extractocol by passing your application name as an argument
+Run Extractocol by running `src/extractocol/tester/Extractocol.java` with your application name as an argument
 
 * The application name must be the same with the APK file. For example, if the apk file is myapp.apk, then you should pass 'myapp' to Extractocol.
 * You need to allocate enough memory to the heap space. We used 12GB of memory when running Extractocol for the applications mentioned in the reference papers below.
